@@ -22,7 +22,7 @@ async function checkAdminAuth() {
     
     const user = firebaseAuth.currentUser;
     if (!user) {
-        window.location.href = '../auth/login.html?redirect=pages/admin/user-approvals.html';
+        window.location.href = '../auth/login.html?redirect=/sm-panel/user-approvals';
         return;
     }
     

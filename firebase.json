@@ -148,12 +148,40 @@
         "destination": "/pages/auth/register.html"
       },
       {
-        "source": "/admin",
+        "source": "/sm-panel",
         "destination": "/pages/admin/dashboard.html"
       },
       {
-        "source": "/admin/login",
+        "source": "/sm-panel/",
+        "destination": "/pages/admin/dashboard.html"
+      },
+      {
+        "source": "/sm-panel/login",
         "destination": "/pages/admin/login.html"
+      },
+      {
+        "source": "/sm-panel/dashboard",
+        "destination": "/pages/admin/dashboard.html"
+      },
+      {
+        "source": "/sm-panel/messages",
+        "destination": "/pages/admin/messages.html"
+      },
+      {
+        "source": "/sm-panel/analytics",
+        "destination": "/pages/admin/analytics.html"
+      },
+      {
+        "source": "/sm-panel/disputes",
+        "destination": "/pages/admin/disputes.html"
+      },
+      {
+        "source": "/sm-panel/user-approvals",
+        "destination": "/pages/admin/user-approvals.html"
+      },
+      {
+        "source": "/sm-panel/chatbot-faqs",
+        "destination": "/pages/admin/chatbot-faqs.html"
       },
       {
         "source": "**",
