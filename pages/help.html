@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../index.html">
+                    <img src="../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <!-- Help Search -->
+            <div class="help-search">
+                <h2>How can we help you?</h2>
+                <div class="help-search-input">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search for help articles, FAQs..." id="helpSearch" onkeyup="filterFAQs()">
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2.5rem;">
+                <a href="seller-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                    <i class="fas fa-store" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Seller Guide</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Learn how to sell on Sankofa Market</p>
+                </a>
+                <a href="buyer-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                    <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Buyer Guide</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Tips for safe online shopping</p>
+                </a>
+                <a href="contact.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                    <i class="fas fa-headset" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Contact Support</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Get in touch with our team</p>
+                </a>
+                <a href="about.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; color: var(--error-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">About Us</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Learn about Sankofa Market</p>
+                </a>
+            </div>
+
+            <!-- FAQ Sections -->
+            <div id="faqContainer">
+                <!-- Getting Started -->
+                <div class="faq-category" data-category="getting-started">
+                    <h3><i class="fas fa-rocket" style="color: var(--primary-color); margin-right: 0.5rem;"></i>Getting Started</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What is Sankofa Market?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sankofa Market is Ghana's leading online marketplace where individuals and businesses can buy and sell a wide range of products. Think of it as a modern-day digital market where sellers list their items and buyers can browse, compare, and purchase from the comfort of their homes. We support multiple payment methods including Mobile Money (MTN, Vodafone, AirtelTigo) and card payments through Paystack.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I create an account?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Creating an account is easy! Click the "Register" button on the top right of any page. You'll need to provide your name, email address, phone number, and create a password. For enhanced security and trust, we also require Ghana Card verification. Once verified, you can start buying and selling immediately.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Why do I need to verify my Ghana Card?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Ghana Card verification helps us ensure a safe and trustworthy marketplace. It confirms your identity, protects against fraud, and builds trust between buyers and sellers. Verified users get a blue checkmark badge on their profile, which makes other users more confident in transacting with them. Your personal data is encrypted and stored securely in compliance with our Privacy Policy.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Is it free to sell on Sankofa Market?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, listing products on Sankofa Market is completely free! We charge a small commission only when you make a successful sale. The commission rate varies by category (typically 3-8% of the sale price). There are no hidden fees, and you can list as many items as you want without any upfront costs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buying -->
+                <div class="faq-category" data-category="buying">
+                    <h3><i class="fas fa-shopping-cart" style="color: var(--accent-color); margin-right: 0.5rem;"></i>Buying</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I make a purchase?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Browse products, click "Add to Cart" for items you want, then proceed to checkout. You can review your cart, choose delivery options, and make payment. We support Mobile Money (MTN MoMo, Vodafone Cash, AirtelTigo Money), credit/debit cards via Paystack, and bank transfers. Your payment is held securely until you confirm delivery of your item.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What payment methods are accepted?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We accept the following payment methods:</p>
+                            <ul>
+                                <li><strong>Mobile Money:</strong> MTN MoMo, Vodafone Cash, AirtelTigo Money</li>
+                                <li><strong>Cards:</strong> Visa, Mastercard, and other cards via Paystack</li>
+                                <li><strong>Bank Transfer:</strong> Direct transfer to our escrow account</li>
+                            </ul>
+                            <p>All payments are processed securely, and your funds are protected by our escrow system until delivery is confirmed.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How does delivery work?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Delivery options vary by seller and location. Most sellers in Accra offer same-day or next-day delivery. For deliveries outside Accra, expect 2-5 business days. You can track your order in real-time from your "My Orders" page. Some sellers also offer pick-up points if you prefer to collect the item yourself.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What if I receive a damaged or wrong item?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>If you receive a damaged or incorrect item, don't confirm delivery! Instead, open a dispute within 48 hours from your "My Orders" page. Upload photos of the item and describe the issue. Our team will review your case and facilitate a return or refund. Your money is protected by our escrow system, so you'll never lose money on a fraudulent transaction.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What is the refund policy?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>You can request a refund within 7 days of delivery if the item is damaged, not as described, or not received. Refunds are processed to your original payment method within 5-10 business days. Please see our <a href="refund-policy.html">Refund Policy</a> for complete details.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selling -->
+                <div class="faq-category" data-category="selling">
+                    <h3><i class="fas fa-store" style="color: var(--success-color); margin-right: 0.5rem;"></i>Selling</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I list a product for sale?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Click the "Sell" button on any page to start listing a product. You'll need to provide a title, description, price, category, photos (at least 3 recommended), and your location. Make sure your photos are clear and your description is honest and detailed. Good listings get more views and sales!</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How much commission does Sankofa Market charge?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our commission rates are competitive and vary by category:</p>
+                            <ul>
+                                <li><strong>Electronics:</strong> 5%</li>
+                                <li><strong>Fashion & Clothing:</strong> 8%</li>
+                                <li><strong>Handicrafts & Art:</strong> 6%</li>
+                                <li><strong>Home & Garden:</strong> 5%</li>
+                                <li><strong>Vehicles:</strong> 3%</li>
+                                <li><strong>All other categories:</strong> 5%</li>
+                            </ul>
+                            <p>Commission is deducted from the sale price before funds are released to your wallet.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I get paid for my sales?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Once a buyer confirms delivery, funds are released to your Sankofa Market wallet. You can then withdraw to your Mobile Money wallet or bank account. Withdrawals are processed within 24 hours. You can set up your preferred payout method in your profile settings.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What items are prohibited from being sold?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Prohibited items include illegal substances, weapons, counterfeit goods, stolen property, live animals, prescription medications without a license, and any items that violate Ghanaian law. Please see our <a href="prohibited-items.html">Prohibited Items Policy</a> for the complete list. Violations may result in account suspension or permanent ban.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account & Security -->
+                <div class="faq-category" data-category="security">
+                    <h3><i class="fas fa-shield-alt" style="color: var(--primary-color); margin-right: 0.5rem;"></i>Account & Security</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I keep my account safe?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Follow these security best practices:</p>
+                            <ul>
+                                <li>Use a strong, unique password (at least 8 characters with letters, numbers, and symbols)</li>
+                                <li>Never share your password or OTP codes with anyone</li>
+                                <li>Enable two-factor authentication in your profile settings</li>
+                                <li>Always complete transactions within Sankofa Market — never pay outside the platform</li>
+                                <li>Report suspicious users or listings immediately</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>I forgot my password. How do I reset it?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Click "Forgot Password?" on the login page. Enter your registered email address, and we'll send you a reset link. The link expires after 30 minutes for security. If you don't receive the email, check your spam folder or contact our support team.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>How do I delete my account?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>You can delete your account from your Profile page under the "Danger Zone" section. Please note that account deletion is permanent and all your data, listings, and order history will be permanently removed. If you have active orders or pending payouts, please resolve those before deleting your account. You can also choose to temporarily deactivate your account instead.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sankofa Store -->
+                <div class="faq-category" data-category="sankofa-store">
+                    <h3><i class="fas fa-crown" style="color: var(--accent-color); margin-right: 0.5rem;"></i>Sankofa Store (Official Store)</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>What is the Sankofa Store?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The Sankofa Store is our official in-house store where we sell curated, quality-verified products directly to our customers. Products from the Sankofa Store come with our quality guarantee, faster shipping, and dedicated customer support. We feature authentic Ghanaian products including traditional textiles, handicrafts, beauty products, and more.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>Can I sell my products through the Sankofa Store?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! If you're a producer or artisan with quality Ghanaian products, you can apply to sell through the Sankofa Store. We look for authentic, high-quality products that represent Ghanaian culture and craftsmanship. Contact our team at <strong>sankofastore@sankofamarket.com.gh</strong> with details about your products, and we'll review your application.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="section-card" style="text-align: center; margin-top: 2rem;">
+                <h2 style="margin-bottom: 0.5rem;">Still need help?</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Our support team is available Monday to Saturday, 8am to 8pm GMT</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Support</a>
+                    <a href="tel:+233302000000" class="btn btn-outline"><i class="fas fa-phone"></i> Call: +233 30 200 0000</a>
+                    <a href="https://wa.me/233200000000" class="btn btn-outline" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const isOpen = faqItem.classList.contains('open');
+            
+            // Close all FAQs in the same category
+            const category = faqItem.closest('.faq-category');
+            category.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('open');
+            });
+            
+            // Toggle the clicked one
+            if (!isOpen) {
+                faqItem.classList.add('open');
+            }
+        }
+
+        function filterFAQs() {
+            const query = document.getElementById('helpSearch').value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+            const categories = document.querySelectorAll('.faq-category');
+            
+            if (query.length === 0) {
+                faqItems.forEach(item => item.style.display = '');
+                categories.forEach(cat => cat.style.display = '');
+                return;
+            }
+            
+            categories.forEach(category => {
+                let hasVisible = false;
+                category.querySelectorAll('.faq-item').forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        item.style.display = '';
+                        hasVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                category.style.display = hasVisible ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

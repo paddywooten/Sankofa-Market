@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="profile.html" class="nav-item">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="orders.html" class="nav-item">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="listings.html" class="nav-item">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="messages.html" class="nav-item active">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages">3</span>
+                        </a>
+                        <a href="wishlist.html" class="nav-item">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="../../pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header">
+                        <h1>Messages</h1>
+                        <p>Chat with buyers and sellers</p>
+                    </div>
+
+                    <!-- Messages Layout -->
+                    <div class="messages-layout">
+                        <!-- Conversations List -->
+                        <div class="conversations-list">
+                            <div class="conversations-header">
+                                <h3>Chats</h3>
+                                <button class="btn btn-outline btn-small" onclick="markAllRead()">
+                                    <i class="fas fa-check-double"></i>
+                                </button>
+                            </div>
+                            <div class="conversation-search">
+                                <input type="text" placeholder="Search conversations..." id="searchConversations">
+                            </div>
+
+                            <!-- Conversation 1 -->
+                            <div class="conversation-item active" onclick="openConversation('ama-textiles')">
+                                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ama" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">Ama's Textiles</div>
+                                    <div class="conv-preview">Yes, the Kente cloth is still available!</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">2 min</div>
+                                    <div class="conv-unread">2</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 2 -->
+                            <div class="conversation-item" onclick="openConversation('heritage-crafts')">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Kwame" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">Heritage Crafts GH</div>
+                                    <div class="conv-preview">I can deliver to Accra by Friday</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">1 hr</div>
+                                    <div class="conv-unread">1</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 3 -->
+                            <div class="conversation-item" onclick="openConversation('techhub')">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Kofi" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">TechHub Accra</div>
+                                    <div class="conv-preview">The phone comes with charger and case</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">3 hrs</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 4 -->
+                            <div class="conversation-item" onclick="openConversation('northern-naturals')">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Abena" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">Northern Naturals</div>
+                                    <div class="conv-preview">Thank you for your order! We'll ship tomorrow</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">Yesterday</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 5 -->
+                            <div class="conversation-item" onclick="openConversation('tamale-fashion')">
+                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ibrahim" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">Tamale Fashion House</div>
+                                    <div class="conv-preview">What size would you like for the Smock?</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">2 days</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 6 -->
+                            <div class="conversation-item" onclick="openConversation('accra-electronics')">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Daniel" class="avatar" loading="lazy" decoding="async">
+                                <div class="conv-details">
+                                    <div class="conv-name">Accra Electronics</div>
+                                    <div class="conv-preview">The headphones are no longer available</div>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-time">1 week</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Window -->
+                        <div class="chat-window" id="chatWindow">
+                            <!-- Chat Header -->
+                            <div class="chat-header">
+                                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ama" class="avatar" id="chatAvatar" loading="lazy" decoding="async">
+                                <div class="chat-user-info">
+                                    <h3 id="chatUserName">Ama's Textiles</h3>
+                                    <p id="chatUserStatus"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Online</p>
+                                </div>
+                                <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                                    <button class="btn btn-outline btn-small" onclick="viewSellerProfile()" title="View Profile">
+                                        <i class="fas fa-user"></i>
+                                    </button>
+                                    <button class="btn btn-outline btn-small" onclick="reportUser()" title="Report" style="color: var(--error-color); border-color: var(--error-color);">
+                                        <i class="fas fa-flag"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Product Card in Chat -->
+                            <div class="chat-product-card">
+                                <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=100&h=100&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
+                                <div class="product-info">
+                                    <h4>Authentic Kente Cloth - Hand-Woven Premium</h4>
+                                    <p>GH₵ 350.00</p>
+                                </div>
+                                <a href="../../product-detail.html" class="btn btn-outline btn-small" style="margin-left: auto;">View</a>
+                            </div>
+
+                            <!-- Messages -->
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="message received">
+                                    <div>Hello! Welcome to Ama's Textiles. How can I help you today?</div>
+                                    <div class="message-time">Sep 17, 2:30 PM</div>
+                                </div>
+                                <div class="message sent">
+                                    <div>Hi! I'm interested in the hand-woven Kente cloth. Is it still available?</div>
+                                    <div class="message-time">Sep 17, 2:35 PM</div>
+                                </div>
+                                <div class="message received">
+                                    <div>Yes, the Kente cloth is still available! It's a beautiful piece woven by artisans in Bonwire, the home of Kente.</div>
+                                    <div class="message-time">Sep 18, 9:15 AM</div>
+                                </div>
+                                <div class="message sent">
+                                    <div>That's great! Can you deliver to East Legon in Accra?</div>
+                                    <div class="message-time">Sep 18, 9:20 AM</div>
+                                </div>
+                                <div class="message received">
+                                    <div>Yes, we deliver to East Legon. Delivery takes 1-2 business days and costs GH₵ 20. Would you like to proceed with the order?</div>
+                                    <div class="message-time">Sep 18, 9:25 AM</div>
+                                </div>
+                            </div>
+
+                            <!-- Chat Input -->
+                            <div class="chat-input-area">
+                                <button class="attach-btn" onclick="attachFile()" title="Attach file">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                                <button class="send-btn" onclick="sendMessage()" title="Send">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/user-messages.js"></script>
+</body>
+</html>

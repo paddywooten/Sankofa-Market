@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
 </head>
 <body>
     <header class="header">
@@ -78,6 +79,46 @@
                 </div>
             </div>
 
+            <!-- Quick Access Links -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+                <a href="orders.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(0,100,210,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-shopping-bag" style="color:var(--primary-color);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">My Orders</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">Track purchases</div>
+                    </div>
+                </a>
+                <a href="messages.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,175,2,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-comments" style="color:var(--accent-color);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Messages <span style="background:var(--error-color);color:white;font-size:0.6rem;padding:0.1rem 0.4rem;border-radius:10px;margin-left:0.25rem;">3</span></div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">Chat with sellers</div>
+                    </div>
+                </a>
+                <a href="profile.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(134,184,23,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-user-cog" style="color:var(--success-color);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Profile</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">Account settings</div>
+                    </div>
+                </a>
+                <a href="../../pages/help.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(231,76,60,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-question-circle" style="color:var(--error-color);"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:0.9rem;">Help Center</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">Get support</div>
+                    </div>
+                </a>
+            </div>
+
             <!-- Dashboard Tabs -->
             <div class="dashboard-tabs">
                 <button class="tab-btn active" data-tab="listings">
@@ -101,7 +142,10 @@
                 <div class="tab-panel active" id="listings-panel">
                     <div class="panel-header">
                         <h2>My Listings</h2>
-                        <a href="../../publish.html" class="btn btn-primary"><i class="fas fa-plus"></i> New Listing</a>
+                        <div style="display:flex;gap:0.5rem;">
+                            <a href="listings.html" class="btn btn-outline btn-small"><i class="fas fa-th"></i> View All</a>
+                            <a href="../../publish.html" class="btn btn-primary"><i class="fas fa-plus"></i> New Listing</a>
+                        </div>
                     </div>
                     
                     <div class="listings-filter">
@@ -255,6 +299,7 @@
                 <div class="tab-panel" id="favorites-panel">
                     <div class="panel-header">
                         <h2>My Favorites</h2>
+                        <a href="wishlist.html" class="btn btn-outline btn-small"><i class="fas fa-heart"></i> View Full Wishlist</a>
                     </div>
                     <div class="products-grid" id="favoritesGrid">
                         <div class="product-card">

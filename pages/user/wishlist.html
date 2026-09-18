@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="profile.html" class="nav-item">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="orders.html" class="nav-item">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="listings.html" class="nav-item">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="messages.html" class="nav-item">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages">3</span>
+                        </a>
+                        <a href="wishlist.html" class="nav-item active">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="../../pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h1>My Wishlist</h1>
+                            <p>Items you've saved for later • <span id="wishlistCount">8 items</span></p>
+                        </div>
+                        <button class="btn btn-outline btn-small" onclick="clearWishlist()" style="color: var(--error-color); border-color: var(--error-color);">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+
+                    <!-- Wishlist Grid -->
+                    <div class="wishlist-grid" id="wishlistGrid">
+                        <!-- Item 1 -->
+                        <div class="wishlist-card" data-id="w001">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=400&h=300&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w001')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Authentic Kente Cloth - Hand-Woven Premium</h3>
+                                <div class="wishlist-price">GH₵ 350.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Ama's Textiles</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w001')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="wishlist-card" data-id="w002">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=300&fit=crop&q=75&auto=format" alt="Beads" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w002')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Krobo Glass Beads - Assorted Colors Set</h3>
+                                <div class="wishlist-price">GH₵ 85.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Heritage Crafts GH</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w002')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="wishlist-card" data-id="w003">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop&q=75&auto=format" alt="Phone" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w003')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Samsung Galaxy A54 - 128GB (Like New)</h3>
+                                <div class="wishlist-price">GH₵ 2,800.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> TechHub Accra</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w003')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="wishlist-card" data-id="w004">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=300&fit=crop&q=75&auto=format" alt="Bag" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w004')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Handcrafted Leather Bag - Bolgatanga</h3>
+                                <div class="wishlist-price">GH₵ 180.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Northern Leather Works</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w004')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="wishlist-card" data-id="w005">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=400&h=300&fit=crop&q=75&auto=format" alt="Shea Butter" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w005')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Organic Shea Butter - Unrefined (500g)</h3>
+                                <div class="wishlist-price">GH₵ 45.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Northern Naturals</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w005')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 6 -->
+                        <div class="wishlist-card" data-id="w006">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop&q=75&auto=format" alt="Watch" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w006')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Premium Wristwatch - Gold Edition</h3>
+                                <div class="wishlist-price">GH₵ 1,200.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Accra Timepieces</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w006')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 7 -->
+                        <div class="wishlist-card" data-id="w007">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop&q=75&auto=format" alt="Headphones" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w007')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Wireless Bluetooth Headphones - Premium</h3>
+                                <div class="wishlist-price">GH₵ 250.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Accra Electronics</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w007')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 8 -->
+                        <div class="wishlist-card" data-id="w008">
+                            <div class="wishlist-card-image">
+                                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop&q=75&auto=format" alt="Camera" loading="lazy" decoding="async">
+                                <button class="wishlist-remove-btn" onclick="removeFromWishlist('w008')" title="Remove">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                            <div class="wishlist-card-body">
+                                <h3>Polaroid Camera - Vintage Style</h3>
+                                <div class="wishlist-price">GH₵ 680.00</div>
+                                <div class="wishlist-seller"><i class="fas fa-store"></i> Photo World GH</div>
+                                <div class="wishlist-card-actions">
+                                    <a href="../../product-detail.html" class="btn btn-outline btn-small">View</a>
+                                    <button class="btn btn-primary btn-small" onclick="addToCart('w008')">
+                                        <i class="fas fa-cart-plus"></i> Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State (hidden by default) -->
+                    <div class="empty-state" id="emptyWishlist" style="display: none;">
+                        <i class="fas fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Save items you love by clicking the heart icon on any product. They'll show up here so you can easily find them later.</p>
+                        <a href="../../search.html" class="btn btn-primary"><i class="fas fa-search"></i> Browse Products</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/user-wishlist.js"></script>
+</body>
+</html>

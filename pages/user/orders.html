@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="profile.html" class="nav-item">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="orders.html" class="nav-item active">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="listings.html" class="nav-item">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="messages.html" class="nav-item">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages">3</span>
+                        </a>
+                        <a href="wishlist.html" class="nav-item">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="../../pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header">
+                        <h1>My Orders</h1>
+                        <p>Track and manage all your purchases</p>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All Orders</button>
+                        <button class="filter-tab" data-filter="pending">Pending</button>
+                        <button class="filter-tab" data-filter="processing">Processing</button>
+                        <button class="filter-tab" data-filter="shipped">Shipped</button>
+                        <button class="filter-tab" data-filter="delivered">Delivered</button>
+                        <button class="filter-tab" data-filter="cancelled">Cancelled</button>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div id="ordersList">
+                        <!-- Order 1 - Shipped -->
+                        <div class="order-card" data-status="shipped">
+                            <div class="order-card-header">
+                                <div class="order-info">
+                                    <span>Order <strong>#SM-2026-001847</strong></span>
+                                    <span>Placed on <strong>Sep 14, 2026</strong></span>
+                                    <span class="status-badge shipped"><i class="fas fa-truck"></i> Shipped</span>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-small" onclick="viewOrderDetails('SM-2026-001847')">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=120&h=120&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Authentic Kente Cloth - Hand-Woven</h4>
+                                        <p>Seller: Ama's Textiles • Qty: 1</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 350.00</div>
+                                        <div class="qty">× 1</div>
+                                    </div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=120&h=120&fit=crop&q=75&auto=format" alt="Beads" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Krobo Glass Beads Set</h4>
+                                        <p>Seller: Heritage Crafts GH • Qty: 2</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 85.00</div>
+                                        <div class="qty">× 2</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-card-footer">
+                                <div class="order-total">
+                                    <span>Total: </span> GH₵ 520.00
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn btn-outline btn-small" onclick="trackOrder('SM-2026-001847')">
+                                        <i class="fas fa-map-marker-alt"></i> Track
+                                    </button>
+                                    <button class="btn btn-primary btn-small" onclick="contactSeller('amas-textiles')">
+                                        <i class="fas fa-comments"></i> Contact Seller
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 2 - Delivered -->
+                        <div class="order-card" data-status="delivered">
+                            <div class="order-card-header">
+                                <div class="order-info">
+                                    <span>Order <strong>#SM-2026-001723</strong></span>
+                                    <span>Placed on <strong>Sep 5, 2026</strong></span>
+                                    <span class="status-badge delivered"><i class="fas fa-check-circle"></i> Delivered</span>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-small" onclick="viewOrderDetails('SM-2026-001723')">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=120&h=120&fit=crop&q=75&auto=format" alt="Shea Butter" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Organic Shea Butter - Unrefined (500g)</h4>
+                                        <p>Seller: Northern Naturals • Qty: 3</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 45.00</div>
+                                        <div class="qty">× 3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-card-footer">
+                                <div class="order-total">
+                                    <span>Total: </span> GH₵ 135.00
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn btn-outline btn-small" onclick="reorderItems('SM-2026-001723')">
+                                        <i class="fas fa-redo"></i> Reorder
+                                    </button>
+                                    <button class="btn btn-primary btn-small" onclick="leaveReview('SM-2026-001723')">
+                                        <i class="fas fa-star"></i> Leave Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 3 - Processing -->
+                        <div class="order-card" data-status="processing">
+                            <div class="order-card-header">
+                                <div class="order-info">
+                                    <span>Order <strong>#SM-2026-001901</strong></span>
+                                    <span>Placed on <strong>Sep 17, 2026</strong></span>
+                                    <span class="status-badge processing"><i class="fas fa-cog"></i> Processing</span>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-small" onclick="viewOrderDetails('SM-2026-001901')">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=120&h=120&fit=crop&q=75&auto=format" alt="Phone" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Samsung Galaxy A54 - 128GB (Used - Excellent)</h4>
+                                        <p>Seller: TechHub Accra • Qty: 1</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 2,800.00</div>
+                                        <div class="qty">× 1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-card-footer">
+                                <div class="order-total">
+                                    <span>Total: </span> GH₵ 2,800.00
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn btn-outline btn-small" onclick="contactSeller('techhub-accra')">
+                                        <i class="fas fa-comments"></i> Contact Seller
+                                    </button>
+                                    <button class="btn btn-danger btn-small" onclick="cancelOrder('SM-2026-001901')">
+                                        <i class="fas fa-times"></i> Cancel Order
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 4 - Pending -->
+                        <div class="order-card" data-status="pending">
+                            <div class="order-card-header">
+                                <div class="order-info">
+                                    <span>Order <strong>#SM-2026-001912</strong></span>
+                                    <span>Placed on <strong>Sep 18, 2026</strong></span>
+                                    <span class="status-badge pending"><i class="fas fa-clock"></i> Pending Payment</span>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-small" onclick="viewOrderDetails('SM-2026-001912')">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=120&h=120&fit=crop&q=75&auto=format" alt="Smock" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Traditional Northern Smock (Fugu) - Premium</h4>
+                                        <p>Seller: Tamale Fashion House • Qty: 1</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 480.00</div>
+                                        <div class="qty">× 1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-card-footer">
+                                <div class="order-total">
+                                    <span>Total: </span> GH₵ 480.00
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn btn-primary btn-small" onclick="completePayment('SM-2026-001912')">
+                                        <i class="fas fa-credit-card"></i> Complete Payment
+                                    </button>
+                                    <button class="btn btn-danger btn-small" onclick="cancelOrder('SM-2026-001912')">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order 5 - Cancelled -->
+                        <div class="order-card" data-status="cancelled">
+                            <div class="order-card-header">
+                                <div class="order-info">
+                                    <span>Order <strong>#SM-2026-001645</strong></span>
+                                    <span>Placed on <strong>Aug 28, 2026</strong></span>
+                                    <span class="status-badge cancelled"><i class="fas fa-times-circle"></i> Cancelled</span>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-small" onclick="viewOrderDetails('SM-2026-001645')">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                            <div class="order-card-body">
+                                <div class="order-item">
+                                    <div class="order-item-image">
+                                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120&h=120&fit=crop&q=75&auto=format" alt="Headphones" loading="lazy" decoding="async">
+                                    </div>
+                                    <div class="order-item-details">
+                                        <h4>Wireless Bluetooth Headphones</h4>
+                                        <p>Seller: Accra Electronics • Qty: 1</p>
+                                    </div>
+                                    <div class="order-item-price">
+                                        <div class="price">GH₵ 250.00</div>
+                                        <div class="qty">× 1</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-card-footer">
+                                <div class="order-total">
+                                    <span>Total: </span> GH₵ 250.00 <small style="color: var(--error-color);">(Refunded)</small>
+                                </div>
+                                <div class="order-actions">
+                                    <button class="btn btn-outline btn-small" onclick="reorderItems('SM-2026-001645')">
+                                        <i class="fas fa-redo"></i> Reorder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div style="display: flex; justify-content: center; margin-top: 2rem; gap: 0.5rem;">
+                        <button class="btn btn-outline btn-small" disabled><i class="fas fa-chevron-left"></i></button>
+                        <button class="btn btn-primary btn-small">1</button>
+                        <button class="btn btn-outline btn-small">2</button>
+                        <button class="btn btn-outline btn-small">3</button>
+                        <button class="btn btn-outline btn-small"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/user-orders.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Maintenance - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <style>
+        .maintenance-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #e8f0fe 100%);
+        }
+        .maintenance-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .maintenance-timer {
+            display: inline-flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .timer-block {
+            text-align: center;
+        }
+        .timer-block .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        .timer-block .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-page">
+        <div style="max-width: 600px;">
+            <div class="maintenance-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">We'll Be Right Back!</h1>
+            <p style="color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 0.5rem;">
+                Sankofa Market is currently undergoing scheduled maintenance to improve your shopping experience.
+            </p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                We apologize for any inconvenience. Our team is working hard to bring the marketplace back online.
+            </p>
+
+            <!-- Countdown Timer -->
+            <div class="maintenance-timer" id="countdown">
+                <div class="timer-block">
+                    <div class="number" id="hours">02</div>
+                    <div class="label">Hours</div>
+                </div>
+                <div class="timer-block">
+                    <div class="number" id="minutes">30</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="timer-block">
+                    <div class="number" id="seconds">00</div>
+                    <div class="label">Seconds</div>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div style="margin-top: 1.5rem;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Stay updated on social media:</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="#" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                    Urgent matter? Contact us at <a href="mailto:support@sankofamarket.com.gh" style="color: var(--primary-color);">support@sankofamarket.com.gh</a>
+                </p>
+            </div>
+
+            <!-- Auto-refresh -->
+            <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 1.5rem;">
+                <i class="fas fa-sync-alt"></i> This page will automatically refresh when we're back online.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Countdown timer (2.5 hours from page load)
+        let totalSeconds = 2 * 3600 + 30 * 60;
+        
+        function updateCountdown() {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            
+            if (totalSeconds > 0) {
+                totalSeconds--;
+            }
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // Auto-refresh every 60 seconds to check if site is back
+        setInterval(function() {
+            fetch(window.location.href, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok && !response.url.includes('maintenance')) {
+                        window.location.reload();
+                    }
+                })
+                .catch(() => {});
+        }, 60000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="profile.html" class="nav-item">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="orders.html" class="nav-item">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="listings.html" class="nav-item active">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="messages.html" class="nav-item">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages">3</span>
+                        </a>
+                        <a href="wishlist.html" class="nav-item">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="../../pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h1>My Listings</h1>
+                            <p>Manage your product listings</p>
+                        </div>
+                        <a href="../../publish.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> New Listing
+                        </a>
+                    </div>
+
+                    <!-- Summary Stats -->
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="section-card" style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">12</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Active</div>
+                        </div>
+                        <div class="section-card" style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-secondary);">3</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Drafts</div>
+                        </div>
+                        <div class="section-card" style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">8</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Sold</div>
+                        </div>
+                        <div class="section-card" style="text-align: center; padding: 1rem;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--error-color);">1</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Flagged</div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All (24)</button>
+                        <button class="filter-tab" data-filter="active">Active (12)</button>
+                        <button class="filter-tab" data-filter="draft">Drafts (3)</button>
+                        <button class="filter-tab" data-filter="sold">Sold (8)</button>
+                        <button class="filter-tab" data-filter="flagged">Flagged (1)</button>
+                    </div>
+
+                    <!-- Listings Grid -->
+                    <div class="card-grid" id="listingsGrid">
+                        <!-- Listing 1 -->
+                        <div class="listing-card" data-status="active">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=400&h=300&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
+                                <span class="status-badge active listing-status">Active</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l001')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l001')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Authentic Kente Cloth - Hand-Woven Premium</h3>
+                                <div class="listing-price">GH₵ 350.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 234 views</span>
+                                    <span><i class="fas fa-heart"></i> 18</span>
+                                    <span><i class="fas fa-comment"></i> 5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 2 -->
+                        <div class="listing-card" data-status="active">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=300&fit=crop&q=75&auto=format" alt="Beads" loading="lazy" decoding="async">
+                                <span class="status-badge active listing-status">Active</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l002')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l002')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Krobo Glass Beads - Assorted Colors</h3>
+                                <div class="listing-price">GH₵ 85.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 156 views</span>
+                                    <span><i class="fas fa-heart"></i> 12</span>
+                                    <span><i class="fas fa-comment"></i> 3</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 3 -->
+                        <div class="listing-card" data-status="active">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=400&h=300&fit=crop&q=75&auto=format" alt="Shea Butter" loading="lazy" decoding="async">
+                                <span class="status-badge active listing-status">Active</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l003')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l003')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Organic Shea Butter - Unrefined (500g)</h3>
+                                <div class="listing-price">GH₵ 45.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 312 views</span>
+                                    <span><i class="fas fa-heart"></i> 28</span>
+                                    <span><i class="fas fa-comment"></i> 7</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 4 -->
+                        <div class="listing-card" data-status="active">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop&q=75&auto=format" alt="Phone" loading="lazy" decoding="async">
+                                <span class="status-badge active listing-status">Active</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l004')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l004')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Samsung Galaxy A54 - 128GB (Like New)</h3>
+                                <div class="listing-price">GH₵ 2,800.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 489 views</span>
+                                    <span><i class="fas fa-heart"></i> 45</span>
+                                    <span><i class="fas fa-comment"></i> 12</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 5 - Sold -->
+                        <div class="listing-card" data-status="sold">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop&q=75&auto=format" alt="Headphones" loading="lazy" decoding="async">
+                                <span class="status-badge sold listing-status">Sold</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="relistItem('l005')" title="Relist"><i class="fas fa-redo"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Wireless Bluetooth Headphones - Premium</h3>
+                                <div class="listing-price">GH₵ 250.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 567 views</span>
+                                    <span><i class="fas fa-heart"></i> 34</span>
+                                    <span>Sold Sep 10</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 6 - Draft -->
+                        <div class="listing-card" data-status="draft">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop&q=75&auto=format" alt="Camera" loading="lazy" decoding="async">
+                                <span class="status-badge draft listing-status">Draft</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l006')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l006')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Canon EOS M50 Mark II Camera</h3>
+                                <div class="listing-price" style="color: var(--text-secondary);">Price not set</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-edit"></i> Last edited Sep 15</span>
+                                    <button class="btn btn-primary btn-small" onclick="publishDraft('l006')" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Publish</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 7 - Flagged -->
+                        <div class="listing-card" data-status="flagged">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop&q=75&auto=format" alt="Watch" loading="lazy" decoding="async">
+                                <span class="status-badge flagged listing-status"><i class="fas fa-flag"></i> Flagged</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l007')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="appealFlag('l007')" title="Appeal"><i class="fas fa-gavel"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Designer Watch - Limited Edition</h3>
+                                <div class="listing-price">GH₵ 1,200.00</div>
+                                <div class="listing-meta" style="color: var(--error-color);">
+                                    <span><i class="fas fa-exclamation-triangle"></i> Flagged for review</span>
+                                    <button class="btn btn-outline btn-small" onclick="appealFlag('l007')" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; border-color: var(--error-color); color: var(--error-color);">Appeal</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing 8 -->
+                        <div class="listing-card" data-status="active">
+                            <div class="listing-card-image">
+                                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=300&fit=crop&q=75&auto=format" alt="Bag" loading="lazy" decoding="async">
+                                <span class="status-badge active listing-status">Active</span>
+                                <div class="listing-actions-overlay">
+                                    <button onclick="editListing('l008')" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteListing('l008')" title="Delete"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div class="listing-card-body">
+                                <h3>Handcrafted Leather Bag - Bolgatanga</h3>
+                                <div class="listing-price">GH₵ 180.00</div>
+                                <div class="listing-meta">
+                                    <span><i class="fas fa-eye"></i> 98 views</span>
+                                    <span><i class="fas fa-heart"></i> 8</span>
+                                    <span><i class="fas fa-comment"></i> 2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/user-listings.js"></script>
+</body>
+</html>

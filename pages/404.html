@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../index.html">
+                    <img src="../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="error-page">
+        <div class="error-content">
+            <h1>404</h1>
+            <h2>Oops! Page Not Found</h2>
+            <p>The page you're looking for doesn't exist, has been moved, or is temporarily unavailable. Let's get you back on track!</p>
+            
+            <!-- Search -->
+            <div style="max-width: 400px; margin: 0 auto 1.5rem; position: relative;">
+                <input type="text" placeholder="Search for products..." id="errorSearch" 
+                    style="width: 100%; padding: 0.85rem 1.25rem 0.85rem 2.75rem; border: 2px solid var(--border-color); border-radius: var(--radius-full); font-size: 1rem;">
+                <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
+            </div>
+
+            <div class="error-actions">
+                <a href="../index.html" class="btn btn-primary"><i class="fas fa-home"></i> Go Home</a>
+                <a href="../search.html" class="btn btn-outline"><i class="fas fa-search"></i> Browse Products</a>
+                <a href="help.html" class="btn btn-outline"><i class="fas fa-question-circle"></i> Help Center</a>
+            </div>
+
+            <!-- Popular Categories -->
+            <div style="margin-top: 3rem;">
+                <h3 style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem;">Popular Categories</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
+                    <a href="../search.html?cat=electronics" class="btn btn-outline btn-small">Electronics</a>
+                    <a href="../search.html?cat=fashion" class="btn btn-outline btn-small">Fashion</a>
+                    <a href="../search.html?cat=handicrafts" class="btn btn-outline btn-small">Handicrafts</a>
+                    <a href="../search.html?cat=home" class="btn btn-outline btn-small">Home & Garden</a>
+                    <a href="../search.html?cat=beauty" class="btn btn-outline btn-small">Beauty</a>
+                    <a href="../search.html?cat=vehicles" class="btn btn-outline btn-small">Vehicles</a>
+                    <a href="../search.html?cat=sankofa-store" class="btn btn-outline btn-small">Sankofa Store</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('errorSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                window.location.href = '../search.html?q=' + encodeURIComponent(this.value);
+            }
+        });
+    </script>
+</body>
+</html>
