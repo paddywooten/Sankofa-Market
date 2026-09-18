@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initAdminLogin() {
     const form = document.getElementById('adminLoginForm');
     const loginBtn = document.getElementById('adminLoginBtn');
+    if (!loginBtn) { console.error('Login button not found'); return; }
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -92,10 +93,13 @@ function initAdminLogin() {
 
                 showAdminFlash('Welcome to the Admin Panel!', 'success');
                 
+                // Keep button in loading state during redirect
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+                
                 // Redirect to admin dashboard
                 setTimeout(() => {
-                    window.location.href = '/sm-panel/dashboard';
-                }, 1000);
+                    window.location.replace('/sm-panel/dashboard');
+                }, 1500);
 
             } else {
                 // ===== DEMO MODE (no Firebase) =====
