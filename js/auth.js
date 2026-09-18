@@ -395,7 +395,7 @@ function redirectAfterAuth() {
         if (redirect) {
             window.location.href = `../../${redirect}`;
         } else {
-            window.location.href = '../../index.html';
+            window.location.href = '../user/dashboard.html';
         }
     }, 1500);
 }
