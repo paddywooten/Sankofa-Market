@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/auth.css">
+    <link rel="stylesheet" href="../../css/verification.css">
 </head>
 <body>
     <main class="auth-main">
@@ -78,37 +79,26 @@
                     <!-- Identity Verification Section -->
                     <div class="verification-section">
                         <h3><i class="fas fa-id-card"></i> Identity Verification</h3>
-                        <p class="verification-info">To ensure a safe marketplace, all new accounts require admin approval. Please upload the following documents:</p>
+                        <p class="verification-info">To ensure a safe marketplace, we verify all users with their Ghana Card. Your account will be pending admin approval before you can publish listings.</p>
                         
                         <div class="form-group">
-                            <label for="ghanaCard">Ghana Card (Front & Back) <span class="required">*</span></label>
-                            <div class="file-upload-area" id="ghanaCardUploadArea">
-                                <input type="file" id="ghanaCard" name="ghanaCard" accept="image/*" multiple required style="display: none;">
-                                <div class="file-upload-prompt" onclick="document.getElementById('ghanaCard').click()">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span>Click to upload Ghana Card photos</span>
-                                    <small>Upload front and back (2 images max)</small>
-                                </div>
-                                <div class="file-preview" id="ghanaCardPreview"></div>
+                            <label for="ghanaCardNumber">Ghana Card Number <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="ghanaCardNumber" name="ghanaCardNumber" placeholder="GHA-XXXXXXXXX-X" required pattern="GHA-[0-9]{9}-[0-9]" title="Format: GHA-123456789-0">
                             </div>
+                            <small class="form-hint">Enter your Ghana Card number (format: GHA-123456789-0)</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="passportPhoto">Passport Picture <span class="required">*</span></label>
-                            <div class="file-upload-area" id="passportPhotoUploadArea">
-                                <input type="file" id="passportPhoto" name="passportPhoto" accept="image/*" required style="display: none;">
-                                <div class="file-upload-prompt" onclick="document.getElementById('passportPhoto').click()">
-                                    <i class="fas fa-user-circle"></i>
-                                    <span>Click to upload passport picture</span>
-                                    <small>Clear photo of yourself (1 image)</small>
-                                </div>
-                                <div class="file-preview" id="passportPhotoPreview"></div>
-                            </div>
+                            <label for="ghanaCardName">Name on Ghana Card <span class="required">*</span></label>
+                            <input type="text" id="ghanaCardName" name="ghanaCardName" placeholder="As it appears on your Ghana Card" required>
+                            <small class="form-hint">Must match the name on your Ghana Card exactly</small>
                         </div>
 
                         <div class="verification-notice">
                             <i class="fas fa-info-circle"></i>
-                            <span>Your account will be <strong>pending approval</strong> until admin reviews your documents. You'll receive an email once approved.</span>
+                            <span>Your account will be <strong>pending approval</strong> until admin verifies your Ghana Card details. You'll receive an email once approved. This helps us maintain a safe and trusted marketplace.</span>
                         </div>
                     </div>
 

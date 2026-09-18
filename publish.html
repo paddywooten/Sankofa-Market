@@ -36,6 +36,16 @@
                 <div class="form-section">
                     <h2 class="form-section-title"><i class="fas fa-camera"></i> Photos</h2>
                     <p class="form-hint">Add up to 8 photos. The first photo will be the cover image.</p>
+                    
+                    <!-- Transparency Warning -->
+                    <div class="transparency-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="warning-content">
+                            <strong>Be Honest & Transparent</strong>
+                            <p>Show the item as it really is. Use clear, well-lit photos from multiple angles. Include photos of any defects, scratches, or wear. Honest listings prevent disputes and build trust!</p>
+                        </div>
+                    </div>
+                    
                     <div class="photo-upload-area" id="photoUploadArea">
                         <div class="photo-grid" id="photoGrid">
                             <label class="photo-upload-btn" id="photoUploadBtn">
@@ -97,12 +107,34 @@
                                 <span><i class="fas fa-hand-paper"></i> Fair</span>
                             </label>
                         </div>
+                        <!-- Condition Transparency Tip -->
+                        <div class="transparency-tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <span><strong>Tip:</strong> Choose the condition that honestly reflects your item's state. "Good" with minor scratches is better than "Like New" with hidden defects. Buyers appreciate honesty!</span>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Description <span class="required">*</span></label>
                         <textarea id="description" name="description" rows="6" placeholder="Describe your item in detail — condition, features, reason for selling, what's included..." required maxlength="2000"></textarea>
                         <span class="char-count"><span id="descCount">0</span>/2000</span>
+                        
+                        <!-- Description Transparency Warning -->
+                        <div class="transparency-warning description-warning">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="warning-content">
+                                <strong>Accurate Descriptions Prevent Disputes</strong>
+                                <ul>
+                                    <li>✓ Describe the item's actual condition (scratches, dents, wear)</li>
+                                    <li>✓ Mention any defects or issues honestly</li>
+                                    <li>✓ List what's included (accessories, original packaging, etc.)</li>
+                                    <li>✓ Explain why you're selling (optional but builds trust)</li>
+                                    <li>✗ Don't exaggerate or misrepresent the item</li>
+                                    <li>✗ Don't hide defects or problems</li>
+                                </ul>
+                                <p><strong>Remember:</strong> Misleading descriptions lead to disputes, refunds, and account suspension. Be honest to build a great reputation!</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

@@ -1,0 +1,80 @@
+/* Verification Section */
+.verification-section {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.verification-section h3 {
+    font-size: 1.1rem;
+    color: #0064d2;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verification-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.verification-notice {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.verification-notice i {
+    color: #ffc107;
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+}
+
+.verification-notice span {
+    font-size: 0.9rem;
+    color: #856404;
+    line-height: 1.5;
+}
+
+.verification-notice strong {
+    color: #856404;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.input-icon input {
+    padding-left: 40px;
+}
+
+@media (max-width: 768px) {
+    .verification-section {
+        padding: 1rem;
+    }
+}

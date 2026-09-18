@@ -595,3 +595,112 @@
         font-size: 0.85rem;
     }
 }
+
+/* Transparency Warnings */
+.transparency-warning {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.transparency-warning i {
+    color: #ffc107;
+    font-size: 1.5rem;
+    margin-top: 0.1rem;
+}
+
+.transparency-warning .warning-content {
+    flex: 1;
+}
+
+.transparency-warning .warning-content strong {
+    display: block;
+    color: #856404;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.transparency-warning .warning-content p {
+    color: #856404;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+.transparency-warning .warning-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+    color: #856404;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.transparency-warning .warning-content li {
+    margin: 0.25rem 0;
+}
+
+.transparency-warning.description-warning {
+    background: #d1ecf1;
+    border-left-color: #17a2b8;
+}
+
+.transparency-warning.description-warning i {
+    color: #17a2b8;
+}
+
+.transparency-warning.description-warning .warning-content strong,
+.transparency-warning.description-warning .warning-content p,
+.transparency-warning.description-warning .warning-content ul {
+    color: #0c5460;
+}
+
+.transparency-tip {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    border-radius: 4px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.transparency-tip i {
+    color: #28a745;
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+}
+
+.transparency-tip span {
+    color: #155724;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.transparency-tip strong {
+    color: #155724;
+}
+
+@media (max-width: 768px) {
+    .transparency-warning {
+        padding: 0.75rem;
+    }
+    
+    .transparency-warning i {
+        font-size: 1.2rem;
+    }
+    
+    .transparency-warning .warning-content strong {
+        font-size: 0.9rem;
+    }
+    
+    .transparency-warning .warning-content p,
+    .transparency-warning .warning-content ul {
+        font-size: 0.8rem;
+    }
+}

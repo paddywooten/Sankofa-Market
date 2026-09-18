@@ -77,9 +77,9 @@ function renderDemoUsers() {
             email: 'kwame@example.com',
             phone: '0241234567',
             status: 'pending',
-            verification: {
-                ghanaCard: ['https://via.placeholder.com/300x200?text=Ghana+Card+Front', 'https://via.placeholder.com/300x200?text=Ghana+Card+Back'],
-                passportPhoto: 'https://via.placeholder.com/200x200?text=Passport+Photo',
+            ghanaCard: {
+                number: 'GHA-123456789-0',
+                name: 'Kwame Asante',
                 submittedAt: new Date()
             },
             createdAt: new Date()
@@ -91,9 +91,9 @@ function renderDemoUsers() {
             email: 'ama@example.com',
             phone: '0551234567',
             status: 'pending',
-            verification: {
-                ghanaCard: ['https://via.placeholder.com/300x200?text=Ghana+Card+Front', 'https://via.placeholder.com/300x200?text=Ghana+Card+Back'],
-                passportPhoto: 'https://via.placeholder.com/200x200?text=Passport+Photo',
+            ghanaCard: {
+                number: 'GHA-987654321-1',
+                name: 'Ama Serwaa Mensah',
                 submittedAt: new Date()
             },
             createdAt: new Date(Date.now() - 86400000)
@@ -105,9 +105,9 @@ function renderDemoUsers() {
             email: 'kofi@example.com',
             phone: '0201234567',
             status: 'approved',
-            verification: {
-                ghanaCard: ['https://via.placeholder.com/300x200?text=Ghana+Card+Front', 'https://via.placeholder.com/300x200?text=Ghana+Card+Back'],
-                passportPhoto: 'https://via.placeholder.com/200x200?text=Passport+Photo',
+            ghanaCard: {
+                number: 'GHA-456789123-2',
+                name: 'Kofi Owusu',
                 submittedAt: new Date(Date.now() - 172800000),
                 approvedAt: new Date(Date.now() - 86400000)
             },
@@ -150,8 +150,8 @@ function renderUsers(users) {
             'rejected': 'Rejected'
         }[user.status] || user.status;
         
-        const submittedDate = user.verification?.submittedAt 
-            ? formatDate(user.verification.submittedAt.toDate ? user.verification.submittedAt.toDate() : new Date(user.verification.submittedAt))
+        const submittedDate = user.ghanaCard?.submittedAt 
+            ? formatDate(user.ghanaCard.submittedAt.toDate ? user.ghanaCard.submittedAt.toDate() : new Date(user.ghanaCard.submittedAt))
             : 'N/A';
         
         return `
@@ -159,12 +159,13 @@ function renderUsers(users) {
                 <div class="user-card-header">
                     <div class="user-info">
                         <div class="user-avatar">
-                            <img src="${user.verification?.passportPhoto || 'https://via.placeholder.com/60x60?text=User'}" alt="${user.firstName}">
+                            <i class="fas fa-user" style="font-size: 2rem; color: #6c757d;"></i>
                         </div>
                         <div class="user-details">
                             <h3>${user.firstName} ${user.lastName}</h3>
                             <p><i class="fas fa-envelope"></i> ${user.email}</p>
                             <p><i class="fas fa-phone"></i> ${user.phone}</p>
+                            <p><i class="fas fa-id-card"></i> ${user.ghanaCard?.number || 'N/A'}</p>
                         </div>
                     </div>
                     <div class="user-status">
@@ -246,25 +247,20 @@ async function viewUserDetails(userId) {
             </div>
             
             <div class="detail-section">
-                <h3><i class="fas fa-id-card"></i> Ghana Card</h3>
-                <div class="verification-images">
-                    ${user.verification?.ghanaCard ? user.verification.ghanaCard.map((url, i) => `
-                        <div class="verification-image">
-                            <img src="${url}" alt="Ghana Card ${i === 0 ? 'Front' : 'Back'}" onclick="openImageModal('${url}')">
-                            <span>${i === 0 ? 'Front' : 'Back'}</span>
-                        </div>
-                    `).join('') : '<p>No Ghana Card uploaded</p>'}
-                </div>
-            </div>
-            
-            <div class="detail-section">
-                <h3><i class="fas fa-user-circle"></i> Passport Photo</h3>
-                <div class="verification-images">
-                    ${user.verification?.passportPhoto ? `
-                        <div class="verification-image">
-                            <img src="${user.verification.passportPhoto}" alt="Passport Photo" onclick="openImageModal('${user.verification.passportPhoto}')">
-                        </div>
-                    ` : '<p>No passport photo uploaded</p>'}
+                <h3><i class="fas fa-id-card"></i> Ghana Card Information</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Ghana Card Number:</span>
+                        <span class="detail-value">${user.ghanaCard?.number || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Name on Card:</span>
+                        <span class="detail-value">${user.ghanaCard?.name || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Submitted:</span>
+                        <span class="detail-value">${formatDate(user.ghanaCard?.submittedAt?.toDate ? user.ghanaCard.submittedAt.toDate() : new Date(user.ghanaCard?.submittedAt))}</span>
+                    </div>
                 </div>
             </div>
             
@@ -307,10 +303,6 @@ function closeUserModal() {
     document.getElementById('userModal').style.display = 'none';
 }
 
-function openImageModal(url) {
-    window.open(url, '_blank');
-}
-
 // ============================================================================
 // APPROVE USER
 // ============================================================================
@@ -326,7 +318,7 @@ async function approveUser(userId) {
             const user = allUsers.find(u => u.id === userId);
             if (user) {
                 user.status = 'approved';
-                user.verification.approvedAt = new Date();
+                user.ghanaCard.approvedAt = new Date();
                 renderUsers(allUsers);
                 updatePendingCount();
             }
@@ -339,8 +331,8 @@ async function approveUser(userId) {
         
         await firebaseDB.collection('users').doc(userId).update({
             status: 'approved',
-            'verification.approvedAt': firebase.firestore.FieldValue.serverTimestamp(),
-            'verification.approvedBy': adminUser.email
+            'ghanaCard.approvedAt': firebase.firestore.FieldValue.serverTimestamp(),
+            'ghanaCard.approvedBy': adminUser.email
         });
         
         showFlashMessage('User approved successfully!', 'success');
@@ -371,8 +363,8 @@ async function rejectUser(userId) {
             const user = allUsers.find(u => u.id === userId);
             if (user) {
                 user.status = 'rejected';
-                user.verification.rejectedAt = new Date();
-                user.verification.rejectionReason = reason || 'No reason provided';
+                user.ghanaCard.rejectedAt = new Date();
+                user.ghanaCard.rejectionReason = reason || 'No reason provided';
                 renderUsers(allUsers);
                 updatePendingCount();
             }
@@ -385,9 +377,9 @@ async function rejectUser(userId) {
         
         await firebaseDB.collection('users').doc(userId).update({
             status: 'rejected',
-            'verification.rejectedAt': firebase.firestore.FieldValue.serverTimestamp(),
-            'verification.rejectedBy': adminUser.email,
-            'verification.rejectionReason': reason || 'No reason provided'
+            'ghanaCard.rejectedAt': firebase.firestore.FieldValue.serverTimestamp(),
+            'ghanaCard.rejectedBy': adminUser.email,
+            'ghanaCard.rejectionReason': reason || 'No reason provided'
         });
         
         showFlashMessage('User rejected successfully!', 'success');
