@@ -3,6 +3,12 @@
  * Core functionality for the marketplace
  */
 
+// Apply theme immediately (before DOM loads) to prevent flash
+(function() {
+    var theme = localStorage.getItem('sankofa-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+})();
+
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
@@ -11,12 +17,45 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🇬🇭 Sankofa Market Loaded - Give Your Items New Life!');
     
     // Initialize features
+    initTheme();
     initNavbar();
     initSmoothScroll();
     initScrollEffects();
     initFlashMessages();
     updateUserNav();
 });
+
+// ============================================================================
+// THEME TOGGLE (Light/Dark Mode)
+// ============================================================================
+
+function initTheme() {
+    // Apply saved theme immediately
+    const savedTheme = localStorage.getItem('sankofa-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Create and inject toggle button into header actions
+    const headerActions = document.querySelector('.header-actions');
+    if (headerActions) {
+        const toggle = document.createElement('button');
+        toggle.className = 'theme-toggle';
+        toggle.id = 'themeToggle';
+        toggle.title = savedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        toggle.setAttribute('aria-label', 'Toggle dark mode');
+        toggle.innerHTML = '<i class="fas fa-moon"></i><i class="fas fa-sun"></i>';
+        
+        toggle.addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sankofa-theme', next);
+            this.title = next === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        });
+
+        // Insert before the first button/link in header actions
+        headerActions.insertBefore(toggle, headerActions.firstChild);
+    }
+}
 
 // ============================================================================
 // NAVIGATION

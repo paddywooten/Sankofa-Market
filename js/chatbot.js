@@ -618,19 +618,6 @@ class SankofaChatbot {
             }
         ];
     }
-}
-
-// Initialize chatbot when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.chatbot = new SankofaChatbot();
-});
-
-// Make handleQuickReply globally accessible
-window.handleQuickReply = function(text) {
-    if (window.chatbot) {
-        window.chatbot.handleQuickReply(text);
-    }
-};
 
     // =========================================================================
     // CONVERSATION HISTORY
@@ -934,3 +921,18 @@ window.handleQuickReply = function(text) {
         // Save to history
         this.saveToHistory('bot', text, intent);
     }
+
+}
+
+
+// Initialize chatbot when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.chatbot = new SankofaChatbot();
+});
+
+// Make handleQuickReply globally accessible
+window.handleQuickReply = function(text) {
+    if (window.chatbot) {
+        window.chatbot.handleQuickReply(text);
+    }
+};

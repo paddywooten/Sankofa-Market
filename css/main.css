@@ -78,6 +78,181 @@
 }
 
 /* ============================================================================
+   DARK THEME
+   ============================================================================ */
+
+[data-theme="dark"] {
+    --white: #1a1a2e;
+    --light-gray: #16213e;
+    --medium-gray: #2a2a4a;
+    --dark-gray: #a0a0b8;
+    --text-primary: #e8e8f0;
+    --text-secondary: #a0a0b8;
+    --text-light: #7a7a98;
+    --border-color: #2a2a4a;
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-dark: #0f0f23;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .header {
+    background: var(--bg-dark);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .search-input {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .section-card,
+[data-theme="dark"] .auth-card,
+[data-theme="dark"] .listing-card,
+[data-theme="dark"] .wishlist-card,
+[data-theme="dark"] .order-card {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .footer {
+    background: var(--bg-dark);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .category-card {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-outline {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .setting-input {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dashboard-sidebar,
+[data-theme="dark"] .profile-section,
+[data-theme="dark"] .messages-layout,
+[data-theme="dark"] .conversations-list {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .faq-item,
+[data-theme="dark"] .guide-step {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .filter-tab {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .filter-tab.active {
+    background: var(--bg-primary);
+    color: var(--primary-color);
+}
+
+[data-theme="dark"] .data-table th {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .data-table td {
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .chatbot-window {
+    background: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .chatbot-header {
+    background: var(--bg-dark);
+}
+
+[data-theme="dark"] .chatbot-input-area {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .chatbot-input {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: none;
+    border: 2px solid var(--border-color);
+    border-radius: 50px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.theme-toggle .fa-sun {
+    display: none;
+}
+
+.theme-toggle .fa-moon {
+    display: block;
+}
+
+[data-theme="dark"] .theme-toggle .fa-sun {
+    display: block;
+    color: var(--accent-color);
+}
+
+[data-theme="dark"] .theme-toggle .fa-moon {
+    display: none;
+}
+
+/* ============================================================================
    CSS RESET & BASE STYLES
    ============================================================================ */
 
