@@ -1,0 +1,261 @@
+rules_version = '2';
+
+/**
+ * Sankofa Market - Firestore Security Rules
+ * 
+ * These rules control access to your Firestore database.
+ * Deploy with: firebase deploy --only firestore:rules
+ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========================================================================
+    // HELPER FUNCTIONS
+    // ========================================================================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is the owner of the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Check if user is an admin
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Check if user is a participant in conversation
+    function isParticipant(conversationData) {
+      return isAuthenticated() && request.auth.uid in conversationData.participants;
+    }
+    
+    // ========================================================================
+    // USERS COLLECTION
+    // ========================================================================
+    
+    match /users/{userId} {
+      // Anyone authenticated can read user profiles
+      allow read: if isAuthenticated();
+      
+      // Users can create their own profile
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Users can update their own profile, admins can update any
+      allow update: if isOwner(userId) || isAdmin();
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // PRODUCTS COLLECTION
+    // ========================================================================
+    
+    match /products/{productId} {
+      // Anyone can read products (public marketplace)
+      allow read: if true;
+      
+      // Authenticated users can create products (must be the seller)
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.sellerId;
+      
+      // Sellers can update their own products, admins can update any
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.sellerId || isAdmin());
+      
+      // Sellers can delete their own products, admins can delete any
+      allow delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.sellerId || isAdmin());
+    }
+    
+    // ========================================================================
+    // ORDERS COLLECTION
+    // ========================================================================
+    
+    match /orders/{orderId} {
+      // Buyers and sellers can read their own orders, admins can read all
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId || 
+         isAdmin());
+      
+      // Only buyers can create orders
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.buyerId;
+      
+      // Buyers and sellers can update orders, admins can update any
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId || 
+         isAdmin());
+      
+      // Only admins can delete orders
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // MESSAGES COLLECTION
+    // ========================================================================
+    
+    match /messages/{messageId} {
+      // Sender and receiver can read messages, admins can read all
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.senderId || 
+         request.auth.uid == resource.data.receiverId || 
+         isAdmin());
+      
+      // Only authenticated users can send messages (must be the sender)
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.senderId;
+      
+      // Sender and receiver can update messages, admins can update any
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.senderId || 
+         request.auth.uid == resource.data.receiverId || 
+         isAdmin());
+      
+      // Only admins can delete messages
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // CONVERSATIONS COLLECTION
+    // ========================================================================
+    
+    match /conversations/{conversationId} {
+      // Participants can read conversations, admins can read all
+      allow read: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+      
+      // Participants can create conversations
+      allow create: if isAuthenticated() && 
+        request.auth.uid in request.resource.data.participants;
+      
+      // Participants can update conversations, admins can update any
+      allow update: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+      
+      // Only admins can delete conversations
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // REVIEWS COLLECTION
+    // ========================================================================
+    
+    match /reviews/{reviewId} {
+      // Anyone can read reviews (public)
+      allow read: if true;
+      
+      // Only authenticated users can create reviews (must be the reviewer)
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.userId;
+      
+      // Users can update their own reviews, admins can update any
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || isAdmin());
+      
+      // Only admins can delete reviews
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // CATEGORIES COLLECTION
+    // ========================================================================
+    
+    match /categories/{categoryId} {
+      // Anyone can read categories (public)
+      allow read: if true;
+      
+      // Only admins can write to categories
+      allow write: if isAdmin();
+    }
+    
+    // ========================================================================
+    // REPORTS COLLECTION
+    // ========================================================================
+    
+    match /reports/{reportId} {
+      // Only admins can read reports
+      allow read: if isAdmin();
+      
+      // Any authenticated user can create reports
+      allow create: if isAuthenticated();
+      
+      // Only admins can update reports
+      allow update: if isAdmin();
+      
+      // Only admins can delete reports
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // DISPUTES COLLECTION
+    // ========================================================================
+    
+    match /disputes/{disputeId} {
+      // Buyers and sellers can read their own disputes, admins can read all
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.buyerId || 
+         request.auth.uid == resource.data.sellerId || 
+         isAdmin());
+      
+      // Any authenticated user can create disputes
+      allow create: if isAuthenticated();
+      
+      // Only admins can update disputes
+      allow update: if isAdmin();
+      
+      // Only admins can delete disputes
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // NOTIFICATIONS COLLECTION
+    // ========================================================================
+    
+    match /notifications/{notificationId} {
+      // Users can read their own notifications, admins can read all
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || isAdmin());
+      
+      // System can create notifications (via Cloud Functions)
+      allow create: if isAuthenticated();
+      
+      // Users can update their own notifications (mark as read)
+      allow update: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+      
+      // Only admins can delete notifications
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================================================
+    // ANALYTICS COLLECTION (Admin Only)
+    // ========================================================================
+    
+    match /analytics/{document=**} {
+      // Only admins can read and write analytics
+      allow read, write: if isAdmin();
+    }
+    
+    // ========================================================================
+    // SETTINGS COLLECTION (Admin Only)
+    // ========================================================================
+    
+    match /settings/{document=**} {
+      // Anyone can read settings (public config)
+      allow read: if true;
+      
+      // Only admins can write settings
+      allow write: if isAdmin();
+    }
+  }
+}

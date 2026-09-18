@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="profile.html" class="nav-item active">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="orders.html" class="nav-item">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="listings.html" class="nav-item">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="messages.html" class="nav-item">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages">3</span>
+                        </a>
+                        <a href="wishlist.html" class="nav-item">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="../../pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header">
+                        <h1>My Profile</h1>
+                        <p>Manage your account settings and preferences</p>
+                    </div>
+
+                    <!-- Profile Information -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h2>Profile Information</h2>
+                            <button class="btn btn-outline btn-small" id="editProfileBtn">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                        </div>
+
+                        <div class="profile-info">
+                            <div class="profile-avatar">
+                                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&h=150&fit=crop&crop=face&q=75&auto=format" alt="Profile" id="profileAvatar">
+                                <button class="change-avatar-btn" id="changeAvatarBtn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+
+                            <div class="profile-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Full Name:</span>
+                                    <span class="detail-value" id="profileName">Kwame Asante</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Email:</span>
+                                    <span class="detail-value" id="profileEmail">kwame@example.com</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Phone:</span>
+                                    <span class="detail-value" id="profilePhone">024 123 4567</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Location:</span>
+                                    <span class="detail-value" id="profileLocation">Accra, Ghana</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Member Since:</span>
+                                    <span class="detail-value" id="profileMemberSince">January 2024</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Account Status:</span>
+                                    <span class="detail-value">
+                                        <span class="status-badge success">Verified</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Settings -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h2>Account Settings</h2>
+                        </div>
+
+                        <form class="profile-form" id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" value="Kwame" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" value="Asante" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="kwame@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" value="024 123 4567" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="region">Region</label>
+                                    <select id="region" required>
+                                        <option value="greater-accra" selected>Greater Accra</option>
+                                        <option value="ashanti">Ashanti</option>
+                                        <option value="western">Western</option>
+                                        <option value="eastern">Eastern</option>
+                                        <option value="central">Central</option>
+                                        <option value="northern">Northern</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" value="Accra" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio">Bio (Optional)</label>
+                                <textarea id="bio" rows="4" placeholder="Tell us about yourself...">Passionate about technology and gadgets. Love buying and selling on Sankofa Market!</textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Change Password -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h2>Change Password</h2>
+                        </div>
+
+                        <form class="profile-form" id="passwordForm">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmNewPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmNewPassword" required>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-key"></i> Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Notification Preferences -->
+                    <div class="profile-section">
+                        <div class="section-header">
+                            <h2>Notification Preferences</h2>
+                        </div>
+
+                        <form class="profile-form" id="notificationForm">
+                            <div class="notification-options">
+                                <label class="notification-option">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="notification-label">
+                                        <strong>Email Notifications</strong>
+                                        <p>Receive email notifications for orders, messages, and updates</p>
+                                    </span>
+                                </label>
+
+                                <label class="notification-option">
+                                    <input type="checkbox" id="orderNotifications" checked>
+                                    <span class="notification-label">
+                                        <strong>Order Notifications</strong>
+                                        <p>Get notified when you receive new orders or order status updates</p>
+                                    </span>
+                                </label>
+
+                                <label class="notification-option">
+                                    <input type="checkbox" id="messageNotifications" checked>
+                                    <span class="notification-label">
+                                        <strong>Message Notifications</strong>
+                                        <p>Get notified when you receive new messages</p>
+                                    </span>
+                                </label>
+
+                                <label class="notification-option">
+                                    <input type="checkbox" id="marketingEmails">
+                                    <span class="notification-label">
+                                        <strong>Marketing Emails</strong>
+                                        <p>Receive promotional emails and special offers</p>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Preferences
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="profile-section danger-zone">
+                        <div class="section-header">
+                            <h2>Danger Zone</h2>
+                        </div>
+
+                        <div class="danger-actions">
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <h3>Deactivate Account</h3>
+                                    <p>Temporarily deactivate your account. You can reactivate it later.</p>
+                                </div>
+                                <button class="btn btn-outline danger" id="deactivateBtn">
+                                    <i class="fas fa-pause"></i> Deactivate
+                                </button>
+                            </div>
+
+                            <div class="danger-item">
+                                <div class="danger-info">
+                                    <h3>Delete Account</h3>
+                                    <p>Permanently delete your account and all your data. This action cannot be undone.</p>
+                                </div>
+                                <button class="btn btn-danger" id="deleteAccountBtn">
+                                    <i class="fas fa-trash"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/user-profile.js"></script>
+</body>
+</html>
