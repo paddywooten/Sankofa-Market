@@ -8,43 +8,6 @@
 
 ---
 
-<div class="letterhead">
-<div class="letterhead-container">
-<div class="letterhead-left">
-<img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market Ghana" class="letterhead-logo">
-<div class="letterhead-text">
-<h1 class="letterhead-title">Sankofa Market Ghana</h1>
-<p class="letterhead-subtitle">Ghana's Premier Online Marketplace</p>
-<p class="letterhead-tagline">Connecting Buyers and Sellers Across Ghana</p>
-</div>
-</div>
-<div class="letterhead-right">
-<div class="letterhead-contact">
-<div class="letterhead-contact-item">
-<i class="fas fa-globe"></i>
-<a href="https://sankofamarket.com.gh">sankofamarket.com.gh</a>
-</div>
-<div class="letterhead-contact-item">
-<i class="fas fa-envelope"></i>
-<a href="mailto:info@sankofamarket.com.gh">info@sankofamarket.com.gh</a>
-</div>
-<div class="letterhead-contact-item">
-<i class="fas fa-phone"></i>
-<span>+233 XX XXX XXXX</span>
-</div>
-<div class="letterhead-contact-item">
-<i class="fas fa-map-marker-alt"></i>
-<span>Accra, Ghana</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="ghana-accent"></div>
-
----
-
 ## WELCOME TO SANKOFA MARKET GHANA
 
 ### 🇬🇭 Ghana's Trusted Online Marketplace
