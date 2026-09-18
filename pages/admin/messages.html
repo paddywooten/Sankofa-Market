@@ -125,24 +125,30 @@
                     <div class="conversations-list" id="conversationsList">
                         <div class="conversations-header">
                             <h3>Conversations</h3>
-                            <span class="conversations-count">24 conversations</span>
+                            <span class="conversations-count">0 conversations</span>
                         </div>
                         <div class="conversations-container" id="conversationsContainer">
-                            <!-- Conversation 1 -->
-                            
-
-                            <!-- Conversation 2 -->
-                            
-
-                            <!-- Message 2 -->
-                            
-                            </div>
-
-                            <!-- Message 4 -->
-                            
+                            <div style="padding: 3rem 1.5rem; text-align: center; color: #767676;">
+                                <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: #ccc; margin-bottom: 0.75rem;"></i>
+                                <p>No conversations to monitor</p>
+                                <p style="font-size: 0.8rem;">Conversations between buyers and sellers will appear here for monitoring.</p>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="chat-panel">
+                        <div class="chat-header">
+                            <div style="text-align: center; width: 100%; color: #767676;">
+                                <p>Select a conversation to monitor</p>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="adminChatMessages">
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #767676;">
+                                <div style="text-align: center;">
+                                    <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                    <p>No conversation selected</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="chat-input-area">
                             <div class="chat-input-wrapper">
                                 <textarea class="chat-input" id="chatInput" placeholder="Type a message as admin..." rows="1"></textarea>
