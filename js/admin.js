@@ -22,6 +22,7 @@ function initAdminDashboard() {
     initMobileMenu();
     initGlobalSearch();
     initLegalChecklist();
+    initBottomNav();
 }
 
 // ============================================================================
@@ -1292,4 +1293,82 @@ function updateLegalProgress() {
         else if (percent < 70) barEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
         else barEl.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
     }
+}
+
+// ============================================================================
+// BOTTOM NAVIGATION (Mobile App Experience)
+// ============================================================================
+
+function initBottomNav() {
+    var bottomNav = document.getElementById('bottomNav');
+    if (!bottomNav) return;
+
+    var navItems = bottomNav.querySelectorAll('.bottom-nav-item');
+    var sections = document.querySelectorAll('.admin-section');
+    var sidebarNavItems = document.querySelectorAll('.sidebar-nav .nav-item');
+
+    function switchSection(sectionId) {
+        // Hide all sections
+        sections.forEach(function(s) { s.classList.remove('active'); });
+
+        // Show target section
+        var target = document.getElementById('section-' + sectionId);
+        if (target) {
+            target.classList.add('active');
+        }
+
+        // Update bottom nav active state
+        navItems.forEach(function(item) {
+            item.classList.toggle('active', item.dataset.section === sectionId || 
+                (sectionId === 'messages-nav' && item.dataset.section === 'messages-nav'));
+        });
+
+        // Update sidebar active state
+        sidebarNavItems.forEach(function(item) {
+            var itemSection = item.dataset.section || '';
+            item.classList.toggle('active', itemSection === sectionId);
+        });
+
+        // Handle special "messages-nav" -> go to messages page
+        if (sectionId === 'messages-nav') {
+            window.location.href = '/sm-panel/messages';
+            return;
+        }
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Close sidebar if open
+        var sidebar = document.getElementById('adminSidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+        document.body.classList.remove('sidebar-open');
+        document.body.style.top = '';
+    }
+
+    // Bottom nav click handlers
+    navItems.forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchSection(this.dataset.section);
+        });
+    });
+
+    // More menu grid items
+    document.querySelectorAll('.more-menu-item[data-goto]').forEach(function(item) {
+        item.addEventListener('click', function() {
+            switchSection(this.dataset.goto);
+        });
+    });
+
+    // Also hook sidebar nav items on mobile to use bottom nav switching
+    sidebarNavItems.forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 && this.dataset.section) {
+                e.preventDefault();
+                switchSection(this.dataset.section);
+            }
+        });
+    });
 }

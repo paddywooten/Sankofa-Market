@@ -1851,3 +1851,393 @@ body.sidebar-open {
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
     }
 }
+
+/* ============================================================================
+   MOBILE APP EXPERIENCE (Bottom Nav + App-like Layout)
+   ============================================================================ */
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    /* ===== LAYOUT: Full app-like experience ===== */
+    .admin-main {
+        margin-left: 0 !important;
+        padding-bottom: 80px !important;
+    }
+
+    .admin-content {
+        padding: 0.75rem !important;
+    }
+
+    /* Hide the hamburger and topbar on mobile - use app header instead */
+    .admin-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: #191919;
+        padding: 0.75rem 1rem;
+        padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+    }
+
+    .admin-topbar .topbar-search {
+        display: none;
+    }
+
+    .admin-topbar .topbar-actions {
+        gap: 0.5rem;
+    }
+
+    .menu-toggle {
+        font-size: 1.1rem;
+    }
+
+    /* ===== BOTTOM NAVIGATION BAR ===== */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #191919;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        z-index: 200;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        box-shadow: 0 -2px 16px rgba(0,0,0,0.2);
+    }
+
+    .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.25rem;
+        color: #767676;
+        text-decoration: none;
+        font-size: 0.65rem;
+        font-weight: 500;
+        gap: 0.2rem;
+        transition: color 0.2s;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+        border: none;
+        background: none;
+        position: relative;
+    }
+
+    .bottom-nav-item i {
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+    }
+
+    .bottom-nav-item.active {
+        color: #0064d2;
+    }
+
+    .bottom-nav-item.active i {
+        transform: scale(1.1);
+    }
+
+    .bottom-nav-item .nav-badge-dot {
+        position: absolute;
+        top: 6px;
+        right: calc(50% - 16px);
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        border: 2px solid #191919;
+    }
+
+    /* ===== SECTION HEADERS: App-like ===== */
+    .section-header {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding: 0.75rem 0 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .section-header h1 {
+        font-size: 1.25rem !important;
+    }
+
+    .section-header .header-actions {
+        margin-left: auto;
+    }
+
+    /* ===== STATS: Horizontal scrollable cards ===== */
+    .stats-grid {
+        display: flex !important;
+        overflow-x: auto;
+        gap: 0.75rem !important;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        grid-template-columns: unset !important;
+    }
+
+    .stats-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .stat-card {
+        min-width: 160px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        padding: 1rem !important;
+        border-radius: 12px !important;
+    }
+
+    .stat-card .stat-info h3 {
+        font-size: 1.35rem !important;
+    }
+
+    .stat-card .stat-info p {
+        font-size: 0.75rem !important;
+    }
+
+    /* ===== TABLES: Card layout on mobile ===== */
+    .admin-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        font-size: 0.82rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.75rem !important;
+        white-space: nowrap;
+    }
+
+    /* ===== CHARTS: Full width ===== */
+    .charts-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .chart-card {
+        padding: 1rem !important;
+    }
+
+    /* ===== ACTIVITY FEED: Compact ===== */
+    .activity-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .activity-card {
+        padding: 1rem !important;
+    }
+
+    /* ===== CATEGORY GRID: 2 columns ===== */
+    .categories-admin-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .cat-admin-card {
+        padding: 0.85rem !important;
+    }
+
+    .cat-admin-stats {
+        font-size: 0.7rem !important;
+        flex-direction: column;
+        gap: 0.15rem !important;
+    }
+
+    /* ===== ANALYTICS: Stacked ===== */
+    .analytics-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .analytics-card {
+        padding: 1rem !important;
+    }
+
+    .analytics-card .big-number {
+        font-size: 1.5rem !important;
+    }
+
+    /* ===== SETTINGS: Full width ===== */
+    .settings-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .settings-card {
+        padding: 1rem !important;
+    }
+
+    .setting-item {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        align-items: flex-start !important;
+    }
+
+    .toggle-setting {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+
+    /* ===== REPORTS: Card layout ===== */
+    .report-card {
+        padding: 1rem !important;
+        margin-bottom: 0.75rem;
+    }
+
+    .report-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+    }
+
+    .report-actions .btn-small {
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+    }
+
+    /* ===== LEGAL CHECKLIST: Compact ===== */
+    .legal-checklist-item {
+        padding: 0.75rem !important;
+    }
+
+    .legal-item-title {
+        font-size: 0.88rem !important;
+    }
+
+    .legal-item-desc {
+        font-size: 0.78rem !important;
+    }
+
+    .legal-item-meta {
+        gap: 0.4rem !important;
+    }
+
+    .legal-tag {
+        font-size: 0.65rem !important;
+    }
+
+    .legal-summary-cards {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    /* ===== BUTTONS: Touch-friendly ===== */
+    .btn {
+        min-height: 44px;
+        padding: 0.65rem 1rem !important;
+    }
+
+    .btn-small {
+        min-height: 36px;
+        font-size: 0.78rem !important;
+    }
+
+    /* ===== FORM INPUTS: Larger touch targets ===== */
+    .filter-search,
+    .filter-select,
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        min-height: 44px;
+    }
+
+    /* ===== MODALS: Bottom sheet style ===== */
+    .modal-content {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        max-height: 85vh;
+        border-radius: 16px 16px 0 0 !important;
+        margin: 0 !important;
+        overflow-y: auto;
+    }
+
+    /* ===== SIDEBAR: Keep for desktop, hide trigger on mobile ===== */
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* ===== MORE MENU GRID (shown when "More" tab is active) ===== */
+    .more-menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+    }
+
+    .more-menu-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.25rem 0.5rem;
+        background: white;
+        border: 1px solid var(--border-color, #e5e5e5);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--text-primary, #191919);
+        font-size: 0.78rem;
+        font-weight: 500;
+        gap: 0.5rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .more-menu-item:active {
+        transform: scale(0.96);
+        background: #f0f7ff;
+    }
+
+    .more-menu-item i {
+        font-size: 1.5rem;
+        color: var(--primary-color, #0064d2);
+    }
+
+    /* ===== EMPTY STATES: Centered ===== */
+    .empty-state {
+        padding: 2rem 1rem !important;
+    }
+
+    .empty-state i {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* ===== EXTRA SMALL PHONES ===== */
+@media (max-width: 380px) {
+    .stat-card {
+        min-width: 140px;
+    }
+
+    .categories-admin-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .more-menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bottom-nav-item {
+        font-size: 0.6rem;
+    }
+
+    .bottom-nav-item i {
+        font-size: 1.1rem;
+    }
+}
