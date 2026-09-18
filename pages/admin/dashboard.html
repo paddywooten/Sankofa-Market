@@ -26,25 +26,25 @@
             </a>
             <a href="#" class="nav-item" data-section="products">
                 <i class="fas fa-box"></i> <span>Products</span>
-                <span class="nav-badge" id="pendingProducts">5</span>
+                <span class="nav-badge" id="pendingProducts" style="display:none;">0</span>
             </a>
             <a href="#" class="nav-item" data-section="users">
                 <i class="fas fa-users"></i> <span>Users</span>
             </a>
             <a href="#" class="nav-item" data-section="orders">
                 <i class="fas fa-shopping-cart"></i> <span>Orders</span>
-                <span class="nav-badge" id="pendingOrders">3</span>
+                <span class="nav-badge" id="pendingOrders" style="display:none;">0</span>
             </a>
             <a href="messages.html" class="nav-item">
                 <i class="fas fa-comments"></i> <span>Messages</span>
-                <span class="nav-badge" id="unreadMessages">12</span>
+                <span class="nav-badge" id="unreadMessages" style="display:none;">0</span>
             </a>
             <a href="#" class="nav-item" data-section="categories">
                 <i class="fas fa-th-large"></i> <span>Categories</span>
             </a>
             <a href="#" class="nav-item" data-section="reports">
                 <i class="fas fa-flag"></i> <span>Reports</span>
-                <span class="nav-badge danger" id="reportCount">8</span>
+                <span class="nav-badge danger" id="reportCount" style="display:none;">0</span>
             </a>
             <a href="#" class="nav-item" data-section="analytics">
                 <i class="fas fa-chart-line"></i> <span>Analytics</span>
@@ -84,7 +84,7 @@
                     <span class="notif-dot"></span>
                 </button>
                 <div class="topbar-user">
-                    <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Admin" class="topbar-avatar" loading="lazy" decoding="async">
+                    <div class="topbar-avatar" style="width:40px;height:40px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-weight:600;" >A</div>
                     <span>Admin</span>
                 </div>
             </div>
@@ -173,28 +173,28 @@
                         <div class="category-stats">
                             <div class="cat-stat">
                                 <div class="cat-info"><i class="fas fa-mobile-alt" style="color: #0064d2;"></i> Electronics</div>
-                                <div class="cat-bar"><div class="cat-fill" style="width: 85%; background: #0064d2;"></div></div>
-                                <span>35%</span>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 0%; background: #0064d2;"></div></div>
+                                <span>0%</span>
                             </div>
                             <div class="cat-stat">
                                 <div class="cat-info"><i class="fas fa-tshirt" style="color: #e74c3c;"></i> Fashion</div>
-                                <div class="cat-bar"><div class="cat-fill" style="width: 65%; background: #e74c3c;"></div></div>
-                                <span>25%</span>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 0%; background: #e74c3c;"></div></div>
+                                <span>0%</span>
                             </div>
                             <div class="cat-stat">
                                 <div class="cat-info"><i class="fas fa-home" style="color: #86b817;"></i> Home & Garden</div>
-                                <div class="cat-bar"><div class="cat-fill" style="width: 45%; background: #86b817;"></div></div>
-                                <span>18%</span>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 0%; background: #86b817;"></div></div>
+                                <span>0%</span>
                             </div>
                             <div class="cat-stat">
                                 <div class="cat-info"><i class="fas fa-car" style="color: #f5af02;"></i> Vehicles</div>
-                                <div class="cat-bar"><div class="cat-fill" style="width: 30%; background: #f5af02;"></div></div>
-                                <span>12%</span>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 0%; background: #f5af02;"></div></div>
+                                <span>0%</span>
                             </div>
                             <div class="cat-stat">
                                 <div class="cat-info"><i class="fas fa-ellipsis-h" style="color: #767676;"></i> Others</div>
-                                <div class="cat-bar"><div class="cat-fill" style="width: 20%; background: #767676;"></div></div>
-                                <span>10%</span>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 0%; background: #767676;"></div></div>
+                                <span>0%</span>
                             </div>
                         </div>
                     </div>
@@ -206,44 +206,26 @@
                         <h3>Recent Orders</h3>
                         <table class="admin-table">
                             <thead>
-                                
+                                <tr>
+                                    <th>Order</th><th>Buyer</th><th>Seller</th><th>Total</th><th>Status</th><th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 2rem; color: #767676;">
+                                        <i class="fas fa-shopping-bag" style="font-size: 2rem; color: #ccc;"></i>
+                                        <p>No recent orders</p>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="activity-card">
                         <h3>Recent Users</h3>
                         <div class="user-list">
-                            <div class="user-item">
-                                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
-                                <div class="user-details">
-                                    <strong>Kwesi Appiah</strong>
-                                    <span>kwesi@email.com</span>
-                                </div>
-                                <span class="join-date">2h ago</span>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
-                                <div class="user-details">
-                                    <strong>Adwoa Mensah</strong>
-                                    <span>adwoa@email.com</span>
-                                </div>
-                                <span class="join-date">5h ago</span>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
-                                <div class="user-details">
-                                    <strong>Nana Ofori</strong>
-                                    <span>nana@email.com</span>
-                                </div>
-                                <span class="join-date">1d ago</span>
-                            </div>
-                            <div class="user-item">
-                                <img src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
-                                <div class="user-details">
-                                    <strong>Akosua Frimpong</strong>
-                                    <span>akosua@email.com</span>
-                                </div>
-                                <span class="join-date">1d ago</span>
+                            <div style="text-align: center; padding: 2rem; color: #767676;">
+                                <i class="fas fa-users" style="font-size: 2rem; color: #ccc; margin-bottom: 0.5rem;"></i>
+                                <p>No recent users</p>
                             </div>
                         </div>
                     </div>
@@ -281,23 +263,24 @@
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
                         <thead>
-                            
-                            
-                            <tr>
-                                <td><strong>#ORD-2845</strong></td>
-                                <td>Yaw Darkwa</td>
-                                <td>Sankofa Store</td>
-                                <td>—</td>
-                                <td><strong>GHS 12,500</strong></td>
-                                <td><span class="status-pill info">Shipped</span></td>
-                                <td>Sep 17, 2026</td>
-                                <td>
-                                    <div class="table-actions">
-                                        <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
-                                        <button class="action-btn" title="Track"><i class="fas fa-truck"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Buyer</th>
+                                    <th>Seller</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 2rem; color: #767676;">
+                                        <i class="fas fa-shopping-bag" style="font-size: 2rem; color: #ccc;"></i>
+                                        <p>No orders yet</p>
+                                    </td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>
@@ -441,24 +424,20 @@
                     </div>
                     <div class="analytics-card">
                         <h3>Conversion Rate</h3>
-                        <div class="big-number">4.2%</div>
+                        <div class="big-number">0%</div>
                         <span class="stat-change">—</span>
                     </div>
                     <div class="analytics-card">
                         <h3>Average Order Value</h3>
-                        <div class="big-number">GHS 1,250</div>
+                        <div class="big-number">GHS 0</div>
                         <span class="stat-change">—</span>
                     </div>
                     <div class="analytics-card">
                         <h3>Top Locations</h3>
                         <div class="location-list">
-                            <div class="location-item"><span>Accra</span><strong>45%</strong></div>
-                            <div class="location-item"><span>Kumasi</span><strong>25%</strong></div>
-                            <div class="location-item"><span>Tema</span><strong>12%</strong></div>
-                            <div class="location-item"><span>Takoradi</span><strong>8%</strong></div>
-                            <div class="location-item"><span>Tamale</span><strong>5%</strong></div>
-                            <div class="location-item"><span>Others</span><strong>5%</strong></div>
+                            <p style="color: #767676; text-align: center; padding: 1rem; font-size: 0.85rem;">No location data yet</p>
                         </div>
+                    </div>
                     </div>
                     <div class="analytics-card">
                         <h3>Device Breakdown</h3>
@@ -467,25 +446,25 @@
                                 <i class="fas fa-mobile-alt"></i>
                                 <div class="device-info">
                                     <span>Mobile</span>
-                                    <div class="device-bar"><div class="device-fill" style="width: 68%;"></div></div>
+                                    <div class="device-bar"><div class="device-fill" style="width: 0%;"></div></div>
                                 </div>
-                                <strong>68%</strong>
+                                <strong>0%</strong>
                             </div>
                             <div class="device-item">
                                 <i class="fas fa-desktop"></i>
                                 <div class="device-info">
                                     <span>Desktop</span>
-                                    <div class="device-bar"><div class="device-fill" style="width: 25%;"></div></div>
+                                    <div class="device-bar"><div class="device-fill" style="width: 0%;"></div></div>
                                 </div>
-                                <strong>25%</strong>
+                                <strong>0%</strong>
                             </div>
                             <div class="device-item">
                                 <i class="fas fa-tablet-alt"></i>
                                 <div class="device-info">
                                     <span>Tablet</span>
-                                    <div class="device-bar"><div class="device-fill" style="width: 7%;"></div></div>
+                                    <div class="device-bar"><div class="device-fill" style="width: 0%;"></div></div>
                                 </div>
-                                <strong>7%</strong>
+                                <strong>0%</strong>
                             </div>
                         </div>
                     </div>
