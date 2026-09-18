@@ -199,115 +199,27 @@ function renderProducts(containerId, products) {
 // RENDER DEMO PRODUCTS (When Firebase is not configured)
 // ============================================================================
 
-function renderDemoProducts(containerId, type) createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-            isFeatured: true,
-            isSankofaStore: true
-        },
-        {
-            id: 'demo2',
-            title: 'Samsung 55" 4K Smart TV - Crystal UHD',
-            price: 3200,
-            images: ['https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop'],
-            location: { city: 'Kumasi' },
-            createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
-            isFeatured: true,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo3',
-            title: 'Leather Sofa Set - 3 Pieces - Premium',
-            price: 2800,
-            images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop'],
-            location: { city: 'Tema' },
-            createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-            isFeatured: true,
-            isSankofaStore: false
-        },
-        createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
-            isFeatured: true,
-            isSankofaStore: true
-        },
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo6',
-            title: 'Canon EOS R6 - Full Frame + Lens Kit',
-            price: 14500,
-            images: ['https://images.unsplash.com/photo-1606986628253-49e940572d03?w=400&h=300&fit=crop'],
-            location: { city: 'Kumasi' },
-            createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: true
-        },
-        {
-            id: 'demo7',
-            title: 'Solid Wood Dining Table - 6 Chairs',
-            price: 1800,
-            images: ['https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400&h=300&fit=crop'],
-            location: { city: 'Takoradi' },
-            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo8',
-            title: 'PlayStation 5 - 2 Controllers + 5 Games',
-            price: 6500,
-            images: ['https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=300&fit=crop'],
-            location: { city: 'Accra' },
-            createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: true
-        },
-        {
-            id: 'demo9',
-            title: 'Apple Watch Series 8 - GPS + Cellular',
-            price: 2200,
-            images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop'],
-            location: { city: 'Accra' },
-            createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo10',
-            title: 'Premium Designer Jacket - Unisex',
-            price: 350,
-            images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=300&fit=crop'],
-            location: { city: 'Cape Coast' },
-            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo11',
-            title: 'African Print Ankara Dress - Handmade',
-            price: 250,
-            images: ['https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop'],
-            location: { city: 'Kumasi' },
-            createdAt: new Date(Date.now() - 10 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        },
-        {
-            id: 'demo12',
-            title: 'Mountain Bike - 21 Speed - Barely Used',
-            price: 1500,
-            images: ['https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=400&h=300&fit=crop'],
-            location: { city: 'Tamale' },
-            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-            isFeatured: false,
-            isSankofaStore: false
-        }
-    ];
+function renderDemoProducts(containerId, type) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
     
-    const products = type === 'featured' 
-        ? demoProducts.filter(p => p.isFeatured).slice(0, 8)
-        : demoProducts.filter(p => !p.isFeatured).slice(0, 8);
-    
-    renderProducts(containerId, products);
+    if (type === 'featured') {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem;">
+                <i class="fas fa-fire" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3>No featured deals yet</h3>
+                <p style="color: #767676; max-width: 400px; margin: 0.5rem auto;">Featured products will appear here once sellers start listing. Be the first to <a href="publish.html" style="color: var(--primary-color);">list a product!</a></p>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem;">
+                <i class="fas fa-clock" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3>No listings yet</h3>
+                <p style="color: #767676; max-width: 400px; margin: 0.5rem auto;">Recently listed products will appear here. <a href="publish.html" style="color: var(--primary-color);">Start selling</a> and your items will show up!</p>
+            </div>
+        `;
+    }
 }
 
 // ============================================================================

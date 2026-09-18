@@ -369,91 +369,20 @@ function renderProducts(products) {
 // DEMO PRODUCTS (with real Unsplash images)
 // ============================================================================
 
-const DEMO_PRODUCTS = [
-    createdAt: new Date(Date.now() - 2*3600000),
-        isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
-        sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new',
-        deliveryOptions: ['free-delivery', 'pickup']
-    },
-    createdAt: new Date(Date.now() - 5*3600000),
-        isFeatured: true, isVerifiedSeller: true, sellerName: '',
-        sellerPhoto: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'like-new',
-        deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 50
-    },
-    createdAt: new Date(Date.now() - 86400000),
-        isFeatured: false, sellerName: 'Ama Boateng',
-        sellerPhoto: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'home-garden', condition: 'good',
-        deliveryOptions: ['paid-delivery'], deliveryFee: 100
-    },
-    createdAt: new Date(Date.now() - 3*3600000),
-        isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
-        sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new',
-        deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 30
-    },
-    createdAt: new Date(Date.now() - 6*3600000),
-        isFeatured: false, isVerifiedSeller: true, sellerName: 'Kofi Mensah',
-        sellerPhoto: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'like-new',
-        deliveryOptions: ['free-delivery', 'pickup']
-    },
-    createdAt: new Date(Date.now() - 12*3600000),
-        isFeatured: false, isSankofaStore: true, sellerName: 'Sankofa Store',
-        sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'like-new',
-        deliveryOptions: ['free-delivery', 'pickup']
-    },
-    createdAt: new Date(Date.now() - 2*86400000),
-        isFeatured: false, sellerName: 'Yaw Darkwa',
-        sellerPhoto: 'https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'home-garden', condition: 'good',
-        deliveryOptions: ['pickup']
-    },
-    createdAt: new Date(Date.now() - 8*3600000),
-        isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
-        sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new',
-        deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 25
-    },
-    createdAt: new Date(Date.now() - 4*3600000),
-        isFeatured: false, isVerifiedSeller: true, sellerName: 'Efua Adjei',
-        sellerPhoto: 'https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new',
-        deliveryOptions: ['free-delivery', 'pickup']
-    },
-    createdAt: new Date(Date.now() - 86400000),
-        isFeatured: false, sellerName: 'Akosua Frimpong',
-        sellerPhoto: 'https://images.unsplash.com/photo-1524638431109-93d95c968f68?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'new',
-        deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 20
-    },
-    createdAt: new Date(Date.now() - 10*3600000),
-        isFeatured: false, isVerifiedSeller: true, sellerName: 'Abena Osei',
-        sellerPhoto: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'new',
-        deliveryOptions: ['free-delivery', 'pickup']
-    },
-    createdAt: new Date(Date.now() - 3*86400000),
-        isFeatured: false, sellerName: 'Kofi Agyeman',
-        sellerPhoto: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'sports', condition: 'like-new',
-        deliveryOptions: ['pickup']
-    }
-];
+const DEMO_PRODUCTS = [];
 
 function renderDemoProducts(query = '', category = '') {
-    let products = [];
-    
-    if (category) products = products.filter(p => p.category === category);
-    if (query) {
-        const q = query.toLowerCase();
-        products = products.filter(p => p.title.toLowerCase().includes(q));
+    renderProducts([]);
+    const grid = document.getElementById('productsGrid') || document.querySelector('.products-grid');
+    if (grid) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem;">
+                <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3>No products found</h3>
+                <p style="color: #767676; max-width: 400px; margin: 0.5rem auto;">Products from sellers will appear here. Be the first to <a href="publish.html" style="color: var(--primary-color);">list something!</a></p>
+            </div>
+        `;
     }
-    
-    renderProducts(products);
 }
 
 function applyDemoFilters(category, priceMin, priceMax, conditions, location, sellerType, sortBy, deliveryOptions) {
