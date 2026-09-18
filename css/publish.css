@@ -288,8 +288,30 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .publish-main {
+        padding: 1rem 0 3rem;
+    }
+    
+    .publish-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .publish-header p {
+        font-size: 0.9rem;
+    }
+    
     .publish-form {
         padding: 1.25rem;
+        border-radius: var(--radius-md);
+    }
+    
+    .form-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .form-section-title {
+        font-size: 1.05rem;
     }
     
     .form-row {
@@ -297,16 +319,134 @@
         gap: 0;
     }
     
+    .form-row .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
     .form-actions {
         flex-direction: column-reverse;
+        gap: 0.75rem;
     }
     
     .form-actions .btn {
         width: 100%;
         min-width: 100%;
+        padding: 0.85rem;
     }
     
     .condition-options {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .condition-option span {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+        gap: 0.35rem;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .photo-upload-btn i {
+        font-size: 1.5rem;
+    }
+    
+    .photo-upload-btn span {
+        font-size: 0.75rem;
+    }
+    
+    .input-prefix span {
+        padding: 0.75rem 0.65rem;
+        font-size: 0.85rem;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="tel"],
+    .form-group select,
+    .form-group textarea {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+    }
+    
+    .checkbox-label {
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .publish-main {
+        padding: 0.5rem 0 2rem;
+    }
+    
+    .container-sm {
+        padding: 0 0.75rem;
+    }
+    
+    .publish-header {
+        margin-bottom: 1.25rem;
+    }
+    
+    .publish-header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .publish-form {
+        padding: 1rem;
+    }
+    
+    .form-section {
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+    }
+    
+    .photo-upload-btn {
+        gap: 0.25rem;
+    }
+    
+    .photo-upload-btn i {
+        font-size: 1.25rem;
+    }
+    
+    .photo-upload-btn span {
+        font-size: 0.7rem;
+    }
+    
+    .condition-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .condition-option span {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .condition-option span i {
+        font-size: 0.7rem;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    
+    .price-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-actions .btn {
+        font-size: 0.9rem;
     }
 }
