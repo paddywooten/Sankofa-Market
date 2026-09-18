@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delivery - Sankofa Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/confirm-delivery.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="index.html">
+                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-actions">
+                <a href="pages/user/dashboard.html" class="btn btn-outline">
+                    <i class="fas fa-user"></i> My Account
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="confirm-main">
+        <div class="container">
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step completed">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span>Order Placed</span>
+                </div>
+                <div class="step completed">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span>Payment Held</span>
+                </div>
+                <div class="step active">
+                    <div class="step-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <span>Confirm Delivery</span>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <span>Payment Released</span>
+                </div>
+            </div>
+
+            <!-- Confirmation Card -->
+            <div class="confirm-card">
+                <div class="confirm-header">
+                    <h1>Confirm Your Delivery</h1>
+                    <p>Please inspect your item and confirm it matches the listing</p>
+                </div>
+
+                <!-- Auto-Release Timer -->
+                <div class="timer-section" id="timerSection">
+                    <div class="timer-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="timer-content">
+                        <h3>Auto-Release Timer</h3>
+                        <p>If you don't confirm or raise a dispute, payment will be automatically released to the seller in:</p>
+                        <div class="countdown" id="countdown">
+                            <div class="countdown-item">
+                                <span class="countdown-value" id="hours">47</span>
+                                <span class="countdown-label">Hours</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-item">
+                                <span class="countdown-value" id="minutes">59</span>
+                                <span class="countdown-label">Minutes</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-item">
+                                <span class="countdown-value" id="seconds">59</span>
+                                <span class="countdown-label">Seconds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Details -->
+                <div class="order-details">
+                    <h2><i class="fas fa-shopping-bag"></i> Order Details</h2>
+                    <div class="order-info" id="orderInfo">
+                        <!-- Will be populated by JS -->
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading order details...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Comparison -->
+                <div class="comparison-section">
+                    <h2><i class="fas fa-balance-scale"></i> Compare Your Item</h2>
+                    <p class="section-subtitle">Compare what you received with the original listing</p>
+                    
+                    <div class="comparison-grid">
+                        <!-- Original Listing -->
+                        <div class="comparison-card">
+                            <div class="comparison-header">
+                                <i class="fas fa-image"></i>
+                                <span>Original Listing</span>
+                            </div>
+                            <div class="comparison-images" id="originalImages">
+                                <!-- Will be populated by JS -->
+                            </div>
+                            <div class="comparison-details" id="originalDetails">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Received Item -->
+                        <div class="comparison-card received">
+                            <div class="comparison-header">
+                                <i class="fas fa-camera"></i>
+                                <span>What You Received</span>
+                            </div>
+                            <div class="upload-area" id="uploadArea">
+                                <input type="file" id="evidenceUpload" accept="image/*" multiple style="display: none;">
+                                <div class="upload-prompt" onclick="document.getElementById('evidenceUpload').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Upload photos of the item you received</p>
+                                    <span class="upload-hint">Click to upload or drag and drop</span>
+                                    <span class="upload-hint">PNG, JPG up to 10MB (max 5 photos)</span>
+                                </div>
+                                <div class="uploaded-images" id="uploadedImages"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-section">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-large" id="confirmBtn" onclick="confirmDelivery()">
+                            <i class="fas fa-check-circle"></i> Item Matches - Confirm Delivery
+                        </button>
+                        <button class="btn btn-danger btn-large" id="disputeBtn" onclick="raiseDispute()">
+                            <i class="fas fa-exclamation-triangle"></i> Raise Dispute
+                        </button>
+                    </div>
+                    <p class="action-note">
+                        <i class="fas fa-info-circle"></i>
+                        By confirming, you agree the item matches the listing and payment will be released to the seller.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Dispute Modal -->
+    <div class="modal-overlay" id="disputeModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Raise a Dispute</h2>
+                <button class="modal-close" onclick="closeDisputeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="disputeForm" onsubmit="submitDispute(event)">
+                    <div class="form-group">
+                        <label>Reason for Dispute <span class="required">*</span></label>
+                        <select id="disputeReason" class="form-control" required>
+                            <option value="">Select a reason</option>
+                            <option value="item_not_received">Item Not Received</option>
+                            <option value="item_not_as_described">Item Not As Described</option>
+                            <option value="defective_item">Defective/Damaged Item</option>
+                            <option value="wrong_item">Wrong Item Sent</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description <span class="required">*</span></label>
+                        <textarea id="disputeDescription" class="form-control" rows="5" 
+                            placeholder="Please describe the issue in detail..." required></textarea>
+                        <span class="char-count"><span id="charCount">0</span>/500</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Evidence Photos</label>
+                        <p class="form-hint">Photos you uploaded above will be attached to this dispute</p>
+                        <div class="evidence-preview" id="evidencePreview"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeDisputeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-gavel"></i> Submit Dispute
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="config/firebase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/confirm-delivery.js"></script>
+</body>
+</html>
