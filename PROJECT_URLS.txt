@@ -1,0 +1,179 @@
+================================================================================
+SANKOFA MARKET - ALL PROJECT PAGE URLs
+================================================================================
+
+Base URL: https://paddywooten.github.io/Sankofa-Market
+Total Pages: 25
+Generated: September 18, 2026
+
+================================================================================
+MAIN PAGES (6 pages)
+================================================================================
+
+Homepage
+  https://paddywooten.github.io/Sankofa-Market/index.html
+
+Search
+  https://paddywooten.github.io/Sankofa-Market/search.html
+
+Product Detail
+  https://paddywooten.github.io/Sankofa-Market/product-detail.html
+
+Publish
+  https://paddywooten.github.io/Sankofa-Market/publish.html
+
+Payment
+  https://paddywooten.github.io/Sankofa-Market/payment.html
+
+Confirm Delivery
+  https://paddywooten.github.io/Sankofa-Market/confirm-delivery.html
+
+================================================================================
+LEGAL PAGES (10 pages)
+================================================================================
+
+Legal Documents Compilation
+  https://paddywooten.github.io/Sankofa-Market/LEGAL_DOCUMENTS_COMPILATION.html
+
+About Us
+  https://paddywooten.github.io/Sankofa-Market/pages/about.html
+
+Acceptable Use Policy
+  https://paddywooten.github.io/Sankofa-Market/pages/acceptable-use.html
+
+Contact Us
+  https://paddywooten.github.io/Sankofa-Market/pages/contact.html
+
+Cookie Policy
+  https://paddywooten.github.io/Sankofa-Market/pages/cookie-policy.html
+
+Disclaimer
+  https://paddywooten.github.io/Sankofa-Market/pages/disclaimer.html
+
+Privacy Policy
+  https://paddywooten.github.io/Sankofa-Market/pages/privacy.html
+
+Prohibited Items Policy
+  https://paddywooten.github.io/Sankofa-Market/pages/prohibited-items.html
+
+Refund Policy
+  https://paddywooten.github.io/Sankofa-Market/pages/refund-policy.html
+
+Terms of Service
+  https://paddywooten.github.io/Sankofa-Market/pages/terms.html
+
+================================================================================
+ADMIN PAGES (6 pages)
+================================================================================
+
+Admin Login
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/login.html
+
+Admin Dashboard
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/dashboard.html
+
+Analytics
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/analytics.html
+
+Chatbot FAQs
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/chatbot-faqs.html
+
+Disputes
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/disputes.html
+
+User Approvals
+  https://paddywooten.github.io/Sankofa-Market/pages/admin/user-approvals.html
+
+================================================================================
+AUTH PAGES (2 pages)
+================================================================================
+
+User Login
+  https://paddywooten.github.io/Sankofa-Market/pages/auth/login.html
+
+User Registration
+  https://paddywooten.github.io/Sankofa-Market/pages/auth/register.html
+
+================================================================================
+USER PAGES (1 page)
+================================================================================
+
+User Dashboard
+  https://paddywooten.github.io/Sankofa-Market/pages/user/dashboard.html
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Most Important Pages:
+  Homepage: https://paddywooten.github.io/Sankofa-Market/
+  Search: https://paddywooten.github.io/Sankofa-Market/search.html
+  Admin Dashboard: https://paddywooten.github.io/Sankofa-Market/pages/admin/dashboard.html
+  User Login: https://paddywooten.github.io/Sankofa-Market/pages/auth/login.html
+  Terms of Service: https://paddywooten.github.io/Sankofa-Market/pages/terms.html
+  Privacy Policy: https://paddywooten.github.io/Sankofa-Market/pages/privacy.html
+
+Admin Access:
+  Admin Login: https://paddywooten.github.io/Sankofa-Market/pages/admin/login.html
+  Admin Dashboard: https://paddywooten.github.io/Sankofa-Market/pages/admin/dashboard.html
+
+Legal Documents:
+  All Legal Docs: https://paddywooten.github.io/Sankofa-Market/LEGAL_DOCUMENTS_COMPILATION.html
+  Terms: https://paddywooten.github.io/Sankofa-Market/pages/terms.html
+  Privacy: https://paddywooten.github.io/Sankofa-Market/pages/privacy.html
+  Refund Policy: https://paddywooten.github.io/Sankofa-Market/pages/refund-policy.html
+
+================================================================================
+ALL URLs (Plain Text List)
+================================================================================
+
+https://paddywooten.github.io/Sankofa-Market/index.html
+https://paddywooten.github.io/Sankofa-Market/search.html
+https://paddywooten.github.io/Sankofa-Market/product-detail.html
+https://paddywooten.github.io/Sankofa-Market/publish.html
+https://paddywooten.github.io/Sankofa-Market/payment.html
+https://paddywooten.github.io/Sankofa-Market/confirm-delivery.html
+https://paddywooten.github.io/Sankofa-Market/LEGAL_DOCUMENTS_COMPILATION.html
+https://paddywooten.github.io/Sankofa-Market/pages/about.html
+https://paddywooten.github.io/Sankofa-Market/pages/acceptable-use.html
+https://paddywooten.github.io/Sankofa-Market/pages/contact.html
+https://paddywooten.github.io/Sankofa-Market/pages/cookie-policy.html
+https://paddywooten.github.io/Sankofa-Market/pages/disclaimer.html
+https://paddywooten.github.io/Sankofa-Market/pages/privacy.html
+https://paddywooten.github.io/Sankofa-Market/pages/prohibited-items.html
+https://paddywooten.github.io/Sankofa-Market/pages/refund-policy.html
+https://paddywooten.github.io/Sankofa-Market/pages/terms.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/analytics.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/chatbot-faqs.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/dashboard.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/disputes.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/login.html
+https://paddywooten.github.io/Sankofa-Market/pages/admin/user-approvals.html
+https://paddywooten.github.io/Sankofa-Market/pages/auth/login.html
+https://paddywooten.github.io/Sankofa-Market/pages/auth/register.html
+https://paddywooten.github.io/Sankofa-Market/pages/user/dashboard.html
+
+================================================================================
+SUMMARY
+================================================================================
+
+Total Pages: 25
+  Main Pages: 6
+  Legal Pages: 10
+  Admin Pages: 6
+  Auth Pages: 2
+  User Pages: 1
+
+Repository: https://github.com/paddywooten/Sankofa-Market
+GitHub Pages: https://paddywooten.github.io/Sankofa-Market
+Status: All pages deployed and accessible
+
+================================================================================
+Generated: September 18, 2026
+Version: 1.0
+Status: Production Ready
+================================================================================
+
+© 2026 Sankofa Market Ghana. All rights reserved.
+
+Made with ❤️ in Ghana 🇬🇭
