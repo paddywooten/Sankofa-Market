@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initAdminLogin() {
     const form = document.getElementById('adminLoginForm');
-    const loginBtn = document.getElementById('loginBtn');
+    const loginBtn = document.getElementById('adminLoginBtn');
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
