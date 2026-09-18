@@ -2505,3 +2505,67 @@ body.sidebar-collapsed .sidebar-show-btn {
         overflow: hidden !important;
     }
 }
+
+/* ============================================================================
+   MOBILE TOPBAR FIX - Compact topbar, no hidden content
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .admin-topbar {
+        position: sticky !important;
+        top: 0;
+        z-index: 50;
+        background: #191919 !important;
+        padding: 0.5rem 0.75rem !important;
+        padding-top: calc(0.5rem + env(safe-area-inset-top, 0px)) !important;
+        gap: 0.5rem !important;
+        min-height: auto !important;
+    }
+
+    /* Make topbar elements compact */
+    .admin-topbar .menu-toggle {
+        font-size: 1.1rem !important;
+        padding: 0.4rem !important;
+        color: white !important;
+    }
+
+    .admin-topbar .topbar-search {
+        display: none !important;
+    }
+
+    .admin-topbar .topbar-actions {
+        gap: 0.35rem !important;
+        margin-left: auto !important;
+    }
+
+    .admin-topbar .topbar-btn {
+        padding: 0.4rem !important;
+        font-size: 0.9rem !important;
+        color: white !important;
+    }
+
+    .admin-topbar .topbar-user {
+        gap: 0.4rem !important;
+        font-size: 0.82rem !important;
+        color: white !important;
+    }
+
+    .admin-topbar .topbar-avatar {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .admin-topbar .topbar-user span {
+        color: white !important;
+    }
+
+    /* Content padding to prevent hiding behind topbar */
+    .admin-content {
+        padding-top: 0.75rem !important;
+    }
+
+    /* Section headers should have proper spacing */
+    .admin-section {
+        padding-top: 0.25rem;
+    }
+}
