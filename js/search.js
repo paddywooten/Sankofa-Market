@@ -370,109 +370,73 @@ function renderProducts(products) {
 // ============================================================================
 
 const DEMO_PRODUCTS = [
-    {
-        id: 'demo1', title: 'iPhone 14 Pro Max - 256GB - Deep Purple', price: 8500,
-        images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Accra' }, createdAt: new Date(Date.now() - 2*3600000),
+    createdAt: new Date(Date.now() - 2*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'new',
         deliveryOptions: ['free-delivery', 'pickup']
     },
-    {
-        id: 'demo2', title: 'Samsung 55" 4K Smart TV - Crystal UHD', price: 3200,
-        images: ['https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 5*3600000),
-        isFeatured: true, isVerifiedSeller: true, sellerName: 'Kwame Asante',
+    createdAt: new Date(Date.now() - 5*3600000),
+        isFeatured: true, isVerifiedSeller: true, sellerName: '',
         sellerPhoto: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'like-new',
         deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 50
     },
-    {
-        id: 'demo3', title: 'Leather Sofa Set - 3 Pieces - Premium', price: 2800,
-        images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Tema' }, createdAt: new Date(Date.now() - 86400000),
+    createdAt: new Date(Date.now() - 86400000),
         isFeatured: false, sellerName: 'Ama Boateng',
         sellerPhoto: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'home-garden', condition: 'good',
         deliveryOptions: ['paid-delivery'], deliveryFee: 100
     },
-    {
-        id: 'demo4', title: 'MacBook Pro 2023 - M2 Chip - 16GB RAM', price: 12500,
-        images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Accra' }, createdAt: new Date(Date.now() - 3*3600000),
+    createdAt: new Date(Date.now() - 3*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'new',
         deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 30
     },
-    {
-        id: 'demo5', title: 'Nike Air Jordan Retro - Size 42', price: 800,
-        images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Accra' }, createdAt: new Date(Date.now() - 6*3600000),
+    createdAt: new Date(Date.now() - 6*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Kofi Mensah',
         sellerPhoto: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'fashion', condition: 'like-new',
         deliveryOptions: ['free-delivery', 'pickup']
     },
-    {
-        id: 'demo6', title: 'Canon EOS R6 - Full Frame + Lens Kit', price: 14500,
-        images: ['https://images.unsplash.com/photo-1606986628253-49e940572d03?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 12*3600000),
+    createdAt: new Date(Date.now() - 12*3600000),
         isFeatured: false, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'like-new',
         deliveryOptions: ['free-delivery', 'pickup']
     },
-    {
-        id: 'demo7', title: 'Solid Wood Dining Table - 6 Chairs Set', price: 1800,
-        images: ['https://images.unsplash.com/photo-1617806118233-18e1de247200?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Takoradi' }, createdAt: new Date(Date.now() - 2*86400000),
+    createdAt: new Date(Date.now() - 2*86400000),
         isFeatured: false, sellerName: 'Yaw Darkwa',
         sellerPhoto: 'https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'home-garden', condition: 'good',
         deliveryOptions: ['pickup']
     },
-    {
-        id: 'demo8', title: 'PlayStation 5 - 2 Controllers + 5 Games', price: 6500,
-        images: ['https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Accra' }, createdAt: new Date(Date.now() - 8*3600000),
+    createdAt: new Date(Date.now() - 8*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'new',
         deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 25
     },
-    {
-        id: 'demo9', title: 'Apple Watch Series 8 - GPS + Cellular', price: 2200,
-        images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Accra' }, createdAt: new Date(Date.now() - 4*3600000),
+    createdAt: new Date(Date.now() - 4*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Efua Adjei',
         sellerPhoto: 'https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'electronics', condition: 'new',
         deliveryOptions: ['free-delivery', 'pickup']
     },
-    {
-        id: 'demo10', title: 'Premium Designer Jacket - Unisex', price: 350,
-        images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Cape Coast' }, createdAt: new Date(Date.now() - 86400000),
+    createdAt: new Date(Date.now() - 86400000),
         isFeatured: false, sellerName: 'Akosua Frimpong',
         sellerPhoto: 'https://images.unsplash.com/photo-1524638431109-93d95c968f68?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'fashion', condition: 'new',
         deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 20
     },
-    {
-        id: 'demo11', title: 'African Print Ankara Dress - Handmade', price: 250,
-        images: ['https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 10*3600000),
+    createdAt: new Date(Date.now() - 10*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Abena Osei',
         sellerPhoto: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'fashion', condition: 'new',
         deliveryOptions: ['free-delivery', 'pickup']
     },
-    {
-        id: 'demo12', title: 'Mountain Bike - 21 Speed - Barely Used', price: 1500,
-        images: ['https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=350&h=260&fit=crop&q=75&auto=format'],
-        location: { city: 'Tamale' }, createdAt: new Date(Date.now() - 3*86400000),
+    createdAt: new Date(Date.now() - 3*86400000),
         isFeatured: false, sellerName: 'Kofi Agyeman',
         sellerPhoto: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
         category: 'sports', condition: 'like-new',
@@ -481,7 +445,7 @@ const DEMO_PRODUCTS = [
 ];
 
 function renderDemoProducts(query = '', category = '') {
-    let products = [...DEMO_PRODUCTS];
+    let products = [];
     
     if (category) products = products.filter(p => p.category === category);
     if (query) {

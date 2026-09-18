@@ -38,7 +38,7 @@
             <div class="dashboard-header">
                 <div class="user-profile-card">
                     <div class="user-avatar-large">
-                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&h=120&fit=crop&crop=face&q=75&auto=format" 
+                        <img src="" alt="Your photo" 
                              alt="Profile" 
                              id="userAvatar"
                              loading="lazy"
@@ -46,8 +46,8 @@
                         <button class="avatar-edit-btn" title="Change photo"><i class="fas fa-camera"></i></button>
                     </div>
                     <div class="user-info-large">
-                        <h1 id="userName">Welcome back!</h1>
-                        <p id="userEmail">user@example.com</p>
+                        <h1 id="userName">Welcome!</h1>
+                        <p id="userEmail"></p>
                         <div class="user-badges">
                             <span class="user-badge"><i class="fas fa-check-circle"></i> Verified</span>
                             <span class="user-badge"><i class="fas fa-calendar"></i> Member since 2024</span>
@@ -58,22 +58,22 @@
                 <div class="quick-stats">
                     <div class="stat-card">
                         <i class="fas fa-box"></i>
-                        <div class="stat-value" id="totalListings">12</div>
+                        <div class="stat-value" id="totalListings">0</div>
                         <div class="stat-label">Active Listings</div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-eye"></i>
-                        <div class="stat-value" id="totalViews">1,234</div>
+                        <div class="stat-value" id="totalViews">0</div>
                         <div class="stat-label">Total Views</div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-heart"></i>
-                        <div class="stat-value" id="totalFavorites">28</div>
+                        <div class="stat-value" id="totalFavorites">0</div>
                         <div class="stat-label">Favorites</div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-star"></i>
-                        <div class="stat-value" id="userRating">4.8</div>
+                        <div class="stat-value" id="userRating">—</div>
                         <div class="stat-label">Rating</div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                 </button>
                 <button class="tab-btn" data-tab="messages">
                     <i class="fas fa-comments"></i> Messages
-                    <span class="tab-badge" id="messageCount">3</span>
+                    <span class="tab-badge" id="messageCount" style="display:none;">0</span>
                 </button>
                 <button class="tab-btn" data-tab="favorites">
                     <i class="fas fa-heart"></i> Favorites
@@ -156,82 +156,9 @@
                     </div>
 
                     <div class="listings-grid" id="listingsGrid">
-                        <div class="listing-card">
-                            <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=200&h=150&fit=crop&q=75&auto=format" alt="iPhone" class="listing-image" loading="lazy" decoding="async">
-                            <div class="listing-info">
-                                <h3>iPhone 14 Pro Max - 256GB</h3>
-                                <p class="listing-price">GHS 8,500</p>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 234 views</span>
-                                    <span><i class="fas fa-heart"></i> 12 saves</span>
-                                </div>
-                            </div>
-                            <div class="listing-status">
-                                <span class="status-badge status-active">Active</span>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn-icon-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn-icon-sm" title="Promote"><i class="fas fa-bolt"></i></button>
-                                <button class="btn-icon-sm danger" title="Delete"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="listing-card">
-                            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=150&fit=crop&q=75&auto=format" alt="MacBook" class="listing-image" loading="lazy" decoding="async">
-                            <div class="listing-info">
-                                <h3>MacBook Pro 2023 - M2 Chip</h3>
-                                <p class="listing-price">GHS 12,500</p>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 456 views</span>
-                                    <span><i class="fas fa-heart"></i> 28 saves</span>
-                                </div>
-                            </div>
-                            <div class="listing-status">
-                                <span class="status-badge status-active">Active</span>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn-icon-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn-icon-sm" title="Promote"><i class="fas fa-bolt"></i></button>
-                                <button class="btn-icon-sm danger" title="Delete"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="listing-card">
-                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=150&fit=crop&q=75&auto=format" alt="Nike" class="listing-image" loading="lazy" decoding="async">
-                            <div class="listing-info">
-                                <h3>Nike Air Jordan Retro - Size 42</h3>
-                                <p class="listing-price">GHS 800</p>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 89 views</span>
-                                    <span><i class="fas fa-heart"></i> 5 saves</span>
-                                </div>
-                            </div>
-                            <div class="listing-status">
-                                <span class="status-badge status-sold">Sold</span>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn-icon-sm" title="Relist"><i class="fas fa-redo"></i></button>
-                                <button class="btn-icon-sm danger" title="Delete"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="listing-card draft">
-                            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=200&h=150&fit=crop&q=75&auto=format" alt="PS5" class="listing-image" loading="lazy" decoding="async">
-                            <div class="listing-info">
-                                <h3>PlayStation 5 Console + Games</h3>
-                                <p class="listing-price">GHS 6,500</p>
-                                <div class="listing-meta">
-                                    <span class="draft-label"><i class="fas fa-file-alt"></i> Draft — Not published</span>
-                                </div>
-                            </div>
-                            <div class="listing-status">
-                                <span class="status-badge status-draft">Draft</span>
-                            </div>
-                            <div class="listing-actions">
-                                <button class="btn-icon-sm" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn-icon-sm success" title="Publish"><i class="fas fa-rocket"></i></button>
-                                <button class="btn-icon-sm danger" title="Delete"><i class="fas fa-trash"></i></button>
-                            </div>
+                        <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                            <i class="fas fa-box-open" style="font-size: 2rem; color: #ccc;"></i>
+                            <p style="color: #767676; margin-top: 0.5rem;">No listings yet. <a href="../../publish.html">Create your first listing!</a></p>
                         </div>
                     </div>
                 </div>
@@ -243,54 +170,9 @@
                     </div>
                     
                     <div class="messages-list" id="messagesList">
-                        <div class="message-item unread">
-                            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=60&h=60&fit=crop&crop=face&q=75&auto=format" alt="User" class="message-avatar" loading="lazy" decoding="async">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <strong>Ama Boateng</strong>
-                                    <span class="message-time">2h ago</span>
-                                </div>
-                                <p class="message-preview">Hi! Is the iPhone still available? I'm interested in buying it...</p>
-                                <span class="message-product"><i class="fas fa-tag"></i> iPhone 14 Pro Max - 256GB</span>
-                            </div>
-                            <span class="unread-dot"></span>
-                        </div>
-
-                        <div class="message-item unread">
-                            <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=60&h=60&fit=crop&crop=face&q=75&auto=format" alt="User" class="message-avatar" loading="lazy" decoding="async">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <strong>Yaw Darkwa</strong>
-                                    <span class="message-time">5h ago</span>
-                                </div>
-                                <p class="message-preview">Can you do GHS 11,000 for the MacBook? I can pick up today...</p>
-                                <span class="message-product"><i class="fas fa-tag"></i> MacBook Pro 2023</span>
-                            </div>
-                            <span class="unread-dot"></span>
-                        </div>
-
-                        <div class="message-item">
-                            <img src="https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=60&h=60&fit=crop&crop=face&q=75&auto=format" alt="User" class="message-avatar" loading="lazy" decoding="async">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <strong>Efua Adjei</strong>
-                                    <span class="message-time">1d ago</span>
-                                </div>
-                                <p class="message-preview">Thank you! The shoes are perfect. Leaving you a 5-star review.</p>
-                                <span class="message-product"><i class="fas fa-tag"></i> Nike Air Jordan Retro</span>
-                            </div>
-                        </div>
-
-                        <div class="message-item">
-                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60&h=60&fit=crop&crop=face&q=75&auto=format" alt="User" class="message-avatar" loading="lazy" decoding="async">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <strong>Kofi Agyeman</strong>
-                                    <span class="message-time">3d ago</span>
-                                </div>
-                                <p class="message-preview">Great doing business with you. The delivery was smooth!</p>
-                                <span class="message-product"><i class="fas fa-tag"></i> Samsung TV 55"</span>
-                            </div>
+                        <div class="empty-state" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-comments" style="font-size: 2rem; color: #ccc;"></i>
+                            <p style="color: #767676; margin-top: 0.5rem;">No messages yet</p>
                         </div>
                     </div>
                 </div>
@@ -302,46 +184,9 @@
                         <a href="wishlist.html" class="btn btn-outline btn-small"><i class="fas fa-heart"></i> View Full Wishlist</a>
                     </div>
                     <div class="products-grid" id="favoritesGrid">
-                        <div class="product-card">
-                            <div class="product-image-wrapper">
-                                <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=350&h=260&fit=crop&q=75&auto=format" alt="Sofa" class="product-image" loading="lazy" decoding="async">
-                            </div>
-                            <div class="product-content">
-                                <div class="product-title">Leather Sofa Set - 3 Pieces</div>
-                                <div class="product-price">GHS 2,800</div>
-                                <div class="product-meta">
-                                    <span><i class="fas fa-map-marker-alt"></i> Tema</span>
-                                    <span><i class="fas fa-clock"></i> 2d ago</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product-card">
-                            <div class="product-image-wrapper">
-                                <img src="https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=350&h=260&fit=crop&q=75&auto=format" alt="Bike" class="product-image" loading="lazy" decoding="async">
-                            </div>
-                            <div class="product-content">
-                                <div class="product-title">Mountain Bike - 21 Speed</div>
-                                <div class="product-price">GHS 1,500</div>
-                                <div class="product-meta">
-                                    <span><i class="fas fa-map-marker-alt"></i> Tamale</span>
-                                    <span><i class="fas fa-clock"></i> 5d ago</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="product-card">
-                            <div class="product-image-wrapper">
-                                <img src="https://images.unsplash.com/photo-1606986628253-49e940572d03?w=350&h=260&fit=crop&q=75&auto=format" alt="Camera" class="product-image" loading="lazy" decoding="async">
-                            </div>
-                            <div class="product-content">
-                                <div class="product-title">Canon EOS R6 - Full Frame</div>
-                                <div class="product-price">GHS 14,500</div>
-                                <div class="product-meta">
-                                    <span><i class="fas fa-map-marker-alt"></i> Kumasi</span>
-                                    <span><i class="fas fa-clock"></i> 1d ago</span>
-                                </div>
-                            </div>
+                        <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                            <i class="fas fa-heart" style="font-size: 2rem; color: #ccc;"></i>
+                            <p style="color: #767676; margin-top: 0.5rem;">No favorites yet. Browse products and save items you love!</p>
                         </div>
                     </div>
                 </div>
@@ -358,21 +203,21 @@
                             <div class="form-row-2col">
                                 <div class="form-group">
                                     <label for="settingsFirstName">First Name</label>
-                                    <input type="text" id="settingsFirstName" value="Kwame">
+                                    <input type="text" id="settingsFirstName" value="">
                                 </div>
                                 <div class="form-group">
                                     <label for="settingsLastName">Last Name</label>
-                                    <input type="text" id="settingsLastName" value="Asante">
+                                    <input type="text" id="settingsLastName" value="">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="settingsEmail">Email</label>
-                                <input type="email" id="settingsEmail" value="kwame@example.com" disabled>
+                                <input type="email" id="settingsEmail" value="" disabled>
                                 <small>Email cannot be changed</small>
                             </div>
                             <div class="form-group">
                                 <label for="settingsPhone">Phone Number</label>
-                                <input type="tel" id="settingsPhone" value="024 123 4567">
+                                <input type="tel" id="settingsPhone" value="">
                             </div>
                         </div>
 
@@ -392,7 +237,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="settingsCity">City</label>
-                                    <input type="text" id="settingsCity" value="Accra">
+                                    <input type="text" id="settingsCity" value="">
                                 </div>
                             </div>
                         </div>

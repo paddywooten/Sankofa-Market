@@ -72,16 +72,7 @@ function renderDemoUsers() {
     allUsers = [
         {
             id: 'demo1',
-            firstName: 'Kwame',
-            lastName: 'Asante',
-            email: 'kwame@example.com',
-            phone: '0241234567',
-            status: 'pending',
-            ghanaCard: {
-                number: 'GHA-123456789-0',
-                name: 'Kwame Asante',
-                submittedAt: new Date()
-            },
+            firstName: '', lastName: '',
             createdAt: new Date()
         },
         {

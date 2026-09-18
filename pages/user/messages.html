@@ -55,7 +55,7 @@
                         </a>
                         <a href="messages.html" class="nav-item active">
                             <i class="fas fa-comments"></i> <span>Messages</span>
-                            <span class="nav-badge" id="unreadMessages">3</span>
+                            <span class="nav-badge" id="unreadMessages" style="display:none;">0</span>
                         </a>
                         <a href="wishlist.html" class="nav-item">
                             <i class="fas fa-heart"></i> <span>Wishlist</span>
@@ -87,89 +87,20 @@
                                 <input type="text" placeholder="Search conversations..." id="searchConversations">
                             </div>
 
-                            <!-- Conversation 1 -->
-                            <div class="conversation-item active" onclick="openConversation('ama-textiles')">
-                                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ama" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">Ama's Textiles</div>
-                                    <div class="conv-preview">Yes, the Kente cloth is still available!</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">2 min</div>
-                                    <div class="conv-unread">2</div>
-                                </div>
+                            <!-- No conversations -->
+                            <div style="padding: 2rem; text-align: center; color: #767676;">
+                                <i class="fas fa-comments" style="font-size: 2rem; color: #ccc; margin-bottom: 0.5rem;"></i>
+                                <p style="font-size: 0.85rem;">No conversations yet</p>
                             </div>
 
-                            <!-- Conversation 2 -->
-                            <div class="conversation-item" onclick="openConversation('heritage-crafts')">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Kwame" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">Heritage Crafts GH</div>
-                                    <div class="conv-preview">I can deliver to Accra by Friday</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">1 hr</div>
-                                    <div class="conv-unread">1</div>
-                                </div>
-                            </div>
-
-                            <!-- Conversation 3 -->
-                            <div class="conversation-item" onclick="openConversation('techhub')">
-                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Kofi" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">TechHub Accra</div>
-                                    <div class="conv-preview">The phone comes with charger and case</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">3 hrs</div>
-                                </div>
-                            </div>
-
-                            <!-- Conversation 4 -->
-                            <div class="conversation-item" onclick="openConversation('northern-naturals')">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Abena" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">Northern Naturals</div>
-                                    <div class="conv-preview">Thank you for your order! We'll ship tomorrow</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">Yesterday</div>
-                                </div>
-                            </div>
-
-                            <!-- Conversation 5 -->
-                            <div class="conversation-item" onclick="openConversation('tamale-fashion')">
-                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ibrahim" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">Tamale Fashion House</div>
-                                    <div class="conv-preview">What size would you like for the Smock?</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">2 days</div>
-                                </div>
-                            </div>
-
-                            <!-- Conversation 6 -->
-                            <div class="conversation-item" onclick="openConversation('accra-electronics')">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Daniel" class="avatar" loading="lazy" decoding="async">
-                                <div class="conv-details">
-                                    <div class="conv-name">Accra Electronics</div>
-                                    <div class="conv-preview">The headphones are no longer available</div>
-                                </div>
-                                <div class="conv-meta">
-                                    <div class="conv-time">1 week</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chat Window -->
+                        
                         <div class="chat-window" id="chatWindow">
                             <!-- Chat Header -->
                             <div class="chat-header">
                                 <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=face&q=75&auto=format" alt="Ama" class="avatar" id="chatAvatar" loading="lazy" decoding="async">
                                 <div class="chat-user-info">
-                                    <h3 id="chatUserName">Ama's Textiles</h3>
-                                    <p id="chatUserStatus"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Online</p>
+                                    <h3 id="chatUserName">Select a conversation</h3>
+                                    <p id="chatUserStatus">No active chat</p>
                                 </div>
                                 <div style="margin-left: auto; display: flex; gap: 0.5rem;">
                                     <button class="btn btn-outline btn-small" onclick="viewSellerProfile()" title="View Profile">
@@ -181,37 +112,13 @@
                                 </div>
                             </div>
 
-                            <!-- Product Card in Chat -->
-                            <div class="chat-product-card">
-                                <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=100&h=100&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
-                                <div class="product-info">
-                                    <h4>Authentic Kente Cloth - Hand-Woven Premium</h4>
-                                    <p>GH₵ 350.00</p>
-                                </div>
-                                <a href="../../product-detail.html" class="btn btn-outline btn-small" style="margin-left: auto;">View</a>
-                            </div>
-
                             <!-- Messages -->
                             <div class="chat-messages" id="chatMessages">
-                                <div class="message received">
-                                    <div>Hello! Welcome to Ama's Textiles. How can I help you today?</div>
-                                    <div class="message-time">Sep 17, 2:30 PM</div>
-                                </div>
-                                <div class="message sent">
-                                    <div>Hi! I'm interested in the hand-woven Kente cloth. Is it still available?</div>
-                                    <div class="message-time">Sep 17, 2:35 PM</div>
-                                </div>
-                                <div class="message received">
-                                    <div>Yes, the Kente cloth is still available! It's a beautiful piece woven by artisans in Bonwire, the home of Kente.</div>
-                                    <div class="message-time">Sep 18, 9:15 AM</div>
-                                </div>
-                                <div class="message sent">
-                                    <div>That's great! Can you deliver to East Legon in Accra?</div>
-                                    <div class="message-time">Sep 18, 9:20 AM</div>
-                                </div>
-                                <div class="message received">
-                                    <div>Yes, we deliver to East Legon. Delivery takes 1-2 business days and costs GH₵ 20. Would you like to proceed with the order?</div>
-                                    <div class="message-time">Sep 18, 9:25 AM</div>
+                                <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #767676; font-size: 0.9rem;">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-comments" style="font-size: 2.5rem; color: #ccc; margin-bottom: 0.75rem;"></i>
+                                        <p>Select a conversation or start a new one by messaging a seller</p>
+                                    </div>
                                 </div>
                             </div>
 

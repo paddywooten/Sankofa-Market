@@ -81,200 +81,41 @@
                     <!-- Summary Stats -->
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
                         <div class="section-card" style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">12</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">0</div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">Active</div>
                         </div>
                         <div class="section-card" style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-secondary);">3</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-secondary);">0</div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">Drafts</div>
                         </div>
                         <div class="section-card" style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">8</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">0</div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">Sold</div>
                         </div>
                         <div class="section-card" style="text-align: center; padding: 1rem;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--error-color);">1</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--error-color);">0</div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">Flagged</div>
                         </div>
                     </div>
 
                     <!-- Filter Tabs -->
                     <div class="filter-tabs">
-                        <button class="filter-tab active" data-filter="all">All (24)</button>
-                        <button class="filter-tab" data-filter="active">Active (12)</button>
-                        <button class="filter-tab" data-filter="draft">Drafts (3)</button>
-                        <button class="filter-tab" data-filter="sold">Sold (8)</button>
-                        <button class="filter-tab" data-filter="flagged">Flagged (1)</button>
+                        <button class="filter-tab active" data-filter="all">All (0)</button>
+                        <button class="filter-tab" data-filter="active">Active (0)</button>
+                        <button class="filter-tab" data-filter="draft">Drafts (0)</button>
+                        <button class="filter-tab" data-filter="sold">Sold (0)</button>
+                        <button class="filter-tab" data-filter="flagged">Flagged (0)</button>
                     </div>
 
                     <!-- Listings Grid -->
                     <div class="card-grid" id="listingsGrid">
-                        <!-- Listing 1 -->
-                        <div class="listing-card" data-status="active">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=400&h=300&fit=crop&q=75&auto=format" alt="Kente Cloth" loading="lazy" decoding="async">
-                                <span class="status-badge active listing-status">Active</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l001')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l001')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Authentic Kente Cloth - Hand-Woven Premium</h3>
-                                <div class="listing-price">GH₵ 350.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 234 views</span>
-                                    <span><i class="fas fa-heart"></i> 18</span>
-                                    <span><i class="fas fa-comment"></i> 5</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 2 -->
-                        <div class="listing-card" data-status="active">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=300&fit=crop&q=75&auto=format" alt="Beads" loading="lazy" decoding="async">
-                                <span class="status-badge active listing-status">Active</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l002')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l002')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Krobo Glass Beads - Assorted Colors</h3>
-                                <div class="listing-price">GH₵ 85.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 156 views</span>
-                                    <span><i class="fas fa-heart"></i> 12</span>
-                                    <span><i class="fas fa-comment"></i> 3</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 3 -->
-                        <div class="listing-card" data-status="active">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=400&h=300&fit=crop&q=75&auto=format" alt="Shea Butter" loading="lazy" decoding="async">
-                                <span class="status-badge active listing-status">Active</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l003')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l003')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Organic Shea Butter - Unrefined (500g)</h3>
-                                <div class="listing-price">GH₵ 45.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 312 views</span>
-                                    <span><i class="fas fa-heart"></i> 28</span>
-                                    <span><i class="fas fa-comment"></i> 7</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 4 -->
-                        <div class="listing-card" data-status="active">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop&q=75&auto=format" alt="Phone" loading="lazy" decoding="async">
-                                <span class="status-badge active listing-status">Active</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l004')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l004')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Samsung Galaxy A54 - 128GB (Like New)</h3>
-                                <div class="listing-price">GH₵ 2,800.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 489 views</span>
-                                    <span><i class="fas fa-heart"></i> 45</span>
-                                    <span><i class="fas fa-comment"></i> 12</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 5 - Sold -->
-                        <div class="listing-card" data-status="sold">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop&q=75&auto=format" alt="Headphones" loading="lazy" decoding="async">
-                                <span class="status-badge sold listing-status">Sold</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="relistItem('l005')" title="Relist"><i class="fas fa-redo"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Wireless Bluetooth Headphones - Premium</h3>
-                                <div class="listing-price">GH₵ 250.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 567 views</span>
-                                    <span><i class="fas fa-heart"></i> 34</span>
-                                    <span>Sold Sep 10</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 6 - Draft -->
-                        <div class="listing-card" data-status="draft">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop&q=75&auto=format" alt="Camera" loading="lazy" decoding="async">
-                                <span class="status-badge draft listing-status">Draft</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l006')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l006')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Canon EOS M50 Mark II Camera</h3>
-                                <div class="listing-price" style="color: var(--text-secondary);">Price not set</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-edit"></i> Last edited Sep 15</span>
-                                    <button class="btn btn-primary btn-small" onclick="publishDraft('l006')" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Publish</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 7 - Flagged -->
-                        <div class="listing-card" data-status="flagged">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop&q=75&auto=format" alt="Watch" loading="lazy" decoding="async">
-                                <span class="status-badge flagged listing-status"><i class="fas fa-flag"></i> Flagged</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l007')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="appealFlag('l007')" title="Appeal"><i class="fas fa-gavel"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Designer Watch - Limited Edition</h3>
-                                <div class="listing-price">GH₵ 1,200.00</div>
-                                <div class="listing-meta" style="color: var(--error-color);">
-                                    <span><i class="fas fa-exclamation-triangle"></i> Flagged for review</span>
-                                    <button class="btn btn-outline btn-small" onclick="appealFlag('l007')" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; border-color: var(--error-color); color: var(--error-color);">Appeal</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Listing 8 -->
-                        <div class="listing-card" data-status="active">
-                            <div class="listing-card-image">
-                                <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=300&fit=crop&q=75&auto=format" alt="Bag" loading="lazy" decoding="async">
-                                <span class="status-badge active listing-status">Active</span>
-                                <div class="listing-actions-overlay">
-                                    <button onclick="editListing('l008')" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button onclick="deleteListing('l008')" title="Delete"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <div class="listing-card-body">
-                                <h3>Handcrafted Leather Bag - Bolgatanga</h3>
-                                <div class="listing-price">GH₵ 180.00</div>
-                                <div class="listing-meta">
-                                    <span><i class="fas fa-eye"></i> 98 views</span>
-                                    <span><i class="fas fa-heart"></i> 8</span>
-                                    <span><i class="fas fa-comment"></i> 2</span>
-                                </div>
-                            </div>
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No listings yet</h3>
+                            <p>Start selling by creating your first listing. It only takes a few minutes!</p>
+                            <a href="../../publish.html" class="btn btn-primary"><i class="fas fa-plus"></i> Create Your First Listing</a>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </main>

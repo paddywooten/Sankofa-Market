@@ -43,7 +43,7 @@ function loadUserData() {
     
     if (!user && typeof firebaseAuth === 'undefined') {
         // Demo mode - show demo data
-        document.getElementById('userName').textContent = 'Kwame Asante';
+        document.getElementById('userName').textContent = 'Welcome!';
         document.getElementById('userEmail').textContent = 'kwame@example.com';
         return;
     }

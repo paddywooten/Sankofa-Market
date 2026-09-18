@@ -335,35 +335,7 @@ function showLoading() {
 }
 
 function showDemoData() {
-    const demoData = {
-        summary: {
-            totalSearches: 1250,
-            uniqueQueries: 450,
-            avgResultsPerSearch: 8,
-            zeroResultRate: 12
-        },
-        mostSearched: [
-            { query: 'iphone 14', count: 85 },
-            { query: 'samsung tv', count: 72 },
-            { query: 'laptop', count: 68 },
-            { query: 'sofa set', count: 54 },
-            { query: 'nike shoes', count: 48 }
-        ],
-        trending: [
-            { query: 'playstation 5', recentCount: 25, growth: 'new' },
-            { query: 'macbook pro', recentCount: 18, growth: 'up', growthPercent: 45 }
-        ],
-        topCategories: [
-            { category: 'electronics', count: 450 },
-            { category: 'fashion', count: 320 },
-            { category: 'home-garden', count: 180 }
-        ],
-        zeroResults: [
-            { query: 'gaming chair', count: 15 },
-            { query: 'drone', count: 12 }
-        ],
-        hourlyDistribution: new Array(24).fill(0).map(() => Math.floor(Math.random() * 50))
-    };
+    const demoData = {};
 
     renderAnalytics(demoData, { days: 30 });
 }

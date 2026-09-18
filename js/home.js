@@ -199,15 +199,7 @@ function renderProducts(containerId, products) {
 // RENDER DEMO PRODUCTS (When Firebase is not configured)
 // ============================================================================
 
-function renderDemoProducts(containerId, type) {
-    const demoProducts = [
-        {
-            id: 'demo1',
-            title: 'iPhone 14 Pro Max - 256GB - Deep Purple',
-            price: 8500,
-            images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=300&fit=crop'],
-            location: { city: 'Accra' },
-            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+function renderDemoProducts(containerId, type) createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
             isFeatured: true,
             isSankofaStore: true
         },
@@ -231,23 +223,11 @@ function renderDemoProducts(containerId, type) {
             isFeatured: true,
             isSankofaStore: false
         },
-        {
-            id: 'demo4',
-            title: 'MacBook Pro 2023 - M2 Chip - 16GB',
-            price: 12500,
-            images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop'],
-            location: { city: 'Accra' },
-            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
             isFeatured: true,
             isSankofaStore: true
         },
-        {
-            id: 'demo5',
-            title: 'Nike Air Jordan Retro - Size 42',
-            price: 800,
-            images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop'],
-            location: { city: 'Accra' },
-            createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
             isFeatured: false,
             isSankofaStore: false
         },

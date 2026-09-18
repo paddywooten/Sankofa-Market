@@ -77,7 +77,7 @@ function initLogin() {
                     }
                 }
                 
-                localStorage.setItem('sankofa_user', JSON.stringify({ email, name: 'Demo User', status: 'approved' }));
+                // localStorage.setItem('sankofa_user', JSON.stringify({ email, name: 'Demo User', status: 'approved' }));
                 showFlashMessage('Welcome back! (Demo mode)', 'success');
                 redirectAfterAuth();
             }
