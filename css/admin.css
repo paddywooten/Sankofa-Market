@@ -1721,3 +1721,58 @@ body {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     }
 }
+
+/* ============================================================================
+   WARNING BUTTON STYLES (for Flag button)
+   ============================================================================ */
+
+.action-btn.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.action-btn.warning:hover {
+    background: #ffc107;
+    color: #856404;
+    transform: scale(1.1);
+}
+
+.action-btn.warning:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================================
+   ENHANCED USER TABLE STYLES
+   ============================================================================ */
+
+.status-pill.blocked {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pill.suspended {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-pill.flagged {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* ============================================================================
+   RESPONSIVE TABLE ACTIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .table-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .table-actions .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

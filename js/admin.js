@@ -743,3 +743,433 @@ window.adminDashboard = {
     filterProducts,
     saveSettings
 };
+
+// ============================================================================
+// FLAG PRODUCT FUNCTIONALITY
+// ============================================================================
+
+function flagProduct(productId, productName) {
+    const reason = prompt(`Please provide a reason for flagging "${productName}":`);
+    
+    if (reason) {
+        // Simulate API call
+        console.log('Flagging product:', productId, 'Reason:', reason);
+        
+        // Show success message
+        showFlashMessage('Product flagged successfully!', 'success');
+        
+        // Update row status (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${productId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill warning';
+                statusCell.textContent = 'Flagged';
+                
+                // Change action buttons
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="Review"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn success" title="Approve"><i class="fas fa-check"></i></button>
+                    <button class="action-btn danger" title="Remove"><i class="fas fa-ban"></i></button>
+                `;
+                
+                // Re-initialize action buttons
+                initProductActions();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// BLOCK SELLER FUNCTIONALITY
+// ============================================================================
+
+function blockSeller(sellerId, sellerName) {
+    const reason = prompt(`Please provide a reason for blocking "${sellerName}":`);
+    
+    if (reason) {
+        // Simulate API call
+        console.log('Blocking seller:', sellerId, 'Reason:', reason);
+        
+        // Show success message
+        showFlashMessage('Seller blocked successfully!', 'success');
+        
+        // Update row status (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${sellerId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill danger';
+                statusCell.textContent = 'Blocked';
+                
+                // Change action buttons
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn success" title="Unblock"><i class="fas fa-undo"></i></button>
+                    <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                `;
+                
+                // Re-initialize action buttons
+                initUserActions();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// UNBLOCK SELLER FUNCTIONALITY
+// ============================================================================
+
+function unblockSeller(sellerId, sellerName) {
+    if (confirm(`Are you sure you want to unblock "${sellerName}"?`)) {
+        // Simulate API call
+        console.log('Unblocking seller:', sellerId);
+        
+        // Show success message
+        showFlashMessage('Seller unblocked successfully!', 'success');
+        
+        // Update row status (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${sellerId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill success';
+                statusCell.textContent = 'Active';
+                
+                // Change action buttons
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn danger" title="Block"><i class="fas fa-ban"></i></button>
+                    <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                `;
+                
+                // Re-initialize action buttons
+                initUserActions();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// UPDATE INIT PRODUCT ACTIONS TO INCLUDE FLAG
+// ============================================================================
+
+function initProductActions() {
+    // View product buttons
+    document.querySelectorAll('.action-btn[title="View"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            viewProduct(productId);
+        });
+    });
+    
+    // Edit product buttons
+    document.querySelectorAll('.action-btn[title="Edit"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            editProduct(productId);
+        });
+    });
+    
+    // Flag product buttons
+    document.querySelectorAll('.action-btn[title="Flag"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            const productName = row.querySelector('strong').textContent;
+            flagProduct(productId, productName);
+        });
+    });
+    
+    // Delete product buttons
+    document.querySelectorAll('.action-btn[title="Delete"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            const productName = row.querySelector('strong').textContent;
+            deleteProduct(productId, productName);
+        });
+    });
+    
+    // Approve product buttons (for pending products)
+    document.querySelectorAll('.action-btn[title="Approve"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            approveProduct(productId);
+        });
+    });
+    
+    // Reject product buttons (for pending products)
+    document.querySelectorAll('.action-btn[title="Reject"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            rejectProduct(productId);
+        });
+    });
+    
+    // Review product buttons (for flagged products)
+    document.querySelectorAll('.action-btn[title="Review"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            reviewProduct(productId);
+        });
+    });
+    
+    // Remove/Ban product buttons (for flagged products)
+    document.querySelectorAll('.action-btn[title="Remove"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            removeProduct(productId);
+        });
+    });
+}
+
+// ============================================================================
+// UPDATE INIT USER ACTIONS TO INCLUDE BLOCK
+// ============================================================================
+
+function initUserActions() {
+    // View user buttons
+    document.querySelectorAll('.action-btn[title="View"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            viewUser(userId);
+        });
+    });
+    
+    // Edit user buttons
+    document.querySelectorAll('.action-btn[title="Edit"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            editUser(userId);
+        });
+    });
+    
+    // Block user buttons
+    document.querySelectorAll('.action-btn[title="Block"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            const userName = row.querySelector('strong').textContent;
+            blockSeller(userId, userName);
+        });
+    });
+    
+    // Unblock user buttons
+    document.querySelectorAll('.action-btn[title="Unblock"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            const userName = row.querySelector('strong').textContent;
+            unblockSeller(userId, userName);
+        });
+    });
+    
+    // Suspend user buttons
+    document.querySelectorAll('.action-btn[title="Suspend"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            const userName = row.querySelector('strong').textContent;
+            suspendUser(userId, userName);
+        });
+    });
+    
+    // Delete user buttons
+    document.querySelectorAll('.action-btn[title="Delete"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            const userName = row.querySelector('strong').textContent;
+            deleteUser(userId, userName);
+        });
+    });
+    
+    // Approve user buttons (for pending users)
+    document.querySelectorAll('.action-btn[title="Approve"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            approveUser(userId);
+        });
+    });
+    
+    // Reject user buttons (for pending users)
+    document.querySelectorAll('.action-btn[title="Reject"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            rejectUser(userId);
+        });
+    });
+    
+    // Reactivate user buttons (for suspended users)
+    document.querySelectorAll('.action-btn[title="Reactivate"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const userId = row.querySelector('.table-sub').textContent;
+            reactivateUser(userId);
+        });
+    });
+}
+
+// ============================================================================
+// ADDITIONAL USER MANAGEMENT FUNCTIONS
+// ============================================================================
+
+function viewUser(userId) {
+    console.log('Viewing user:', userId);
+    alert('User view feature coming soon!');
+}
+
+function editUser(userId) {
+    console.log('Editing user:', userId);
+    alert('User edit feature coming soon!');
+}
+
+function suspendUser(userId, userName) {
+    const reason = prompt(`Please provide a reason for suspending "${userName}":`);
+    
+    if (reason) {
+        console.log('Suspending user:', userId, 'Reason:', reason);
+        showFlashMessage('User suspended successfully!', 'success');
+        
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${userId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill warning';
+                statusCell.textContent = 'Suspended';
+                
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn success" title="Reactivate"><i class="fas fa-undo"></i></button>
+                    <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                `;
+                
+                initUserActions();
+            }
+        }, 500);
+    }
+}
+
+function deleteUser(userId, userName) {
+    if (confirm(`Are you sure you want to delete "${userName}"? This action cannot be undone.`)) {
+        console.log('Deleting user:', userId);
+        showFlashMessage('User deleted successfully!', 'success');
+        
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${userId}"))`);
+            if (row) {
+                row.remove();
+            }
+        }, 500);
+    }
+}
+
+function approveUser(userId) {
+    if (confirm('Are you sure you want to approve this user?')) {
+        console.log('Approving user:', userId);
+        showFlashMessage('User approved successfully!', 'success');
+        
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${userId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill success';
+                statusCell.textContent = 'Active';
+                
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn danger" title="Block"><i class="fas fa-ban"></i></button>
+                    <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                `;
+                
+                initUserActions();
+            }
+        }, 500);
+    }
+}
+
+function rejectUser(userId) {
+    const reason = prompt('Please provide a reason for rejection:');
+    
+    if (reason) {
+        console.log('Rejecting user:', userId, 'Reason:', reason);
+        showFlashMessage('User rejected successfully!', 'success');
+        
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${userId}"))`);
+            if (row) {
+                row.remove();
+            }
+        }, 500);
+    }
+}
+
+function reactivateUser(userId) {
+    if (confirm('Are you sure you want to reactivate this user?')) {
+        console.log('Reactivating user:', userId);
+        showFlashMessage('User reactivated successfully!', 'success');
+        
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${userId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill success';
+                statusCell.textContent = 'Active';
+                
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn danger" title="Block"><i class="fas fa-ban"></i></button>
+                    <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                `;
+                
+                initUserActions();
+            }
+        }, 500);
+    }
+}
+
+// Update the export to include new functions
+window.adminDashboard = {
+    openAddProductModal,
+    closeAddProductModal,
+    editProduct,
+    deleteProduct,
+    approveProduct,
+    rejectProduct,
+    reviewProduct,
+    removeProduct,
+    viewProduct,
+    exportProducts,
+    filterProducts,
+    saveSettings,
+    flagProduct,
+    blockSeller,
+    unblockSeller,
+    viewUser,
+    editUser,
+    suspendUser,
+    deleteUser,
+    approveUser,
+    rejectUser,
+    reactivateUser
+};
