@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+    <style>
+        .auth-main { background: linear-gradient(135deg, #191919 0%, #2d2d2d 100%); }
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="auth-main">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <a href="../../index.html">
+                        <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="auth-logo">
+                    </a>
+                    <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin Access</span>
+                    <h1>Admin Login</h1>
+                    <p>Authorized personnel only</p>
+                </div>
+
+                <form class="auth-form" id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminEmail">Admin Email</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="adminEmail" name="email" placeholder="admin@sankofamarket.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="adminPassword" name="password" placeholder="Enter admin password" required>
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminCode">Admin Code</label>
+                        <div class="input-icon">
+                            <i class="fas fa-key"></i>
+                            <input type="text" id="adminCode" name="adminCode" placeholder="Enter your admin access code" required>
+                        </div>
+                        <small style="color: var(--text-light); font-size: 0.8rem;">Your 6-digit admin verification code</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large btn-full" id="loginBtn" style="background: #191919; border-color: #191919;">
+                        <i class="fas fa-shield-alt"></i> Access Admin Panel
+                    </button>
+                </form>
+
+                <div class="auth-footer" style="margin-top: 1.5rem;">
+                    <p><a href="../../index.html"><i class="fas fa-arrow-left"></i> Back to marketplace</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/admin.js"></script>
+</body>
+</html>

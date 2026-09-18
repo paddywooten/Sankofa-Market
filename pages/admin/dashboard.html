@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+            <span class="sidebar-badge">Admin</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="overview">
+                <i class="fas fa-chart-pie"></i> <span>Overview</span>
+            </a>
+            <a href="#" class="nav-item" data-section="products">
+                <i class="fas fa-box"></i> <span>Products</span>
+                <span class="nav-badge" id="pendingProducts">5</span>
+            </a>
+            <a href="#" class="nav-item" data-section="users">
+                <i class="fas fa-users"></i> <span>Users</span>
+            </a>
+            <a href="#" class="nav-item" data-section="orders">
+                <i class="fas fa-shopping-cart"></i> <span>Orders</span>
+                <span class="nav-badge" id="pendingOrders">3</span>
+            </a>
+            <a href="#" class="nav-item" data-section="categories">
+                <i class="fas fa-th-large"></i> <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item" data-section="reports">
+                <i class="fas fa-flag"></i> <span>Reports</span>
+                <span class="nav-badge danger" id="reportCount">8</span>
+            </a>
+            <a href="#" class="nav-item" data-section="analytics">
+                <i class="fas fa-chart-line"></i> <span>Analytics</span>
+            </a>
+            <a href="#" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="../../index.html" class="nav-item">
+                <i class="fas fa-globe"></i> <span>View Site</span>
+            </a>
+            <a href="#" class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products, users, orders..." id="globalSearch">
+            </div>
+            <div class="topbar-actions">
+                <button class="topbar-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <div class="topbar-user">
+                    <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Admin" class="topbar-avatar" loading="lazy" decoding="async">
+                    <span>Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Overview Section -->
+            <section class="admin-section active" id="section-overview">
+                <div class="section-header">
+                    <h1>Dashboard Overview</h1>
+                    <div class="header-actions">
+                        <select class="date-filter" id="dateFilter">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="365">This year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e3f2fd; color: #0064d2;">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>GHS 245,800</h3>
+                            <p>Total Revenue</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 12.5% vs last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e8f5e9; color: #86b817;">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>1,234</h3>
+                            <p>Total Orders</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 8.2% vs last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fff3e0; color: #f5af02;">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3,456</h3>
+                            <p>Active Listings</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.1% vs last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fce4ec; color: #e74c3c;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>8,901</h3>
+                            <p>Registered Users</p>
+                            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 15.3% vs last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3>Revenue Trend</h3>
+                        <div class="chart-placeholder">
+                            <canvas id="revenueChart"></canvas>
+                            <div class="chart-bars">
+                                <div class="bar-group"><div class="bar" style="height: 40%;"></div><span>Jan</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 55%;"></div><span>Feb</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 45%;"></div><span>Mar</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 70%;"></div><span>Apr</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 60%;"></div><span>May</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 85%;"></div><span>Jun</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 75%;"></div><span>Jul</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 90%;"></div><span>Aug</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top Categories</h3>
+                        <div class="category-stats">
+                            <div class="cat-stat">
+                                <div class="cat-info"><i class="fas fa-mobile-alt" style="color: #0064d2;"></i> Electronics</div>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 85%; background: #0064d2;"></div></div>
+                                <span>35%</span>
+                            </div>
+                            <div class="cat-stat">
+                                <div class="cat-info"><i class="fas fa-tshirt" style="color: #e74c3c;"></i> Fashion</div>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 65%; background: #e74c3c;"></div></div>
+                                <span>25%</span>
+                            </div>
+                            <div class="cat-stat">
+                                <div class="cat-info"><i class="fas fa-home" style="color: #86b817;"></i> Home & Garden</div>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 45%; background: #86b817;"></div></div>
+                                <span>18%</span>
+                            </div>
+                            <div class="cat-stat">
+                                <div class="cat-info"><i class="fas fa-car" style="color: #f5af02;"></i> Vehicles</div>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 30%; background: #f5af02;"></div></div>
+                                <span>12%</span>
+                            </div>
+                            <div class="cat-stat">
+                                <div class="cat-info"><i class="fas fa-ellipsis-h" style="color: #767676;"></i> Others</div>
+                                <div class="cat-bar"><div class="cat-fill" style="width: 20%; background: #767676;"></div></div>
+                                <span>10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-row">
+                    <div class="activity-card">
+                        <h3>Recent Orders</h3>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>#ORD-2847</strong></td>
+                                    <td>Kofi Mensah</td>
+                                    <td>GHS 8,500</td>
+                                    <td><span class="status-pill success">Completed</span></td>
+                                    <td>Today</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#ORD-2846</strong></td>
+                                    <td>Ama Boateng</td>
+                                    <td>GHS 3,200</td>
+                                    <td><span class="status-pill warning">Pending</span></td>
+                                    <td>Today</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#ORD-2845</strong></td>
+                                    <td>Yaw Darkwa</td>
+                                    <td>GHS 12,500</td>
+                                    <td><span class="status-pill success">Completed</span></td>
+                                    <td>Yesterday</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#ORD-2844</strong></td>
+                                    <td>Efua Adjei</td>
+                                    <td>GHS 2,800</td>
+                                    <td><span class="status-pill info">Shipped</span></td>
+                                    <td>Yesterday</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#ORD-2843</strong></td>
+                                    <td>Kwame Asante</td>
+                                    <td>GHS 6,500</td>
+                                    <td><span class="status-pill danger">Cancelled</span></td>
+                                    <td>2 days ago</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="activity-card">
+                        <h3>Recent Users</h3>
+                        <div class="user-list">
+                            <div class="user-item">
+                                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
+                                <div class="user-details">
+                                    <strong>Kwesi Appiah</strong>
+                                    <span>kwesi@email.com</span>
+                                </div>
+                                <span class="join-date">2h ago</span>
+                            </div>
+                            <div class="user-item">
+                                <img src="https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
+                                <div class="user-details">
+                                    <strong>Adwoa Mensah</strong>
+                                    <span>adwoa@email.com</span>
+                                </div>
+                                <span class="join-date">5h ago</span>
+                            </div>
+                            <div class="user-item">
+                                <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
+                                <div class="user-details">
+                                    <strong>Nana Ofori</strong>
+                                    <span>nana@email.com</span>
+                                </div>
+                                <span class="join-date">1d ago</span>
+                            </div>
+                            <div class="user-item">
+                                <img src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="user-avatar" loading="lazy" decoding="async">
+                                <div class="user-details">
+                                    <strong>Akosua Frimpong</strong>
+                                    <span>akosua@email.com</span>
+                                </div>
+                                <span class="join-date">1d ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section class="admin-section" id="section-products">
+                <div class="section-header">
+                    <h1>Products Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-outline btn-small" id="exportProductsBtn"><i class="fas fa-download"></i> Export</button>
+                        <button class="btn btn-primary btn-small" id="addProductBtn"><i class="fas fa-plus"></i> Add Product</button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select" id="productCategoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home-garden">Home & Garden</option>
+                        <option value="vehicles">Vehicles</option>
+                    </select>
+                    <select class="filter-select" id="productStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending Review</option>
+                        <option value="flagged">Flagged</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                    <input type="text" class="filter-search" placeholder="Search products..." id="productSearch">
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAllProducts"></th>
+                                <th>Product</th>
+                                <th>Seller</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Views</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td><input type="checkbox" class="product-check"></td>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=60&h=45&fit=crop&q=75&auto=format" alt="" class="table-thumb" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>iPhone 14 Pro Max - 256GB</strong>
+                                            <span class="table-sub">ID: PRD-001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Sankofa Store</td>
+                                <td>Electronics</td>
+                                <td><strong>GHS 8,500</strong></td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>1,234</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="product-check"></td>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=60&h=45&fit=crop&q=75&auto=format" alt="" class="table-thumb" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Samsung 55" 4K Smart TV</strong>
+                                            <span class="table-sub">ID: PRD-002</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Kwame Asante</td>
+                                <td>Electronics</td>
+                                <td><strong>GHS 3,200</strong></td>
+                                <td><span class="status-pill warning">Pending</span></td>
+                                <td>456</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn success" title="Approve"><i class="fas fa-check"></i></button>
+                                        <button class="action-btn danger" title="Reject"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="product-check"></td>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=60&h=45&fit=crop&q=75&auto=format" alt="" class="table-thumb" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Leather Sofa Set - 3 Pieces</strong>
+                                            <span class="table-sub">ID: PRD-003</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Ama Boateng</td>
+                                <td>Home & Garden</td>
+                                <td><strong>GHS 2,800</strong></td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>789</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="product-check"></td>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=60&h=45&fit=crop&q=75&auto=format" alt="" class="table-thumb" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Nike Air Jordan Retro - Size 42</strong>
+                                            <span class="table-sub">ID: PRD-004</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Kofi Mensah</td>
+                                <td>Fashion</td>
+                                <td><strong>GHS 800</strong></td>
+                                <td><span class="status-pill danger">Flagged</span></td>
+                                <td>234</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="Review"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn success" title="Approve"><i class="fas fa-check"></i></button>
+                                        <button class="action-btn danger" title="Remove"><i class="fas fa-ban"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="product-check"></td>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=60&h=45&fit=crop&q=75&auto=format" alt="" class="table-thumb" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>MacBook Pro 2023 - M2 Chip</strong>
+                                            <span class="table-sub">ID: PRD-005</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Sankofa Store</td>
+                                <td>Electronics</td>
+                                <td><strong>GHS 12,500</strong></td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>2,345</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <span>Showing 1-5 of 3,456 products</span>
+                    <div class="pagination-btns">
+                        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">...</button>
+                        <button class="page-btn">691</button>
+                        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section class="admin-section" id="section-users">
+                <div class="section-header">
+                    <h1>User Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-outline btn-small" id="exportUsersBtn"><i class="fas fa-download"></i> Export</button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select" id="userRoleFilter">
+                        <option value="">All Roles</option>
+                        <option value="buyer">Buyers</option>
+                        <option value="seller">Sellers</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                    <select class="filter-select" id="userStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="pending">Pending Verification</option>
+                    </select>
+                    <input type="text" class="filter-search" placeholder="Search users..." id="userSearch">
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Listings</th>
+                                <th>Sales</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="table-user">
+                                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="table-avatar" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Kwame Asante</strong>
+                                            <span class="table-sub">kwame@email.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge seller">Seller</span></td>
+                                <td>23</td>
+                                <td>GHS 45,200</td>
+                                <td>Jan 2024</td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="table-user">
+                                        <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="table-avatar" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Ama Boateng</strong>
+                                            <span class="table-sub">ama@email.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge seller">Seller</span></td>
+                                <td>15</td>
+                                <td>GHS 28,900</td>
+                                <td>Feb 2024</td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="table-user">
+                                        <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="table-avatar" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Kofi Mensah</strong>
+                                            <span class="table-sub">kofi@email.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge buyer">Buyer</span></td>
+                                <td>0</td>
+                                <td>GHS 5,600</td>
+                                <td>Mar 2024</td>
+                                <td><span class="status-pill success">Active</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn danger" title="Suspend"><i class="fas fa-ban"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="table-user">
+                                        <img src="https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="table-avatar" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Efua Adjei</strong>
+                                            <span class="table-sub">efua@email.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge buyer">Buyer</span></td>
+                                <td>2</td>
+                                <td>GHS 1,200</td>
+                                <td>Apr 2024</td>
+                                <td><span class="status-pill warning">Pending</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn success" title="Approve"><i class="fas fa-check"></i></button>
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn danger" title="Reject"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="table-user">
+                                        <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="" class="table-avatar" loading="lazy" decoding="async">
+                                        <div>
+                                            <strong>Yaw Darkwa</strong>
+                                            <span class="table-sub">yaw@email.com</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="role-badge seller">Seller</span></td>
+                                <td>8</td>
+                                <td>GHS 15,400</td>
+                                <td>Jan 2024</td>
+                                <td><span class="status-pill danger">Suspended</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn success" title="Reactivate"><i class="fas fa-undo"></i></button>
+                                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-pagination">
+                    <span>Showing 1-5 of 8,901 users</span>
+                    <div class="pagination-btns">
+                        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">...</button>
+                        <button class="page-btn">1781</button>
+                        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section class="admin-section" id="section-orders">
+                <div class="section-header">
+                    <h1>Orders Management</h1>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <input type="date" class="filter-select" id="orderDateFrom" placeholder="From">
+                    <input type="date" class="filter-select" id="orderDateTo" placeholder="To">
+                    <input type="text" class="filter-search" placeholder="Search orders...">
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Buyer</th>
+                                <th>Seller</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#ORD-2847</strong></td>
+                                <td>Kofi Mensah</td>
+                                <td>Sankofa Store</td>
+                                <td>iPhone 14 Pro Max</td>
+                                <td><strong>GHS 8,500</strong></td>
+                                <td><span class="status-pill success">Completed</span></td>
+                                <td>Sep 18, 2026</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Print Invoice"><i class="fas fa-print"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2846</strong></td>
+                                <td>Ama Boateng</td>
+                                <td>Kwame Asante</td>
+                                <td>Samsung 55" Smart TV</td>
+                                <td><strong>GHS 3,200</strong></td>
+                                <td><span class="status-pill warning">Pending</span></td>
+                                <td>Sep 18, 2026</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn success" title="Process"><i class="fas fa-check"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2845</strong></td>
+                                <td>Yaw Darkwa</td>
+                                <td>Sankofa Store</td>
+                                <td>MacBook Pro 2023</td>
+                                <td><strong>GHS 12,500</strong></td>
+                                <td><span class="status-pill info">Shipped</span></td>
+                                <td>Sep 17, 2026</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <button class="action-btn" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn" title="Track"><i class="fas fa-truck"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Categories Section -->
+            <section class="admin-section" id="section-categories">
+                <div class="section-header">
+                    <h1>Category Management</h1>
+                    <button class="btn btn-primary btn-small" id="addCategoryBtn"><i class="fas fa-plus"></i> Add Category</button>
+                </div>
+
+                <div class="categories-admin-grid" id="categoriesAdminGrid">
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #0064d2;"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Electronics</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 1,234 listings</span>
+                            <span><i class="fas fa-eye"></i> 45.2K views</span>
+                        </div>
+                    </div>
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #e74c3c;"><i class="fas fa-tshirt"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Fashion</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 856 listings</span>
+                            <span><i class="fas fa-eye"></i> 32.1K views</span>
+                        </div>
+                    </div>
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #86b817;"><i class="fas fa-home"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Home & Garden</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 623 listings</span>
+                            <span><i class="fas fa-eye"></i> 18.5K views</span>
+                        </div>
+                    </div>
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #f5af02;"><i class="fas fa-car"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Vehicles</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 412 listings</span>
+                            <span><i class="fas fa-eye"></i> 28.7K views</span>
+                        </div>
+                    </div>
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #9b59b6;"><i class="fas fa-concierge-bell"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Services</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 189 listings</span>
+                            <span><i class="fas fa-eye"></i> 8.2K views</span>
+                        </div>
+                    </div>
+                    <div class="cat-admin-card">
+                        <div class="cat-admin-header">
+                            <div class="cat-admin-icon" style="background: #3498db;"><i class="fas fa-futbol"></i></div>
+                            <div class="cat-admin-actions">
+                                <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <h4>Sports</h4>
+                        <div class="cat-admin-stats">
+                            <span><i class="fas fa-box"></i> 142 listings</span>
+                            <span><i class="fas fa-eye"></i> 5.8K views</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section class="admin-section" id="section-reports">
+                <div class="section-header">
+                    <h1>Reports & Flags</h1>
+                </div>
+
+                <div class="reports-list">
+                    <div class="report-card urgent">
+                        <div class="report-header">
+                            <span class="report-type"><i class="fas fa-exclamation-triangle"></i> Fraudulent Listing</span>
+                            <span class="report-time">2 hours ago</span>
+                        </div>
+                        <p><strong>Product:</strong> iPhone 14 Pro Max - Price seems too low, suspected counterfeit</p>
+                        <p><strong>Reported by:</strong> Kofi Mensah | <strong>Seller:</strong> Unknown Seller</p>
+                        <div class="report-actions">
+                            <button class="btn btn-small btn-primary"><i class="fas fa-eye"></i> Investigate</button>
+                            <button class="btn btn-small btn-outline danger"><i class="fas fa-ban"></i> Remove Listing</button>
+                            <button class="btn btn-small btn-outline"><i class="fas fa-times"></i> Dismiss</button>
+                        </div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type"><i class="fas fa-user-slash"></i> Inappropriate Content</span>
+                            <span class="report-time">5 hours ago</span>
+                        </div>
+                        <p><strong>Product:</strong> Used Clothing Bundle - Contains inappropriate images</p>
+                        <p><strong>Reported by:</strong> Ama Boateng | <strong>Seller:</strong> Akosua F.</p>
+                        <div class="report-actions">
+                            <button class="btn btn-small btn-primary"><i class="fas fa-eye"></i> Investigate</button>
+                            <button class="btn btn-small btn-outline danger"><i class="fas fa-ban"></i> Remove Listing</button>
+                            <button class="btn btn-small btn-outline"><i class="fas fa-times"></i> Dismiss</button>
+                        </div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <span class="report-type"><i class="fas fa-comment-slash"></i> Spam Message</span>
+                            <span class="report-time">1 day ago</span>
+                        </div>
+                        <p><strong>User:</strong> Suspicious Account sending bulk promotional messages</p>
+                        <p><strong>Reported by:</strong> Multiple users (5 reports)</p>
+                        <div class="report-actions">
+                            <button class="btn btn-small btn-primary"><i class="fas fa-eye"></i> Review Account</button>
+                            <button class="btn btn-small btn-outline danger"><i class="fas fa-user-slash"></i> Suspend User</button>
+                            <button class="btn btn-small btn-outline"><i class="fas fa-times"></i> Dismiss</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="admin-section" id="section-analytics">
+                <div class="section-header">
+                    <h1>Analytics</h1>
+                    <select class="date-filter">
+                        <option>Last 7 days</option>
+                        <option selected>Last 30 days</option>
+                        <option>Last 90 days</option>
+                    </select>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card wide">
+                        <h3>Daily Active Users</h3>
+                        <div class="mini-chart">
+                            <div class="chart-bars" style="height: 150px;">
+                                <div class="bar-group"><div class="bar" style="height: 35%;"></div><span>Mon</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 50%;"></div><span>Tue</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 65%;"></div><span>Wed</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 45%;"></div><span>Thu</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 80%;"></div><span>Fri</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 95%;"></div><span>Sat</span></div>
+                                <div class="bar-group"><div class="bar" style="height: 70%;"></div><span>Sun</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Conversion Rate</h3>
+                        <div class="big-number">4.2%</div>
+                        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 0.8% from last month</span>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Average Order Value</h3>
+                        <div class="big-number">GHS 1,250</div>
+                        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 12% from last month</span>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Top Locations</h3>
+                        <div class="location-list">
+                            <div class="location-item"><span>Accra</span><strong>45%</strong></div>
+                            <div class="location-item"><span>Kumasi</span><strong>25%</strong></div>
+                            <div class="location-item"><span>Tema</span><strong>12%</strong></div>
+                            <div class="location-item"><span>Takoradi</span><strong>8%</strong></div>
+                            <div class="location-item"><span>Tamale</span><strong>5%</strong></div>
+                            <div class="location-item"><span>Others</span><strong>5%</strong></div>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Device Breakdown</h3>
+                        <div class="device-list">
+                            <div class="device-item">
+                                <i class="fas fa-mobile-alt"></i>
+                                <div class="device-info">
+                                    <span>Mobile</span>
+                                    <div class="device-bar"><div class="device-fill" style="width: 68%;"></div></div>
+                                </div>
+                                <strong>68%</strong>
+                            </div>
+                            <div class="device-item">
+                                <i class="fas fa-desktop"></i>
+                                <div class="device-info">
+                                    <span>Desktop</span>
+                                    <div class="device-bar"><div class="device-fill" style="width: 25%;"></div></div>
+                                </div>
+                                <strong>25%</strong>
+                            </div>
+                            <div class="device-item">
+                                <i class="fas fa-tablet-alt"></i>
+                                <div class="device-info">
+                                    <span>Tablet</span>
+                                    <div class="device-bar"><div class="device-fill" style="width: 7%;"></div></div>
+                                </div>
+                                <strong>7%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="admin-section" id="section-settings">
+                <div class="section-header">
+                    <h1>Site Settings</h1>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-store"></i> Marketplace Settings</h3>
+                        <div class="setting-item">
+                            <label>Marketplace Name</label>
+                            <input type="text" value="Sankofa Market" class="setting-input">
+                        </div>
+                        <div class="setting-item">
+                            <label>Default Currency</label>
+                            <select class="setting-input">
+                                <option selected>GHS - Ghana Cedi</option>
+                                <option>USD - US Dollar</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Commission Rate (%)</label>
+                            <input type="number" value="5" class="setting-input">
+                        </div>
+                        <div class="setting-item">
+                            <label>Max Listing Photos</label>
+                            <input type="number" value="8" class="setting-input">
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Require Email Verification</strong>
+                                <p>New users must verify email before listing</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Auto-approve Listings</strong>
+                                <p>Skip moderation for trusted sellers</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Two-Factor Authentication</strong>
+                                <p>Require 2FA for admin accounts</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Email on New User Registration</strong>
+                                <p>Get notified when users sign up</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Email on New Reports</strong>
+                                <p>Get notified about flagged content</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Daily Summary Report</strong>
+                                <p>Receive daily marketplace summary</p>
+                            </div>
+                            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-credit-card"></i> Payment Settings</h3>
+                        <div class="setting-item">
+                            <label>Payment Gateway</label>
+                            <select class="setting-input">
+                                <option selected>Paystack</option>
+                                <option>Flutterwave</option>
+                                <option>Mobile Money</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Minimum Withdrawal (GHS)</label>
+                            <input type="number" value="50" class="setting-input">
+                        </div>
+                        <div class="setting-item">
+                            <label>Payout Schedule</label>
+                            <select class="setting-input">
+                                <option>Instant</option>
+                                <option selected>Weekly</option>
+                                <option>Bi-weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 2rem;">
+                    <button class="btn btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Save All Settings</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/admin.js"></script>
+</body>
+</html>
