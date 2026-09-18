@@ -21,6 +21,7 @@ function initAdminDashboard() {
     initSettings();
     initMobileMenu();
     initGlobalSearch();
+    initLegalChecklist();
 }
 
 // ============================================================================
@@ -1226,3 +1227,69 @@ window.adminDashboard = {
     rejectUser,
     reactivateUser
 };
+
+// ============================================================================
+// LEGAL COMPLIANCE CHECKLIST
+// ============================================================================
+
+function initLegalChecklist() {
+    // Load saved state from localStorage
+    var saved = {};
+    try {
+        saved = JSON.parse(localStorage.getItem('sankofa_legal_checklist') || '{}');
+    } catch(e) {}
+
+    // Apply saved state
+    document.querySelectorAll('.legal-checklist-item[data-legal-id]').forEach(function(item) {
+        var id = item.dataset.legalId;
+        var check = item.querySelector('.legal-check');
+        if (saved[id]) {
+            check.classList.add('checked');
+        }
+    });
+
+    updateLegalProgress();
+}
+
+function toggleLegal(el) {
+    el.classList.toggle('checked');
+    
+    // Save to localStorage
+    var saved = {};
+    try {
+        saved = JSON.parse(localStorage.getItem('sankofa_legal_checklist') || '{}');
+    } catch(e) {}
+
+    document.querySelectorAll('.legal-checklist-item[data-legal-id]').forEach(function(item) {
+        var id = item.dataset.legalId;
+        var check = item.querySelector('.legal-check');
+        saved[id] = check.classList.contains('checked');
+    });
+
+    localStorage.setItem('sankofa_legal_checklist', JSON.stringify(saved));
+    updateLegalProgress();
+}
+
+function updateLegalProgress() {
+    var total = document.querySelectorAll('.legal-checklist-item[data-legal-id]').length;
+    var completed = document.querySelectorAll('.legal-check.checked').length;
+    var remaining = total - completed;
+    var percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    var completedEl = document.getElementById('legalCompleted');
+    var remainingEl = document.getElementById('legalRemaining');
+    var barEl = document.getElementById('legalProgressBar');
+    var textEl = document.getElementById('legalProgressText');
+
+    if (completedEl) completedEl.textContent = completed;
+    if (remainingEl) remainingEl.textContent = remaining;
+    if (barEl) barEl.style.width = percent + '%';
+    if (textEl) textEl.textContent = percent + '% complete' + (percent === 100 ? ' 🎉' : '');
+
+    // Change bar color based on progress
+    if (barEl) {
+        if (percent < 30) barEl.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        else if (percent < 70) barEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        else barEl.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+    }
+}

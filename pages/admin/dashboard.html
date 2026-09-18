@@ -62,6 +62,9 @@
             <a href="#" class="nav-item" data-section="admins">
                 <i class="fas fa-user-shield"></i> <span>Admin Management</span>
             </a>
+            <a href="#" class="nav-item" data-section="legal">
+                <i class="fas fa-gavel"></i> <span>Legal Compliance</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -697,6 +700,249 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </section>
+
+            <!-- Legal Compliance Section -->
+            <section class="admin-section" id="section-legal">
+                <div class="section-header">
+                    <h1><i class="fas fa-gavel" style="color: var(--primary-color);"></i> Legal Compliance</h1>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Track your legal requirements to operate in Ghana</span>
+                </div>
+
+                <style>
+                    .legal-progress-bar { background: var(--border-color, #e5e5e5); border-radius: 50px; height: 12px; overflow: hidden; margin: 0.75rem 0; }
+                    .legal-progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(135deg, #0064d2, #004a9f); transition: width 0.5s ease; }
+                    .legal-checklist-item { display: flex; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color, #e5e5e5); transition: background 0.15s; }
+                    .legal-checklist-item:last-child { border-bottom: none; }
+                    .legal-checklist-item:hover { background: rgba(0, 100, 210, 0.03); }
+                    .legal-check { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--border-color, #ccc); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; font-size: 0.75rem; color: transparent; margin-top: 2px; }
+                    .legal-check.checked { background: #22c55e; border-color: #22c55e; color: white; }
+                    .legal-check:hover { border-color: #22c55e; }
+                    .legal-item-content { flex: 1; min-width: 0; }
+                    .legal-item-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+                    .legal-item-desc { font-size: 0.82rem; color: var(--text-secondary, #767676); line-height: 1.5; }
+                    .legal-item-meta { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+                    .legal-tag { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 50px; font-weight: 600; white-space: nowrap; }
+                    .legal-tag.required { background: rgba(239,68,68,0.1); color: #dc2626; }
+                    .legal-tag.recommended { background: rgba(245,158,11,0.1); color: #d97706; }
+                    .legal-tag.where { background: rgba(0,100,210,0.08); color: #0064d2; }
+                    .legal-tag.cost { background: rgba(134,184,23,0.1); color: #5a7e10; }
+                    .legal-tag.time { background: rgba(118,118,118,0.1); color: #555; }
+                    .legal-section-title { font-size: 0.78rem; font-weight: 700; color: var(--primary-color, #0064d2); text-transform: uppercase; letter-spacing: 0.05em; padding: 0.75rem 1.25rem 0.5rem; background: var(--bg-secondary, #f7f7f7); }
+                    .legal-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+                    .legal-summary-card { background: white; border: 1px solid var(--border-color, #e5e5e5); border-radius: 12px; padding: 1.25rem; text-align: center; }
+                    .legal-summary-card .number { font-size: 2rem; font-weight: 700; }
+                    .legal-summary-card .label { font-size: 0.8rem; color: var(--text-secondary, #767676); margin-top: 0.25rem; }
+                    @media (max-width: 768px) {
+                        .legal-summary-cards { grid-template-columns: 1fr 1fr; }
+                        .legal-checklist-item { padding: 0.85rem 1rem; }
+                    }
+                </style>
+
+                <!-- Summary Cards -->
+                <div class="legal-summary-cards">
+                    <div class="legal-summary-card">
+                        <div class="number" id="legalCompleted" style="color: #22c55e;">0</div>
+                        <div class="label">Completed</div>
+                    </div>
+                    <div class="legal-summary-card">
+                        <div class="number" id="legalRemaining" style="color: #ef4444;">12</div>
+                        <div class="label">Remaining</div>
+                    </div>
+                    <div class="legal-summary-card" style="grid-column: 1 / -1;">
+                        <div class="label" style="margin-bottom: 0.25rem;">Overall Progress</div>
+                        <div class="legal-progress-bar"><div class="legal-progress-fill" id="legalProgressBar" style="width: 0%;"></div></div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary, #767676);" id="legalProgressText">0% complete</div>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div style="background: white; border: 1px solid var(--border-color, #e5e5e5); border-radius: 12px; overflow: hidden;">
+
+                    <!-- Section: Business Setup -->
+                    <div class="legal-section-title"><i class="fas fa-building"></i> Business Setup</div>
+
+                    <div class="legal-checklist-item" data-legal-id="biz-register">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register Company at Registrar General's Department</div>
+                            <div class="legal-item-desc">Register as a Limited Liability Company or Sole Proprietorship. You'll receive a Certificate of Incorporation and Certificate to Commence Business.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">RGD Office or online</span>
+                                <span class="legal-tag cost">GH₵ 500–1,500</span>
+                                <span class="legal-tag time">1–2 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="biz-tin">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Get Taxpayer Identification Number (TIN)</div>
+                            <div class="legal-item-desc">Register with the Ghana Revenue Authority for your TIN. Required for all tax filings and business transactions.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">GRA / jtb.gov.gh/tin-registration</span>
+                                <span class="legal-tag cost">Free</span>
+                                <span class="legal-tag time">1–3 days</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="biz-bank">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Open Business Bank Account</div>
+                            <div class="legal-item-desc">Open a corporate bank account in your company name. Required for receiving payments, Paystack settlement, and tax payments.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">Any commercial bank</span>
+                                <span class="legal-tag cost">Varies</span>
+                                <span class="legal-tag time">1 week</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Data & Privacy -->
+                    <div class="legal-section-title"><i class="fas fa-shield-alt"></i> Data Protection & Privacy</div>
+
+                    <div class="legal-checklist-item" data-legal-id="data-dpc">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register with Data Protection Commission</div>
+                            <div class="legal-item-desc">Since you collect user data (names, emails, phone numbers, Ghana Card numbers), you must register as a Data Controller. Annual renewal required. Penalty: up to GH₵ 60,000 fine.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">dataprotection.org.gh</span>
+                                <span class="legal-tag cost">GH₵ 500–2,000/year</span>
+                                <span class="legal-tag time">1–2 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="data-supervisor">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Appoint a Data Protection Supervisor</div>
+                            <div class="legal-item-desc">Designate someone responsible for ensuring data protection compliance. Can be yourself as the business owner.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag time">Same day</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Payments -->
+                    <div class="legal-section-title"><i class="fas fa-credit-card"></i> Payment Processing</div>
+
+                    <div class="legal-checklist-item" data-legal-id="pay-paystack">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Set Up Paystack Business Account</div>
+                            <div class="legal-item-desc">Complete business verification on Paystack (not personal). Requires company registration docs, Ghana Card, and business bank account. Enables card payments.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">paystack.com</span>
+                                <span class="legal-tag cost">Free (commission per txn)</span>
+                                <span class="legal-tag time">1 week</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="pay-momo">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register Mobile Money Merchant Account</div>
+                            <div class="legal-item-desc">Register as a merchant with MTN MoMo, Vodafone Cash, and/or AirtelTigo Money to accept mobile money payments from customers.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag recommended">Recommended</span>
+                                <span class="legal-tag where">MTN / Vodafone / AirtelTigo</span>
+                                <span class="legal-tag cost">Varies</span>
+                                <span class="legal-tag time">1–2 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: E-Commerce Specific -->
+                    <div class="legal-section-title"><i class="fas fa-shopping-cart"></i> E-Commerce Compliance</div>
+
+                    <div class="legal-checklist-item" data-legal-id="ecom-pcsrc">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register with PCSRC (Postal & Courier Regulatory Commission)</div>
+                            <div class="legal-item-desc">Government directive requires all e-commerce platforms and their delivery drivers to register. Ensures accountability and prevents delivery fraud.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required (if delivering)</span>
+                                <span class="legal-tag where">PCSRC office</span>
+                                <span class="legal-tag cost">Varies</span>
+                                <span class="legal-tag time">2–4 weeks</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="ecom-act772">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Electronic Transactions Act (Act 772) Compliance</div>
+                            <div class="legal-item-desc">Ensure your platform provides: clear seller info, accurate pricing, refund policy, terms of service, privacy policy, dispute resolution, and keeps electronic records. <strong>Most of these are already on your website ✅</strong></div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">Your website</span>
+                                <span class="legal-tag time">Already done ✅</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Tax -->
+                    <div class="legal-section-title"><i class="fas fa-file-invoice-dollar"></i> Tax Obligations</div>
+
+                    <div class="legal-checklist-item" data-legal-id="tax-corporate">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register for Corporate Income Tax</div>
+                            <div class="legal-item-desc">25% tax on net profits. File annual returns with GRA. Keep proper financial records of all transactions, commissions, and expenses.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag required">Required</span>
+                                <span class="legal-tag where">GRA office</span>
+                                <span class="legal-tag cost">25% of profits</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legal-checklist-item" data-legal-id="tax-vat">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Register for VAT (if turnover exceeds GH₵ 250,000/year)</div>
+                            <div class="legal-item-desc">15% VAT on services. Required once annual revenue exceeds the threshold. File monthly VAT returns.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag recommended">When you grow</span>
+                                <span class="legal-tag where">GRA office</span>
+                                <span class="legal-tag cost">15% on services</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Insurance -->
+                    <div class="legal-section-title"><i class="fas fa-umbrella"></i> Recommended Protection</div>
+
+                    <div class="legal-checklist-item" data-legal-id="ins-escrow">
+                        <div class="legal-check" onclick="toggleLegal(this)">✓</div>
+                        <div class="legal-item-content">
+                            <div class="legal-item-title">Implement Escrow Payment System</div>
+                            <div class="legal-item-desc">Hold buyer payments until delivery is confirmed. Protects both buyers and sellers. Builds trust and reduces fraud disputes.</div>
+                            <div class="legal-item-meta">
+                                <span class="legal-tag recommended">Recommended</span>
+                                <span class="legal-tag where">Your platform</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1.25rem; background: rgba(0,100,210,0.05); border: 1px solid rgba(0,100,210,0.15); border-radius: 12px; font-size: 0.85rem; color: var(--text-secondary, #555); line-height: 1.6;">
+                    <strong style="color: var(--primary-color, #0064d2);"><i class="fas fa-info-circle"></i> Note:</strong>
+                    This checklist is based on Ghana's Electronic Transactions Act 2008 (Act 772), Companies Act 2019 (Act 992), Data Protection Act 2012 (Act 843), and Payment Systems & Services Act 2019 (Act 987). Requirements may change — consult a lawyer for up-to-date legal advice. Your progress is saved automatically.
                 </div>
             </section>
         </div>
