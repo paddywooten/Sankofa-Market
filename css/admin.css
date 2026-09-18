@@ -2326,3 +2326,182 @@ body.sidebar-collapsed .sidebar-show-btn {
         margin-left: 0;
     }
 }
+
+/* ============================================================================
+   MOBILE OVERFLOW FIX - Prevent horizontal scroll
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+    }
+
+    .admin-main {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+    }
+
+    .admin-content {
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .admin-topbar {
+        max-width: 100vw !important;
+        overflow: hidden !important;
+    }
+
+    .admin-topbar .topbar-search {
+        display: none !important;
+    }
+
+    /* Force all sections to respect width */
+    .admin-section {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Tables must scroll horizontally within bounds */
+    .admin-table-wrapper {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        min-width: 500px;
+    }
+
+    /* Stats grid horizontal scroll */
+    .stats-grid {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+
+    /* Charts must fit */
+    .chart-card {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .charts-row {
+        max-width: 100% !important;
+    }
+
+    /* Category grid */
+    .categories-admin-grid {
+        max-width: 100% !important;
+    }
+
+    /* Settings */
+    .settings-grid {
+        max-width: 100% !important;
+    }
+
+    .settings-card {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* Reports */
+    .report-card {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Legal checklist */
+    .legal-checklist-item {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    .legal-summary-cards {
+        max-width: 100% !important;
+    }
+
+    /* More menu */
+    .more-menu-grid {
+        max-width: 100% !important;
+    }
+
+    /* Analytics */
+    .analytics-grid {
+        max-width: 100% !important;
+    }
+
+    .analytics-card {
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Location list in analytics */
+    .location-list {
+        max-width: 100% !important;
+    }
+
+    /* Device list */
+    .device-list {
+        max-width: 100% !important;
+    }
+
+    /* Prevent any child from breaking out */
+    .admin-section > * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Images */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Section header actions */
+    .section-header {
+        flex-wrap: wrap !important;
+    }
+
+    .header-actions {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .header-actions .btn {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+        flex-wrap: wrap !important;
+        max-width: 100% !important;
+    }
+
+    .filter-bar > * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Activity cards */
+    .activity-row {
+        max-width: 100% !important;
+    }
+
+    .activity-card {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+}
