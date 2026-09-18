@@ -101,17 +101,8 @@ function initAdminLogin() {
                 // ===== DEMO MODE (no Firebase) =====
                 await new Promise(resolve => setTimeout(resolve, 1500));
 
-                // Demo credentials
-                if (email === 'admin@sankofamarket.com' && password === 'Admin@2026' && adminCode === '808080') {
-                    sessionStorage.setItem('sankofa_admin', 'true');
-                    sessionStorage.setItem('sankofa_admin_uid', 'demo-admin');
-                    showAdminFlash('Welcome! (Demo mode)', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1000);
-                } else {
-                    showAdminFlash('Invalid credentials. Try: admin@sankofamarket.com / Admin@2026 / 808080', 'error');
-                }
+                // Demo mode fallback when Firebase is not configured
+                showAdminFlash('Firebase is not configured. Admin login requires an active Firebase connection.', 'error');
             }
 
         } catch (error) {

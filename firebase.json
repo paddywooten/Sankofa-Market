@@ -7,6 +7,8 @@
       "**/node_modules/**",
       "functions/**",
       "FIREBASE_SETUP.md",
+      "FIREBASE_SETUP_GUIDE.html",
+      "LEGAL_DOCUMENTS_COMPILATION.html",
       "PROJECT_URLS.*",
       "README.md",
       ".git/**",
