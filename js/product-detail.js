@@ -228,3 +228,142 @@ function loadSimilarProducts() {
         </a>
     `).join('');
 }
+
+// =========================================================================
+// E-COMMERCE BUTTONS FOR SANKOFA STORE
+// =========================================================================
+
+function updateProductActions(product) {
+    const actionsContainer = document.getElementById('productActions');
+    if (!actionsContainer) return;
+
+    const isSankofaStore = product.isSankofaStore === true;
+
+    if (isSankofaStore && typeof cart !== 'undefined' && typeof wishlist !== 'undefined') {
+        // Sankofa Store - Show e-commerce buttons
+        const isInWishlist = wishlist.isInWishlist(product.id);
+        
+        actionsContainer.innerHTML = `
+            <button class="add-to-cart-btn" onclick="addToCartFromDetail()">
+                <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+            <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" onclick="toggleWishlistFromDetail()" id="wishlistBtn">
+                <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                ${isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+            </button>
+            <button class="btn btn-icon" id="shareBtn" title="Share" onclick="shareProduct()">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        `;
+    } else {
+        // Regular seller - Show contact buttons
+        actionsContainer.innerHTML = `
+            <button class="btn btn-primary btn-large" id="contactSellerBtn" onclick="contactSeller()">
+                <i class="fas fa-comment"></i> Contact Seller
+            </button>
+            <button class="btn btn-outline btn-large" id="callSellerBtn" onclick="callSeller()">
+                <i class="fas fa-phone"></i> Call
+            </button>
+            <button class="btn btn-icon" id="favoriteBtn" title="Add to Favorites" onclick="toggleFavorite()">
+                <i class="far fa-heart"></i>
+            </button>
+            <button class="btn btn-icon" id="shareBtn" title="Share" onclick="shareProduct()">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        `;
+    }
+}
+
+function addToCartFromDetail() {
+    if (typeof currentProduct === 'undefined' || !currentProduct) {
+        showFlashMessage('Product not loaded', 'error');
+        return;
+    }
+
+    if (typeof cart !== 'undefined') {
+        cart.addItem(currentProduct, 1);
+    }
+}
+
+function toggleWishlistFromDetail() {
+    if (typeof currentProduct === 'undefined' || !currentProduct) {
+        showFlashMessage('Product not loaded', 'error');
+        return;
+    }
+
+    if (typeof wishlist !== 'undefined') {
+        const isInWishlist = wishlist.isInWishlist(currentProduct.id);
+        
+        if (isInWishlist) {
+            wishlist.removeItem(currentProduct.id);
+        } else {
+            wishlist.addItem(currentProduct);
+        }
+
+        // Update button state
+        const btn = document.getElementById('wishlistBtn');
+        if (btn) {
+            const nowInWishlist = !isInWishlist;
+            btn.classList.toggle('active', nowInWishlist);
+            btn.innerHTML = `
+                <i class="${nowInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                ${nowInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+            `;
+        }
+    }
+}
+
+function contactSeller() {
+    showFlashMessage('Opening chat with seller...', 'info');
+    // Implement chat functionality
+}
+
+function callSeller() {
+    showFlashMessage('Phone: +233 XX XXX XXXX', 'info');
+    // Implement call functionality
+}
+
+function toggleFavorite() {
+    const btn = document.getElementById('favoriteBtn');
+    if (btn) {
+        const icon = btn.querySelector('i');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        icon.classList.toggle('text-danger');
+        
+        if (icon.classList.contains('fas')) {
+            showFlashMessage('Added to favorites', 'success');
+        } else {
+            showFlashMessage('Removed from favorites', 'info');
+        }
+    }
+}
+
+function shareProduct() {
+    if (navigator.share) {
+        navigator.share({
+            title: currentProduct.title,
+            text: `Check out ${currentProduct.title} on Sankofa Market!`,
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy to clipboard
+        const dummy = document.createElement('input');
+        document.body.appendChild(dummy);
+        dummy.value = window.location.href;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        showFlashMessage('Link copied to clipboard!', 'success');
+    }
+}
+
+// Update actions when product is loaded
+const originalRenderProduct = typeof renderProduct !== 'undefined' ? renderProduct : null;
+if (originalRenderProduct) {
+    renderProduct = function(product) {
+        originalRenderProduct(product);
+        window.currentProduct = product;
+        updateProductActions(product);
+    };
+}
