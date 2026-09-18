@@ -302,13 +302,14 @@ class SankofaCart {
         if (!this.isLoggedIn()) {
             showFlashMessage('Please login to proceed to checkout', 'warning');
             setTimeout(() => {
-                window.location.href = 'pages/auth/login.html?redirect=checkout';
+                window.location.href = 'pages/auth/login.html?redirect=payment.html';
             }, 1500);
             return;
         }
 
+        // Redirect to payment page with comprehensive warnings
         this.toggleCart();
-        this.showCheckoutModal();
+        window.location.href = 'payment.html';
     }
 
     showCheckoutModal() {

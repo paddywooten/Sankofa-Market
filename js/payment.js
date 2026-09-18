@@ -1,476 +1,466 @@
 /**
- * Sankofa Market - Payment & Escrow System
- * Integrates Paystack for cards + Mobile Money with escrow protection
+ * Payment Page JavaScript
+ * Handles payment processing and form validation
  */
 
-// Paystack Configuration (replace with your actual keys)
-const PAYSTACK_CONFIG = {
-    publicKey: 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    secretKey: 'sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // Keep this server-side only!
-    callbackUrl: window.location.origin + '/payment-success.html',
-    currency: 'GHS'
-};
+document.addEventListener('DOMContentLoaded', function() {
+    initPaymentPage();
+});
 
-// Escrow Configuration
-const ESCROW_CONFIG = {
-    commissionRate: 0.05, // 5% commission
-    autoReleaseHours: 48, // Auto-release after 48 hours
-    disputeWindowHours: 48, // Buyer can dispute within 48 hours
-    momoHoldHours: 24 // Extra hold for MoMo (reversal window)
-};
+function initPaymentPage() {
+    // Load order from cart
+    loadOrderFromCart();
+    
+    // Initialize payment method switching
+    initPaymentMethodSwitching();
+    
+    // Initialize form validation
+    initFormValidation();
+    
+    // Initialize payment processing
+    initPaymentProcessing();
+    
+    // Initialize card number formatting
+    initCardFormatting();
+}
 
 // ============================================================================
-// PAYMENT INITIALIZATION
+// LOAD ORDER FROM CART
 // ============================================================================
 
-/**
- * Initialize a payment with escrow protection
- * @param {Object} orderData - Order details
- * @param {string} paymentMethod - 'card', 'momo_mtn', 'momo_vodafone', 'momo_airteltigo'
- */
-async function initializePayment(orderData, paymentMethod) {
-    const { orderId, amount, sellerId, buyerId, productTitle } = orderData;
+function loadOrderFromCart() {
+    // Get cart from localStorage
+    const cartData = localStorage.getItem('sankofa_cart');
     
-    // Calculate commission and net amount
-    const commission = Math.round(amount * ESCROW_CONFIG.commissionRate);
-    const netAmount = amount - commission;
+    if (!cartData) {
+        showFlashMessage('Your cart is empty', 'warning');
+        setTimeout(() => {
+            window.location.href = 'search.html';
+        }, 2000);
+        return;
+    }
+
+    const cart = JSON.parse(cartData);
     
-    // Create transaction record in Firestore
-    const transactionData = {
-        orderId,
-        buyerId,
-        sellerId,
-        amount,
-        commission,
-        netAmount,
-        status: 'pending', // pending → paid → held → released → refunded
-        paymentMethod,
-        productTitle,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        autoReleaseAt: null, // Set after delivery confirmation
-        disputeId: null
+    if (cart.items.length === 0) {
+        showFlashMessage('Your cart is empty', 'warning');
+        setTimeout(() => {
+            window.location.href = 'search.html';
+        }, 2000);
+        return;
+    }
+
+    // Display order items
+    displayOrderItems(cart.items);
+    
+    // Calculate and display totals
+    calculateTotals(cart.items);
+}
+
+function displayOrderItems(items) {
+    const orderItemsContainer = document.getElementById('orderItems');
+    
+    orderItemsContainer.innerHTML = items.map(item => `
+        <div class="order-item">
+            <div class="item-info">
+                <img src="${item.image}" alt="${item.title}">
+                <div>
+                    <h4>${item.title}</h4>
+                    <p>Qty: ${item.quantity}</p>
+                </div>
+            </div>
+            <div class="item-price">GHS ${(item.price * item.quantity).toLocaleString()}</div>
+        </div>
+    `).join('');
+}
+
+function calculateTotals(items) {
+    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    // Calculate delivery fee (simplified - would be more complex in production)
+    const hasFreeDelivery = items.some(item => item.deliveryOptions?.includes('free-delivery'));
+    const deliveryFee = hasFreeDelivery ? 0 : 50; // GHS 50 flat rate if not free
+    
+    // Service fee (optional - could be percentage or flat)
+    const serviceFee = 0;
+    
+    const total = subtotal + deliveryFee + serviceFee;
+
+    // Update display
+    document.getElementById('orderSubtotal').textContent = `GHS ${subtotal.toLocaleString()}`;
+    document.getElementById('orderDelivery').textContent = deliveryFee === 0 ? 'FREE' : `GHS ${deliveryFee.toLocaleString()}`;
+    document.getElementById('orderService').textContent = `GHS ${serviceFee.toLocaleString()}`;
+    document.getElementById('orderTotal').textContent = `GHS ${total.toLocaleString()}`;
+    document.getElementById('payAmount').textContent = `GHS ${total.toLocaleString()}`;
+
+    // Store for payment processing
+    window.orderData = {
+        items,
+        subtotal,
+        deliveryFee,
+        serviceFee,
+        total
     };
-    
-    try {
-        // Save transaction to Firestore
-        const txnRef = await firebaseDB.collection('transactions').add(transactionData);
-        const transactionId = txnRef.id;
-        
-        // Initialize Paystack payment
-        const handler = PaystackPop.setup({
-            key: PAYSTACK_CONFIG.publicKey,
-            email: orderData.buyerEmail,
-            amount: amount * 100, // Paystack uses kobo/pesewas (amount * 100)
-            currency: PAYSTACK_CONFIG.currency,
-            ref: transactionId, // Use transaction ID as reference
-            metadata: {
-                custom_fields: [
-                    { display_name: "Order ID", variable_name: "order_id", value: orderId },
-                    { display_name: "Product", variable_name: "product", value: productTitle },
-                    { display_name: "Payment Method", variable_name: "payment_method", value: paymentMethod }
-                ]
-            },
-            callback: function(response) {
-                handlePaymentSuccess(response, transactionId);
-            },
-            onClose: function() {
-                handlePaymentClosed(transactionId);
+}
+
+// ============================================================================
+// PAYMENT METHOD SWITCHING
+// ============================================================================
+
+function initPaymentMethodSwitching() {
+    const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
+    const momoDetails = document.getElementById('momoDetails');
+    const cardDetails = document.getElementById('cardDetails');
+
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            if (this.value === 'momo') {
+                momoDetails.style.display = 'block';
+                cardDetails.style.display = 'none';
+                
+                // Update required fields
+                setRequiredFields('momo');
+            } else if (this.value === 'card') {
+                momoDetails.style.display = 'none';
+                cardDetails.style.display = 'block';
+                
+                // Update required fields
+                setRequiredFields('card');
             }
+            
+            validateForm();
         });
-        
-        handler.openIframe();
-        return { success: true, transactionId };
-        
-    } catch (error) {
-        console.error('Payment initialization error:', error);
-        showFlashMessage('Failed to initialize payment. Please try again.', 'error');
-        return { success: false, error: error.message };
-    }
+    });
 }
 
-// ============================================================================
-// MOBILE MONEY PAYMENT
-// ============================================================================
-
-/**
- * Initialize Mobile Money payment
- * @param {Object} orderData - Order details
- * @param {string} network - 'mtn', 'vodafone', 'airteltigo'
- * @param {string} phone - MoMo phone number
- */
-async function initializeMomoPayment(orderData, network, phone) {
-    const { amount, orderId, sellerId, buyerId, productTitle } = orderData;
-    
-    const commission = Math.round(amount * ESCROW_CONFIG.commissionRate);
-    const netAmount = amount - commission;
-    
-    // Validate phone number format
-    if (!validateMomoPhone(phone, network)) {
-        showFlashMessage('Invalid phone number format for ' + network.toUpperCase(), 'error');
-        return { success: false };
-    }
-    
-    // Create transaction record
-    const transactionData = {
-        orderId,
-        buyerId,
-        sellerId,
-        amount,
-        commission,
-        netAmount,
-        status: 'pending',
-        paymentMethod: `momo_${network}`,
-        momoPhone: phone,
-        productTitle,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    
-    try {
-        const txnRef = await firebaseDB.collection('transactions').add(transactionData);
-        const transactionId = txnRef.id;
-        
-        // Call backend to initiate MoMo charge
-        // Note: In production, this should be a Cloud Function (server-side)
-        const response = await initiateMomoCharge({
-            transactionId,
-            amount,
-            phone,
-            network,
-            email: orderData.buyerEmail
-        });
-        
-        if (response.success) {
-            showFlashMessage('Payment prompt sent to your phone. Please approve the transaction.', 'info');
-            pollMomoStatus(transactionId);
-            return { success: true, transactionId };
-        } else {
-            showFlashMessage(response.error || 'MoMo payment failed', 'error');
-            return { success: false };
+function setRequiredFields(method) {
+    // MoMo fields
+    const momoFields = ['momoNetwork', 'momoPhone', 'momoName'];
+    momoFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.required = (method === 'momo');
         }
-        
-    } catch (error) {
-        console.error('MoMo payment error:', error);
-        showFlashMessage('Failed to process MoMo payment', 'error');
-        return { success: false, error: error.message };
-    }
+    });
+
+    // Card fields
+    const cardFields = ['cardNumber', 'cardExpiry', 'cardCVV', 'cardName'];
+    cardFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.required = (method === 'card');
+        }
+    });
 }
 
-/**
- * Validate MoMo phone number format
- */
-function validateMomoPhone(phone, network) {
+// ============================================================================
+// FORM VALIDATION
+// ============================================================================
+
+function initFormValidation() {
+    const form = document.querySelector('.payment-form-section');
+    const inputs = form.querySelectorAll('input, select');
+    const acknowledgeCheckbox = document.getElementById('acknowledgeWarning');
+
+    inputs.forEach(input => {
+        input.addEventListener('input', validateForm);
+        input.addEventListener('change', validateForm);
+    });
+
+    acknowledgeCheckbox.addEventListener('change', validateForm);
+    
+    // Initial validation
+    validateForm();
+}
+
+function validateForm() {
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const acknowledgeCheckbox = document.getElementById('acknowledgeWarning');
+    const payButton = document.getElementById('payButton');
+    
+    let isValid = true;
+
+    // Check acknowledgment
+    if (!acknowledgeCheckbox.checked) {
+        isValid = false;
+    }
+
+    // Check payment method specific fields
+    if (paymentMethod === 'momo') {
+        const momoNetwork = document.getElementById('momoNetwork').value;
+        const momoPhone = document.getElementById('momoPhone').value;
+        const momoName = document.getElementById('momoName').value;
+
+        if (!momoNetwork || !momoPhone || !momoName) {
+            isValid = false;
+        }
+
+        // Validate phone number format
+        if (momoPhone && !validatePhoneNumber(momoPhone)) {
+            isValid = false;
+        }
+    } else if (paymentMethod === 'card') {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardExpiry = document.getElementById('cardExpiry').value;
+        const cardCVV = document.getElementById('cardCVV').value;
+        const cardName = document.getElementById('cardName').value;
+
+        if (!cardNumber || !cardExpiry || !cardCVV || !cardName) {
+            isValid = false;
+        }
+
+        // Validate card number (basic check)
+        if (cardNumber && cardNumber.replace(/\s/g, '').length < 16) {
+            isValid = false;
+        }
+
+        // Validate expiry
+        if (cardExpiry && !validateCardExpiry(cardExpiry)) {
+            isValid = false;
+        }
+
+        // Validate CVV
+        if (cardCVV && cardCVV.length < 3) {
+            isValid = false;
+        }
+    }
+
+    // Enable/disable pay button
+    payButton.disabled = !isValid;
+    
+    return isValid;
+}
+
+function validatePhoneNumber(phone) {
+    // Ghana phone number validation
     const cleaned = phone.replace(/\D/g, '');
-    
-    const patterns = {
-        mtn: /^0(24|54|55|59)\d{7}$/,
-        vodafone: /^0(20|50)\d{7}$/,
-        airteltigo: /^0(26|27|56|57)\d{7}$/
-    };
-    
-    return patterns[network]?.test(cleaned) || false;
+    return cleaned.length >= 10 && cleaned.length <= 15;
 }
 
-/**
- * Poll MoMo payment status (for user approval)
- */
-async function pollMomoStatus(transactionId) {
-    const maxAttempts = 30; // 30 * 2s = 60 seconds
-    let attempts = 0;
+function validateCardExpiry(expiry) {
+    const parts = expiry.split('/');
+    if (parts.length !== 2) return false;
     
-    const poll = setInterval(async () => {
-        attempts++;
-        
-        try {
-            const txnDoc = await firebaseDB.collection('transactions').doc(transactionId).get();
-            const txn = txnDoc.data();
+    const month = parseInt(parts[0]);
+    const year = parseInt(parts[1]);
+    
+    if (month < 1 || month > 12) return false;
+    if (year < 24) return false; // Assuming 2024+
+    
+    return true;
+}
+
+// ============================================================================
+// CARD FORMATTING
+// ============================================================================
+
+function initCardFormatting() {
+    const cardNumber = document.getElementById('cardNumber');
+    const cardExpiry = document.getElementById('cardExpiry');
+    const cardCVV = document.getElementById('cardCVV');
+
+    if (cardNumber) {
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = '';
             
-            if (txn.status === 'paid' || txn.status === 'held') {
-                clearInterval(poll);
-                handlePaymentSuccess({ reference: transactionId }, transactionId);
-            } else if (txn.status === 'failed') {
-                clearInterval(poll);
-                showFlashMessage('Payment failed or was cancelled', 'error');
-            } else if (attempts >= maxAttempts) {
-                clearInterval(poll);
-                showFlashMessage('Payment timeout. Please check your phone and try again.', 'warning');
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
             }
-        } catch (error) {
-            console.error('Polling error:', error);
-        }
-    }, 2000);
-}
-
-// ============================================================================
-// PAYMENT CALLBACKS
-// ============================================================================
-
-/**
- * Handle successful payment
- */
-async function handlePaymentSuccess(response, transactionId) {
-    try {
-        // Update transaction status to 'held' (in escrow)
-        await firebaseDB.collection('transactions').doc(transactionId).update({
-            status: 'held',
-            paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-            paystackReference: response.reference
-        });
-        
-        // Update order status
-        const txnDoc = await firebaseDB.collection('transactions').doc(transactionId).get();
-        const txn = txnDoc.data();
-        
-        await firebaseDB.collection('orders').doc(txn.orderId).update({
-            status: 'paid',
-            transactionId,
-            paidAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Notify seller
-        await sendNotification(txn.sellerId, {
-            type: 'payment_received',
-            title: 'Payment Received!',
-            message: `You received a payment for "${txn.productTitle}". Please ship the item.`,
-            orderId: txn.orderId
-        });
-        
-        // Redirect to success page
-        window.location.href = `/payment-success.html?txn=${transactionId}`;
-        
-    } catch (error) {
-        console.error('Payment success handler error:', error);
-        showFlashMessage('Payment received but failed to update order. Contact support.', 'error');
-    }
-}
-
-/**
- * Handle payment window closed
- */
-async function handlePaymentClosed(transactionId) {
-    try {
-        await firebaseDB.collection('transactions').doc(transactionId).update({
-            status: 'cancelled',
-            cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } catch (error) {
-        console.error('Payment closed handler error:', error);
-    }
-}
-
-// ============================================================================
-// ESCROW OPERATIONS
-// ============================================================================
-
-/**
- * Release escrow funds to seller (called after buyer confirms delivery)
- */
-async function releaseEscrow(transactionId, confirmedBy) {
-    try {
-        const txnDoc = await firebaseDB.collection('transactions').doc(transactionId).get();
-        const txn = txnDoc.data();
-        
-        if (txn.status !== 'held') {
-            throw new Error('Transaction is not in escrow');
-        }
-        
-        // Update transaction status
-        await firebaseDB.collection('transactions').doc(transactionId).update({
-            status: 'released',
-            releasedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            releasedBy: confirmedBy
-        });
-        
-        // Trigger payout to seller via Paystack Transfer API
-        // Note: This should be a Cloud Function in production
-        const payoutResult = await initiatePayout({
-            sellerId: txn.sellerId,
-            amount: txn.netAmount,
-            transactionId
-        });
-        
-        if (payoutResult.success) {
-            // Notify seller
-            await sendNotification(txn.sellerId, {
-                type: 'payment_released',
-                title: 'Payment Released!',
-                message: `GHS ${txn.netAmount} has been transferred to your account.`,
-                orderId: txn.orderId
-            });
             
-            showFlashMessage('Payment released to seller successfully!', 'success');
-            return { success: true };
-        } else {
-            throw new Error('Payout failed');
-        }
-        
-    } catch (error) {
-        console.error('Release escrow error:', error);
-        showFlashMessage('Failed to release payment. Contact support.', 'error');
-        return { success: false, error: error.message };
-    }
-}
-
-/**
- * Refund escrow funds to buyer (called after dispute resolution)
- */
-async function refundEscrow(transactionId, reason, adminId) {
-    try {
-        const txnDoc = await firebaseDB.collection('transactions').doc(transactionId).get();
-        const txn = txnDoc.data();
-        
-        if (txn.status !== 'held') {
-            throw new Error('Transaction is not in escrow');
-        }
-        
-        // Update transaction status
-        await firebaseDB.collection('transactions').doc(transactionId).update({
-            status: 'refunded',
-            refundedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            refundReason: reason,
-            refundedBy: adminId
+            e.target.value = formattedValue;
         });
-        
-        // Trigger refund via Paystack
-        const refundResult = await initiateRefund({
-            transactionId,
-            amount: txn.amount,
-            reason
-        });
-        
-        if (refundResult.success) {
-            // Notify both parties
-            await sendNotification(txn.buyerId, {
-                type: 'refund_processed',
-                title: 'Refund Processed',
-                message: `GHS ${txn.amount} has been refunded to your account.`,
-                orderId: txn.orderId
-            });
-            
-            await sendNotification(txn.sellerId, {
-                type: 'refund_issued',
-                title: 'Refund Issued',
-                message: `A refund was issued for order. Reason: ${reason}`,
-                orderId: txn.orderId
-            });
-            
-            showFlashMessage('Refund processed successfully!', 'success');
-            return { success: true };
-        } else {
-            throw new Error('Refund failed');
-        }
-        
-    } catch (error) {
-        console.error('Refund escrow error:', error);
-        return { success: false, error: error.message };
     }
-}
 
-/**
- * Auto-release escrow after timeout (Cloud Function should call this)
- */
-async function autoReleaseEscrow(transactionId) {
-    try {
-        const txnDoc = await firebaseDB.collection('transactions').doc(transactionId).get();
-        const txn = txnDoc.data();
-        
-        if (txn.status === 'held' && !txn.disputeId) {
-            await releaseEscrow(transactionId, 'system_auto_release');
-            console.log(`Auto-released transaction ${transactionId}`);
-        }
-    } catch (error) {
-        console.error('Auto-release error:', error);
+    if (cardExpiry) {
+        cardExpiry.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            
+            e.target.value = value;
+        });
+    }
+
+    if (cardCVV) {
+        cardCVV.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
     }
 }
 
 // ============================================================================
-// BACKEND API CALLS (Should be Cloud Functions in production)
+// PAYMENT PROCESSING
 // ============================================================================
 
-/**
- * Initiate MoMo charge (server-side)
- */
-async function initiateMomoCharge(data) {
-    // In production, this calls a Firebase Cloud Function
-    // For demo, simulate success
-    console.log('Initiating MoMo charge:', data);
+function initPaymentProcessing() {
+    const payButton = document.getElementById('payButton');
+    
+    payButton.addEventListener('click', async function() {
+        if (!validateForm()) {
+            showFlashMessage('Please fill in all required fields', 'error');
+            return;
+        }
+
+        await processPayment();
+    });
+}
+
+async function processPayment() {
+    const payButton = document.getElementById('payButton');
+    const originalText = payButton.innerHTML;
+    
+    try {
+        // Disable button and show loading
+        payButton.disabled = true;
+        payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const orderData = window.orderData;
+
+        let paymentData = {
+            method: paymentMethod,
+            amount: orderData.total,
+            items: orderData.items,
+            timestamp: new Date().toISOString()
+        };
+
+        if (paymentMethod === 'momo') {
+            paymentData.momo = {
+                network: document.getElementById('momoNetwork').value,
+                phone: document.getElementById('momoPhone').value,
+                name: document.getElementById('momoName').value
+            };
+
+            // Simulate MoMo payment
+            await processMomoPayment(paymentData);
+        } else if (paymentMethod === 'card') {
+            paymentData.card = {
+                number: document.getElementById('cardNumber').value,
+                expiry: document.getElementById('cardExpiry').value,
+                cvv: document.getElementById('cardCVV').value,
+                name: document.getElementById('cardName').value
+            };
+
+            // Simulate card payment
+            await processCardPayment(paymentData);
+        }
+
+    } catch (error) {
+        console.error('Payment error:', error);
+        showFlashMessage('Payment failed. Please try again.', 'error');
+        
+        // Re-enable button
+        payButton.disabled = false;
+        payButton.innerHTML = originalText;
+    }
+}
+
+async function processMomoPayment(paymentData) {
+    // In production, this would integrate with Paystack, Hubtel, or other MoMo providers
+    // For demo, simulate the process
+    
+    showFlashMessage('Sending payment prompt to your phone...', 'info');
     
     // Simulate API call
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({ success: true, reference: data.transactionId });
-        }, 1000);
-    });
-}
-
-/**
- * Initiate payout to seller (server-side)
- */
-async function initiatePayout(data) {
-    // In production, calls Paystack Transfer API
-    console.log('Initiating payout:', data);
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({ success: true, transferCode: 'TRF_' + Date.now() });
-        }, 1000);
-    });
-}
-
-/**
- * Initiate refund (server-side)
- */
-async function initiateRefund(data) {
-    // In production, calls Paystack Refund API
-    console.log('Initiating refund:', data);
+    // Simulate success
+    showFlashMessage('Payment prompt sent! Please authorize on your phone.', 'success');
     
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({ success: true, refundId: 'REF_' + Date.now() });
-        }, 1000);
-    });
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Complete payment
+    await completePayment(paymentData);
 }
 
-// ============================================================================
-// UTILITIES
-// ============================================================================
+async function processCardPayment(paymentData) {
+    // In production, this would integrate with Paystack, Stripe, or other card processors
+    // For demo, simulate the process
+    
+    showFlashMessage('Processing card payment...', 'info');
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // Complete payment
+    await completePayment(paymentData);
+}
 
-/**
- * Send notification to user
- */
-async function sendNotification(userId, notification) {
+async function completePayment(paymentData) {
     try {
-        await firebaseDB.collection('notifications').add({
-            userId,
-            ...notification,
-            read: false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        // Check if user is logged in
+        if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+            // Create order in Firebase
+            const orderRef = await firebase.firestore().collection('orders').add({
+                userId: firebase.auth().currentUser.uid,
+                items: paymentData.items,
+                paymentMethod: paymentData.method,
+                paymentData: {
+                    method: paymentData.method,
+                    ...(paymentData.method === 'momo' ? {
+                        network: paymentData.momo.network,
+                        phone: paymentData.momo.phone
+                    } : {
+                        last4: paymentData.card.number.slice(-4)
+                    })
+                },
+                subtotal: window.orderData.subtotal,
+                deliveryFee: window.orderData.deliveryFee,
+                serviceFee: window.orderData.serviceFee,
+                total: window.orderData.total,
+                status: 'paid',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Clear cart
+            localStorage.removeItem('sankofa_cart');
+            
+            // Show success message
+            showFlashMessage('Payment successful! 🎉', 'success');
+            
+            // Redirect to order confirmation
+            setTimeout(() => {
+                window.location.href = `order-confirmation.html?orderId=${orderRef.id}`;
+            }, 2000);
+            
+        } else {
+            // Demo mode
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Clear cart
+            localStorage.removeItem('sankofa_cart');
+            
+            // Show success message
+            showFlashMessage('Payment successful! (Demo mode)', 'success');
+            
+            // Redirect to success page
+            setTimeout(() => {
+                window.location.href = 'payment-success.html';
+            }, 2000);
+        }
+
     } catch (error) {
-        console.error('Notification error:', error);
+        console.error('Complete payment error:', error);
+        throw error;
     }
 }
 
-/**
- * Get transaction status
- */
-async function getTransactionStatus(transactionId) {
-    try {
-        const doc = await firebaseDB.collection('transactions').doc(transactionId).get();
-        return doc.exists ? doc.data() : null;
-    } catch (error) {
-        console.error('Get transaction error:', error);
-        return null;
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+function showFlashMessage(message, type = 'info') {
+    // Use existing flash message system if available
+    if (typeof window.showFlashMessage === 'function') {
+        window.showFlashMessage(message, type);
+    } else {
+        // Fallback alert
+        alert(message);
     }
 }
-
-// Export for use in other files
-window.PaymentSystem = {
-    initializePayment,
-    initializeMomoPayment,
-    releaseEscrow,
-    refundEscrow,
-    autoReleaseEscrow,
-    getTransactionStatus,
-    PAYSTACK_CONFIG,
-    ESCROW_CONFIG
-};
