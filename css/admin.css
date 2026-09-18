@@ -1776,3 +1776,78 @@ body {
         justify-content: center;
     }
 }
+
+/* ============================================================================
+   SIDEBAR MOBILE OVERLAY & CLOSE BUTTON
+   ============================================================================ */
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.active {
+    display: block;
+    animation: overlayFadeIn 0.3s ease;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.sidebar-close {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-close:active {
+    background: rgba(231, 76, 60, 0.3);
+}
+
+/* Body scroll lock */
+body.sidebar-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .sidebar-close {
+        display: flex;
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .admin-sidebar.open {
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+    }
+}

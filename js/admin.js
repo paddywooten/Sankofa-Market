@@ -663,12 +663,65 @@ function saveSettings() {
 function initMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('adminSidebar');
-    
-    if (menuToggle && sidebar) {
-        menuToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-        });
+    const overlay = document.getElementById('sidebarOverlay');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    if (!menuToggle || !sidebar) return;
+
+    var scrollPos = 0;
+
+    function openSidebar() {
+        scrollPos = window.pageYOffset;
+        sidebar.classList.add('open');
+        if (overlay) overlay.classList.add('active');
+        document.body.classList.add('sidebar-open');
+        document.body.style.top = -scrollPos + 'px';
     }
+
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+        document.body.classList.remove('sidebar-open');
+        document.body.style.top = '';
+        window.scrollTo(0, scrollPos);
+    }
+
+    // Hamburger button opens sidebar
+    menuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (sidebar.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    // X button closes sidebar
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebar);
+    }
+
+    // Overlay tap closes sidebar
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+
+    // Close sidebar when a nav item is clicked (mobile UX)
+    var navItems = sidebar.querySelectorAll('.nav-item');
+    navItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+        });
+    });
+
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
 }
 
 // ============================================================================
