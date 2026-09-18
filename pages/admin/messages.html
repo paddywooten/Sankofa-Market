@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages Management - Admin - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin-messages.css">
+</head>
+<body>
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+            <span class="sidebar-badge">Admin</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i> <span>Overview</span>
+            </a>
+            <a href="dashboard.html#products" class="nav-item">
+                <i class="fas fa-box"></i> <span>Products</span>
+            </a>
+            <a href="dashboard.html#users" class="nav-item">
+                <i class="fas fa-users"></i> <span>Users</span>
+            </a>
+            <a href="dashboard.html#orders" class="nav-item">
+                <i class="fas fa-shopping-cart"></i> <span>Orders</span>
+            </a>
+            <a href="messages.html" class="nav-item active">
+                <i class="fas fa-comments"></i> <span>Messages</span>
+                <span class="nav-badge" id="unreadMessages">12</span>
+            </a>
+            <a href="dashboard.html#categories" class="nav-item">
+                <i class="fas fa-th-large"></i> <span>Categories</span>
+            </a>
+            <a href="dashboard.html#reports" class="nav-item">
+                <i class="fas fa-flag"></i> <span>Reports</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fas fa-chart-line"></i> <span>Analytics</span>
+            </a>
+            <a href="dashboard.html#settings" class="nav-item">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="../../index.html" class="nav-item">
+                <i class="fas fa-globe"></i> <span>View Site</span>
+            </a>
+            <a href="#" class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search messages, users..." id="globalSearch">
+            </div>
+            <div class="topbar-actions">
+                <button class="topbar-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <div class="topbar-user">
+                    <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Admin" class="topbar-avatar" loading="lazy" decoding="async">
+                    <span>Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Messages Section -->
+            <section class="admin-section active" id="section-messages">
+                <div class="section-header">
+                    <h1>Messages Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-outline btn-small" id="exportMessagesBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-outline btn-small" id="refreshMessagesBtn">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <select class="filter-select" id="messageStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="flagged">Flagged</option>
+                        <option value="reported">Reported</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                    <select class="filter-select" id="messageTypeFilter">
+                        <option value="">All Types</option>
+                        <option value="buyer-seller">Buyer-Seller</option>
+                        <option value="support">Support</option>
+                        <option value="dispute">Dispute</option>
+                    </select>
+                    <input type="text" class="filter-search" placeholder="Search messages..." id="messageSearch">
+                </div>
+
+                <!-- Messages Layout -->
+                <div class="messages-layout">
+                    <!-- Conversations List -->
+                    <div class="conversations-list" id="conversationsList">
+                        <div class="conversations-header">
+                            <h3>Conversations</h3>
+                            <span class="conversations-count">24 conversations</span>
+                        </div>
+                        <div class="conversations-container" id="conversationsContainer">
+                            <!-- Conversation 1 -->
+                            <div class="conversation-item active" data-conversation-id="conv-001">
+                                <div class="conversation-avatar">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Kwame Asante">
+                                    <span class="online-indicator"></span>
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>Kwame Asante</h4>
+                                        <span class="conversation-time">2m ago</span>
+                                    </div>
+                                    <p class="conversation-preview">Is the iPhone 14 Pro Max still available?</p>
+                                    <div class="conversation-meta">
+                                        <span class="conversation-type">Buyer-Seller</span>
+                                        <span class="unread-badge">3</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 2 -->
+                            <div class="conversation-item flagged" data-conversation-id="conv-002">
+                                <div class="conversation-avatar">
+                                    <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Ama Boateng">
+                                    <span class="online-indicator offline"></span>
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>Ama Boateng</h4>
+                                        <span class="conversation-time">15m ago</span>
+                                    </div>
+                                    <p class="conversation-preview">Can you send me your phone number?</p>
+                                    <div class="conversation-meta">
+                                        <span class="conversation-type flagged">Flagged</span>
+                                        <span class="flag-indicator"><i class="fas fa-flag"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 3 -->
+                            <div class="conversation-item reported" data-conversation-id="conv-003">
+                                <div class="conversation-avatar">
+                                    <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Kofi Mensah">
+                                    <span class="online-indicator offline"></span>
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>Kofi Mensah</h4>
+                                        <span class="conversation-time">1h ago</span>
+                                    </div>
+                                    <p class="conversation-preview">This is a scam, please help!</p>
+                                    <div class="conversation-meta">
+                                        <span class="conversation-type reported">Reported</span>
+                                        <span class="report-indicator"><i class="fas fa-exclamation-triangle"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 4 -->
+                            <div class="conversation-item" data-conversation-id="conv-004">
+                                <div class="conversation-avatar">
+                                    <img src="https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Efua Adjei">
+                                    <span class="online-indicator"></span>
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>Efua Adjei</h4>
+                                        <span class="conversation-time">2h ago</span>
+                                    </div>
+                                    <p class="conversation-preview">Thank you for the quick delivery!</p>
+                                    <div class="conversation-meta">
+                                        <span class="conversation-type">Buyer-Seller</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation 5 -->
+                            <div class="conversation-item" data-conversation-id="conv-005">
+                                <div class="conversation-avatar">
+                                    <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Yaw Darkwa">
+                                    <span class="online-indicator offline"></span>
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>Yaw Darkwa</h4>
+                                        <span class="conversation-time">3h ago</span>
+                                    </div>
+                                    <p class="conversation-preview">When can I pick up the item?</p>
+                                    <div class="conversation-meta">
+                                        <span class="conversation-type">Buyer-Seller</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Area -->
+                    <div class="chat-area" id="chatArea">
+                        <div class="chat-header">
+                            <div class="chat-user-info">
+                                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=50&h=50&fit=crop&crop=face&q=75&auto=format" alt="Kwame Asante" class="chat-user-avatar">
+                                <div class="chat-user-details">
+                                    <h3>Kwame Asante</h3>
+                                    <span class="user-status online">Online</span>
+                                </div>
+                            </div>
+                            <div class="chat-actions">
+                                <button class="action-btn" title="View User Profile" id="viewUserProfileBtn">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <button class="action-btn" title="View Product" id="viewProductBtn">
+                                    <i class="fas fa-box"></i>
+                                </button>
+                                <button class="action-btn warning" title="Flag Conversation" id="flagConversationBtn">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                                <button class="action-btn danger" title="Suspend Users" id="suspendUsersBtn">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Message 1 -->
+                            <div class="message-item received">
+                                <div class="message-avatar">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Kwame Asante">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">Kwame Asante</span>
+                                        <span class="message-time">10:30 AM</span>
+                                    </div>
+                                    <div class="message-body">
+                                        <p>Hi, is the iPhone 14 Pro Max still available?</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Message 2 -->
+                            <div class="message-item sent">
+                                <div class="message-avatar">
+                                    <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Sankofa Store">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">Sankofa Store</span>
+                                        <span class="message-time">10:32 AM</span>
+                                    </div>
+                                    <div class="message-body">
+                                        <p>Yes, it's still available! Are you interested in purchasing it?</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Message 3 -->
+                            <div class="message-item received">
+                                <div class="message-avatar">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Kwame Asante">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">Kwame Asante</span>
+                                        <span class="message-time">10:35 AM</span>
+                                    </div>
+                                    <div class="message-body">
+                                        <p>Yes! What's the condition? Any scratches or issues?</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Message 4 -->
+                            <div class="message-item sent">
+                                <div class="message-avatar">
+                                    <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Sankofa Store">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">Sankofa Store</span>
+                                        <span class="message-time">10:38 AM</span>
+                                    </div>
+                                    <div class="message-body">
+                                        <p>It's in excellent condition! No scratches, always used with a case and screen protector. Comes with original box and all accessories.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Message 5 -->
+                            <div class="message-item received">
+                                <div class="message-avatar">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format" alt="Kwame Asante">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">Kwame Asante</span>
+                                        <span class="message-time">10:40 AM</span>
+                                    </div>
+                                    <div class="message-body">
+                                        <p>Great! Can I come see it today?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-area">
+                            <div class="chat-input-wrapper">
+                                <textarea class="chat-input" id="chatInput" placeholder="Type a message as admin..." rows="1"></textarea>
+                                <button class="send-message-btn" id="sendMessageBtn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="chat-input-actions">
+                                <button class="input-action-btn" title="Attach file">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button class="input-action-btn" title="Send as warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/admin.js"></script>
+    <script src="../../js/admin-auth.js"></script>
+    <script src="../../js/admin-messages.js"></script>
+</body>
+</html>
