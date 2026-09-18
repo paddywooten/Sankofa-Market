@@ -236,30 +236,55 @@ class SankofaChatbot {
     }
 
     findBestResponse(message) {
+        const msg = message.toLowerCase().replace(/[?!.,'"]/g, '').trim();
+
+        // Greeting detection - check FIRST before FAQ matching
+        if (/^(hi|hello|hey|good morning|good evening|good afternoon|sup|yo|howdy|greetings|hola|hi there|hello there)/i.test(msg)) {
+            return {
+                text: "Hello! 👋 Welcome to Sankofa Market. How can I help you today?",
+                quickReplies: ['How do I create an account?', 'How does payment work?', 'How do I sell?', 'Contact support']
+            };
+        }
+
+        // Thanks detection
+        if (/^(thanks|thank you|thx|ty|cheers|appreciate it|thank u|thanks a lot)/i.test(msg)) {
+            return {
+                text: "You're welcome! 😊 Is there anything else I can help you with?",
+                quickReplies: ['How do I list an item?', 'Delivery options', "No, that's all"]
+            };
+        }
+
+        // Bye detection
+        if (/^(bye|goodbye|see you|later|cya|good night|goodnight)/i.test(msg)) {
+            return {
+                text: "Goodbye! 👋 Come back anytime. Happy shopping!",
+                quickReplies: []
+            };
+        }
+
+        // FAQ keyword matching
         let bestMatch = null;
         let highestScore = 0;
 
-        // Check each FAQ
         for (const faq of this.faqs) {
-            const score = this.calculateMatchScore(message, faq.keywords);
-            
+            const score = this.calculateMatchScore(msg, faq.keywords);
             if (score > highestScore) {
                 highestScore = score;
                 bestMatch = faq;
             }
         }
 
-        // If we found a good match (score > 0.3), return it
-        if (bestMatch && highestScore > 0.15) {
+        if (bestMatch && highestScore >= 1) {
             return {
                 text: bestMatch.answer,
-                quickReplies: bestMatch.quickReplies || []
+                quickReplies: bestMatch.quickReplies || [],
+                intent: bestMatch.id
             };
         }
 
         // Default response
         return {
-            text: `I'm not sure I understand that question. Here are some things I can help you with:`,
+            text: "I'm not sure I understand that question. Here are some things I can help you with:",
             quickReplies: [
                 'How do I create an account?',
                 'How does payment work?',
@@ -272,50 +297,39 @@ class SankofaChatbot {
 
     calculateMatchScore(message, keywords) {
         let score = 0;
-        const msg = message.toLowerCase().replace(/[?!.,]/g, '');
         
-        // Remove common filler words
-        const stopWords = ['how', 'do', 'does', 'is', 'are', 'can', 'i', 'my', 'the', 'a', 'an', 'what', 'where', 'when', 'why', 'which', 'who', 'to', 'for', 'on', 'in', 'about', 'with', 'please', 'help', 'me', 'want', 'need', 'know', 'tell', 'me', 'get', 'got'];
-        const msgWords = msg.split(/\s+/).filter(w => !stopWords.includes(w));
+        const stopWords = new Set(['how', 'do', 'does', 'is', 'are', 'can', 'i', 'my', 'the', 'a', 'an', 'what', 'where', 'when', 'why', 'which', 'who', 'to', 'for', 'on', 'in', 'about', 'with', 'please', 'help', 'me', 'want', 'need', 'know', 'tell', 'get', 'got', 'it', 'this', 'that', 'of', 'and', 'or', 'so', 'if', 'be', 'been', 'was', 'were']);
+        const msgWords = message.split(/\s+/).filter(w => w.length > 0 && !stopWords.has(w));
         
         for (const keyword of keywords) {
             const kw = keyword.toLowerCase();
-            const kwWords = kw.split(/\s+/);
             
-            // Exact phrase match (highest score)
-            if (msg.includes(kw)) {
-                score += 3;
+            // Exact phrase match in message (strongest signal)
+            if (message.includes(kw)) {
+                score += 5;
                 continue;
             }
             
-            // Individual keyword matches
+            const kwWords = kw.split(/\s+/).filter(w => w.length > 2);
+            
             for (const kwWord of kwWords) {
-                if (kwWord.length < 3) continue; // Skip very short words
-                
-                // Exact word match
-                if (msgWords.includes(kwWord)) {
-                    score += 1.5;
-                }
-                // Partial/contains match
-                else if (msg.includes(kwWord)) {
-                    score += 0.8;
-                }
-                // Stem match (e.g., "selling" matches "sell")
-                else {
-                    for (const mw of msgWords) {
-                        if (mw.startsWith(kwWord) || kwWord.startsWith(mw)) {
-                            score += 0.5;
-                            break;
-                        }
+                for (const mw of msgWords) {
+                    if (mw === kwWord) {
+                        score += 2;
+                        break;
+                    } else if (mw.startsWith(kwWord) || kwWord.startsWith(mw)) {
+                        score += 1;
+                        break;
+                    } else if (mw.includes(kwWord) || kwWord.includes(mw)) {
+                        score += 0.5;
+                        break;
                     }
                 }
             }
         }
 
-        // Normalize score
-        return score / Math.max(keywords.length, 1);
+        return score;
     }
-
     addUserMessage(text) {
         const messagesContainer = document.getElementById('chatbotMessages');
         const messageDiv = document.createElement('div');
