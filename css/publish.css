@@ -286,6 +286,24 @@
     min-width: 180px;
 }
 
+/* Pricing Section - Better Mobile Layout */
+.pricing-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pricing-row .price-input-group {
+    width: 100%;
+}
+
+.pricing-row .negotiable-checkbox {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .publish-main {
@@ -314,13 +332,23 @@
         font-size: 1.05rem;
     }
     
+    /* Stack form rows on mobile */
     .form-row {
         flex-direction: column;
-        gap: 0;
+        gap: 1rem;
     }
     
     .form-row .form-group {
-        margin-bottom: 1.25rem;
+        width: 100%;
+        margin-bottom: 0;
+    }
+    
+    /* Better checkbox styling on mobile */
+    .checkbox-label {
+        padding: 0.75rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        margin-top: 0.5rem;
     }
     
     .form-actions {
@@ -374,10 +402,6 @@
     
     .form-group textarea {
         min-height: 100px;
-    }
-    
-    .checkbox-label {
-        font-size: 0.85rem !important;
     }
 }
 
@@ -441,12 +465,13 @@
         font-size: 0.85rem;
     }
     
-    .price-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
     .form-actions .btn {
         font-size: 0.9rem;
+    }
+    
+    /* Extra spacing for checkboxes on small screens */
+    .checkbox-label {
+        padding: 0.65rem;
+        font-size: 0.85rem;
     }
 }
