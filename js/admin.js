@@ -1,141 +1,26 @@
 /**
  * Sankofa Market - Admin Dashboard JavaScript
+ * Handles all admin dashboard functionality including product management
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check which page we're on
-    const loginForm = document.getElementById('adminLoginForm');
-    const sidebar = document.getElementById('adminSidebar');
-    
-    if (loginForm) {
-        initAdminLogin();
-    } else if (sidebar) {
-        checkAdminAuth();
-        initAdminDashboard();
-    }
+    initAdminDashboard();
 });
 
 // ============================================================================
-// ADMIN LOGIN
-// ============================================================================
-
-function initAdminLogin() {
-    const form = document.getElementById('adminLoginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    const toggleBtn = document.getElementById('togglePassword');
-    
-    // Toggle password visibility
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function() {
-            const input = document.getElementById('adminPassword');
-            const icon = this.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        });
-    }
-    
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('adminEmail').value.trim();
-        const password = document.getElementById('adminPassword').value;
-        const code = document.getElementById('adminCode').value.trim();
-        
-        if (!email || !password || !code) {
-            showFlashMessage('Please fill in all fields', 'error');
-            return;
-        }
-        
-        if (code.length !== 6) {
-            showFlashMessage('Admin code must be 6 digits', 'error');
-            return;
-        }
-        
-        const stopLoading = showLoading(loginBtn);
-        
-        try {
-            // Check Firebase first
-            if (typeof firebaseAuth !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
-                const cred = await firebaseAuth.signInWithEmailAndPassword(email, password);
-                
-                // Check if user is admin
-                const userDoc = await firebaseDB.collection('users').doc(cred.user.uid).get();
-                if (!userDoc.exists || userDoc.data().role !== 'admin') {
-                    await firebaseAuth.signOut();
-                    showFlashMessage('Access denied. Admin privileges required.', 'error');
-                    stopLoading();
-                    return;
-                }
-            } else {
-                // Demo mode - accept any credentials with code "123456"
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                if (code !== '123456') {
-                    showFlashMessage('Invalid admin code. Use 123456 for demo.', 'error');
-                    stopLoading();
-                    return;
-                }
-            }
-            
-            // Save admin session
-            localStorage.setItem('sankofa_admin', JSON.stringify({
-                email: email,
-                loggedIn: true,
-                timestamp: Date.now()
-            }));
-            
-            showFlashMessage('Welcome to Admin Panel!', 'success');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1000);
-            
-        } catch (error) {
-            console.error('Admin login error:', error);
-            showFlashMessage('Invalid credentials. Please try again.', 'error');
-        } finally {
-            stopLoading();
-        }
-    });
-}
-
-// ============================================================================
-// ADMIN AUTH CHECK
-// ============================================================================
-
-function checkAdminAuth() {
-    const admin = localStorage.getItem('sankofa_admin');
-    
-    if (!admin) {
-        // Demo mode - allow access without auth for preview
-        console.log('⚠️ Admin demo mode - no authentication required');
-        return;
-    }
-    
-    try {
-        const data = JSON.parse(admin);
-        if (!data.loggedIn) {
-            window.location.href = 'login.html';
-        }
-    } catch (e) {
-        window.location.href = 'login.html';
-    }
-}
-
-// ============================================================================
-// ADMIN DASHBOARD
+// ADMIN DASHBOARD INITIALIZATION
 // ============================================================================
 
 function initAdminDashboard() {
     initNavigation();
+    initProductManagement();
+    initUserManagement();
+    initOrderManagement();
+    initCategoryManagement();
+    initReportsManagement();
+    initSettings();
     initMobileMenu();
-    initLogout();
-    initTableActions();
-    initSettingsForm();
+    initGlobalSearch();
 }
 
 // ============================================================================
@@ -151,28 +36,624 @@ function initNavigation() {
             e.preventDefault();
             const section = this.dataset.section;
             
-            // Update nav
-            navItems.forEach(n => n.classList.remove('active'));
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
             this.classList.add('active');
             
-            // Update sections
-            sections.forEach(s => s.classList.remove('active'));
+            // Show corresponding section
+            sections.forEach(sec => sec.classList.remove('active'));
             document.getElementById(`section-${section}`).classList.add('active');
-            
-            // Close mobile menu
-            document.getElementById('adminSidebar').classList.remove('open');
-            
-            // Update URL hash
-            history.replaceState(null, '', `#${section}`);
+        });
+    });
+}
+
+// ============================================================================
+// PRODUCT MANAGEMENT
+// ============================================================================
+
+function initProductManagement() {
+    const addProductBtn = document.getElementById('addProductBtn');
+    const exportProductsBtn = document.getElementById('exportProductsBtn');
+    const selectAllProducts = document.getElementById('selectAllProducts');
+    const productSearch = document.getElementById('productSearch');
+    const categoryFilter = document.getElementById('productCategoryFilter');
+    const statusFilter = document.getElementById('productStatusFilter');
+    
+    // Add Product button
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', function() {
+            openAddProductModal();
+        });
+    }
+    
+    // Export Products button
+    if (exportProductsBtn) {
+        exportProductsBtn.addEventListener('click', function() {
+            exportProducts();
+        });
+    }
+    
+    // Select all products checkbox
+    if (selectAllProducts) {
+        selectAllProducts.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.product-check');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateBulkActions();
+        });
+    }
+    
+    // Product search
+    if (productSearch) {
+        productSearch.addEventListener('input', debounce(function() {
+            filterProducts();
+        }, 300));
+    }
+    
+    // Category filter
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', function() {
+            filterProducts();
+        });
+    }
+    
+    // Status filter
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            filterProducts();
+        });
+    }
+    
+    // Initialize product action buttons
+    initProductActions();
+}
+
+function initProductActions() {
+    // View product buttons
+    document.querySelectorAll('.action-btn[title="View"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            viewProduct(productId);
         });
     });
     
-    // Check URL hash on load
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-        const targetNav = document.querySelector(`.nav-item[data-section="${hash}"]`);
-        if (targetNav) targetNav.click();
+    // Edit product buttons
+    document.querySelectorAll('.action-btn[title="Edit"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            editProduct(productId);
+        });
+    });
+    
+    // Delete product buttons
+    document.querySelectorAll('.action-btn[title="Delete"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            const productName = row.querySelector('strong').textContent;
+            deleteProduct(productId, productName);
+        });
+    });
+    
+    // Approve product buttons (for pending products)
+    document.querySelectorAll('.action-btn[title="Approve"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            approveProduct(productId);
+        });
+    });
+    
+    // Reject product buttons (for pending products)
+    document.querySelectorAll('.action-btn[title="Reject"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            rejectProduct(productId);
+        });
+    });
+    
+    // Review product buttons (for flagged products)
+    document.querySelectorAll('.action-btn[title="Review"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            reviewProduct(productId);
+        });
+    });
+    
+    // Remove/Ban product buttons (for flagged products)
+    document.querySelectorAll('.action-btn[title="Remove"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.querySelector('.table-sub').textContent.replace('ID: ', '');
+            removeProduct(productId);
+        });
+    });
+}
+
+// ============================================================================
+// ADD PRODUCT MODAL
+// ============================================================================
+
+function openAddProductModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'addProductModal';
+    modal.innerHTML = `
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Add New Product</h2>
+                <button class="modal-close" onclick="closeAddProductModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productTitle">Product Title *</label>
+                            <input type="text" id="productTitle" required placeholder="Enter product title">
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">Category *</label>
+                            <select id="productCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="home-garden">Home & Garden</option>
+                                <option value="vehicles">Vehicles</option>
+                                <option value="services">Services</option>
+                                <option value="sports">Sports</option>
+                                <option value="books-media">Books & Media</option>
+                                <option value="baby-kids">Baby & Kids</option>
+                                <option value="beauty-health">Beauty & Health</option>
+                                <option value="food-groceries">Food & Groceries</option>
+                                <option value="pets">Pets</option>
+                                <option value="jobs-skills">Jobs & Skills</option>
+                                <option value="real-estate">Real Estate</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">Description *</label>
+                        <textarea id="productDescription" required rows="4" placeholder="Describe your product in detail..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productPrice">Price (GHS) *</label>
+                            <input type="number" id="productPrice" required min="0" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="productCondition">Condition *</label>
+                            <select id="productCondition" required>
+                                <option value="">Select Condition</option>
+                                <option value="new">New</option>
+                                <option value="like-new">Like New</option>
+                                <option value="good">Good</option>
+                                <option value="fair">Fair</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Product Images *</label>
+                        <div class="image-upload-area" id="productImageUpload">
+                            <input type="file" id="productImages" multiple accept="image/*" style="display: none;">
+                            <div class="upload-placeholder" onclick="document.getElementById('productImages').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload images (max 8)</p>
+                                <small>JPG, PNG up to 5MB each</small>
+                            </div>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productLocation">Location *</label>
+                            <input type="text" id="productLocation" required placeholder="e.g., Accra, Ghana">
+                        </div>
+                        <div class="form-group">
+                            <label for="productSeller">Seller *</label>
+                            <select id="productSeller" required>
+                                <option value="">Select Seller</option>
+                                <option value="sankofa-store">Sankofa Store</option>
+                                <option value="verified-seller">Verified Seller</option>
+                                <option value="individual">Individual Seller</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Delivery Options</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="delivery" value="free-delivery">
+                                <span>Free Delivery</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="delivery" value="paid-delivery">
+                                <span>Paid Delivery</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="delivery" value="pickup-only">
+                                <span>Pickup Only</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="productFeatured">
+                            <span>Mark as Featured Product</span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeAddProductModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Initialize image upload
+    initProductImageUpload();
+    
+    // Initialize form submission
+    const form = document.getElementById('addProductForm');
+    form.addEventListener('submit', handleAddProduct);
+}
+
+function closeAddProductModal() {
+    const modal = document.getElementById('addProductModal');
+    if (modal) {
+        modal.remove();
     }
+}
+
+function initProductImageUpload() {
+    const input = document.getElementById('productImages');
+    const preview = document.getElementById('imagePreview');
+    
+    if (input) {
+        input.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            if (files.length > 8) {
+                alert('Maximum 8 images allowed');
+                return;
+            }
+            
+            preview.innerHTML = '';
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'preview-image';
+                    imgDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}">
+                        <button type="button" class="remove-image" onclick="removeImage(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    preview.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+}
+
+function removeImage(index) {
+    const preview = document.getElementById('imagePreview');
+    const images = preview.querySelectorAll('.preview-image');
+    if (images[index]) {
+        images[index].remove();
+    }
+}
+
+function handleAddProduct(e) {
+    e.preventDefault();
+    
+    const formData = {
+        title: document.getElementById('productTitle').value,
+        category: document.getElementById('productCategory').value,
+        description: document.getElementById('productDescription').value,
+        price: parseFloat(document.getElementById('productPrice').value),
+        condition: document.getElementById('productCondition').value,
+        location: document.getElementById('productLocation').value,
+        seller: document.getElementById('productSeller').value,
+        delivery: Array.from(document.querySelectorAll('input[name="delivery"]:checked')).map(cb => cb.value),
+        featured: document.getElementById('productFeatured').checked
+    };
+    
+    // Validate form
+    if (!formData.title || !formData.category || !formData.description || !formData.price || !formData.condition || !formData.location || !formData.seller) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    // Simulate API call
+    console.log('Adding product:', formData);
+    
+    // Show success message
+    showFlashMessage('Product added successfully!', 'success');
+    
+    // Close modal
+    closeAddProductModal();
+    
+    // Refresh product list (in real app, this would fetch from API)
+    setTimeout(() => {
+        location.reload();
+    }, 1500);
+}
+
+// ============================================================================
+// EDIT PRODUCT
+// ============================================================================
+
+function editProduct(productId) {
+    // In a real app, this would fetch product data from API
+    console.log('Editing product:', productId);
+    
+    // For now, open add product modal (in real app, this would be edit modal with pre-filled data)
+    openAddProductModal();
+}
+
+// ============================================================================
+// DELETE PRODUCT
+// ============================================================================
+
+function deleteProduct(productId, productName) {
+    if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+        // Simulate API call
+        console.log('Deleting product:', productId);
+        
+        // Show success message
+        showFlashMessage('Product deleted successfully!', 'success');
+        
+        // Remove row from table (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${productId}"))`);
+            if (row) {
+                row.remove();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// APPROVE PRODUCT (for pending products)
+// ============================================================================
+
+function approveProduct(productId) {
+    if (confirm('Are you sure you want to approve this product?')) {
+        // Simulate API call
+        console.log('Approving product:', productId);
+        
+        // Show success message
+        showFlashMessage('Product approved successfully!', 'success');
+        
+        // Update row status (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${productId}"))`);
+            if (row) {
+                const statusCell = row.querySelector('.status-pill');
+                statusCell.className = 'status-pill success';
+                statusCell.textContent = 'Active';
+                
+                // Change action buttons
+                const actionsCell = row.querySelector('.table-actions');
+                actionsCell.innerHTML = `
+                    <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                `;
+                
+                // Re-initialize action buttons
+                initProductActions();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// REJECT PRODUCT (for pending products)
+// ============================================================================
+
+function rejectProduct(productId) {
+    const reason = prompt('Please provide a reason for rejection:');
+    
+    if (reason) {
+        // Simulate API call
+        console.log('Rejecting product:', productId, 'Reason:', reason);
+        
+        // Show success message
+        showFlashMessage('Product rejected successfully!', 'success');
+        
+        // Remove row from table (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${productId}"))`);
+            if (row) {
+                row.remove();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// REVIEW PRODUCT (for flagged products)
+// ============================================================================
+
+function reviewProduct(productId) {
+    // In a real app, this would open a detailed review modal
+    console.log('Reviewing product:', productId);
+    
+    alert('Product review feature coming soon!');
+}
+
+// ============================================================================
+// REMOVE PRODUCT (for flagged products)
+// ============================================================================
+
+function removeProduct(productId) {
+    if (confirm('Are you sure you want to remove this flagged product? This action cannot be undone.')) {
+        // Simulate API call
+        console.log('Removing product:', productId);
+        
+        // Show success message
+        showFlashMessage('Product removed successfully!', 'success');
+        
+        // Remove row from table (in real app, this would be done after API success)
+        setTimeout(() => {
+            const row = document.querySelector(`tr:has(.table-sub:contains("${productId}"))`);
+            if (row) {
+                row.remove();
+            }
+        }, 500);
+    }
+}
+
+// ============================================================================
+// FILTER PRODUCTS
+// ============================================================================
+
+function filterProducts() {
+    const search = document.getElementById('productSearch').value.toLowerCase();
+    const category = document.getElementById('productCategoryFilter').value;
+    const status = document.getElementById('productStatusFilter').value;
+    
+    const rows = document.querySelectorAll('#productsTableBody tr');
+    
+    rows.forEach(row => {
+        const productName = row.querySelector('strong').textContent.toLowerCase();
+        const productCategory = row.querySelectorAll('td')[3].textContent.toLowerCase();
+        const productStatus = row.querySelector('.status-pill').textContent.toLowerCase();
+        
+        let show = true;
+        
+        if (search && !productName.includes(search)) {
+            show = false;
+        }
+        
+        if (category && productCategory !== category) {
+            show = false;
+        }
+        
+        if (status && productStatus !== status) {
+            show = false;
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+// ============================================================================
+// EXPORT PRODUCTS
+// ============================================================================
+
+function exportProducts() {
+    // In a real app, this would generate and download a CSV/Excel file
+    console.log('Exporting products...');
+    
+    showFlashMessage('Products exported successfully!', 'success');
+    
+    // Simulate download
+    setTimeout(() => {
+        alert('Products exported to products_export.csv');
+    }, 1000);
+}
+
+// ============================================================================
+// BULK ACTIONS
+// ============================================================================
+
+function updateBulkActions() {
+    const checkboxes = document.querySelectorAll('.product-check:checked');
+    const count = checkboxes.length;
+    
+    // In a real app, this would show/hide bulk action buttons
+    console.log('Selected products:', count);
+}
+
+// ============================================================================
+// VIEW PRODUCT
+// ============================================================================
+
+function viewProduct(productId) {
+    // In a real app, this would open a detailed product view modal or navigate to product page
+    console.log('Viewing product:', productId);
+    
+    alert('Product view feature coming soon!');
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+function initUserManagement() {
+    // Initialize user management functionality
+    console.log('User management initialized');
+}
+
+// ============================================================================
+// ORDER MANAGEMENT
+// ============================================================================
+
+function initOrderManagement() {
+    // Initialize order management functionality
+    console.log('Order management initialized');
+}
+
+// ============================================================================
+// CATEGORY MANAGEMENT
+// ============================================================================
+
+function initCategoryManagement() {
+    // Initialize category management functionality
+    console.log('Category management initialized');
+}
+
+// ============================================================================
+// REPORTS MANAGEMENT
+// ============================================================================
+
+function initReportsManagement() {
+    // Initialize reports management functionality
+    console.log('Reports management initialized');
+}
+
+// ============================================================================
+// SETTINGS
+// ============================================================================
+
+function initSettings() {
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', function() {
+            saveSettings();
+        });
+    }
+}
+
+function saveSettings() {
+    // In a real app, this would save settings to API
+    console.log('Saving settings...');
+    
+    showFlashMessage('Settings saved successfully!', 'success');
 }
 
 // ============================================================================
@@ -183,260 +664,82 @@ function initMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('adminSidebar');
     
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
             sidebar.classList.toggle('open');
         });
     }
-    
-    // Close sidebar on outside click (mobile)
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768 && 
-            !sidebar.contains(e.target) && 
-            !menuToggle.contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
-    });
 }
 
 // ============================================================================
-// LOGOUT
+// GLOBAL SEARCH
 // ============================================================================
 
-function initLogout() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async function(e) {
-            e.preventDefault();
-            
-            try {
-                if (typeof firebaseAuth !== 'undefined') {
-                    await firebaseAuth.signOut();
-                }
-            } catch (e) {}
-            
-            localStorage.removeItem('sankofa_admin');
-            showFlashMessage('Logged out successfully', 'success');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1000);
-        });
-    }
-}
-
-// ============================================================================
-// TABLE ACTIONS
-// ============================================================================
-
-function initTableActions() {
-    // Select all checkboxes
-    const selectAll = document.getElementById('selectAllProducts');
-    if (selectAll) {
-        selectAll.addEventListener('change', function() {
-            document.querySelectorAll('.product-check').forEach(cb => {
-                cb.checked = this.checked;
-            });
-        });
-    }
-    
-    // Action buttons - delegate events
-    document.addEventListener('click', function(e) {
-        const actionBtn = e.target.closest('.action-btn');
-        if (!actionBtn) return;
-        
-        const title = actionBtn.getAttribute('title') || '';
-        const row = actionBtn.closest('tr');
-        
-        if (title === 'Approve') {
-            if (row) {
-                const statusCell = row.querySelector('.status-pill');
-                if (statusCell) {
-                    statusCell.className = 'status-pill success';
-                    statusCell.textContent = 'Active';
-                }
-                // Replace approve/reject buttons with edit/delete
-                const actionsCell = actionBtn.closest('.table-actions');
-                if (actionsCell) {
-                    actionsCell.innerHTML = `
-                        <button class="action-btn" title="View"><i class="fas fa-eye"></i></button>
-                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
-                    `;
-                }
-            }
-            showFlashMessage('Product approved!', 'success');
-        } else if (title === 'Reject' || title === 'Remove') {
-            if (row) {
-                row.style.opacity = '0.5';
-                setTimeout(() => row.remove(), 300);
-            }
-            showFlashMessage('Product removed', 'warning');
-        } else if (title === 'Delete') {
-            if (confirm('Are you sure you want to delete this item?')) {
-                if (row) {
-                    row.style.opacity = '0.5';
-                    setTimeout(() => row.remove(), 300);
-                }
-                showFlashMessage('Item deleted', 'success');
-            }
-        } else if (title === 'Suspend') {
-            if (confirm('Suspend this user?')) {
-                const statusCell = row?.querySelector('.status-pill');
-                if (statusCell) {
-                    statusCell.className = 'status-pill danger';
-                    statusCell.textContent = 'Suspended';
-                }
-                showFlashMessage('User suspended', 'warning');
-            }
-        } else if (title === 'Reactivate') {
-            const statusCell = row?.querySelector('.status-pill');
-            if (statusCell) {
-                statusCell.className = 'status-pill success';
-                statusCell.textContent = 'Active';
-            }
-            showFlashMessage('User reactivated', 'success');
-        } else if (title === 'View' || title === 'View Details' || title === 'Review' || title === 'Investigate') {
-            showFlashMessage('Opening details...', 'info');
-        } else if (title === 'Edit') {
-            showFlashMessage('Opening editor...', 'info');
-        }
-    });
-    
-    // Export buttons
-    const exportProductsBtn = document.getElementById('exportProductsBtn');
-    const exportUsersBtn = document.getElementById('exportUsersBtn');
-    
-    if (exportProductsBtn) {
-        exportProductsBtn.addEventListener('click', () => {
-            showFlashMessage('Exporting products to CSV...', 'info');
-            setTimeout(() => showFlashMessage('Export complete!', 'success'), 1500);
-        });
-    }
-    
-    if (exportUsersBtn) {
-        exportUsersBtn.addEventListener('click', () => {
-            showFlashMessage('Exporting users to CSV...', 'info');
-            setTimeout(() => showFlashMessage('Export complete!', 'success'), 1500);
-        });
-    }
-    
-    // Add buttons
-    const addProductBtn = document.getElementById('addProductBtn');
-    const addCategoryBtn = document.getElementById('addCategoryBtn');
-    
-    if (addProductBtn) {
-        addProductBtn.addEventListener('click', () => {
-            window.location.href = '../../publish.html';
-        });
-    }
-    
-    if (addCategoryBtn) {
-        addCategoryBtn.addEventListener('click', () => {
-            const name = prompt('Enter category name:');
-            if (name) {
-                showFlashMessage(`Category "${name}" created!`, 'success');
-            }
-        });
-    }
-    
-    // Global search
+function initGlobalSearch() {
     const globalSearch = document.getElementById('globalSearch');
+    
     if (globalSearch) {
         globalSearch.addEventListener('input', debounce(function() {
             const query = this.value.toLowerCase();
-            if (query.length < 2) return;
-            
-            // Filter visible table rows
-            document.querySelectorAll('.admin-table tbody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
+            console.log('Global search:', query);
+            // In a real app, this would search across all data
         }, 300));
     }
 }
 
 // ============================================================================
-// SETTINGS
+// UTILITY FUNCTIONS
 // ============================================================================
 
-function initSettingsForm() {
-    const saveBtn = document.getElementById('saveSettingsBtn');
-    
-    if (saveBtn) {
-        saveBtn.addEventListener('click', async function() {
-            const stopLoading = showLoading(this);
-            
-            try {
-                // Simulate save
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                showFlashMessage('Settings saved successfully!', 'success');
-            } catch (error) {
-                showFlashMessage('Error saving settings', 'error');
-            } finally {
-                stopLoading();
-            }
-        });
-    }
-}
-
-// ============================================================================
-// UTILITIES
-// ============================================================================
-
-function debounce(fn, delay) {
-    let timer;
-    return function(...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn.apply(this, args), delay);
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
     };
 }
 
-// Make showFlashMessage and showLoading available if not already
-if (typeof showFlashMessage === 'undefined') {
-    function showFlashMessage(message, type = 'info') {
-        const container = document.createElement('div');
-        container.className = 'flash-messages';
-        container.style.cssText = 'position:fixed;top:80px;right:20px;z-index:9999;';
-        
-        const colors = {
-            success: '#86b817',
-            error: '#e74c3c',
-            warning: '#f5af02',
-            info: '#0064d2'
-        };
-        
-        const icons = {
-            success: 'check-circle',
-            error: 'exclamation-circle',
-            warning: 'exclamation-triangle',
-            info: 'info-circle'
-        };
-        
-        const msg = document.createElement('div');
-        msg.style.cssText = `padding:0.75rem 1.25rem;background:${colors[type]};color:white;border-radius:8px;margin-bottom:0.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;animation:slideIn 0.3s ease;`;
-        msg.innerHTML = `<i class="fas fa-${icons[type]}"></i> ${message}`;
-        
-        container.appendChild(msg);
-        document.body.appendChild(container);
-        
+function showFlashMessage(message, type = 'info') {
+    const flash = document.createElement('div');
+    flash.className = `flash-message ${type}`;
+    flash.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(flash);
+    
+    setTimeout(() => {
+        flash.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        flash.classList.remove('show');
         setTimeout(() => {
-            msg.style.opacity = '0';
-            msg.style.transform = 'translateX(400px)';
-            msg.style.transition = 'all 0.3s ease';
-            setTimeout(() => container.remove(), 300);
-        }, 4000);
-    }
+            flash.remove();
+        }, 300);
+    }, 3000);
 }
 
-if (typeof showLoading === 'undefined') {
-    function showLoading(element) {
-        const originalText = element.innerHTML;
-        element.disabled = true;
-        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        return function() {
-            element.disabled = false;
-            element.innerHTML = originalText;
-        };
-    }
-}
+// ============================================================================
+// EXPORT
+// ============================================================================
+
+window.adminDashboard = {
+    openAddProductModal,
+    closeAddProductModal,
+    editProduct,
+    deleteProduct,
+    approveProduct,
+    rejectProduct,
+    reviewProduct,
+    removeProduct,
+    viewProduct,
+    exportProducts,
+    filterProducts,
+    saveSettings
+};

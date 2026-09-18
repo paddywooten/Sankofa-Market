@@ -1,0 +1,622 @@
+================================================================================
+                    SANKOFA MARKET GHANA
+              COMPLETE LEGAL DOCUMENTS COMPILATION
+================================================================================
+
+Document Version: 1.0
+Date: January 2026
+Classification: Public
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+1. Terms of Service
+2. Privacy Policy
+3. Cookie Policy
+4. Refund Policy
+5. Acceptable Use Policy
+6. Prohibited Items Policy
+
+================================================================================
+1. TERMS OF SERVICE
+================================================================================
+
+Last Updated: January 2026
+
+1. ACCEPTANCE OF TERMS
+----------------------
+By accessing and using Sankofa Market ("the Platform", "we", "us", "our"), 
+you agree to be bound by these Terms of Service ("Terms"). If you do not 
+agree to these Terms, you may not use the Platform.
+
+2. ELIGIBILITY
+--------------
+To use Sankofa Market, you must:
+- Be at least 18 years of age
+- Be a resident of Ghana or have legal authorization to conduct transactions 
+  in Ghana
+- Have a valid Ghana Card for identity verification
+- Have the legal capacity to enter into binding contracts
+- Not be prohibited from using the Platform under applicable law
+
+3. USER ACCOUNTS
+----------------
+
+3.1 Account Registration
+To access certain features, you must create an account by providing accurate 
+and complete information. You are responsible for maintaining the 
+confidentiality of your account credentials.
+
+3.2 Account Verification
+All users must verify their identity using their Ghana Card. Unverified 
+accounts may have limited access to Platform features.
+
+3.3 Account Security
+You are responsible for all activities that occur under your account. You 
+must notify us immediately of any unauthorized use of your account.
+
+4. USER CONDUCT
+---------------
+
+4.1 Prohibited Activities
+You agree not to:
+- Violate any applicable laws or regulations
+- Infringe upon intellectual property rights
+- Post false, misleading, or fraudulent listings
+- Engage in scams, fraud, or deceptive practices
+- Harass, abuse, or harm other users
+- Use the Platform for illegal activities
+- Attempt to gain unauthorized access to our systems
+- Interfere with the proper functioning of the Platform
+- Collect or store personal data about other users without consent
+- Use automated systems or bots without permission
+
+4.2 Listing Requirements
+All listings must:
+- Accurately describe the item or service
+- Include clear, truthful photographs
+- State the correct price and condition
+- Comply with our Prohibited Items Policy
+- Not infringe on third-party rights
+
+5. TRANSACTIONS AND PAYMENTS
+-----------------------------
+
+5.1 Platform Role
+Sankofa Market acts as a marketplace facilitator, connecting buyers and 
+sellers. We are NOT a party to any transaction between users.
+
+5.2 Escrow Protection
+IMPORTANT: Only payments made through our Platform's escrow system are 
+protected. Sankofa Market is NOT accountable for any disputes resulting 
+from payments made outside the Platform.
+
+Payments made directly to sellers via Mobile Money, bank transfer, cash, 
+or any other method outside our Platform are at your own risk and are NOT 
+covered by our buyer protection or dispute resolution services.
+
+5.3 Fees and Commissions
+Sellers agree to pay a 5% commission on successful sales. Fees are 
+automatically deducted from the sale amount before payment to the seller.
+
+5.4 Payment Processing
+We use third-party payment processors (Paystack, Mobile Money providers) 
+to handle transactions. By using our Platform, you agree to their terms 
+of service.
+
+6. BUYER PROTECTION
+-------------------
+
+6.1 Escrow System
+For on-Platform payments:
+- Payment is held in escrow until buyer confirms delivery
+- Buyer has 48 hours to inspect the item
+- Buyer can raise disputes within the inspection period
+- Payment is released to seller after confirmation or auto-release timeout
+
+6.2 Dispute Resolution
+If you have an issue with a transaction:
+1. Contact the seller directly first
+2. If unresolved, raise a dispute within 48 hours of delivery
+3. Provide evidence (photos, descriptions, communication)
+4. Our admin team will review and make a decision
+5. Decisions may include: refund to buyer, payment to seller, or split
+
+6.3 Limitations
+Buyer protection does NOT cover:
+- Payments made outside the Platform
+- Items not as described but accepted by buyer
+- Disputes raised after 48-hour inspection period
+- Subjective preferences (color, style, etc.)
+- Items damaged by buyer after delivery
+
+7. SELLER OBLIGATIONS
+---------------------
+As a seller, you agree to:
+- Provide accurate, honest descriptions of items
+- Ship items within the stated timeframe
+- Package items securely to prevent damage
+- Respond to buyer inquiries promptly
+- Honor stated return and refund policies
+- Comply with all applicable laws and regulations
+- Pay applicable commissions and fees
+- Not engage in fraudulent or deceptive practices
+
+8. INTELLECTUAL PROPERTY
+-------------------------
+
+8.1 Our Content
+All content on the Platform (logos, designs, text, graphics) is owned by 
+Sankofa Market and protected by intellectual property laws.
+
+8.2 User Content
+By posting content on the Platform, you grant us a non-exclusive, 
+royalty-free license to use, display, and distribute your content for 
+Platform operations.
+
+8.3 Trademark Infringement
+Users may not list counterfeit or trademark-infringing items. We will 
+remove such listings and may suspend accounts involved in IP violations.
+
+9. PRIVACY AND DATA PROTECTION
+-------------------------------
+Your use of the Platform is also governed by our Privacy Policy. By using 
+the Platform, you consent to our collection and use of your data as 
+described in the Privacy Policy.
+
+10. LIMITATION OF LIABILITY
+----------------------------
+
+10.1 No Warranty
+The Platform is provided "as is" without warranties of any kind, either 
+express or implied.
+
+10.2 Limitation
+To the maximum extent permitted by law, Sankofa Market shall NOT be 
+liable for:
+- Indirect, incidental, special, or consequential damages
+- Loss of profits, data, or business opportunities
+- Damages arising from transactions between users
+- Damages from payments made outside the Platform
+- Damages from user misconduct or fraud
+- Service interruptions or technical issues
+
+10.3 Maximum Liability
+Our total liability shall not exceed the fees you paid to us in the 12 
+months preceding the claim.
+
+11. INDEMNIFICATION
+--------------------
+You agree to indemnify and hold harmless Sankofa Market, its officers, 
+directors, employees, and agents from any claims, damages, losses, or 
+expenses arising from:
+- Your use of the Platform
+- Your violation of these Terms
+- Your violation of any laws or third-party rights
+- Transactions you conduct through the Platform
+- Your content or listings
+
+12. TERMINATION
+----------------
+
+12.1 By You
+You may terminate your account at any time by contacting us or using the 
+account deletion feature.
+
+12.2 By Us
+We may suspend or terminate your account if you:
+- Violate these Terms
+- Engage in fraudulent or illegal activities
+- Receive multiple complaints or negative reviews
+- Fail to verify your identity
+- Remain inactive for an extended period
+
+12.3 Effect of Termination
+Upon termination:
+- Your right to use the Platform ceases immediately
+- We may delete your account and data
+- Outstanding transactions must be completed
+- Provisions that by their nature should survive will remain in effect
+
+13. DISPUTE RESOLUTION
+-----------------------
+
+13.1 Informal Resolution
+Before filing any legal action, you agree to attempt to resolve disputes 
+informally by contacting us at support@sankofamarket.com.gh.
+
+13.2 Governing Law
+These Terms are governed by the laws of the Republic of Ghana.
+
+13.3 Jurisdiction
+Any legal proceedings shall be brought exclusively in the courts of 
+Accra, Ghana.
+
+14. GENERAL PROVISIONS
+-----------------------
+
+14.1 Entire Agreement
+These Terms constitute the entire agreement between you and Sankofa 
+Market regarding your use of the Platform.
+
+14.2 Severability
+If any provision is found to be unenforceable, the remaining provisions 
+will remain in full force and effect.
+
+14.3 Waiver
+Our failure to enforce any right or provision will not be considered a 
+waiver of that right.
+
+14.4 Force Majeure
+We are not liable for delays or failures due to circumstances beyond our 
+reasonable control (natural disasters, war, government actions, etc.).
+
+15. CONTACT INFORMATION
+------------------------
+For questions about these Terms, please contact us:
+- Email: legal@sankofamarket.com.gh
+- Support: support@sankofamarket.com.gh
+- Phone: +233 XX XXX XXXX
+- Address: [Your Business Address], Accra, Ghana
+
+16. ACKNOWLEDGMENT
+-------------------
+By using Sankofa Market, you acknowledge that you have read, understood, 
+and agree to be bound by these Terms of Service.
+
+IMPORTANT: You specifically acknowledge that Sankofa Market is NOT 
+accountable for disputes resulting from payments made outside the 
+Platform, and that only on-Platform payments are protected by our escrow 
+and buyer protection systems.
+
+================================================================================
+2. PRIVACY POLICY
+================================================================================
+
+Last Updated: January 2026
+
+1. INTRODUCTION
+---------------
+Sankofa Market ("we", "us", "our") is committed to protecting your 
+privacy. This Privacy Policy explains how we collect, use, disclose, and 
+safeguard your information when you use our marketplace platform.
+
+2. INFORMATION WE COLLECT
+--------------------------
+
+2.1 Personal Information
+We collect personal information that you voluntarily provide to us when you:
+- Register an account: Ghana Card number, name, email, phone number, 
+  password
+- Create listings: Item descriptions, photos, pricing, location
+- Make purchases: Delivery address, payment information
+- Contact support: Messages, inquiries, feedback
+- Participate in promotions: Contest entries, survey responses
+
+2.2 Automatically Collected Information
+When you use our Platform, we automatically collect:
+- Device Information: IP address, browser type, operating system, device 
+  identifiers
+- Usage Data: Pages visited, time spent, click patterns, search queries
+- Location Data: General location based on IP address (with your consent 
+  for precise location)
+- Cookies and Tracking Technologies: See our Cookie Policy for details
+- Transaction Data: Purchase history, payment methods, amounts
+
+2.3 Information from Third Parties
+We may receive information about you from:
+- Payment processors (Paystack, Mobile Money providers)
+- Social media platforms (if you link your accounts)
+- Identity verification services
+- Other users (reviews, ratings, messages)
+
+3. HOW WE USE YOUR INFORMATION
+-------------------------------
+We use your information for the following purposes:
+
+3.1 Platform Operations
+- Create and manage your account
+- Process transactions and payments
+- Facilitate communication between buyers and sellers
+- Provide customer support
+- Verify your identity (Ghana Card verification)
+
+3.2 Platform Improvement
+- Analyze usage patterns to improve user experience
+- Develop new features and services
+- Personalize your experience (recommendations, search results)
+- Conduct research and analysis
+
+3.3 Safety and Security
+- Prevent fraud and illegal activities
+- Enforce our Terms of Service
+- Resolve disputes between users
+- Protect our rights and users' safety
+- Comply with legal obligations
+
+3.4 Marketing and Communications
+- Send promotional emails (with your consent)
+- Notify you about Platform updates
+- Send transaction-related communications
+- Respond to your inquiries
+
+4. INFORMATION SHARING AND DISCLOSURE
+--------------------------------------
+We do NOT sell your personal information. We share your information only 
+in the following circumstances:
+
+4.1 With Other Users
+- Sellers: Your delivery address and contact information when you make a 
+  purchase
+- Buyers: Your seller profile, ratings, and item listings
+- All Users: Your public profile information (name, ratings, reviews)
+
+4.2 With Service Providers
+We share information with third-party service providers who assist us in:
+- Payment processing (Paystack, Mobile Money providers)
+- Identity verification
+- Cloud hosting and storage (Firebase, Google Cloud)
+- Email and SMS delivery
+- Analytics and monitoring
+- Customer support
+
+These providers are contractually obligated to protect your information 
+and use it only for the services they provide to us.
+
+4.3 For Legal Reasons
+We may disclose your information if required to:
+- Comply with legal obligations (court orders, subpoenas)
+- Protect our rights and users' safety
+- Prevent fraud or illegal activities
+- Enforce our Terms of Service
+- Respond to law enforcement requests
+
+4.4 Business Transfers
+In the event of a merger, acquisition, or sale of assets, your 
+information may be transferred to the acquiring entity. We will notify 
+you of such changes.
+
+4.5 With Your Consent
+We may share your information with third parties when you give us 
+explicit consent to do so.
+
+5. DATA SECURITY
+-----------------
+We implement robust security measures to protect your information:
+
+5.1 Technical Safeguards
+- Encryption: SSL/TLS encryption for data in transit
+- Secure Storage: Encrypted databases and secure cloud storage
+- Access Controls: Role-based access control
+- Firewalls: Network security and intrusion detection
+- Regular Audits: Security assessments and penetration testing
+
+5.2 Organizational Safeguards
+- Employee training on data protection
+- Confidentiality agreements with staff
+- Limited access to personal information
+- Incident response procedures
+
+5.3 Your Responsibilities
+You also play a role in protecting your information:
+- Choose a strong, unique password
+- Do not share your account credentials
+- Log out when using shared devices
+- Be cautious of phishing attempts
+- Report suspicious activities immediately
+
+Important: While we strive to protect your information, no method of 
+transmission over the Internet is 100% secure. We cannot guarantee 
+absolute security.
+
+6. DATA RETENTION
+------------------
+We retain your information for as long as necessary to fulfill the 
+purposes outlined in this Privacy Policy:
+
+- Account Information: Retained while your account is active and for 30 
+  days after deletion request
+- Transaction Data: Retained for 7 years for legal and tax purposes
+- Communication Records: Retained for 2 years for dispute resolution
+- Usage Data: Retained for 2 years for analytics and improvement
+- Chatbot Conversations: Retained for 90 days (configurable)
+
+We may retain anonymized or aggregated data for research and analytics 
+purposes.
+
+7. YOUR RIGHTS AND CHOICES
+---------------------------
+Depending on your location, you may have the following rights regarding 
+your personal information:
+
+7.1 Access and Portability
+- Request a copy of your personal information
+- Receive your data in a portable format
+
+7.2 Correction
+- Request correction of inaccurate information
+- Update your profile information
+
+7.3 Deletion
+- Request deletion of your account and personal information
+- Note: Some data may be retained for legal purposes
+
+7.4 Objection and Restriction
+- Object to certain processing activities
+- Request restriction of processing
+
+7.5 Withdrawal of Consent
+- Withdraw consent for marketing communications
+- Opt-out of non-essential cookies
+
+7.6 How to Exercise Your Rights
+To exercise your rights, please contact us at 
+privacy@sankofamarket.com.gh. We will respond within 30 days.
+
+8. COOKIES AND TRACKING TECHNOLOGIES
+-------------------------------------
+We use cookies and similar technologies to enhance your experience. 
+Please see our Cookie Policy for detailed information about:
+- Types of cookies we use
+- Purposes of cookies
+- How to manage cookie preferences
+- Third-party cookies
+
+9. CHILDREN'S PRIVACY
+----------------------
+Our Platform is NOT intended for children under 18 years of age. We do 
+not knowingly collect personal information from children. If we become 
+aware that we have collected information from a child, we will delete it 
+promptly.
+
+If you believe we have collected information from a child, please 
+contact us immediately at privacy@sankofamarket.com.gh.
+
+10. INTERNATIONAL DATA TRANSFERS
+---------------------------------
+Your information may be transferred to and processed in countries other 
+than Ghana. These countries may have different data protection laws.
+
+When we transfer your information internationally, we implement 
+appropriate safeguards to protect your data, including:
+- Standard contractual clauses
+- Data processing agreements
+- Encryption and security measures
+
+11. THIRD-PARTY LINKS
+----------------------
+Our Platform may contain links to third-party websites or services. We 
+are NOT responsible for the privacy practices of these third parties. We 
+encourage you to review their privacy policies before providing any 
+information.
+
+12. CHANGES TO THIS PRIVACY POLICY
+-----------------------------------
+We may update this Privacy Policy from time to time. We will notify you 
+of material changes by:
+- Posting the updated policy on our Platform
+- Updating the "Last Updated" date
+- Sending you an email notification (for significant changes)
+
+Your continued use of the Platform after changes constitutes acceptance 
+of the updated Privacy Policy.
+
+13. CALIFORNIA PRIVACY RIGHTS (CCPA)
+-------------------------------------
+If you are a California resident, you have additional rights under the 
+California Consumer Privacy Act (CCPA):
+- Right to know what personal information is collected
+- Right to delete personal information
+- Right to opt-out of the sale of personal information (we do NOT sell 
+  your information)
+- Right to non-discrimination for exercising your rights
+
+To exercise these rights, contact us at privacy@sankofamarket.com.gh.
+
+14. GHANA DATA PROTECTION ACT COMPLIANCE
+-----------------------------------------
+We comply with the Ghana Data Protection Act, 2012 (Act 843). As a data 
+subject, you have the right to:
+- Access your personal data
+- Request correction of inaccurate data
+- Object to processing of your data
+- Request deletion of your data
+- Lodge a complaint with the Data Protection Commission
+
+15. CONTACT US
+---------------
+If you have questions, concerns, or requests regarding this Privacy 
+Policy or our data practices, please contact us:
+
+Data Protection Officer:
+- Email: privacy@sankofamarket.com.gh
+- Phone: +233 XX XXX XXXX
+- Address: [Your Business Address], Accra, Ghana
+
+You also have the right to lodge a complaint with the Data Protection 
+Commission of Ghana:
+- Website: www.dataprotection.org.gh
+- Email: info@dataprotection.org.gh
+- Phone: +233 302 748 790
+
+16. ACKNOWLEDGMENT
+-------------------
+By using Sankofa Market, you acknowledge that you have read and 
+understood this Privacy Policy and agree to the collection, use, and 
+sharing of your information as described herein.
+
+================================================================================
+3. COOKIE POLICY
+================================================================================
+
+Last Updated: January 2026
+
+For complete details about cookies, please refer to the full Cookie 
+Policy document (cookie-policy.html).
+
+This Cookie Policy explains how Sankofa Market uses cookies and similar 
+technologies to recognize you when you visit our Platform. It explains 
+what these technologies are and why we use them, as well as your rights 
+to control our use of them.
+
+================================================================================
+4. REFUND POLICY
+================================================================================
+
+Last Updated: January 2026
+
+For complete details about refunds, please refer to the full Refund 
+Policy document (refund-policy.html).
+
+This Refund Policy outlines our procedures for returns and refunds on 
+the Sankofa Market Platform.
+
+================================================================================
+5. ACCEPTABLE USE POLICY
+================================================================================
+
+Last Updated: January 2026
+
+For complete details about acceptable use, please refer to the full 
+Acceptable Use Policy document (acceptable-use.html).
+
+This Acceptable Use Policy outlines the rules and guidelines for using 
+the Sankofa Market Platform.
+
+================================================================================
+6. PROHIBITED ITEMS POLICY
+================================================================================
+
+Last Updated: January 2026
+
+For complete details about prohibited items, please refer to the full 
+Prohibited Items Policy document (prohibited-items.html).
+
+This Prohibited Items Policy lists items that are not allowed on the 
+Sankofa Market Platform.
+
+================================================================================
+CONTACT INFORMATION
+================================================================================
+
+For questions about these legal documents, please contact us:
+
+Legal Department:
+- Email: legal@sankofamarket.com.gh
+- Support: support@sankofamarket.com.gh
+- Phone: +233 XX XXX XXXX
+- Address: [Your Business Address], Accra, Ghana
+
+Data Protection:
+- Email: privacy@sankofamarket.com.gh
+- Website: www.dataprotection.org.gh
+- Phone: +233 302 748 790
+
+================================================================================
+END OF DOCUMENT
+================================================================================
+
+© 2026 Sankofa Market Ghana. All rights reserved.
+
+Made with ❤️ in Ghana 🇬🇭
