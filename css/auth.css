@@ -770,3 +770,187 @@
         display: none;
     }
 }
+
+/* ============================================================================
+   CENTERED ELEMENTS FOR AUTH PAGES
+   ============================================================================ */
+
+/* Center the auth header */
+.auth-header {
+    text-align: center;
+}
+
+/* Center the logo */
+.auth-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* Center the admin badge */
+.admin-badge {
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
+/* Center all buttons */
+.auth-form .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Center social login buttons */
+.social-login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.social-login .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Center form options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Center auth footer */
+.auth-footer {
+    text-align: center;
+}
+
+/* Mobile responsive centering */
+@media (max-width: 768px) {
+    .social-login {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-login .btn {
+        width: 100%;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+    }
+    
+    .form-options .checkbox-label {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .form-options .forgot-link {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-login {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+    }
+}
+
+/* ============================================================================
+   ADMIN LOGIN PAGE SPECIFIC CENTERING
+   ============================================================================ */
+
+/* Center admin login header */
+.auth-main .auth-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Center admin badge in header */
+.auth-main .admin-badge {
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Center admin login button */
+.auth-main .btn-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Center admin footer */
+.auth-main .auth-footer {
+    text-align: center;
+}
+
+/* Mobile responsive for admin */
+@media (max-width: 768px) {
+    .auth-main .auth-header {
+        align-items: center;
+    }
+    
+    .auth-main .admin-badge {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ============================================================================
+   ENSURE ALL BUTTONS ARE CENTERED
+   ============================================================================ */
+
+/* All buttons in auth forms should be centered */
+.auth-form button[type="submit"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Social login buttons should be centered */
+.social-login .btn-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Mobile responsive button centering */
+@media (max-width: 768px) {
+    .social-login {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-login .btn-social {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-login {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-login .btn-social {
+        width: 100%;
+    }
+}
