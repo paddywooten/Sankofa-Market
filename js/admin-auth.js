@@ -57,6 +57,13 @@ async function checkAdminAccess() {
                 // User is admin - allow access
                 console.log('Admin access granted');
                 
+                // Update topbar with admin's name and avatar initial
+                const adminName = userData.name || user.displayName || user.email?.split('@')[0] || 'Admin';
+                const nameEl = document.getElementById('adminName');
+                const avatarEl = document.getElementById('adminAvatar');
+                if (nameEl) nameEl.textContent = adminName;
+                if (avatarEl) avatarEl.textContent = adminName.charAt(0).toUpperCase();
+                
                 // Hide access denied message if it was shown
                 const deniedMessage = document.getElementById('accessDeniedMessage');
                 if (deniedMessage) {
