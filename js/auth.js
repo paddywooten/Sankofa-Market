@@ -39,13 +39,45 @@ function initLogin() {
         
         try {
             if (typeof firebaseAuth !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
-                await firebaseAuth.signInWithEmailAndPassword(email, password);
+                const cred = await firebaseAuth.signInWithEmailAndPassword(email, password);
+                
+                // Check user status
+                if (typeof firebaseDB !== 'undefined') {
+                    const userDoc = await firebaseDB.collection('users').doc(cred.user.uid).get();
+                    
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        
+                        if (userData.status === 'pending') {
+                            // Sign out user and show message
+                            await firebaseAuth.signOut();
+                            showFlashMessage('Your account is pending admin approval. Please wait for approval before logging in.', 'warning');
+                            return;
+                        } else if (userData.status === 'rejected') {
+                            await firebaseAuth.signOut();
+                            showFlashMessage('Your account registration was rejected. Please contact support for more information.', 'error');
+                            return;
+                        }
+                        // If status is 'approved' or undefined (for old accounts), allow login
+                    }
+                }
+                
                 showFlashMessage('Welcome back!', 'success');
                 redirectAfterAuth();
             } else {
                 // Demo mode
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                localStorage.setItem('sankofa_user', JSON.stringify({ email, name: 'Demo User' }));
+                
+                const demoUser = localStorage.getItem('sankofa_user');
+                if (demoUser) {
+                    const userData = JSON.parse(demoUser);
+                    if (userData.status === 'pending') {
+                        showFlashMessage('Your account is pending admin approval. Please wait for approval before logging in.', 'warning');
+                        return;
+                    }
+                }
+                
+                localStorage.setItem('sankofa_user', JSON.stringify({ email, name: 'Demo User', status: 'approved' }));
                 showFlashMessage('Welcome back! (Demo mode)', 'success');
                 redirectAfterAuth();
             }
@@ -124,6 +156,9 @@ function initRegister() {
     const googleBtn = document.getElementById('googleRegisterBtn');
     const facebookBtn = document.getElementById('facebookRegisterBtn');
     
+    // File upload handlers
+    initFileUploads();
+    
     // Password strength meter
     passwordInput.addEventListener('input', function() {
         updatePasswordStrength(this.value);
@@ -139,6 +174,8 @@ function initRegister() {
         const password = passwordInput.value;
         const confirmPassword = confirmInput.value;
         const terms = document.getElementById('terms').checked;
+        const ghanaCardFiles = window.ghanaCardFiles || [];
+        const passportPhotoFile = window.passportPhotoFile;
         
         // Validation
         if (!firstName || !lastName) {
@@ -165,6 +202,18 @@ function initRegister() {
             showFlashMessage('Please agree to the Terms of Service', 'error');
             return;
         }
+        if (ghanaCardFiles.length === 0) {
+            showFlashMessage('Please upload your Ghana Card (front and back)', 'error');
+            return;
+        }
+        if (ghanaCardFiles.length < 2) {
+            showFlashMessage('Please upload both front and back of your Ghana Card', 'error');
+            return;
+        }
+        if (!passportPhotoFile) {
+            showFlashMessage('Please upload your passport picture', 'error');
+            return;
+        }
         
         const stopLoading = showLoading(registerBtn);
         
@@ -177,28 +226,56 @@ function initRegister() {
                     displayName: `${firstName} ${lastName}`
                 });
                 
-                // Save user data to Firestore
+                // Upload verification documents to Firebase Storage
+                const ghanaCardUrls = [];
+                for (let i = 0; i < ghanaCardFiles.length; i++) {
+                    const url = await uploadVerificationFile(ghanaCardFiles[i], `verifications/${cred.user.uid}/ghana_card_${i}`);
+                    ghanaCardUrls.push(url);
+                }
+                
+                const passportPhotoUrl = await uploadVerificationFile(passportPhotoFile, `verifications/${cred.user.uid}/passport_photo`);
+                
+                // Save user data to Firestore with pending status
                 if (typeof firebaseDB !== 'undefined') {
                     await firebaseDB.collection('users').doc(cred.user.uid).set({
                         firstName,
                         lastName,
                         email,
                         phone,
+                        status: 'pending', // Account pending admin approval
+                        verification: {
+                            ghanaCard: ghanaCardUrls,
+                            passportPhoto: passportPhotoUrl,
+                            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        },
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
                 
-                showFlashMessage('Account created successfully!', 'success');
+                // Sign out user since account is pending approval
+                await firebaseAuth.signOut();
+                
+                showFlashMessage('Account created! Your account is pending admin approval. You will receive an email once approved.', 'success');
+                
+                // Redirect to login page after delay
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
             } else {
                 // Demo mode
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 localStorage.setItem('sankofa_user', JSON.stringify({ 
-                    email, name: `${firstName} ${lastName}`, phone 
+                    email, 
+                    name: `${firstName} ${lastName}`, 
+                    phone,
+                    status: 'pending'
                 }));
-                showFlashMessage('Account created! (Demo mode)', 'success');
+                showFlashMessage('Account created! Your account is pending admin approval. (Demo mode)', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
             }
-            
-            redirectAfterAuth();
         } catch (error) {
             console.error('Register error:', error);
             showFlashMessage(getAuthErrorMessage(error.code), 'error');
@@ -238,6 +315,115 @@ function initRegister() {
             showFlashMessage(getAuthErrorMessage(error.code), 'error');
         }
     });
+}
+
+// ============================================================================
+// FILE UPLOAD HANDLERS
+// ============================================================================
+
+function initFileUploads() {
+    // Ghana Card upload
+    const ghanaCardInput = document.getElementById('ghanaCard');
+    const ghanaCardPreview = document.getElementById('ghanaCardPreview');
+    window.ghanaCardFiles = [];
+    
+    ghanaCardInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        
+        if (window.ghanaCardFiles.length + files.length > 2) {
+            showFlashMessage('Maximum 2 images for Ghana Card (front and back)', 'warning');
+            return;
+        }
+        
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                showFlashMessage('Only image files are allowed', 'error');
+                return;
+            }
+            
+            window.ghanaCardFiles.push(file);
+            displayFilePreview(file, ghanaCardPreview, window.ghanaCardFiles.length - 1, 'ghanaCard');
+        });
+        
+        // Reset input
+        this.value = '';
+    });
+    
+    // Passport Photo upload
+    const passportPhotoInput = document.getElementById('passportPhoto');
+    const passportPhotoPreview = document.getElementById('passportPhotoPreview');
+    window.passportPhotoFile = null;
+    
+    passportPhotoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        
+        if (!file) return;
+        
+        if (!file.type.startsWith('image/')) {
+            showFlashMessage('Only image files are allowed', 'error');
+            return;
+        }
+        
+        window.passportPhotoFile = file;
+        displayFilePreview(file, passportPhotoPreview, 0, 'passportPhoto');
+        
+        // Reset input
+        this.value = '';
+    });
+}
+
+function displayFilePreview(file, container, index, type) {
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'file-preview-item';
+        previewItem.innerHTML = `
+            <img src="${e.target.result}" alt="Preview">
+            <button type="button" class="remove-file" data-index="${index}" data-type="${type}">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(previewItem);
+        
+        // Add remove handler
+        previewItem.querySelector('.remove-file').addEventListener('click', function() {
+            const idx = parseInt(this.dataset.index);
+            const fileType = this.dataset.type;
+            
+            if (fileType === 'ghanaCard') {
+                window.ghanaCardFiles.splice(idx, 1);
+            } else {
+                window.passportPhotoFile = null;
+            }
+            
+            previewItem.remove();
+            
+            // Re-render previews with correct indices
+            if (fileType === 'ghanaCard') {
+                container.innerHTML = '';
+                window.ghanaCardFiles.forEach((f, i) => {
+                    displayFilePreview(f, container, i, 'ghanaCard');
+                });
+            }
+        });
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+async function uploadVerificationFile(file, path) {
+    if (typeof firebaseStorage === 'undefined') {
+        // Demo mode - return mock URL
+        return `https://storage.example.com/${path}`;
+    }
+    
+    const storageRef = firebaseStorage.ref();
+    const fileRef = storageRef.child(path);
+    
+    await fileRef.put(file);
+    return await fileRef.getDownloadURL();
 }
 
 // ============================================================================

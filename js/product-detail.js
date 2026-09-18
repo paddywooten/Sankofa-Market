@@ -7,7 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductActions();
     loadSimilarProducts();
     loadProductFromURL();
+    injectPaymentSafetyWarnings();
 });
+
+/**
+ * Inject payment safety warnings
+ */
+function injectPaymentSafetyWarnings() {
+    const container = document.getElementById('paymentSafetyWarnings');
+    if (container && typeof PaymentWarnings !== 'undefined') {
+        container.innerHTML = PaymentWarnings.getPaymentPageWarning() + PaymentWarnings.getContactSellerWarning();
+    }
+}
 
 // ============================================================================
 // GALLERY FUNCTIONALITY
@@ -99,7 +110,14 @@ function initProductActions() {
             }, 1500);
             return;
         }
-        showFlashMessage('Opening chat with seller...', 'info');
+        
+        // Show safety warning
+        showFlashMessage('💡 Remember: Only communicate through Sankofa Market. Never share personal contact details or make payments outside the platform.', 'info');
+        
+        // In a real app, this would open the chat interface
+        setTimeout(() => {
+            showFlashMessage('Opening secure chat with seller...', 'success');
+        }, 2000);
     });
     
     callBtn.addEventListener('click', function() {
@@ -110,7 +128,9 @@ function initProductActions() {
             }, 1500);
             return;
         }
-        showFlashMessage('Phone: +233 XX XXX XXXX', 'info');
+        
+        // Show warning about platform communication
+        showFlashMessage('⚠️ For your safety, we recommend using our secure messaging system instead of phone calls. All platform communications are recorded for dispute resolution.', 'warning');
     });
 }
 

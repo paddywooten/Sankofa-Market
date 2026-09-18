@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/product-detail.css">
+    <link rel="stylesheet" href="css/payment-warnings.css">
 </head>
 <body>
     <header class="header">
@@ -229,6 +230,12 @@
                 </table>
             </div>
 
+            <!-- Payment Safety Information -->
+            <div class="product-description-section">
+                <h2><i class="fas fa-shield-alt" style="color: #0064d2;"></i> Payment & Safety Information</h2>
+                <div id="paymentSafetyWarnings"></div>
+            </div>
+
             <!-- Similar Products -->
             <div class="similar-products-section">
                 <h2>Similar Products</h2>
@@ -251,5 +258,6 @@
     <script src="config/firebase-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/product-detail.js"></script>
+    <script src="js/payment-warnings.js"></script>
 </body>
 </html>

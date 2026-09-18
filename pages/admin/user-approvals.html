@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Approvals - Admin - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-item">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="user-approvals.html" class="nav-item active">
+                    <i class="fas fa-user-check"></i>
+                    <span>User Approvals</span>
+                    <span class="nav-badge" id="pendingCount">0</span>
+                </a>
+                <a href="disputes.html" class="nav-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Disputes</span>
+                </a>
+                <a href="transactions.html" class="nav-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../../index.html" class="nav-item">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Site</span>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-user-check"></i> User Approvals</h1>
+                    <p>Review and approve pending user registrations</p>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="pending">Pending Approval</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="all">All Users</option>
+                    </select>
+                    <input type="text" id="searchInput" class="filter-input" placeholder="Search by name or email...">
+                </div>
+
+                <!-- Users List -->
+                <div class="users-list" id="usersList">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading users...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal-overlay" id="userModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="userModalBody">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../../config/firebase-config.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="../../js/admin.js"></script>
+    <script src="../../js/user-approvals.js"></script>
+</body>
+</html>

@@ -149,6 +149,26 @@ function initFormSubmission() {
             return;
         }
         
+        // Check if user account is approved
+        if (typeof firebaseAuth !== 'undefined' && typeof firebaseDB !== 'undefined') {
+            const user = firebaseAuth.currentUser;
+            if (user) {
+                const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    
+                    if (userData.status === 'pending') {
+                        showFlashMessage('Your account is pending admin approval. You cannot publish listings until your account is approved.', 'warning');
+                        return;
+                    } else if (userData.status === 'rejected') {
+                        showFlashMessage('Your account registration was rejected. Please contact support for more information.', 'error');
+                        return;
+                    }
+                }
+            }
+        }
+        
         // Collect form data
         const formData = collectFormData();
         

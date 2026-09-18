@@ -1,0 +1,218 @@
+/* ============================================================================
+   PAYMENT SAFETY WARNINGS
+   ============================================================================ */
+
+.payment-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.payment-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%);
+    border-radius: 8px 8px 0 0;
+}
+
+.payment-warning-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.payment-warning-header i {
+    font-size: 1.5rem;
+    color: #856404;
+}
+
+.payment-warning-header h3 {
+    font-size: 1.1rem;
+    color: #856404;
+    margin: 0;
+}
+
+.payment-warning-content {
+    color: #856404;
+    line-height: 1.6;
+}
+
+.payment-warning-content p {
+    margin: 0.5rem 0;
+}
+
+.payment-warning-content ul {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.payment-warning-content li {
+    margin: 0.5rem 0;
+}
+
+.payment-warning-content strong {
+    color: #664d03;
+}
+
+.payment-warning-highlight {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    border-left: 4px solid #ffc107;
+}
+
+.payment-warning-highlight p {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Critical Warning (Red) */
+.payment-warning.critical {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-color: #dc3545;
+}
+
+.payment-warning.critical::before {
+    background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+}
+
+.payment-warning.critical .payment-warning-header i,
+.payment-warning.critical .payment-warning-header h3,
+.payment-warning.critical .payment-warning-content {
+    color: #721c24;
+}
+
+.payment-warning.critical .payment-warning-content strong {
+    color: #491217;
+}
+
+.payment-warning.critical .payment-warning-highlight {
+    border-left-color: #dc3545;
+}
+
+/* Info Warning (Blue) */
+.payment-warning.info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-color: #17a2b8;
+}
+
+.payment-warning.info::before {
+    background: linear-gradient(90deg, #17a2b8 0%, #138496 100%);
+}
+
+.payment-warning.info .payment-warning-header i,
+.payment-warning.info .payment-warning-header h3,
+.payment-warning.info .payment-warning-content {
+    color: #0c5460;
+}
+
+.payment-warning.info .payment-warning-content strong {
+    color: #062c33;
+}
+
+.payment-warning.info .payment-warning-highlight {
+    border-left-color: #17a2b8;
+}
+
+/* Delivery Warning */
+.delivery-warning {
+    background: #e7f3ff;
+    border: 1px solid #0064d2;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.delivery-warning i {
+    color: #0064d2;
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+}
+
+.delivery-warning-content {
+    flex: 1;
+}
+
+.delivery-warning-content p {
+    margin: 0;
+    color: #004085;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.delivery-warning-content strong {
+    color: #002752;
+}
+
+/* Chat Warning Banner */
+.chat-warning-banner {
+    background: #fff3cd;
+    border-bottom: 2px solid #ffc107;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: #856404;
+}
+
+.chat-warning-banner i {
+    color: #ffc107;
+    font-size: 1rem;
+}
+
+.chat-warning-banner p {
+    margin: 0;
+    flex: 1;
+}
+
+.chat-warning-banner strong {
+    color: #664d03;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .payment-warning {
+        padding: 1rem;
+    }
+    
+    .payment-warning-header h3 {
+        font-size: 1rem;
+    }
+    
+    .payment-warning-content {
+        font-size: 0.9rem;
+    }
+    
+    .chat-warning-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-warning {
+        padding: 0.75rem;
+    }
+    
+    .payment-warning-header i {
+        font-size: 1.2rem;
+    }
+    
+    .payment-warning-content ul {
+        padding-left: 1rem;
+    }
+}

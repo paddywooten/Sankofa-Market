@@ -75,6 +75,43 @@
                         </div>
                     </div>
 
+                    <!-- Identity Verification Section -->
+                    <div class="verification-section">
+                        <h3><i class="fas fa-id-card"></i> Identity Verification</h3>
+                        <p class="verification-info">To ensure a safe marketplace, all new accounts require admin approval. Please upload the following documents:</p>
+                        
+                        <div class="form-group">
+                            <label for="ghanaCard">Ghana Card (Front & Back) <span class="required">*</span></label>
+                            <div class="file-upload-area" id="ghanaCardUploadArea">
+                                <input type="file" id="ghanaCard" name="ghanaCard" accept="image/*" multiple required style="display: none;">
+                                <div class="file-upload-prompt" onclick="document.getElementById('ghanaCard').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Click to upload Ghana Card photos</span>
+                                    <small>Upload front and back (2 images max)</small>
+                                </div>
+                                <div class="file-preview" id="ghanaCardPreview"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passportPhoto">Passport Picture <span class="required">*</span></label>
+                            <div class="file-upload-area" id="passportPhotoUploadArea">
+                                <input type="file" id="passportPhoto" name="passportPhoto" accept="image/*" required style="display: none;">
+                                <div class="file-upload-prompt" onclick="document.getElementById('passportPhoto').click()">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Click to upload passport picture</span>
+                                    <small>Clear photo of yourself (1 image)</small>
+                                </div>
+                                <div class="file-preview" id="passportPhotoPreview"></div>
+                            </div>
+                        </div>
+
+                        <div class="verification-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Your account will be <strong>pending approval</strong> until admin reviews your documents. You'll receive an email once approved.</span>
+                        </div>
+                    </div>
+
                     <label class="checkbox-label terms-checkbox">
                         <input type="checkbox" id="terms" name="terms" required>
                         <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>

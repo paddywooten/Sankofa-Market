@@ -290,3 +290,148 @@
         align-items: flex-start;
     }
 }
+
+/* Verification Section */
+.verification-section {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.verification-section h3 {
+    font-size: 1.1rem;
+    color: #0064d2;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verification-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.file-upload-area {
+    margin-bottom: 1rem;
+}
+
+.file-upload-prompt {
+    border: 2px dashed #ced4da;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.file-upload-prompt:hover {
+    border-color: #0064d2;
+    background: #f0f7ff;
+}
+
+.file-upload-prompt i {
+    font-size: 2rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.file-upload-prompt span {
+    display: block;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.file-upload-prompt small {
+    display: block;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.file-preview {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.file-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid #dee2e6;
+}
+
+.file-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-preview-item .remove-file {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.verification-notice {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 4px;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.verification-notice i {
+    color: #ffc107;
+    font-size: 1.2rem;
+    margin-top: 0.1rem;
+}
+
+.verification-notice span {
+    font-size: 0.9rem;
+    color: #856404;
+    line-height: 1.5;
+}
+
+.verification-notice strong {
+    color: #856404;
+}
+
+@media (max-width: 768px) {
+    .verification-section {
+        padding: 1rem;
+    }
+    
+    .file-upload-prompt {
+        padding: 1.5rem;
+    }
+    
+    .file-preview-item {
+        width: 80px;
+        height: 80px;
+    }
+}
