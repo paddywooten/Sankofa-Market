@@ -1234,3 +1234,29 @@ a:hover {
         color: black;
     }
 }
+
+/* Image Search Button in Header */
+.header-actions .image-search-trigger {
+    margin-right: 0.5rem;
+}
+
+.search-form {
+    position: relative;
+}
+
+.search-form .image-search-trigger {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    z-index: 10;
+}
+
+.search-form .image-search-trigger:hover {
+    background: #f0f7ff;
+    border: none;
+}
