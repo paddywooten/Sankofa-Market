@@ -11,7 +11,7 @@ class SankofaChatbot {
         this.sessionId = this.generateSessionId();
         this.conversationId = this.generateConversationId();
         this.currentPageContext = this.getPageContext();
-        this.useNLP = true; // Set to false if Dialogflow not configured
+        this.useNLP = false; // Cloud Functions not deployed - use keyword matching
         this.init();
     }
 
