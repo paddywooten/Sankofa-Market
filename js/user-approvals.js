@@ -68,41 +68,9 @@ async function loadUsers() {
     }
 }
 
-function renderDemoUsers() {
-    allUsers = [
-        {
-            id: 'demo1',
-            firstName: '', lastName: '',
-            createdAt: new Date()
+function renderDemoUsers() createdAt: new Date(Date.now() - 86400000)
         },
-        {
-            id: 'demo2',
-            firstName: 'Ama',
-            lastName: 'Mensah',
-            email: 'ama@example.com',
-            phone: '0551234567',
-            status: 'pending',
-            ghanaCard: {
-                number: 'GHA-987654321-1',
-                name: 'Ama Serwaa Mensah',
-                submittedAt: new Date()
-            },
-            createdAt: new Date(Date.now() - 86400000)
-        },
-        {
-            id: 'demo3',
-            firstName: 'Kofi',
-            lastName: 'Owusu',
-            email: 'kofi@example.com',
-            phone: '0201234567',
-            status: 'approved',
-            ghanaCard: {
-                number: 'GHA-456789123-2',
-                name: 'Kofi Owusu',
-                submittedAt: new Date(Date.now() - 172800000),
-                approvedAt: new Date(Date.now() - 86400000)
-            },
-            createdAt: new Date(Date.now() - 172800000)
+        createdAt: new Date(Date.now() - 172800000)
         }
     ];
     
