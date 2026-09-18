@@ -435,3 +435,338 @@
         height: 80px;
     }
 }
+
+/* ============================================================================
+   ENHANCED RESPONSIVE STYLES FOR AUTH PAGES
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .auth-main {
+        padding: 1rem;
+        min-height: auto;
+    }
+    
+    .auth-container {
+        max-width: 100%;
+    }
+    
+    .auth-card {
+        padding: 1.5rem;
+        margin: 0;
+    }
+    
+    .auth-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .auth-logo {
+        height: 40px;
+        margin-bottom: 1rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .auth-header p {
+        font-size: 0.9rem;
+    }
+    
+    .auth-form .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .input-icon input {
+        padding: 0.65rem 1rem 0.65rem 2.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .input-icon i:first-child {
+        left: 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    .toggle-password {
+        right: 0.75rem;
+    }
+    
+    .form-row-2col {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .form-row-2col .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .social-login {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .auth-divider {
+        margin: 1rem 0;
+    }
+    
+    .auth-divider span {
+        font-size: 0.8rem;
+        padding: 0 0.75rem;
+    }
+    
+    .verification-section {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .verification-section h3 {
+        font-size: 1rem;
+    }
+    
+    .verification-info {
+        font-size: 0.85rem;
+    }
+    
+    .file-upload-prompt {
+        padding: 1.5rem 1rem;
+    }
+    
+    .file-upload-prompt i {
+        font-size: 1.5rem;
+    }
+    
+    .file-upload-prompt span {
+        font-size: 0.9rem;
+    }
+    
+    .file-upload-prompt small {
+        font-size: 0.8rem;
+    }
+    
+    .file-preview {
+        gap: 0.5rem;
+    }
+    
+    .file-preview-item {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .verification-notice {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+    
+    .verification-notice i {
+        font-size: 1rem;
+    }
+    
+    .verification-notice span {
+        font-size: 0.85rem;
+    }
+    
+    .auth-footer {
+        font-size: 0.85rem;
+    }
+    
+    .terms-checkbox {
+        font-size: 0.8rem;
+    }
+    
+    .password-strength {
+        margin-top: 0.4rem;
+    }
+    
+    .strength-text {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-main {
+        padding: 0.5rem;
+    }
+    
+    .auth-card {
+        padding: 1.25rem;
+        border-radius: 8px;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.35rem;
+    }
+    
+    .auth-header p {
+        font-size: 0.85rem;
+    }
+    
+    .input-icon input {
+        padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .input-icon i:first-child {
+        left: 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .toggle-password {
+        right: 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-social {
+        padding: 0.65rem;
+        font-size: 0.85rem;
+    }
+    
+    .verification-section {
+        padding: 0.75rem;
+    }
+    
+    .file-preview-item {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .file-preview-item .remove-file {
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
+    }
+}
+
+/* ============================================================================
+   ADMIN LOGIN PAGE SPECIFIC STYLES
+   ============================================================================ */
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .admin-badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.75rem;
+    }
+}
+
+/* ============================================================================
+   FORM HINT STYLES
+   ============================================================================ */
+
+.form-hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .form-hint {
+        font-size: 0.75rem;
+    }
+}
+
+/* ============================================================================
+   ENHANCED BUTTON STYLES
+   ============================================================================ */
+
+.btn-large {
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .btn-large {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-large {
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================================================
+   IMPROVED FORM GROUP SPACING
+   ============================================================================ */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ============================================================================
+   IMPROVED AUTH CARD SHADOW
+   ============================================================================ */
+
+.auth-card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* ============================================================================
+   IMPROVED FOCUS STATES
+   ============================================================================ */
+
+.input-icon input:focus,
+.form-row-2col input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 100, 210, 0.1);
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+    .auth-main {
+        background: white;
+        padding: 0;
+    }
+    
+    .auth-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .social-login,
+    .auth-divider {
+        display: none;
+    }
+}
