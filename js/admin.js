@@ -23,6 +23,7 @@ function initAdminDashboard() {
     initGlobalSearch();
     initLegalChecklist();
     initBottomNav();
+    initSidebarCollapse();
 }
 
 // ============================================================================
@@ -1370,5 +1371,42 @@ function initBottomNav() {
                 switchSection(this.dataset.section);
             }
         });
+    });
+}
+
+// ============================================================================
+// SIDEBAR COLLAPSE / HIDE TOGGLE
+// ============================================================================
+
+function initSidebarCollapse() {
+    var collapseBtn = document.getElementById('sidebarCollapseBtn');
+    var showBtn = document.getElementById('sidebarShowBtn');
+
+    if (!collapseBtn || !showBtn) return;
+
+    // Restore saved state
+    var isCollapsed = localStorage.getItem('sankofa_sidebar_collapsed') === 'true';
+    if (isCollapsed && window.innerWidth > 768) {
+        document.body.classList.add('sidebar-collapsed');
+    }
+
+    // Hide sidebar
+    collapseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.classList.add('sidebar-collapsed');
+        localStorage.setItem('sankofa_sidebar_collapsed', 'true');
+    });
+
+    // Show sidebar
+    showBtn.addEventListener('click', function() {
+        document.body.classList.remove('sidebar-collapsed');
+        localStorage.setItem('sankofa_sidebar_collapsed', 'false');
+    });
+
+    // Reset on mobile
+    window.addEventListener('resize', function() {
+        if (window.innerWidth <= 768) {
+            document.body.classList.remove('sidebar-collapsed');
+        }
     });
 }

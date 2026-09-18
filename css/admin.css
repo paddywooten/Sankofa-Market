@@ -2241,3 +2241,88 @@ body.sidebar-open {
         font-size: 1.1rem;
     }
 }
+
+/* ============================================================================
+   SIDEBAR COLLAPSE / HIDE (Desktop)
+   ============================================================================ */
+
+.sidebar-collapse-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-collapse-btn:hover {
+    background: rgba(255,255,255,0.05) !important;
+}
+
+.sidebar-collapse-btn i {
+    transition: transform 0.3s ease;
+}
+
+/* Show sidebar button (hidden by default) */
+.sidebar-show-btn {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 90;
+    background: #191919;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-show-btn:hover {
+    background: #0064d2;
+    padding-right: 0.75rem;
+}
+
+/* When sidebar is hidden */
+body.sidebar-collapsed .admin-sidebar {
+    transform: translateX(-100%);
+}
+
+body.sidebar-collapsed .admin-main {
+    margin-left: 0;
+}
+
+body.sidebar-collapsed .sidebar-show-btn {
+    display: block;
+}
+
+/* Smooth transitions */
+.admin-sidebar {
+    transition: transform 0.3s ease;
+}
+
+.admin-main {
+    transition: margin-left 0.3s ease;
+}
+
+/* Don't apply collapse on mobile (use hamburger instead) */
+@media (max-width: 768px) {
+    .sidebar-collapse-btn {
+        display: none;
+    }
+
+    .sidebar-show-btn {
+        display: none !important;
+    }
+
+    body.sidebar-collapsed .admin-main {
+        margin-left: 0;
+    }
+}
