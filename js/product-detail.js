@@ -165,21 +165,21 @@ function loadSimilarProducts() {
         {
             title: 'Samsung Galaxy S23 Ultra - 256GB',
             price: 7800,
-            image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=350&h=260&fit=crop&q=75&auto=format',
+            image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=350&h=260&fit=crop&q=75&auto=format',
             location: 'Accra',
             id: 'similar1'
         },
         {
             title: 'iPhone 13 Pro - 128GB - Graphite',
             price: 6200,
-            image: 'https://images.unsplash.com/photo-1632661674596-df8be86a0675?w=350&h=260&fit=crop&q=75&auto=format',
+            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=350&h=260&fit=crop&q=75&auto=format',
             location: 'Kumasi',
             id: 'similar2'
         },
         {
             title: 'Google Pixel 7 Pro - 128GB',
             price: 5500,
-            image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=350&h=260&fit=crop&q=75&auto=format',
+            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=350&h=260&fit=crop&q=75&auto=format',
             location: 'Tema',
             id: 'similar3'
         },
