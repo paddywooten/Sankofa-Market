@@ -385,6 +385,10 @@
         height: 56px;
     }
 
+    .chatbot-trigger.active {
+        display: none;
+    }
+
     .chatbot-window {
         position: fixed;
         top: 56px;
