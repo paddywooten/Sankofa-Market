@@ -1,0 +1,184 @@
+{
+  "categories": [
+    {
+      "id": "electronics",
+      "name": "Electronics",
+      "icon": "fas fa-mobile-alt",
+      "color": "#1a237e",
+      "subcategories": [
+        { "id": "phones", "name": "Phones", "icon": "fas fa-mobile" },
+        { "id": "laptops", "name": "Laptops", "icon": "fas fa-laptop" },
+        { "id": "tablets", "name": "Tablets", "icon": "fas fa-tablet-alt" },
+        { "id": "cameras", "name": "Cameras", "icon": "fas fa-camera" },
+        { "id": "audio", "name": "Audio", "icon": "fas fa-headphones" },
+        { "id": "tv", "name": "TVs", "icon": "fas fa-tv" },
+        { "id": "gaming", "name": "Gaming", "icon": "fas fa-gamepad" },
+        { "id": "accessories", "name": "Accessories", "icon": "fas fa-plug" }
+      ]
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion",
+      "icon": "fas fa-tshirt",
+      "color": "#d4af37",
+      "subcategories": [
+        { "id": "women", "name": "Women's Clothing", "icon": "fas fa-female" },
+        { "id": "men", "name": "Men's Clothing", "icon": "fas fa-male" },
+        { "id": "kids", "name": "Kids' Clothing", "icon": "fas fa-child" },
+        { "id": "shoes", "name": "Shoes", "icon": "fas fa-shoe-prints" },
+        { "id": "bags", "name": "Bags", "icon": "fas fa-shopping-bag" },
+        { "id": "accessories", "name": "Accessories", "icon": "fas fa-gem" },
+        { "id": "watches", "name": "Watches", "icon": "fas fa-clock" },
+        { "id": "jewelry", "name": "Jewelry", "icon": "fas fa-ring" }
+      ]
+    },
+    {
+      "id": "home-garden",
+      "name": "Home & Garden",
+      "icon": "fas fa-home",
+      "color": "#4CAF50",
+      "subcategories": [
+        { "id": "furniture", "name": "Furniture", "icon": "fas fa-couch" },
+        { "id": "appliances", "name": "Appliances", "icon": "fas fa-blender" },
+        { "id": "kitchen", "name": "Kitchen", "icon": "fas fa-utensils" },
+        { "id": "garden", "name": "Garden", "icon": "fas fa-leaf" },
+        { "id": "decor", "name": "Home Decor", "icon": "fas fa-paint-roller" },
+        { "id": "lighting", "name": "Lighting", "icon": "fas fa-lightbulb" },
+        { "id": "tools", "name": "Tools", "icon": "fas fa-tools" }
+      ]
+    },
+    {
+      "id": "vehicles",
+      "name": "Vehicles",
+      "icon": "fas fa-car",
+      "color": "#FF9800",
+      "subcategories": [
+        { "id": "cars", "name": "Cars", "icon": "fas fa-car" },
+        { "id": "motorcycles", "name": "Motorcycles", "icon": "fas fa-motorcycle" },
+        { "id": "bicycles", "name": "Bicycles", "icon": "fas fa-bicycle" },
+        { "id": "parts", "name": "Parts & Accessories", "icon": "fas fa-cog" },
+        { "id": "boats", "name": "Boats", "icon": "fas fa-ship" }
+      ]
+    },
+    {
+      "id": "services",
+      "name": "Services",
+      "icon": "fas fa-concierge-bell",
+      "color": "#9C27B0",
+      "subcategories": [
+        { "id": "tutoring", "name": "Tutoring", "icon": "fas fa-graduation-cap" },
+        { "id": "repairs", "name": "Repairs", "icon": "fas fa-wrench" },
+        { "id": "cleaning", "name": "Cleaning", "icon": "fas fa-broom" },
+        { "id": "beauty", "name": "Beauty", "icon": "fas fa-spa" },
+        { "id": "events", "name": "Events", "icon": "fas fa-calendar" },
+        { "id": "photography", "name": "Photography", "icon": "fas fa-camera-retro" },
+        { "id": "moving", "name": "Moving", "icon": "fas fa-truck" }
+      ]
+    },
+    {
+      "id": "sports",
+      "name": "Sports & Outdoors",
+      "icon": "fas fa-futbol",
+      "color": "#2196F3",
+      "subcategories": [
+        { "id": "equipment", "name": "Equipment", "icon": "fas fa-dumbbell" },
+        { "id": "clothing", "name": "Sports Clothing", "icon": "fas fa-running" },
+        { "id": "outdoor", "name": "Outdoor Gear", "icon": "fas fa-campground" },
+        { "id": "cycling", "name": "Cycling", "icon": "fas fa-biking" },
+        { "id": "fitness", "name": "Fitness", "icon": "fas fa-heartbeat" }
+      ]
+    },
+    {
+      "id": "books-media",
+      "name": "Books & Media",
+      "icon": "fas fa-book",
+      "color": "#795548",
+      "subcategories": [
+        { "id": "books", "name": "Books", "icon": "fas fa-book-open" },
+        { "id": "textbooks", "name": "Textbooks", "icon": "fas fa-book-reader" },
+        { "id": "games", "name": "Video Games", "icon": "fas fa-gamepad" },
+        { "id": "music", "name": "Music", "icon": "fas fa-music" },
+        { "id": "movies", "name": "Movies & TV", "icon": "fas fa-film" },
+        { "id": "instruments", "name": "Musical Instruments", "icon": "fas fa-guitar" }
+      ]
+    },
+    {
+      "id": "baby-kids",
+      "name": "Baby & Kids",
+      "icon": "fas fa-baby",
+      "color": "#E91E63",
+      "subcategories": [
+        { "id": "clothing", "name": "Kids' Clothing", "icon": "fas fa-child" },
+        { "id": "toys", "name": "Toys", "icon": "fas fa-puzzle-piece" },
+        { "id": "strollers", "name": "Strollers", "icon": "fas fa-baby-carriage" },
+        { "id": "furniture", "name": "Kids' Furniture", "icon": "fas fa-bed" },
+        { "id": "feeding", "name": "Feeding", "icon": "fas fa-utensils" },
+        { "id": "safety", "name": "Safety", "icon": "fas fa-shield-alt" }
+      ]
+    },
+    {
+      "id": "beauty-health",
+      "name": "Beauty & Health",
+      "icon": "fas fa-spa",
+      "color": "#FF69B4",
+      "subcategories": [
+        { "id": "cosmetics", "name": "Cosmetics", "icon": "fas fa-magic" },
+        { "id": "skincare", "name": "Skincare", "icon": "fas fa-hand-sparkles" },
+        { "id": "haircare", "name": "Hair Care", "icon": "fas fa-cut" },
+        { "id": "health", "name": "Health Products", "icon": "fas fa-pills" },
+        { "id": "fragrances", "name": "Fragrances", "icon": "fas fa-spray-can" }
+      ]
+    },
+    {
+      "id": "food-groceries",
+      "name": "Food & Groceries",
+      "icon": "fas fa-utensils",
+      "color": "#FF5722",
+      "subcategories": [
+        { "id": "local-foods", "name": "Local Foods", "icon": "fas fa-drumstick-bite" },
+        { "id": "snacks", "name": "Snacks", "icon": "fas fa-cookie" },
+        { "id": "beverages", "name": "Beverages", "icon": "fas fa-coffee" },
+        { "id": "organic", "name": "Organic", "icon": "fas fa-leaf" },
+        { "id": "homemade", "name": "Homemade", "icon": "fas fa-cookie-bite" }
+      ]
+    },
+    {
+      "id": "pets",
+      "name": "Pets",
+      "icon": "fas fa-paw",
+      "color": "#8BC34A",
+      "subcategories": [
+        { "id": "food", "name": "Pet Food", "icon": "fas fa-bone" },
+        { "id": "accessories", "name": "Accessories", "icon": "fas fa-leash" },
+        { "id": "toys", "name": "Pet Toys", "icon": "fas fa-baseball-ball" },
+        { "id": "grooming", "name": "Grooming", "icon": "fas fa-cut" },
+        { "id": "health", "name": "Pet Health", "icon": "fas fa-stethoscope" }
+      ]
+    },
+    {
+      "id": "jobs-skills",
+      "name": "Jobs & Skills",
+      "icon": "fas fa-briefcase",
+      "color": "#3F51B5",
+      "subcategories": [
+        { "id": "freelance", "name": "Freelance", "icon": "fas fa-laptop-code" },
+        { "id": "tutoring", "name": "Tutoring", "icon": "fas fa-chalkboard-teacher" },
+        { "id": "services", "name": "Services", "icon": "fas fa-hands-helping" },
+        { "id": "training", "name": "Training", "icon": "fas fa-user-graduate" }
+      ]
+    },
+    {
+      "id": "real-estate",
+      "name": "Real Estate",
+      "icon": "fas fa-building",
+      "color": "#607D8B",
+      "subcategories": [
+        { "id": "rentals", "name": "Rentals", "icon": "fas fa-home" },
+        { "id": "sales", "name": "Sales", "icon": "fas fa-house-user" },
+        { "id": "roommates", "name": "Roommates", "icon": "fas fa-users" },
+        { "id": "commercial", "name": "Commercial", "icon": "fas fa-store" },
+        { "id": "land", "name": "Land", "icon": "fas fa-map" }
+      ]
+    }
+  ]
+}

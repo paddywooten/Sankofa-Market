@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search products on Sankofa Market - Ghana's premier C2C marketplace">
+    <title>Search - Sankofa Market</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="index.html">
+                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            
+            <div class="header-search">
+                <form class="search-form" action="search.html" method="GET">
+                    <input type="text" name="q" id="searchInput" placeholder="Search for anything..." class="search-input" value="">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="header-actions">
+                <a href="publish.html" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Sell Item
+                </a>
+                <a href="pages/auth/login.html" class="btn btn-outline" id="loginBtn">
+                    <i class="fas fa-user"></i> Login
+                </a>
+                <a href="pages/user/dashboard.html" class="btn btn-primary" id="dashboardBtn" style="display: none;">
+                    <i class="fas fa-user"></i> <span id="userName">Dashboard</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Navigation -->
+    <nav class="category-nav">
+        <div class="container">
+            <div class="category-scroll">
+                <a href="search.html?category=electronics" class="category-link">
+                    <i class="fas fa-mobile-alt"></i> Electronics
+                </a>
+                <a href="search.html?category=fashion" class="category-link">
+                    <i class="fas fa-tshirt"></i> Fashion
+                </a>
+                <a href="search.html?category=home-garden" class="category-link">
+                    <i class="fas fa-home"></i> Home & Garden
+                </a>
+                <a href="search.html?category=vehicles" class="category-link">
+                    <i class="fas fa-car"></i> Vehicles
+                </a>
+                <a href="search.html?category=services" class="category-link">
+                    <i class="fas fa-concierge-bell"></i> Services
+                </a>
+                <a href="search.html?category=sports" class="category-link">
+                    <i class="fas fa-futbol"></i> Sports
+                </a>
+                <a href="search.html?category=books-media" class="category-link">
+                    <i class="fas fa-book"></i> Books & Media
+                </a>
+                <a href="search.html?category=baby-kids" class="category-link">
+                    <i class="fas fa-baby"></i> Baby & Kids
+                </a>
+                <a href="search.html?category=beauty-health" class="category-link">
+                    <i class="fas fa-spa"></i> Beauty & Health
+                </a>
+                <a href="search.html?category=food-groceries" class="category-link">
+                    <i class="fas fa-utensils"></i> Food
+                </a>
+                <a href="search.html?category=pets" class="category-link">
+                    <i class="fas fa-paw"></i> Pets
+                </a>
+                <a href="search.html?category=jobs-skills" class="category-link">
+                    <i class="fas fa-briefcase"></i> Jobs
+                </a>
+                <a href="search.html?category=real-estate" class="category-link">
+                    <i class="fas fa-building"></i> Real Estate
+                </a>
+                <a href="search.html?category=sankofa-store" class="category-link" style="color: var(--accent-color); font-weight: 600;">
+                    <i class="fas fa-store"></i> Sankofa Store
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Results -->
+    <div class="container">
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1 id="searchTitle">Search Results</h1>
+            <p id="searchSubtitle">Loading...</p>
+        </div>
+
+        <!-- Filters and Results -->
+        <div class="search-layout">
+            <!-- Filters Sidebar -->
+            <aside class="filters-sidebar">
+                <h3><i class="fas fa-filter"></i> Filters</h3>
+                
+                <!-- Category Filter -->
+                <div class="filter-group">
+                    <h4>Category</h4>
+                    <select id="filterCategory" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home-garden">Home & Garden</option>
+                        <option value="vehicles">Vehicles</option>
+                        <option value="services">Services</option>
+                        <option value="sports">Sports & Outdoors</option>
+                        <option value="books-media">Books & Media</option>
+                        <option value="baby-kids">Baby & Kids</option>
+                        <option value="beauty-health">Beauty & Health</option>
+                        <option value="food-groceries">Food & Groceries</option>
+                        <option value="pets">Pets</option>
+                        <option value="jobs-skills">Jobs & Skills</option>
+                        <option value="real-estate">Real Estate</option>
+                        <option value="sankofa-store">Sankofa Store</option>
+                    </select>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-group">
+                    <h4>Price Range (GHS)</h4>
+                    <div class="price-range">
+                        <input type="number" id="priceMin" placeholder="Min" class="form-control">
+                        <span>-</span>
+                        <input type="number" id="priceMax" placeholder="Max" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Condition Filter -->
+                <div class="filter-group">
+                    <h4>Condition</h4>
+                    <select id="filterCondition" class="form-control">
+                        <option value="">All Conditions</option>
+                        <option value="new">New</option>
+                        <option value="like-new">Like New</option>
+                        <option value="good">Good</option>
+                        <option value="fair">Fair</option>
+                    </select>
+                </div>
+
+                <!-- Location Filter -->
+                <div class="filter-group">
+                    <h4>Location</h4>
+                    <select id="filterLocation" class="form-control">
+                        <option value="">All Locations</option>
+                        <option value="Accra">Accra</option>
+                        <option value="Kumasi">Kumasi</option>
+                        <option value="Takoradi">Takoradi</option>
+                        <option value="Tamale">Tamale</option>
+                        <option value="Cape Coast">Cape Coast</option>
+                        <option value="Sunyani">Sunyani</option>
+                        <option value="Ho">Ho</option>
+                        <option value="Koforidua">Koforidua</option>
+                    </select>
+                </div>
+
+                <!-- Seller Type Filter -->
+                <div class="filter-group">
+                    <h4>Seller Type</h4>
+                    <select id="filterSellerType" class="form-control">
+                        <option value="">All Sellers</option>
+                        <option value="sankofa-store">Sankofa Store</option>
+                        <option value="verified">Verified Sellers</option>
+                        <option value="individual">Individual Sellers</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="applyFilters()">
+                    <i class="fas fa-check"></i> Apply Filters
+                </button>
+                <button class="btn btn-outline btn-full mt-sm" onclick="resetFilters()">
+                    <i class="fas fa-times"></i> Reset Filters
+                </button>
+            </aside>
+
+            <!-- Search Results -->
+            <div class="search-results">
+                <!-- Sort Options -->
+                <div class="sort-options">
+                    <label>Sort by:</label>
+                    <select id="sortBy" onchange="applyFilters()">
+                        <option value="latest">Latest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="distance">Nearest</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="searchResults">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading products...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart" style="color: var(--accent-color);"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="config/firebase-config.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

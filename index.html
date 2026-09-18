@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sankofa Market - Ghana's #1 Online Marketplace. Buy and sell electronics, fashion, home & garden, vehicles, and more. Fast, secure, and trusted by thousands of Ghanaians.">
+    <meta name="keywords" content="Sankofa Market, Ghana marketplace, buy, sell, online shopping, electronics, fashion, Ghana, Accra, Kumasi">
+    <meta name="author" content="Sankofa Market">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sankofamarket.com/">
+    <meta property="og:title" content="Sankofa Market - Ghana's #1 Online Marketplace">
+    <meta property="og:description" content="Buy and sell electronics, fashion, home & garden, vehicles, and more. Fast, secure, and trusted by thousands of Ghanaians.">
+    <meta property="og:image" content="images/logos/sankofa-market-logo-full-color.png">
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://sankofamarket.com/">
+    <meta property="twitter:title" content="Sankofa Market - Ghana's #1 Online Marketplace">
+    <meta property="twitter:description" content="Buy and sell electronics, fashion, home & garden, vehicles, and more.">
+    <meta property="twitter:image" content="images/logos/sankofa-market-logo-full-color.png">
+    
+    <title>Sankofa Market - Ghana's #1 Online Marketplace</title>
+    
+    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    <link rel="apple-touch-icon" href="images/logos/sankofa-market-app-icon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="index.html">
+                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            
+            <div class="header-search">
+                <form class="search-form" action="search.html" method="GET">
+                    <input type="text" name="q" id="searchInput" placeholder="Search for anything..." class="search-input" value="">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="header-actions">
+                <a href="publish.html" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i> Sell
+                </a>
+                <a href="pages/auth/login.html" class="btn btn-outline" id="loginBtn">
+                    <i class="fas fa-user"></i> Sign in
+                </a>
+                <a href="pages/user/dashboard.html" class="btn btn-primary" id="dashboardBtn" style="display: none;">
+                    <i class="fas fa-user"></i> <span id="userName">My Account</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-nav">
+        <div class="container">
+            <div class="category-scroll">
+                <a href="search.html?category=electronics" class="category-link">
+                    <i class="fas fa-mobile-alt"></i> Electronics
+                </a>
+                <a href="search.html?category=fashion" class="category-link">
+                    <i class="fas fa-tshirt"></i> Fashion
+                </a>
+                <a href="search.html?category=home-garden" class="category-link">
+                    <i class="fas fa-home"></i> Home & Garden
+                </a>
+                <a href="search.html?category=vehicles" class="category-link">
+                    <i class="fas fa-car"></i> Vehicles
+                </a>
+                <a href="search.html?category=services" class="category-link">
+                    <i class="fas fa-concierge-bell"></i> Services
+                </a>
+                <a href="search.html?category=sports" class="category-link">
+                    <i class="fas fa-futbol"></i> Sports
+                </a>
+                <a href="search.html?category=books-media" class="category-link">
+                    <i class="fas fa-book"></i> Books & Media
+                </a>
+                <a href="search.html?category=baby-kids" class="category-link">
+                    <i class="fas fa-baby"></i> Baby & Kids
+                </a>
+                <a href="search.html?category=beauty-health" class="category-link">
+                    <i class="fas fa-spa"></i> Beauty & Health
+                </a>
+                <a href="search.html?category=food-groceries" class="category-link">
+                    <i class="fas fa-utensils"></i> Food
+                </a>
+                <a href="search.html?category=pets" class="category-link">
+                    <i class="fas fa-paw"></i> Pets
+                </a>
+                <a href="search.html?category=jobs-skills" class="category-link">
+                    <i class="fas fa-briefcase"></i> Jobs
+                </a>
+                <a href="search.html?category=real-estate" class="category-link">
+                    <i class="fas fa-building"></i> Real Estate
+                </a>
+                <a href="search.html?category=sankofa-store" class="category-link" style="color: #f5af02; font-weight: 600;">
+                    <i class="fas fa-store"></i> Sankofa Store
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-carousel">
+        <div class="carousel-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Slide 1: Electronics Mega Sale -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #0064d2 0%, #004a9f 50%, #002d6b 100%);">
+                    <div class="carousel-inner">
+                        <div class="carousel-text">
+                            <span class="carousel-tag">🔥 Mega Sale</span>
+                            <h2>Electronics Blowout<br><span style="color: #f5af02;">Up to 40% Off</span></h2>
+                            <p>Discover incredible deals on phones, laptops, TVs, and more from verified sellers across Ghana.</p>
+                            <a href="search.html?category=electronics" class="btn btn-secondary btn-large">
+                                <i class="fas fa-bolt"></i> Shop Electronics
+                            </a>
+                        </div>
+                        <div class="carousel-image">
+                            <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=600&h=400&fit=crop" alt="Electronics Sale">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Fashion Week -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #922b21 100%);">
+                    <div class="carousel-inner">
+                        <div class="carousel-text">
+                            <span class="carousel-tag">👗 New Arrivals</span>
+                            <h2>Fashion Week<br><span style="color: #ffc107;">Trending Styles</span></h2>
+                            <p>Explore the latest fashion trends. From African prints to modern streetwear — find your style.</p>
+                            <a href="search.html?category=fashion" class="btn btn-secondary btn-large">
+                                <i class="fas fa-tshirt"></i> Explore Fashion
+                            </a>
+                        </div>
+                        <div class="carousel-image">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop" alt="Fashion Collection">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Sankofa Store -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #f5af02 0%, #e09e00 50%, #c68900 100%);">
+                    <div class="carousel-inner">
+                        <div class="carousel-text">
+                            <span class="carousel-tag" style="background: rgba(0,0,0,0.2); color: white;">⭐ Official Store</span>
+                            <h2 style="color: #191919;">Sankofa Store<br><span style="color: #004a9f;">100% Verified</span></h2>
+                            <p style="color: rgba(0,0,0,0.7);">Shop from our official in-house store. Quality guaranteed, fast delivery, and hassle-free returns.</p>
+                            <a href="search.html?category=sankofa-store" class="btn btn-primary btn-large">
+                                <i class="fas fa-store"></i> Visit Sankofa Store
+                            </a>
+                        </div>
+                        <div class="carousel-image">
+                            <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=600&h=400&fit=crop" alt="Sankofa Store">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Start Selling -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #86b817 0%, #6d9a0f 50%, #4a7a00 100%);">
+                    <div class="carousel-inner">
+                        <div class="carousel-text">
+                            <span class="carousel-tag">💰 Free Listing</span>
+                            <h2>Start Selling<br><span style="color: #ffc107;">Today — It's Free!</span></h2>
+                            <p>Turn your unused items into cash. List in minutes, reach thousands of buyers across Ghana.</p>
+                            <a href="publish.html" class="btn btn-secondary btn-large">
+                                <i class="fas fa-rocket"></i> Sell Now
+                            </a>
+                        </div>
+                        <div class="carousel-image">
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop" alt="Start Selling">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 5: Home & Garden -->
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #9b59b6 0%, #7d3c98 50%, #5b2c6f 100%);">
+                    <div class="carousel-inner">
+                        <div class="carousel-text">
+                            <span class="carousel-tag">🏠 Home Deals</span>
+                            <h2>Transform Your<br><span style="color: #f5af02;">Living Space</span></h2>
+                            <p>Furniture, decor, kitchen essentials and more. Create the home of your dreams at unbeatable prices.</p>
+                            <a href="search.html?category=home-garden" class="btn btn-secondary btn-large">
+                                <i class="fas fa-couch"></i> Shop Home & Garden
+                            </a>
+                        </div>
+                        <div class="carousel-image">
+                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop" alt="Home & Garden">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Controls -->
+            <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous slide">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next slide">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- Carousel Dots -->
+            <div class="carousel-dots" id="carouselDots">
+                <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
+                <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
+                <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
+                <button class="carousel-dot" data-index="3" aria-label="Go to slide 4"></button>
+                <button class="carousel-dot" data-index="4" aria-label="Go to slide 5"></button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="carousel-progress">
+                <div class="carousel-progress-bar" id="carouselProgress"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-fire" style="color: var(--accent-color);"></i> Featured Deals
+                </h2>
+                <a href="search.html?featured=true" class="view-all">
+                    View All <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="products-grid" id="featuredProducts">
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=300&fit=crop" alt="iPhone 14 Pro Max" class="product-image">
+                        <span class="product-badge">Featured</span>
+                        <span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">iPhone 14 Pro Max - 256GB - Deep Purple</div>
+                        <div class="product-price">GHS 8,500</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Accra</span>
+                            <span><i class="fas fa-clock"></i> 2h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=50&h=50&fit=crop&crop=face" alt="Sankofa Store">
+                            <span class="seller-name">Sankofa Store</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop" alt="Samsung Smart TV" class="product-image">
+                        <span class="product-badge" style="background: #e74c3c;">Hot Deal</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Samsung 55" 4K Smart TV - Crystal UHD</div>
+                        <div class="product-price">GHS 3,200</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Kumasi</span>
+                            <span><i class="fas fa-clock"></i> 5h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face" alt="Kwame Asante">
+                            <span class="seller-name">Kwame Asante</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop" alt="Leather Sofa Set" class="product-image">
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Leather Sofa Set - 3 Pieces - Premium Quality</div>
+                        <div class="product-price">GHS 2,800</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Tema</span>
+                            <span><i class="fas fa-clock"></i> 1d ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=50&h=50&fit=crop&crop=face" alt="Ama Boateng">
+                            <span class="seller-name">Ama Boateng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop" alt="MacBook Pro" class="product-image">
+                        <span class="product-badge">Featured</span>
+                        <span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">MacBook Pro 2023 - M2 Chip - 16GB RAM</div>
+                        <div class="product-price">GHS 12,500</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Accra</span>
+                            <span><i class="fas fa-clock"></i> 3h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=50&h=50&fit=crop&crop=face" alt="Sankofa Store">
+                            <span class="seller-name">Sankofa Store</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-th-large" style="color: var(--primary-color);"></i> Shop by Category
+                </h2>
+            </div>
+            
+            <div class="categories-grid" id="categoriesGrid">
+                <a href="search.html?category=electronics" class="category-card">
+                    <div class="category-icon" style="background: #0064d2;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="category-name">Electronics</div>
+                </a>
+                <a href="search.html?category=fashion" class="category-card">
+                    <div class="category-icon" style="background: #e74c3c;">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="category-name">Fashion</div>
+                </a>
+                <a href="search.html?category=home-garden" class="category-card">
+                    <div class="category-icon" style="background: #86b817;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="category-name">Home & Garden</div>
+                </a>
+                <a href="search.html?category=vehicles" class="category-card">
+                    <div class="category-icon" style="background: #f5af02;">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="category-name">Vehicles</div>
+                </a>
+                <a href="search.html?category=services" class="category-card">
+                    <div class="category-icon" style="background: #9b59b6;">
+                        <i class="fas fa-concierge-bell"></i>
+                    </div>
+                    <div class="category-name">Services</div>
+                </a>
+                <a href="search.html?category=sports" class="category-card">
+                    <div class="category-icon" style="background: #3498db;">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <div class="category-name">Sports</div>
+                </a>
+                <a href="search.html?category=books-media" class="category-card">
+                    <div class="category-icon" style="background: #795548;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="category-name">Books & Media</div>
+                </a>
+                <a href="search.html?category=baby-kids" class="category-card">
+                    <div class="category-icon" style="background: #e91e63;">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <div class="category-name">Baby & Kids</div>
+                </a>
+                <a href="search.html?category=beauty-health" class="category-card">
+                    <div class="category-icon" style="background: #ff69b4;">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <div class="category-name">Beauty & Health</div>
+                </a>
+                <a href="search.html?category=food-groceries" class="category-card">
+                    <div class="category-icon" style="background: #ff5722;">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="category-name">Food & Groceries</div>
+                </a>
+                <a href="search.html?category=pets" class="category-card">
+                    <div class="category-icon" style="background: #8bc34a;">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <div class="category-name">Pets</div>
+                </a>
+                <a href="search.html?category=jobs-skills" class="category-card">
+                    <div class="category-icon" style="background: #3f51b5;">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="category-name">Jobs & Skills</div>
+                </a>
+                <a href="search.html?category=real-estate" class="category-card">
+                    <div class="category-icon" style="background: #607d8b;">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="category-name">Real Estate</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section recent-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-clock" style="color: var(--primary-color);"></i> Recently Listed
+                </h2>
+                <a href="search.html?sort=latest" class="view-all">
+                    View All <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="products-grid" id="recentProducts">
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Nike Shoes" class="product-image">
+                        <span class="product-badge" style="background: #86b817;">New</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Nike Air Jordan Retro - Size 42 - Like New</div>
+                        <div class="product-price">GHS 800</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Accra</span>
+                            <span><i class="fas fa-clock"></i> 6h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=50&h=50&fit=crop&crop=face" alt="Kofi Mensah">
+                            <span class="seller-name">Kofi Mensah</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1606986628253-49e940572d03?w=400&h=300&fit=crop" alt="Canon Camera" class="product-image">
+                        <span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Canon EOS R6 - Full Frame + Lens Kit</div>
+                        <div class="product-price">GHS 14,500</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Kumasi</span>
+                            <span><i class="fas fa-clock"></i> 12h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=50&h=50&fit=crop&crop=face" alt="Sankofa Store">
+                            <span class="seller-name">Sankofa Store</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400&h=300&fit=crop" alt="Dining Table" class="product-image">
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Solid Wood Dining Table - 6 Chairs Set</div>
+                        <div class="product-price">GHS 1,800</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Takoradi</span>
+                            <span><i class="fas fa-clock"></i> 2d ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face" alt="Yaw Darkwa">
+                            <span class="seller-name">Yaw Darkwa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=300&fit=crop" alt="PlayStation 5" class="product-image">
+                        <span class="product-badge">Featured</span>
+                        <span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">PlayStation 5 Console - 2 Controllers + 5 Games</div>
+                        <div class="product-price">GHS 6,500</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Accra</span>
+                            <span><i class="fas fa-clock"></i> 8h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=50&h=50&fit=crop&crop=face" alt="Sankofa Store">
+                            <span class="seller-name">Sankofa Store</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop" alt="Smart Watch" class="product-image">
+                        <span class="product-badge" style="background: #86b817;">New</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Apple Watch Series 8 - GPS + Cellular</div>
+                        <div class="product-price">GHS 2,200</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Accra</span>
+                            <span><i class="fas fa-clock"></i> 4h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50&h=50&fit=crop&crop=face" alt="Efua Adjei">
+                            <span class="seller-name">Efua Adjei</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=300&fit=crop" alt="Winter Jacket" class="product-image">
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Premium Designer Jacket - Unisex - All Sizes</div>
+                        <div class="product-price">GHS 350</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Cape Coast</span>
+                            <span><i class="fas fa-clock"></i> 1d ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=50&h=50&fit=crop&crop=face" alt="Akosua Frimpong">
+                            <span class="seller-name">Akosua Frimpong</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop" alt="African Print Dress" class="product-image">
+                        <span class="product-badge" style="background: #9b59b6;">Trending</span>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">African Print Ankara Dress - Handmade</div>
+                        <div class="product-price">GHS 250</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Kumasi</span>
+                            <span><i class="fas fa-clock"></i> 10h ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=50&h=50&fit=crop&crop=face" alt="Abena Osei">
+                            <span class="seller-name">Abena Osei</span>
+                            <i class="fas fa-check-circle verified-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1592840496694-26d035b52b48?w=400&h=300&fit=crop" alt="Mountain Bike" class="product-image">
+                    </div>
+                    <div class="product-content">
+                        <div class="product-title">Mountain Bike - 21 Speed - Barely Used</div>
+                        <div class="product-price">GHS 1,500</div>
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> Tamale</span>
+                            <span><i class="fas fa-clock"></i> 3d ago</span>
+                        </div>
+                        <div class="product-seller">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face" alt="Kofi Agyeman">
+                            <span class="seller-name">Kofi Agyeman</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title text-center">How It Works</h2>
+                <p class="section-subtitle text-center">Buy and sell with confidence in 3 simple steps</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>List Your Item</h3>
+                    <p>Take photos, write a description, set your price, and publish your listing in minutes</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Connect with Buyers</h3>
+                    <p>Chat with interested buyers, negotiate prices, and arrange meetings or delivery</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Complete the Sale</h3>
+                    <p>Finalize the transaction securely and receive payment through our protected system</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Start Selling?</h2>
+                <p>Join thousands of Ghanaians buying and selling on Sankofa Market</p>
+                <a href="publish.html" class="btn btn-secondary btn-large">
+                    <i class="fas fa-rocket"></i> Start Selling Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="images/logos/sankofa-market-logo-monochrome-light.png" alt="Sankofa Market" class="footer-logo">
+                    <p><strong>Ghana's #1 Online Marketplace</strong></p>
+                    <p>Buy and sell electronics, fashion, home & garden, vehicles, and more with confidence.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Marketplace</h4>
+                    <ul>
+                        <li><a href="search.html">Browse Items</a></li>
+                        <li><a href="search.html?category=electronics">Electronics</a></li>
+                        <li><a href="search.html?category=fashion">Fashion</a></li>
+                        <li><a href="search.html?category=vehicles">Vehicles</a></li>
+                        <li><a href="search.html?category=services">Services</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Sell</h4>
+                    <ul>
+                        <li><a href="publish.html">Start Selling</a></li>
+                        <li><a href="#">Seller Guide</a></li>
+                        <li><a href="#">Pricing Tips</a></li>
+                        <li><a href="#">Safety Tips</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Safety Center</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                        <li><a href="#">Report an Issue</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart" style="color: var(--accent-color);"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <script src="config/firebase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>
