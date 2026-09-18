@@ -1376,6 +1376,227 @@ hr {
 <li>Accept the resolution decision</li>
 </ol>
 <hr />
+<h2 id="admin-security-and-protection">🔐 ADMIN SECURITY AND PROTECTION</h2>
+<h3 id="how-admin-files-are-protected">How Admin Files Are Protected</h3>
+<p>Sankofa Market Ghana takes security seriously, especially when it comes to protecting administrative functions and sensitive data. Our admin panel is protected by multiple layers of security to ensure only authorized personnel can access administrative features.</p>
+<h4 id="multi-layer-security-approach">Multi-Layer Security Approach</h4>
+<p><strong>1. Route Protection</strong>
+All admin pages are protected by a dedicated authentication system (<code>admin-auth.js</code>) that:
+- Checks if the user is logged in before allowing access
+- Verifies the user has admin privileges
+- Redirects unauthorized users to the login page
+- Prevents direct access to admin URLs</p>
+<p><strong>2. Authentication Requirements</strong>
+To access admin pages, users must:
+- Be logged in with a valid account
+- Have admin role assigned by system administrators
+- Pass Ghana Card verification
+- Have two-factor authentication enabled (for admin accounts)</p>
+<p><strong>3. Access Control</strong>
+Admin access is controlled through:
+- <strong>Role-Based Access Control (RBAC):</strong> Only users with the "admin" role can access admin pages
+- <strong>Permission Levels:</strong> Different admin roles have different permission levels (super admin, admin, moderator)
+- <strong>IP Restrictions:</strong> Admin access can be restricted to specific IP addresses (optional)
+- <strong>Session Management:</strong> Admin sessions expire after a period of inactivity</p>
+<p><strong>4. Admin Login Page</strong>
+The admin login page (<code>pages/admin/login.html</code>) includes:
+- Separate login form for admin users
+- Additional security verification (admin code or 2FA)
+- Failed login attempt tracking
+- Account lockout after multiple failed attempts
+- Secure password requirements</p>
+<p><strong>5. Protected Admin Pages</strong>
+The following admin pages are protected:
+- <strong>Dashboard</strong> (<code>pages/admin/dashboard.html</code>) - System overview and statistics
+- <strong>User Management</strong> (<code>pages/admin/users.html</code>) - Manage user accounts
+- <strong>Product Moderation</strong> (<code>pages/admin/products.html</code>) - Moderate product listings
+- <strong>Order Management</strong> (<code>pages/admin/orders.html</code>) - Manage orders
+- <strong>Dispute Resolution</strong> (<code>pages/admin/disputes.html</code>) - Resolve disputes
+- <strong>Analytics</strong> (<code>pages/admin/analytics.html</code>) - View platform analytics
+- <strong>Settings</strong> (<code>pages/admin/settings.html</code>) - System settings
+- <strong>User Approvals</strong> (<code>pages/admin/user-approvals.html</code>) - Approve new user registrations
+- <strong>Chatbot Management</strong> (<code>pages/admin/chatbot-faqs.html</code>) - Manage chatbot FAQs</p>
+<h4 id="how-protection-works">How Protection Works</h4>
+<p><strong>Step 1: User Attempts to Access Admin Page</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="nv">User</span><span class="w"> </span><span class="nv">clicks</span><span class="w"> </span><span class="nv">on</span><span class="w"> </span><span class="nv">admin</span><span class="w"> </span><span class="nv">link</span><span class="w"> </span><span class="nv">or</span><span class="w"> </span><span class="nv">enters</span><span class="w"> </span><span class="nv">admin</span><span class="w"> </span><span class="nv">URL</span>
+<span class="w">         </span>↓
+<span class="nv">admin</span><span class="o">-</span><span class="nv">auth</span>.<span class="nv">js</span><span class="w"> </span><span class="nv">checks</span><span class="w"> </span><span class="nv">authentication</span><span class="w"> </span><span class="nv">status</span>
+<span class="w">         </span>↓
+<span class="w">    </span><span class="nv">Is</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">logged</span><span class="w"> </span><span class="nv">in</span>?
+<span class="w">         </span>↓
+<span class="w">    </span><span class="nv">NO</span><span class="w"> </span>→<span class="w"> </span><span class="nv">Redirect</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">login</span><span class="w"> </span><span class="nv">page</span>
+<span class="w">    </span><span class="nv">YES</span><span class="w"> </span>→<span class="w"> </span><span class="k">Continue</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">step</span><span class="w"> </span><span class="mi">2</span>
+</code></pre></div>
+
+<p><strong>Step 2: Verify Admin Privileges</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="nv">Check</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">has</span><span class="w"> </span><span class="nv">admin</span><span class="w"> </span><span class="nv">role</span>
+<span class="w">         </span>↓
+<span class="w">    </span><span class="nv">Is</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">admin</span>?
+<span class="w">         </span>↓
+<span class="w">    </span><span class="nv">NO</span><span class="w"> </span>→<span class="w"> </span><span class="k">Show</span><span class="w"> </span><span class="s2">&quot;Access Denied&quot;</span><span class="w"> </span><span class="nv">page</span>
+<span class="w">    </span><span class="nv">YES</span><span class="w"> </span>→<span class="w"> </span><span class="k">Continue</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">step</span><span class="w"> </span><span class="mi">3</span>
+</code></pre></div>
+
+<p><strong>Step 3: Load Admin Page</strong></p>
+<div class="codehilite"><pre><span></span><code>Load requested admin page
+         ↓
+Display admin interface
+         ↓
+User can now access admin features
+</code></pre></div>
+
+<h4 id="security-features_1">Security Features</h4>
+<p><strong>Automatic Logout</strong>
+- Admin sessions automatically expire after 30 minutes of inactivity
+- Users are redirected to the login page when session expires
+- Prevents unauthorized access if admin leaves workstation unattended</p>
+<p><strong>Failed Login Protection</strong>
+- After 5 failed login attempts, account is locked for 15 minutes
+- Prevents brute force attacks
+- Admin receives email notification of failed login attempts</p>
+<p><strong>Activity Logging</strong>
+- All admin actions are logged with timestamp, user, and action details
+- Logs include: login attempts, page access, data modifications, user management actions
+- Logs are stored securely and can be reviewed by super admins</p>
+<p><strong>Session Security</strong>
+- Admin sessions use secure, HTTP-only cookies
+- Sessions are encrypted and signed
+- Sessions cannot be hijacked or stolen</p>
+<p><strong>Cross-Site Request Forgery (CSRF) Protection</strong>
+- All admin forms include CSRF tokens
+- Prevents unauthorized actions from malicious websites
+- Tokens are validated on form submission</p>
+<h4 id="admin-roles-and-permissions">Admin Roles and Permissions</h4>
+<p><strong>Super Admin</strong>
+- Full access to all admin features
+- Can manage other admin accounts
+- Can modify system settings
+- Can view all logs and analytics
+- Can approve/reject admin account requests</p>
+<p><strong>Admin</strong>
+- Access to most admin features
+- Can manage users and products
+- Can resolve disputes
+- Can view analytics
+- Cannot manage other admin accounts</p>
+<p><strong>Moderator</strong>
+- Limited admin access
+- Can moderate products and reviews
+- Can handle basic user issues
+- Cannot access sensitive user data
+- Cannot modify system settings</p>
+<h4 id="best-practices-for-admin-security">Best Practices for Admin Security</h4>
+<p><strong>For Administrators:</strong>
+1. <strong>Use Strong Passwords</strong>
+   - Minimum 12 characters
+   - Mix of uppercase, lowercase, numbers, and symbols
+   - Don't reuse passwords from other sites
+   - Use a password manager</p>
+<ol>
+<li><strong>Enable Two-Factor Authentication (2FA)</strong></li>
+<li>Required for all admin accounts</li>
+<li>Use authenticator app (Google Authenticator, Authy)</li>
+<li>
+<p>Don't use SMS-based 2FA (less secure)</p>
+</li>
+<li>
+<p><strong>Log Out When Done</strong></p>
+</li>
+<li>Always log out when finished with admin tasks</li>
+<li>Don't leave admin session open on shared computers</li>
+<li>
+<p>Use "Remember Me" only on personal devices</p>
+</li>
+<li>
+<p><strong>Be Aware of Phishing</strong></p>
+</li>
+<li>Don't click suspicious links in emails</li>
+<li>Verify sender before entering credentials</li>
+<li>
+<p>Always check URL before logging in (should be sankofamarket.com.gh)</p>
+</li>
+<li>
+<p><strong>Keep Credentials Secure</strong></p>
+</li>
+<li>Don't share admin credentials with others</li>
+<li>Don't write down passwords</li>
+<li>
+<p>Change passwords regularly (every 90 days)</p>
+</li>
+<li>
+<p><strong>Monitor Account Activity</strong></p>
+</li>
+<li>Review login history regularly</li>
+<li>Report suspicious activity immediately</li>
+<li>
+<p>Check for unauthorized actions in logs</p>
+</li>
+<li>
+<p><strong>Use Secure Networks</strong></p>
+</li>
+<li>Don't access admin panel on public Wi-Fi</li>
+<li>Use VPN when accessing from untrusted networks</li>
+<li>Ensure your device has up-to-date security software</li>
+</ol>
+<p><strong>For System Administrators:</strong>
+1. <strong>Principle of Least Privilege</strong>
+   - Grant only necessary permissions to admin users
+   - Review admin access regularly
+   - Remove admin access when no longer needed</p>
+<ol>
+<li><strong>Regular Security Audits</strong></li>
+<li>Review admin logs monthly</li>
+<li>Check for unusual patterns or suspicious activity</li>
+<li>
+<p>Audit admin permissions quarterly</p>
+</li>
+<li>
+<p><strong>Incident Response</strong></p>
+</li>
+<li>Have incident response plan in place</li>
+<li>Know how to respond to security breaches</li>
+<li>Test incident response procedures regularly</li>
+</ol>
+<h4 id="what-happens-if-security-is-compromised">What Happens If Security Is Compromised?</h4>
+<p><strong>If You Suspect Unauthorized Access:</strong>
+1. Change your password immediately
+2. Enable 2FA if not already enabled
+3. Review your account activity
+4. Report to system administrator
+5. Monitor account for suspicious activity</p>
+<p><strong>If Admin Account Is Compromised:</strong>
+1. System administrator will lock the account immediately
+2. Password will be reset
+3. All sessions will be terminated
+4. Account activity will be reviewed
+5. Security audit will be conducted
+6. Account will be restored after verification</p>
+<p><strong>System-Wide Security Breach:</strong>
+1. All admin accounts will be locked
+2. All passwords will be reset
+3. Security audit will be conducted
+4. Vulnerabilities will be patched
+5. Users will be notified
+6. Security measures will be strengthened</p>
+<h4 id="continuous-security-improvements">Continuous Security Improvements</h4>
+<p>Sankofa Market Ghana is committed to continuous security improvement:</p>
+<p><strong>Regular Updates</strong>
+- Security patches applied immediately
+- Software updated regularly
+- Vulnerabilities scanned and fixed</p>
+<p><strong>Security Training</strong>
+- All admins receive security training
+- Regular security awareness updates
+- Phishing simulation exercises</p>
+<p><strong>Third-Party Audits</strong>
+- Regular security audits by external experts
+- Penetration testing
+- Compliance assessments</p>
+<p><strong>Bug Bounty Program</strong>
+- Security researchers can report vulnerabilities
+- Rewards for discovering security issues
+- Responsible disclosure policy</p>
+<hr />
 <h2 id="join-the-sankofa-market-community">🎉 JOIN THE SANKOFA MARKET COMMUNITY</h2>
 <h3 id="become-a-member-today">Become a Member Today</h3>
 <p>Join thousands of Ghanaians who are already buying and selling on Sankofa Market. Whether you're looking to shop, sell, or both, we're here to help you succeed.</p>

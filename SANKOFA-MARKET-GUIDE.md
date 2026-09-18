@@ -763,6 +763,244 @@ If you need to file a dispute:
 
 ---
 
+## 🔐 ADMIN SECURITY AND PROTECTION
+
+### How Admin Files Are Protected
+
+Sankofa Market Ghana takes security seriously, especially when it comes to protecting administrative functions and sensitive data. Our admin panel is protected by multiple layers of security to ensure only authorized personnel can access administrative features.
+
+#### Multi-Layer Security Approach
+
+**1. Route Protection**
+All admin pages are protected by a dedicated authentication system (`admin-auth.js`) that:
+- Checks if the user is logged in before allowing access
+- Verifies the user has admin privileges
+- Redirects unauthorized users to the login page
+- Prevents direct access to admin URLs
+
+**2. Authentication Requirements**
+To access admin pages, users must:
+- Be logged in with a valid account
+- Have admin role assigned by system administrators
+- Pass Ghana Card verification
+- Have two-factor authentication enabled (for admin accounts)
+
+**3. Access Control**
+Admin access is controlled through:
+- **Role-Based Access Control (RBAC):** Only users with the "admin" role can access admin pages
+- **Permission Levels:** Different admin roles have different permission levels (super admin, admin, moderator)
+- **IP Restrictions:** Admin access can be restricted to specific IP addresses (optional)
+- **Session Management:** Admin sessions expire after a period of inactivity
+
+**4. Admin Login Page**
+The admin login page (`pages/admin/login.html`) includes:
+- Separate login form for admin users
+- Additional security verification (admin code or 2FA)
+- Failed login attempt tracking
+- Account lockout after multiple failed attempts
+- Secure password requirements
+
+**5. Protected Admin Pages**
+The following admin pages are protected:
+- **Dashboard** (`pages/admin/dashboard.html`) - System overview and statistics
+- **User Management** (`pages/admin/users.html`) - Manage user accounts
+- **Product Moderation** (`pages/admin/products.html`) - Moderate product listings
+- **Order Management** (`pages/admin/orders.html`) - Manage orders
+- **Dispute Resolution** (`pages/admin/disputes.html`) - Resolve disputes
+- **Analytics** (`pages/admin/analytics.html`) - View platform analytics
+- **Settings** (`pages/admin/settings.html`) - System settings
+- **User Approvals** (`pages/admin/user-approvals.html`) - Approve new user registrations
+- **Chatbot Management** (`pages/admin/chatbot-faqs.html`) - Manage chatbot FAQs
+
+#### How Protection Works
+
+**Step 1: User Attempts to Access Admin Page**
+```
+User clicks on admin link or enters admin URL
+         ↓
+admin-auth.js checks authentication status
+         ↓
+    Is user logged in?
+         ↓
+    NO → Redirect to login page
+    YES → Continue to step 2
+```
+
+**Step 2: Verify Admin Privileges**
+```
+Check if user has admin role
+         ↓
+    Is user an admin?
+         ↓
+    NO → Show "Access Denied" page
+    YES → Continue to step 3
+```
+
+**Step 3: Load Admin Page**
+```
+Load requested admin page
+         ↓
+Display admin interface
+         ↓
+User can now access admin features
+```
+
+#### Security Features
+
+**Automatic Logout**
+- Admin sessions automatically expire after 30 minutes of inactivity
+- Users are redirected to the login page when session expires
+- Prevents unauthorized access if admin leaves workstation unattended
+
+**Failed Login Protection**
+- After 5 failed login attempts, account is locked for 15 minutes
+- Prevents brute force attacks
+- Admin receives email notification of failed login attempts
+
+**Activity Logging**
+- All admin actions are logged with timestamp, user, and action details
+- Logs include: login attempts, page access, data modifications, user management actions
+- Logs are stored securely and can be reviewed by super admins
+
+**Session Security**
+- Admin sessions use secure, HTTP-only cookies
+- Sessions are encrypted and signed
+- Sessions cannot be hijacked or stolen
+
+**Cross-Site Request Forgery (CSRF) Protection**
+- All admin forms include CSRF tokens
+- Prevents unauthorized actions from malicious websites
+- Tokens are validated on form submission
+
+#### Admin Roles and Permissions
+
+**Super Admin**
+- Full access to all admin features
+- Can manage other admin accounts
+- Can modify system settings
+- Can view all logs and analytics
+- Can approve/reject admin account requests
+
+**Admin**
+- Access to most admin features
+- Can manage users and products
+- Can resolve disputes
+- Can view analytics
+- Cannot manage other admin accounts
+
+**Moderator**
+- Limited admin access
+- Can moderate products and reviews
+- Can handle basic user issues
+- Cannot access sensitive user data
+- Cannot modify system settings
+
+#### Best Practices for Admin Security
+
+**For Administrators:**
+1. **Use Strong Passwords**
+   - Minimum 12 characters
+   - Mix of uppercase, lowercase, numbers, and symbols
+   - Don't reuse passwords from other sites
+   - Use a password manager
+
+2. **Enable Two-Factor Authentication (2FA)**
+   - Required for all admin accounts
+   - Use authenticator app (Google Authenticator, Authy)
+   - Don't use SMS-based 2FA (less secure)
+
+3. **Log Out When Done**
+   - Always log out when finished with admin tasks
+   - Don't leave admin session open on shared computers
+   - Use "Remember Me" only on personal devices
+
+4. **Be Aware of Phishing**
+   - Don't click suspicious links in emails
+   - Verify sender before entering credentials
+   - Always check URL before logging in (should be sankofamarket.com.gh)
+
+5. **Keep Credentials Secure**
+   - Don't share admin credentials with others
+   - Don't write down passwords
+   - Change passwords regularly (every 90 days)
+
+6. **Monitor Account Activity**
+   - Review login history regularly
+   - Report suspicious activity immediately
+   - Check for unauthorized actions in logs
+
+7. **Use Secure Networks**
+   - Don't access admin panel on public Wi-Fi
+   - Use VPN when accessing from untrusted networks
+   - Ensure your device has up-to-date security software
+
+**For System Administrators:**
+1. **Principle of Least Privilege**
+   - Grant only necessary permissions to admin users
+   - Review admin access regularly
+   - Remove admin access when no longer needed
+
+2. **Regular Security Audits**
+   - Review admin logs monthly
+   - Check for unusual patterns or suspicious activity
+   - Audit admin permissions quarterly
+
+3. **Incident Response**
+   - Have incident response plan in place
+   - Know how to respond to security breaches
+   - Test incident response procedures regularly
+
+#### What Happens If Security Is Compromised?
+
+**If You Suspect Unauthorized Access:**
+1. Change your password immediately
+2. Enable 2FA if not already enabled
+3. Review your account activity
+4. Report to system administrator
+5. Monitor account for suspicious activity
+
+**If Admin Account Is Compromised:**
+1. System administrator will lock the account immediately
+2. Password will be reset
+3. All sessions will be terminated
+4. Account activity will be reviewed
+5. Security audit will be conducted
+6. Account will be restored after verification
+
+**System-Wide Security Breach:**
+1. All admin accounts will be locked
+2. All passwords will be reset
+3. Security audit will be conducted
+4. Vulnerabilities will be patched
+5. Users will be notified
+6. Security measures will be strengthened
+
+#### Continuous Security Improvements
+
+Sankofa Market Ghana is committed to continuous security improvement:
+
+**Regular Updates**
+- Security patches applied immediately
+- Software updated regularly
+- Vulnerabilities scanned and fixed
+
+**Security Training**
+- All admins receive security training
+- Regular security awareness updates
+- Phishing simulation exercises
+
+**Third-Party Audits**
+- Regular security audits by external experts
+- Penetration testing
+- Compliance assessments
+
+**Bug Bounty Program**
+- Security researchers can report vulnerabilities
+- Rewards for discovering security issues
+- Responsible disclosure policy
+
+---
+
 ## 🎉 JOIN THE SANKOFA MARKET COMMUNITY
 
 ### Become a Member Today
