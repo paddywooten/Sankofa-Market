@@ -9,11 +9,14 @@
 - **🎠 Hero Carousel** — Auto-swiping promotional carousel with 5 slides, touch/swipe support, and progress indicators
 - **🛒 13+ Categories** — Electronics, Fashion, Home & Garden, Vehicles, Services, Sports, Books & Media, Baby & Kids, Beauty & Health, Food & Groceries, Pets, Jobs & Skills, Real Estate
 - **🏪 Sankofa Store** — Official in-house store with verified products and badges
-- **🔍 Smart Search** — Full search with filters (category, price range, condition, location, seller type)
+- **🔍 Smart Search** — Full search with filters (category, price range, condition, location, seller type, delivery options)
 - **🛡️ Escrow Payment Protection** — Secure payment system that holds funds until buyer confirms delivery
 - **💳 Paystack Integration** — Card payments + Mobile Money (MTN, Vodafone, AirtelTigo)
 - **⚖️ Dispute Resolution** — Admin-managed dispute system with evidence collection and fair resolution
 - **📦 Buyer Confirmation Flow** — Post-delivery inspection with photo evidence and 48-hour auto-release
+- **🆔 User Verification System** — Ghana Card and passport photo verification with admin approval workflow
+- **🚚 Delivery Options** — Sellers specify free delivery, paid delivery, or pickup only; buyers filter by preference
+- **🔒 Payment Safety Warnings** — Comprehensive warnings about platform-only payments and secure communication
 - **📱 Fully Responsive** — Works on mobile, tablet, and desktop
 - **🎨 eBay-Inspired Design** — Clean, professional marketplace UI with eBay blue (#0064d2) and orange (#f5af02) color scheme
 - **🖼️ Real Product Images** — High-quality product photography from Unsplash
@@ -98,6 +101,80 @@ PaymentSystem.refundEscrow(transactionId, reason, adminId);
 
 See [ESCROW_TERMS.md](ESCROW_TERMS.md) for complete legal documentation.
 
+## 🆔 User Verification System
+
+Sankofa Market implements a robust identity verification system to ensure a safe marketplace:
+
+### Registration Requirements:
+- **Ghana Card Upload** — Front and back photos (required)
+- **Passport Photo** — Clear photo of the user (required)
+- **Admin Approval** — All new accounts require admin review before publishing
+
+### Verification Workflow:
+1. **User registers** → Uploads Ghana Card + passport photo
+2. **Account status: Pending** → User cannot publish listings
+3. **Admin reviews** → Checks documents in approval dashboard
+4. **Admin approves/rejects** → User receives notification
+5. **Approved users** → Can publish listings and transact
+
+### Admin Approval Dashboard:
+- View pending registrations with document previews
+- Approve or reject with optional reason
+- Track approval history and timestamps
+- Filter by status (pending/approved/rejected)
+
+### Security Benefits:
+- ✅ Prevents fake accounts and scams
+- ✅ Ensures all sellers are verified Ghanaians
+- ✅ Creates accountability for transactions
+- ✅ Builds trust in the marketplace
+
+## 🚚 Delivery Options
+
+Sellers can specify how buyers receive items:
+
+### Seller Options:
+- 🚚 **Free Delivery** — Seller delivers at no extra cost
+- 💰 **Paid Delivery** — Buyer pays delivery fee (seller sets amount)
+- 🏪 **Pickup Only** — Buyer picks up from seller's location
+
+### Buyer Filters:
+- Filter products by preferred delivery method
+- See delivery badges on product cards
+- View delivery fees upfront
+
+### Product Card Badges:
+- 🟢 **Green**: Free Delivery
+- 🔵 **Blue**: Paid Delivery (shows fee)
+- 🟠 **Orange**: Pickup Only
+
+## 🔒 Payment Safety System
+
+Comprehensive warnings protect users from fraud:
+
+### Payment Page Warnings:
+- ⚠️ Only pay through Sankofa Market platform
+- ⚠️ Never send money directly to sellers
+- ⚠️ Escrow protection only works for platform payments
+- ⚠️ Red flags to watch for (off-platform payment requests)
+
+### Delivery Charge Warnings:
+- 📦 Only delivery fees are paid during delivery
+- 📦 Item price already paid through platform
+- 📦 Never pay sellers additional amounts
+
+### Communication Safety:
+- 💬 Only communicate through platform messaging
+- 💬 Never share personal contact details
+- 💬 All conversations recorded for disputes
+- 💬 Report sellers who request off-platform communication
+
+### Warning Types:
+- **Standard** (Yellow) — General payment safety
+- **Critical** (Red) — Suspicious activity detected
+- **Info** (Blue) — Communication guidelines
+- **Delivery** (Blue border) — Delivery charge reminders
+
 ## 📁 Project Structure
 
 ```
@@ -120,16 +197,27 @@ sankofa-market/
 │   ├── search.js           # Search & filtering
 │   ├── payment.js          # Paystack + escrow system
 │   ├── confirm-delivery.js # Buyer confirmation logic
-│   └── disputes-admin.js   # Admin dispute resolution
+│   ├── disputes-admin.js   # Admin dispute resolution
+│   ├── user-approvals.js   # Admin user approval workflow
+│   ├── payment-warnings.js # Reusable safety warning components
+│   └── auth.js             # Registration with verification
+├── css/
+│   ├── main.css            # Main styles
+│   ├── search.css          # Search page styles
+│   ├── publish.css         # Publish form styles
+│   ├── admin.css           # Admin dashboard styles
+│   ├── payment-warnings.css # Safety warning styles
+│   └── auth.css            # Authentication styles
 ├── pages/
 │   ├── admin/
-│   │   ├── dashboard.html  # Admin overview
-│   │   └── disputes.html   # Dispute management
+│   │   ├── dashboard.html      # Admin overview
+│   │   ├── disputes.html       # Dispute management
+│   │   └── user-approvals.html # User verification approvals
 │   ├── auth/
-│   │   ├── login.html      # User login
-│   │   └── register.html   # User registration
+│   │   ├── login.html          # User login
+│   │   └── register.html       # User registration with verification
 │   └── user/
-│       └── dashboard.html  # User account
+│       └── dashboard.html      # User account
 ├── data/
 │   └── categories.json     # 13 category definitions
 ├── brand-assets/           # Logo files

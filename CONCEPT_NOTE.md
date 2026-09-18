@@ -113,6 +113,201 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 2. **Mobile Money First** — Native MoMo integration from day one
 3. **Trust System** — Sankofa Store as quality benchmark
 4. **Community** — Ghanaian-centric categories (African fashion, local services)
+5. **User Verification** — Ghana Card verification for all users
+6. **Escrow Protection** — Secure payment system with dispute resolution
+7. **Payment Safety** — Comprehensive warnings and platform-only payments
+
+---
+
+## 🛡️ Trust & Safety Features
+
+### **User Verification System**
+
+#### **Why Verification Matters:**
+- Ghana's online marketplace suffers from trust deficit
+- High rates of fraud and scams on social media platforms
+- Need for accountability and identity verification
+- Build confidence in C2C transactions
+
+#### **Verification Requirements:**
+1. **Ghana Card (Required)**
+   - Front and back photos
+   - Validates user is a Ghanaian citizen
+   - Provides government-issued ID verification
+   - Prevents fake accounts
+
+2. **Passport Photo (Required)**
+   - Clear photo of the user
+   - Matches Ghana Card photo
+   - Ensures real person behind account
+   - Used for profile picture
+
+3. **Admin Approval (Required)**
+   - Manual review of all documents
+   - Verify authenticity of Ghana Card
+   - Check photo matches
+   - Approve or reject with reason
+
+#### **Verification Workflow:**
+```
+User Registers
+    ↓
+Uploads Ghana Card + Passport Photo
+    ↓
+Account Status: PENDING
+(Cannot publish listings)
+    ↓
+Admin Reviews Documents
+    ↓
+    ├─→ APPROVED → User can publish & transact
+    └─→ REJECTED → User notified with reason
+```
+
+#### **Admin Approval Dashboard:**
+- View all pending registrations
+- Preview uploaded documents
+- Approve/reject with optional reason
+- Filter by status (pending/approved/rejected)
+- Search by name or email
+- Track approval history and timestamps
+
+#### **Security Benefits:**
+- ✅ Prevents fake accounts and scammers
+- ✅ Ensures all sellers are verified Ghanaians
+- ✅ Creates accountability for transactions
+- ✅ Builds trust in the marketplace
+- ✅ Reduces fraud and disputes
+- ✅ Deters criminal activity
+
+### **Payment Safety System**
+
+#### **The Problem:**
+- Users paying sellers directly (off-platform)
+- No escrow protection for direct payments
+- Sellers disappearing after receiving payment
+- Buyers claiming non-delivery after receiving items
+- No evidence for dispute resolution
+
+#### **The Solution:**
+Comprehensive payment safety warnings and platform-only payment enforcement.
+
+#### **Warning Types:**
+
+**1. Standard Payment Warning (Yellow)**
+- Explains escrow protection
+- Lists red flags to watch for
+- Emphasizes platform-only payments
+- Shows benefits of using platform
+
+**2. Critical Warning (Red)**
+- Triggered by suspicious activity
+- Immediate action required
+- Report seller instructions
+- Do not proceed warning
+
+**3. Communication Safety (Blue)**
+- Use platform messaging only
+- Never share personal contact details
+- All conversations recorded for disputes
+- Report off-platform communication requests
+
+**4. Delivery Charges (Blue border)**
+- Only delivery fees paid during delivery
+- Item price already paid through platform
+- Never pay sellers additional amounts
+- Clarifies payment timing
+
+#### **Warning Locations:**
+- ✅ Payment/checkout pages
+- ✅ Product detail pages
+- ✅ Contact seller buttons
+- ✅ Messaging interfaces
+- ✅ User dashboards
+- ✅ Admin review pages
+
+#### **Key Messages:**
+```
+⚠️ ONLY pay through Sankofa Market platform
+⚠️ NEVER send money directly to sellers
+⚠️ Escrow protection ONLY works for platform payments
+⚠️ ONLY delivery fees are paid during delivery
+⚠️ Keep ALL communication on the platform
+⚠️ Report sellers requesting off-platform transactions
+```
+
+#### **Red Flags to Watch For:**
+- 🚩 Seller asks for MoMo/bank transfer
+- 🚩 Seller offers "discount" for direct payment
+- 🚩 Seller pressures for quick payment
+- 🚩 Seller requests personal payment details
+- 🚩 Seller refuses to use platform payment
+- 🚩 Seller asks for phone/email in messages
+
+### **Delivery Options System**
+
+#### **Why Delivery Options Matter:**
+- Different sellers have different capabilities
+- Buyers have different preferences
+- Need for transparency about delivery costs
+- Flexibility for various product types
+
+#### **Seller Configuration:**
+- **Free Delivery**: Seller delivers at no extra cost
+- **Paid Delivery**: Buyer pays delivery fee (seller sets amount)
+- **Pickup Only**: Buyer picks up from seller's location
+- Can select multiple options per listing
+- Specify delivery areas (optional)
+- Set delivery fee amount (for paid delivery)
+
+#### **Buyer Experience:**
+- Filter products by delivery preference
+- See delivery badges on product cards
+- View delivery fees upfront
+- Know exactly what to expect
+- Make informed purchasing decisions
+
+#### **Product Card Badges:**
+- 🟢 **Green**: Free Delivery
+- 🔵 **Blue**: Delivery: GHS X (shows fee)
+- 🟠 **Orange**: Pickup Only
+- Multiple badges if multiple options available
+
+#### **Benefits:**
+- ✅ Transparency about delivery costs
+- ✅ Buyers can filter by preference
+- ✅ Sellers can offer flexibility
+- ✅ Reduces delivery-related disputes
+- ✅ Clear expectations for both parties
+
+### **Combined Security Impact**
+
+#### **Before Sankofa Market:**
+- ❌ Fake accounts and scammers
+- ❌ Direct payments with no protection
+- ❌ No identity verification
+- ❌ Communication off-platform
+- ❌ Delivery misunderstandings
+- ❌ High fraud rates
+- ❌ Low trust in online marketplaces
+
+#### **After Sankofa Market:**
+- ✅ All users verified with Ghana Card
+- ✅ Escrow protection for all payments
+- ✅ Admin approval for new accounts
+- ✅ Platform-only communication
+- ✅ Clear delivery options and costs
+- ✅ Comprehensive safety warnings
+- ✅ High trust and accountability
+- ✅ Reduced fraud and disputes
+- ✅ Safe C2C transactions
+
+#### **Trust Metrics:**
+- **Verification Rate**: 100% of users verified
+- **Payment Protection**: 100% of transactions covered by escrow
+- **Dispute Resolution**: Admin-mediated with evidence collection
+- **User Satisfaction**: Target 95%+ positive experiences
+- **Fraud Rate**: Target <1% of transactions
+- **Approval Time**: <24 hours for new registrations
 
 ---
 
@@ -201,6 +396,10 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 - [x] Dispute resolution system (admin dashboard)
 - [x] Dispute evidence collection and review
 - [x] Escrow terms of service (legal documentation)
+- [x] **User verification system (Ghana Card + passport photo)**
+- [x] **Admin approval workflow for new registrations**
+- [x] **Delivery options (free, paid, pickup)**
+- [x] **Payment safety warnings and user education**
 - [ ] Real-time chat between buyers/sellers
 - [ ] Push notifications
 - [ ] Email templates
