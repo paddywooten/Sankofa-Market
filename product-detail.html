@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/product-detail.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="index.html">
+                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="pages/auth/login.html" class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Sign in</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="search.html?category=electronics" id="breadcrumbCategory">Electronics</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbTitle">Product Name</span>
+        </div>
+    </nav>
+
+    <main class="product-detail-main">
+        <div class="container">
+            <div class="product-detail-grid">
+                <!-- Image Gallery -->
+                <div class="product-gallery">
+                    <div class="gallery-main">
+                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=600&fit=crop&q=80&auto=format" 
+                             alt="Product Image" 
+                             id="mainImage"
+                             loading="eager">
+                        <button class="gallery-nav gallery-prev" id="prevImage"><i class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-nav gallery-next" id="nextImage"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="gallery-thumbs" id="galleryThumbs">
+                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=150&h=150&fit=crop&q=75&auto=format" 
+                             alt="Thumbnail 1" 
+                             class="thumb active"
+                             loading="lazy"
+                             decoding="async">
+                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&q=75&auto=format" 
+                             alt="Thumbnail 2" 
+                             class="thumb"
+                             loading="lazy"
+                             decoding="async">
+                        <img src="https://images.unsplash.com/photo-1580910051074-3eb694886571?w=150&h=150&fit=crop&q=75&auto=format" 
+                             alt="Thumbnail 3" 
+                             class="thumb"
+                             loading="lazy"
+                             decoding="async">
+                        <img src="https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=150&h=150&fit=crop&q=75&auto=format" 
+                             alt="Thumbnail 4" 
+                             class="thumb"
+                             loading="lazy"
+                             decoding="async">
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                    <div class="product-badges">
+                        <span class="badge badge-featured"><i class="fas fa-star"></i> Featured</span>
+                        <span class="badge badge-official" id="officialBadge"><i class="fas fa-store"></i> Official Store</span>
+                    </div>
+
+                    <h1 class="product-title" id="productTitle">iPhone 14 Pro Max - 256GB - Deep Purple</h1>
+                    
+                    <div class="product-price-section">
+                        <span class="product-price" id="productPrice">GHS 8,500</span>
+                        <span class="product-condition" id="productCondition">Excellent</span>
+                    </div>
+
+                    <div class="product-meta-info">
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="productLocation">Accra, Greater Accra</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="productTime">Listed 2 hours ago</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span id="productViews">234 views</span>
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-large" id="contactSellerBtn">
+                            <i class="fas fa-comment"></i> Contact Seller
+                        </button>
+                        <button class="btn btn-outline btn-large" id="callSellerBtn">
+                            <i class="fas fa-phone"></i> Call
+                        </button>
+                        <button class="btn btn-icon" id="favoriteBtn" title="Add to Favorites">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="btn btn-icon" id="shareBtn" title="Share">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Seller Info -->
+                    <div class="seller-card">
+                        <div class="seller-header">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face&q=75&auto=format" 
+                                 alt="Seller" 
+                                 class="seller-avatar"
+                                 loading="lazy"
+                                 decoding="async">
+                            <div class="seller-info">
+                                <h3 class="seller-name" id="sellerName">Sankofa Store</h3>
+                                <div class="seller-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span>(127 reviews)</span>
+                                </div>
+                                <span class="seller-verified" id="sellerVerified">
+                                    <i class="fas fa-check-circle"></i> Verified Seller
+                                </span>
+                            </div>
+                        </div>
+                        <div class="seller-stats">
+                            <div class="stat">
+                                <strong>98%</strong>
+                                <span>Response Rate</span>
+                            </div>
+                            <div class="stat">
+                                <strong>&lt; 1 hour</strong>
+                                <span>Response Time</span>
+                            </div>
+                            <div class="stat">
+                                <strong>2019</strong>
+                                <span>Member Since</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-outline btn-full" id="viewProfileBtn">
+                            <i class="fas fa-user"></i> View Profile
+                        </a>
+                    </div>
+
+                    <!-- Safety Tips -->
+                    <div class="safety-tips">
+                        <h4><i class="fas fa-shield-alt"></i> Safety Tips</h4>
+                        <ul>
+                            <li>Meet in a public place for transactions</li>
+                            <li>Inspect the item before paying</li>
+                            <li>Don't send money in advance</li>
+                            <li>Check the seller's reviews and ratings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Description -->
+            <div class="product-description-section">
+                <h2>Description</h2>
+                <div class="description-content" id="productDescription">
+                    <p>Selling my iPhone 14 Pro Max in excellent condition. Deep Purple color with 256GB storage.</p>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>6.7-inch Super Retina XDR display with ProMotion</li>
+                        <li>A16 Bionic chip - fastest chip in a smartphone</li>
+                        <li>Pro camera system with 48MP Main camera</li>
+                        <li>All-day battery life</li>
+                        <li>5G capable</li>
+                    </ul>
+                    <p><strong>Condition:</strong> Excellent - no scratches, always used with case and screen protector</p>
+                    <p><strong>Includes:</strong> Original box, charger, cable, unused earphones, extra case</p>
+                    <p><strong>Reason for selling:</strong> Upgraded to newer model</p>
+                </div>
+            </div>
+
+            <!-- Product Specifications -->
+            <div class="product-specs-section">
+                <h2>Specifications</h2>
+                <table class="specs-table">
+                    <tr>
+                        <th>Brand</th>
+                        <td>Apple</td>
+                    </tr>
+                    <tr>
+                        <th>Model</th>
+                        <td>iPhone 14 Pro Max</td>
+                    </tr>
+                    <tr>
+                        <th>Storage</th>
+                        <td>256GB</td>
+                    </tr>
+                    <tr>
+                        <th>Color</th>
+                        <td>Deep Purple</td>
+                    </tr>
+                    <tr>
+                        <th>Condition</th>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <th>Warranty</th>
+                        <td>3 months remaining</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Similar Products -->
+            <div class="similar-products-section">
+                <h2>Similar Products</h2>
+                <div class="products-grid" id="similarProducts">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config/firebase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/product-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your Item - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/publish.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="index.html"><img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="publish-main">
+        <div class="container-sm">
+            <div class="publish-header">
+                <h1><i class="fas fa-tag"></i> List Your Item</h1>
+                <p>Fill in the details below to create your listing. It's free and takes just a few minutes!</p>
+            </div>
+
+            <form class="publish-form" id="publishForm">
+                <!-- Photos -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-camera"></i> Photos</h2>
+                    <p class="form-hint">Add up to 8 photos. The first photo will be the cover image.</p>
+                    <div class="photo-upload-area" id="photoUploadArea">
+                        <div class="photo-grid" id="photoGrid">
+                            <label class="photo-upload-btn" id="photoUploadBtn">
+                                <input type="file" accept="image/*" multiple id="photoInput" style="display:none">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Photos</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-info-circle"></i> Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="title">Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" placeholder="e.g. iPhone 14 Pro Max - 256GB - Like New" required maxlength="100">
+                        <span class="char-count"><span id="titleCount">0</span>/100</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category <span class="required">*</span></label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="fashion">Fashion</option>
+                            <option value="home-garden">Home & Garden</option>
+                            <option value="vehicles">Vehicles</option>
+                            <option value="services">Services</option>
+                            <option value="sports">Sports</option>
+                            <option value="books-media">Books & Media</option>
+                            <option value="baby-kids">Baby & Kids</option>
+                            <option value="beauty-health">Beauty & Health</option>
+                            <option value="food-groceries">Food & Groceries</option>
+                            <option value="pets">Pets</option>
+                            <option value="jobs-skills">Jobs & Skills</option>
+                            <option value="real-estate">Real Estate</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condition">Condition <span class="required">*</span></label>
+                        <div class="condition-options">
+                            <label class="condition-option">
+                                <input type="radio" name="condition" value="new" required>
+                                <span><i class="fas fa-star"></i> Brand New</span>
+                            </label>
+                            <label class="condition-option">
+                                <input type="radio" name="condition" value="like-new">
+                                <span><i class="fas fa-check"></i> Like New</span>
+                            </label>
+                            <label class="condition-option">
+                                <input type="radio" name="condition" value="good">
+                                <span><i class="fas fa-thumbs-up"></i> Good</span>
+                            </label>
+                            <label class="condition-option">
+                                <input type="radio" name="condition" value="fair">
+                                <span><i class="fas fa-hand-paper"></i> Fair</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description <span class="required">*</span></label>
+                        <textarea id="description" name="description" rows="6" placeholder="Describe your item in detail — condition, features, reason for selling, what's included..." required maxlength="2000"></textarea>
+                        <span class="char-count"><span id="descCount">0</span>/2000</span>
+                    </div>
+                </div>
+
+                <!-- Pricing -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-cedi-sign"></i> Pricing</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price">Price (GHS) <span class="required">*</span></label>
+                            <div class="input-prefix">
+                                <span>GHS</span>
+                                <input type="number" id="price" name="price" placeholder="0" min="1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="negotiable" name="negotiable">
+                                <span>Price is negotiable</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-map-marker-alt"></i> Location</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="region">Region <span class="required">*</span></label>
+                            <select id="region" name="region" required>
+                                <option value="">Select region</option>
+                                <option value="greater-accra">Greater Accra</option>
+                                <option value="ashanti">Ashanti</option>
+                                <option value="western">Western</option>
+                                <option value="eastern">Eastern</option>
+                                <option value="central">Central</option>
+                                <option value="northern">Northern</option>
+                                <option value="volta">Volta</option>
+                                <option value="upper-east">Upper East</option>
+                                <option value="upper-west">Upper West</option>
+                                <option value="brong-ahafo">Brong Ahafo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City/Town <span class="required">*</span></label>
+                            <input type="text" id="city" name="city" placeholder="e.g. Accra" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-phone"></i> Contact Information</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="0XX XXX XXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showPhone" name="showPhone" checked>
+                                <span>Show phone number on listing</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline btn-large" id="saveDraftBtn">
+                        <i class="fas fa-save"></i> Save as Draft
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-large" id="publishBtn">
+                        <i class="fas fa-rocket"></i> Publish Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config/firebase-config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/publish.js"></script>
+</body>
+</html>

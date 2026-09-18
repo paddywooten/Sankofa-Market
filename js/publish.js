@@ -1,0 +1,269 @@
+/**
+ * Sankofa Market - Publish Page JavaScript
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    initPhotoUpload();
+    initCharCounters();
+    initFormSubmission();
+});
+
+// ============================================================================
+// PHOTO UPLOAD
+// ============================================================================
+
+function initPhotoUpload() {
+    const photoInput = document.getElementById('photoInput');
+    const photoGrid = document.getElementById('photoGrid');
+    const uploadBtn = document.getElementById('photoUploadBtn');
+    let photos = [];
+    
+    photoInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        
+        if (photos.length + files.length > 8) {
+            showFlashMessage('Maximum 8 photos allowed', 'warning');
+            return;
+        }
+        
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                photos.push(event.target.result);
+                renderPhotos();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        // Reset input so same file can be selected again
+        this.value = '';
+    });
+    
+    function renderPhotos() {
+        // Clear existing previews (keep upload button)
+        const previews = photoGrid.querySelectorAll('.photo-preview');
+        previews.forEach(p => p.remove());
+        
+        photos.forEach((photo, index) => {
+            const preview = document.createElement('div');
+            preview.className = 'photo-preview';
+            preview.innerHTML = `
+                <img src="${photo}" alt="Photo ${index + 1}" loading="lazy">
+                <button type="button" class="remove-photo" data-index="${index}">
+                    <i class="fas fa-times"></i>
+                </button>
+                ${index === 0 ? '<span class="cover-badge">Cover</span>' : ''}
+            `;
+            photoGrid.insertBefore(preview, uploadBtn);
+        });
+        
+        // Hide upload button if max reached
+        uploadBtn.style.display = photos.length >= 8 ? 'none' : 'flex';
+        
+        // Add remove handlers
+        photoGrid.querySelectorAll('.remove-photo').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                photos.splice(index, 1);
+                renderPhotos();
+            });
+        });
+    }
+    
+    // Expose photos for form submission
+    window.uploadedPhotos = photos;
+}
+
+// ============================================================================
+// CHARACTER COUNTERS
+// ============================================================================
+
+function initCharCounters() {
+    const titleInput = document.getElementById('title');
+    const descInput = document.getElementById('description');
+    const titleCount = document.getElementById('titleCount');
+    const descCount = document.getElementById('descCount');
+    
+    titleInput.addEventListener('input', () => {
+        titleCount.textContent = titleInput.value.length;
+    });
+    
+    descInput.addEventListener('input', () => {
+        descCount.textContent = descInput.value.length;
+    });
+}
+
+// ============================================================================
+// FORM SUBMISSION
+// ============================================================================
+
+function initFormSubmission() {
+    const form = document.getElementById('publishForm');
+    const publishBtn = document.getElementById('publishBtn');
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validate
+        if (!validateForm()) return;
+        
+        // Check if user is logged in
+        if (!isLoggedIn()) {
+            showFlashMessage('Please sign in to publish a listing', 'warning');
+            setTimeout(() => {
+                window.location.href = 'pages/auth/login.html?redirect=publish.html';
+            }, 1500);
+            return;
+        }
+        
+        // Collect form data
+        const formData = collectFormData();
+        
+        // Show loading state
+        const stopLoading = showLoading(publishBtn);
+        
+        try {
+            if (typeof firebaseDB !== 'undefined') {
+                // Upload to Firebase
+                await publishToFirebase(formData);
+            } else {
+                // Demo mode - simulate success
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+            
+            showFlashMessage('Listing published successfully! 🎉', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        } catch (error) {
+            console.error('Publish error:', error);
+            showFlashMessage('Error publishing listing. Please try again.', 'error');
+        } finally {
+            stopLoading();
+        }
+    });
+    
+    saveDraftBtn.addEventListener('click', function() {
+        const formData = collectFormData();
+        localStorage.setItem('sankofa_draft', JSON.stringify(formData));
+        showFlashMessage('Draft saved!', 'success');
+    });
+    
+    // Load draft if exists
+    const draft = localStorage.getItem('sankofa_draft');
+    if (draft) {
+        try {
+            const data = JSON.parse(draft);
+            if (data.title) document.getElementById('title').value = data.title;
+            if (data.category) document.getElementById('category').value = data.category;
+            if (data.description) document.getElementById('description').value = data.description;
+            if (data.price) document.getElementById('price').value = data.price;
+            if (data.city) document.getElementById('city').value = data.city;
+            if (data.region) document.getElementById('region').value = data.region;
+            
+            // Update counters
+            document.getElementById('titleCount').textContent = data.title?.length || 0;
+            document.getElementById('descCount').textContent = data.description?.length || 0;
+        } catch (e) {}
+    }
+}
+
+function validateForm() {
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const condition = document.querySelector('input[name="condition"]:checked');
+    const description = document.getElementById('description').value.trim();
+    const price = document.getElementById('price').value;
+    const region = document.getElementById('region').value;
+    const city = document.getElementById('city').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    
+    if (!title) {
+        showFlashMessage('Please enter a title', 'error');
+        return false;
+    }
+    if (!category) {
+        showFlashMessage('Please select a category', 'error');
+        return false;
+    }
+    if (!condition) {
+        showFlashMessage('Please select the condition', 'error');
+        return false;
+    }
+    if (!description) {
+        showFlashMessage('Please add a description', 'error');
+        return false;
+    }
+    if (!price || price < 1) {
+        showFlashMessage('Please enter a valid price', 'error');
+        return false;
+    }
+    if (!region) {
+        showFlashMessage('Please select a region', 'error');
+        return false;
+    }
+    if (!city) {
+        showFlashMessage('Please enter your city', 'error');
+        return false;
+    }
+    if (!phone) {
+        showFlashMessage('Please enter your phone number', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+function collectFormData() {
+    return {
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value,
+        condition: document.querySelector('input[name="condition"]:checked')?.value,
+        description: document.getElementById('description').value.trim(),
+        price: parseInt(document.getElementById('price').value),
+        negotiable: document.getElementById('negotiable').checked,
+        region: document.getElementById('region').value,
+        city: document.getElementById('city').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        showPhone: document.getElementById('showPhone').checked,
+        photos: window.uploadedPhotos || [],
+        createdAt: new Date().toISOString()
+    };
+}
+
+async function publishToFirebase(data) {
+    const user = firebase.auth().currentUser;
+    if (!user) throw new Error('Not authenticated');
+    
+    // Upload photos to storage
+    const photoURLs = [];
+    for (let i = 0; i < data.photos.length; i++) {
+        const url = await uploadPhotoToStorage(data.photos[i], user.uid, i);
+        photoURLs.push(url);
+    }
+    
+    // Create product document
+    const productData = {
+        ...data,
+        photos: photoURLs,
+        sellerId: user.uid,
+        isActive: true,
+        isSold: false,
+        isFeatured: false,
+        views: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    await firebaseDB.collection('products').add(productData);
+}
+
+async function uploadPhotoToStorage(dataUrl, userId, index) {
+    const response = await fetch(dataUrl);
+    const blob = await response.blob();
+    const path = `products/${userId}/${Date.now()}_${index}.jpg`;
+    const result = await uploadFile(blob, path);
+    return result.url;
+}
