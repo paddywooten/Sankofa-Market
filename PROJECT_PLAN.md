@@ -93,9 +93,10 @@ The name comes from the Adinkra symbol "Sankofa" which means **"go back and get 
 - ✅ Shopping cart
 - ✅ Checkout flow
 - ✅ Payment integration (Paystack - Mobile Money, Cards)
+- ✅ **Escrow payment protection** (funds held until delivery confirmed)
 - ✅ Order management
-- ✅ Payment protection
-- ✅ Dispute resolution
+- ✅ **Dispute resolution system** (admin-managed with evidence collection)
+- ✅ **Buyer confirmation flow** (48-hour inspection period)
 - ✅ Transaction history
 
 #### **6. Trust & Safety**
@@ -290,6 +291,48 @@ The name comes from the Adinkra symbol "Sankofa" which means **"go back and get 
 }
 ```
 
+#### **8. transactions** (Escrow System)
+```javascript
+{
+  transactionId: "txn_uid",
+  orderId: "order_uid",
+  buyerId: "user_uid",
+  sellerId: "user_uid",
+  amount: 5500,
+  commission: 275, // 5% of amount
+  netAmount: 5225, // amount - commission
+  status: "pending" | "held" | "released" | "refunded" | "cancelled",
+  paymentMethod: "card" | "momo_mtn" | "momo_vodafone" | "momo_airteltigo",
+  paymentReference: "paystack_ref",
+  momoPhone: "0241234567", // if MoMo payment
+  escrowHeldAt: timestamp,
+  escrowReleasedAt: timestamp,
+  autoReleaseAt: timestamp, // 48 hours after delivery
+  disputeId: "dispute_uid", // if disputed
+  createdAt: timestamp
+}
+```
+
+#### **9. disputes** (Dispute Resolution)
+```javascript
+{
+  disputeId: "dispute_uid",
+  transactionId: "txn_uid",
+  orderId: "order_uid",
+  raisedBy: "buyer" | "seller",
+  reason: "item_not_received" | "item_not_as_described" | "defective" | "wrong_item" | "other",
+  description: "The item arrived damaged...",
+  status: "open" | "under_review" | "resolved",
+  buyerEvidence: ["image_url_1", "image_url_2"],
+  sellerEvidence: ["image_url_1", "image_url_2"],
+  resolution: "refund_buyer" | "release_to_seller" | "split_50_50",
+  adminNotes: "After reviewing evidence...",
+  resolvedBy: "admin_uid",
+  resolvedAt: timestamp,
+  createdAt: timestamp
+}
+```
+
 ---
 
 ## 📁 PROJECT STRUCTURE
@@ -300,18 +343,24 @@ sankofa-market/
 ├── search.html                         # Search results page
 ├── product-detail.html                 # Product detail page
 ├── publish.html                        # Create/edit listing
+├── confirm-delivery.html               # Buyer delivery confirmation (escrow)
+├── ESCROW_TERMS.md                     # Escrow legal terms
 ├── css/
 │   ├── main.css                       # Main stylesheet
 │   ├── auth.css                       # Authentication styles
 │   ├── product.css                    # Product pages styles
-│   └── chat.css                       # Chat styles
+│   ├── chat.css                       # Chat styles
+│   ├── confirm-delivery.css           # Delivery confirmation styles
+│   └── disputes.css                   # Dispute resolution styles
 ├── js/
 │   ├── main.js                        # Main JavaScript
 │   ├── auth.js                        # Authentication logic
 │   ├── product.js                     # Product logic
 │   ├── search.js                      # Search logic
 │   ├── chat.js                        # Chat logic
-│   └── payment.js                     # Payment logic
+│   ├── payment.js                     # Payment + escrow logic
+│   ├── confirm-delivery.js            # Buyer confirmation logic
+│   └── disputes-admin.js              # Admin dispute resolution
 ├── images/
 │   ├── logos/                         # Brand logos
 │   ├── products/                      # Product images
@@ -343,6 +392,7 @@ sankofa-market/
 │       ├── users.html                # User management
 │       ├── products.html             # Product moderation
 │       ├── orders.html               # Order management
+│       ├── disputes.html             # Dispute resolution
 │       └── reports.html              # Reports/analytics
 ├── config/
 │   └── firebase-config.js            # Firebase configuration
@@ -389,7 +439,24 @@ sankofa-market/
 - ✅ Product moderation
 - ✅ Dispute resolution
 
-### **Phase 3: Advanced Features (Weeks 5-6)**
+### **Phase 3: Payments & Escrow (Weeks 5-6)** ✅ COMPLETED
+
+#### **Week 5: Payment Integration**
+- ✅ Paystack integration (cards + Mobile Money)
+- ✅ Payment validation and error handling
+- ✅ Transaction logging
+- ✅ Payment success/failure pages
+
+#### **Week 6: Escrow Protection System**
+- ✅ Escrow payment flow (hold funds until delivery confirmed)
+- ✅ 48-hour auto-release timer
+- ✅ Buyer confirmation page with photo evidence
+- ✅ Dispute resolution system (admin dashboard)
+- ✅ Dispute evidence collection (photos from both parties)
+- ✅ Admin decision workflow (refund/release/split)
+- ✅ Escrow terms of service (legal documentation)
+
+### **Phase 4: Advanced Features (Weeks 7-8)**
 
 #### **Week 5: Advanced Features**
 - ✅ Push notifications
@@ -563,15 +630,20 @@ service firebase.storage {
 
 ### **This Month**
 1. ✅ Implement chat system
-2. ✅ Add payment integration
+2. ✅ Add payment integration (Paystack)
 3. ✅ Build admin dashboard
-4. ✅ Test all features
+4. ✅ **Implement escrow payment protection**
+5. ✅ **Build dispute resolution system**
+6. ✅ **Create buyer confirmation flow**
+7. ✅ Test all features
 
 ### **Next Month**
-1. ✅ Deploy to production
-2. ✅ Set up custom domain
-3. ✅ Launch marketing campaign
-4. ✅ Acquire first users
+1. Deploy to production
+2. Set up custom domain
+3. Launch marketing campaign
+4. Acquire first users
+5. Monitor escrow transactions
+6. Optimize dispute resolution process
 
 ---
 

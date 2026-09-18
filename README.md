@@ -10,6 +10,10 @@
 - **🛒 13+ Categories** — Electronics, Fashion, Home & Garden, Vehicles, Services, Sports, Books & Media, Baby & Kids, Beauty & Health, Food & Groceries, Pets, Jobs & Skills, Real Estate
 - **🏪 Sankofa Store** — Official in-house store with verified products and badges
 - **🔍 Smart Search** — Full search with filters (category, price range, condition, location, seller type)
+- **🛡️ Escrow Payment Protection** — Secure payment system that holds funds until buyer confirms delivery
+- **💳 Paystack Integration** — Card payments + Mobile Money (MTN, Vodafone, AirtelTigo)
+- **⚖️ Dispute Resolution** — Admin-managed dispute system with evidence collection and fair resolution
+- **📦 Buyer Confirmation Flow** — Post-delivery inspection with photo evidence and 48-hour auto-release
 - **📱 Fully Responsive** — Works on mobile, tablet, and desktop
 - **🎨 eBay-Inspired Design** — Clean, professional marketplace UI with eBay blue (#0064d2) and orange (#f5af02) color scheme
 - **🖼️ Real Product Images** — High-quality product photography from Unsplash
@@ -55,24 +59,80 @@ const firebaseConfig = {
 
 Without Firebase configured, the site runs in **demo mode** with sample products and real images.
 
+## 🛡️ Escrow Payment Protection System
+
+Sankofa Market includes a complete escrow system that protects both buyers and sellers:
+
+### How It Works:
+1. **Buyer pays** → Funds held in escrow (not sent to seller)
+2. **Seller ships** → Buyer receives item
+3. **Buyer inspects** (48 hours) → Confirms item matches listing
+4. **Funds released** → Seller receives payment (minus 5% commission)
+
+### Key Features:
+- **Mobile Money Support** — MTN, Vodafone, AirtelTigo via Paystack
+- **Card Payments** — Visa, Mastercard via Paystack
+- **Auto-Release Timer** — 48-hour countdown with visual indicator
+- **Dispute Resolution** — Admin reviews evidence and makes fair decisions
+- **Photo Evidence** — Both parties upload photos for comparison
+- **5% Commission** — Automatically deducted from seller payout
+
+### Files:
+- `js/payment.js` — Paystack integration and escrow logic
+- `confirm-delivery.html` — Buyer confirmation page
+- `pages/admin/disputes.html` — Admin dispute resolution dashboard
+- `ESCROW_TERMS.md` — Complete legal terms of service
+
+### Usage:
+```javascript
+// Initialize payment
+PaymentSystem.initializePayment(orderData, 'card');
+PaymentSystem.initializeMomoPayment(orderData, 'mtn', '0241234567');
+
+// Release escrow (after buyer confirms)
+PaymentSystem.releaseEscrow(transactionId, confirmedBy);
+
+// Refund escrow (after dispute resolution)
+PaymentSystem.refundEscrow(transactionId, reason, adminId);
+```
+
+See [ESCROW_TERMS.md](ESCROW_TERMS.md) for complete legal documentation.
+
 ## 📁 Project Structure
 
 ```
 sankofa-market/
 ├── index.html              # Homepage with carousel
 ├── search.html             # Search & browse page
+├── confirm-delivery.html   # Buyer delivery confirmation (escrow)
+├── ESCROW_TERMS.md         # Escrow terms of service
 ├── config/
 │   └── firebase-config.js  # Firebase configuration
 ├── css/
 │   ├── main.css            # Main styles (eBay-inspired)
-│   └── search.css          # Search page styles
+│   ├── search.css          # Search page styles
+│   ├── confirm-delivery.css # Delivery confirmation styles
+│   └── disputes.css        # Dispute resolution styles
 ├── js/
 │   ├── main.js             # Core utilities & auth
 │   ├── carousel.js         # Hero carousel logic
 │   ├── home.js             # Homepage product rendering
-│   └── search.js           # Search & filtering
+│   ├── search.js           # Search & filtering
+│   ├── payment.js          # Paystack + escrow system
+│   ├── confirm-delivery.js # Buyer confirmation logic
+│   └── disputes-admin.js   # Admin dispute resolution
+├── pages/
+│   ├── admin/
+│   │   ├── dashboard.html  # Admin overview
+│   │   └── disputes.html   # Dispute management
+│   ├── auth/
+│   │   ├── login.html      # User login
+│   │   └── register.html   # User registration
+│   └── user/
+│       └── dashboard.html  # User account
 ├── data/
 │   └── categories.json     # 13 category definitions
+├── brand-assets/           # Logo files
 └── images/
     └── logos/              # Brand assets
 ```

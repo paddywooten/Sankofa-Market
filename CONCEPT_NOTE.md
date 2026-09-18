@@ -85,9 +85,11 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
    - Banner ads from local businesses
    - Sponsored category placements
 
-5. **Transaction Fees** (Future)
-   - 2-3% on escrow-protected transactions
-   - Delivery service markup
+5. **Transaction Fees** (Active)
+   - 5% commission on escrow-protected transactions
+   - Automatically deducted from seller payout
+   - Covers payment processing + platform operations
+   - Delivery service markup (future)
 
 ### Projected Revenue:
 - **Year 1:** GHS 500,000 (~$40,000)
@@ -123,6 +125,9 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 - ✅ Favorites/wishlist functionality
 - ✅ In-app messaging with sellers
 - ✅ Mobile Money payment integration
+- ✅ **Escrow payment protection** (funds held until delivery confirmed)
+- ✅ **48-hour inspection period** with photo evidence upload
+- ✅ **Dispute resolution** with admin review
 - ✅ Order tracking and delivery coordination
 
 ### Seller Features:
@@ -132,11 +137,17 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 - ✅ Featured listing promotions
 - ✅ Bulk listing tools (Pro/Business plans)
 - ✅ Automated pricing suggestions
+- ✅ **Guaranteed payment via escrow** (no chargebacks)
+- ✅ **Dispute protection** with evidence submission
+- ✅ **Automatic payout** after buyer confirmation
 
 ### Platform Features:
 - ✅ 13+ product categories with subcategories
 - ✅ Sankofa Store (official verified products)
 - ✅ Admin dashboard for moderation
+- ✅ **Escrow payment protection system** (5% commission)
+- ✅ **Dispute resolution dashboard** with evidence review
+- ✅ **Transaction management** with payment tracking
 - ✅ Fraud detection and reporting
 - ✅ Push notifications for new messages/offers
 - ✅ Multi-language support (English, Twi, Ga)
@@ -158,7 +169,9 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 - **Firebase Hosting** — Global CDN with SSL
 
 ### Integrations:
-- **Paystack** — Card payments and Mobile Money
+- **Paystack** — Card payments and Mobile Money (MTN, Vodafone, AirtelTigo)
+- **Escrow System** — Payment protection with 48-hour auto-release
+- **Dispute Resolution** — Admin-managed dispute workflow with evidence collection
 - **Google Maps API** — Location-based search (future)
 - **Cloudinary** — Image optimization (future)
 - **SendGrid** — Transactional emails (future)
@@ -180,10 +193,15 @@ A purpose-built Ghanaian marketplace that addresses these challenges through:
 - [x] Admin panel
 - [x] 13 categories + Sankofa Store
 
-### Phase 2: Payments & Messaging (Q4 2026)
-- [ ] Paystack integration (cards + MoMo)
+### Phase 2: Payments & Escrow (Q4 2026) ✅ COMPLETED
+- [x] Paystack integration (cards + MoMo)
+- [x] Escrow payment protection system
+- [x] 48-hour auto-release timer
+- [x] Buyer confirmation flow with photo evidence
+- [x] Dispute resolution system (admin dashboard)
+- [x] Dispute evidence collection and review
+- [x] Escrow terms of service (legal documentation)
 - [ ] Real-time chat between buyers/sellers
-- [ ] Escrow payment protection
 - [ ] Push notifications
 - [ ] Email templates
 
