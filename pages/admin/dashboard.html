@@ -1129,6 +1129,16 @@
                             <input type="tel" id="newAdminPhone" placeholder="024 XXX XXXX" style="width: 100%; padding: 0.65rem; border: 1px solid #e5e5e5; border-radius: 8px;">
                         </div>
                     </div>
+                    <div class="form-group" style="margin-top: 0.5rem;">
+                        <label style="font-size: 0.85rem; font-weight: 600;">Admin Role</label>
+                        <select id="newAdminRole" style="width: 100%; padding: 0.65rem; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 0.9rem;" onchange="updateRolePreview()">
+                            <option value="super_admin">👑 Super Admin — Full access to everything including managing other admins</option>
+                            <option value="manager" selected>📋 Manager — Products, orders, users, disputes, analytics</option>
+                            <option value="support">🎧 Support Staff — Messages, user approvals, disputes only</option>
+                            <option value="moderator">🛡️ Moderator — Flag products, block sellers, view reports</option>
+                        </select>
+                        <div id="rolePermissionsPreview" style="margin-top: 0.75rem; padding: 0.75rem; background: #f7f7f7; border-radius: 8px; font-size: 0.8rem; color: #767676;"></div>
+                    </div>
                     <div style="background: #f7f7f7; padding: 0.75rem 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.85rem; color: #767676;">
                         <i class="fas fa-info-circle" style="color: #0064d2;"></i> A random 6-digit admin code will be generated automatically and shown after creation.
                     </div>
@@ -1154,8 +1164,8 @@
                             <thead>
                                 <tr style="background: #f7f7f7;">
                                     <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Admin</th>
-                                    <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Email</th>
-                                    <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Phone</th>
+                                    <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Contact</th>
+                                    <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Role</th>
                                     <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Status</th>
                                     <th style="padding: 0.75rem 1rem; text-align: right; font-size: 0.8rem; color: #767676; text-transform: uppercase;">Actions</th>
                                 </tr>

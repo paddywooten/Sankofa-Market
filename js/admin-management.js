@@ -1,22 +1,121 @@
 /**
- * Sankofa Market - Admin Management
- * Handles: add admins, change password, reset admin code, remove admins
+ * Sankofa Market - Admin Management (with Roles)
+ * Handles: add admins with roles, change password, reset admin code, remove admins
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Only run on admin dashboard
-    if (!document.getElementById('section-admins')) return;
+// Role definitions with permissions
+const ADMIN_ROLES = {
+    super_admin: {
+        label: '👑 Super Admin',
+        color: '#8b5cf6',
+        permissions: {
+            manageUsers: true,
+            manageProducts: true,
+            manageOrders: true,
+            viewAnalytics: true,
+            monitorChats: true,
+            flagProducts: true,
+            blockSellers: true,
+            manageDisputes: true,
+            manageAdmins: true,
+            manageSettings: true
+        }
+    },
+    manager: {
+        label: '📋 Manager',
+        color: '#0064d2',
+        permissions: {
+            manageUsers: true,
+            manageProducts: true,
+            manageOrders: true,
+            viewAnalytics: true,
+            monitorChats: true,
+            flagProducts: true,
+            blockSellers: true,
+            manageDisputes: true,
+            manageAdmins: false,
+            manageSettings: false
+        }
+    },
+    support: {
+        label: '🎧 Support Staff',
+        color: '#f5af02',
+        permissions: {
+            manageUsers: false,
+            manageProducts: false,
+            manageOrders: true,
+            viewAnalytics: false,
+            monitorChats: true,
+            flagProducts: false,
+            blockSellers: false,
+            manageDisputes: true,
+            manageAdmins: false,
+            manageSettings: false
+        }
+    },
+    moderator: {
+        label: '🛡️ Moderator',
+        color: '#86b817',
+        permissions: {
+            manageUsers: false,
+            manageProducts: true,
+            manageOrders: false,
+            viewAnalytics: false,
+            monitorChats: false,
+            flagProducts: true,
+            blockSellers: true,
+            manageDisputes: false,
+            manageAdmins: false,
+            manageSettings: false
+        }
+    }
+};
 
+const PERM_LABELS = {
+    manageUsers: '👥 Manage Users',
+    manageProducts: '📦 Manage Products',
+    manageOrders: '🛒 Manage Orders',
+    viewAnalytics: '📊 View Analytics',
+    monitorChats: '💬 Monitor Chats',
+    flagProducts: '🚩 Flag Products',
+    blockSellers: '🚫 Block Sellers',
+    manageDisputes: '⚖️ Manage Disputes',
+    manageAdmins: '🔐 Manage Admins',
+    manageSettings: '⚙️ Site Settings'
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (!document.getElementById('section-admins')) return;
     initAdminManagement();
 });
 
 function initAdminManagement() {
-    // Load current admin info
     loadMyAdminInfo();
-    // Load all admins list
     loadAllAdmins();
-    // Bind buttons
     bindAdminButtons();
+    updateRolePreview(); // Show initial preview
+}
+
+/* ============================
+   ROLE PREVIEW
+   ============================ */
+
+function updateRolePreview() {
+    const select = document.getElementById('newAdminRole');
+    const preview = document.getElementById('rolePermissionsPreview');
+    if (!select || !preview) return;
+
+    const role = ADMIN_ROLES[select.value];
+    if (!role) return;
+
+    let html = '<strong>Permissions for ' + role.label + ':</strong><br>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.2rem; margin-top: 0.35rem;">';
+    for (const [key, label] of Object.entries(PERM_LABELS)) {
+        const has = role.permissions[key];
+        html += `<span>${has ? '✅' : '❌'} ${label}</span>`;
+    }
+    html += '</div>';
+    preview.innerHTML = html;
 }
 
 /* ============================
@@ -42,6 +141,8 @@ async function loadMyAdminInfo() {
         }
 
         const data = doc.data();
+        const adminRole = data.adminRole || 'super_admin';
+        const roleInfo = ADMIN_ROLES[adminRole] || ADMIN_ROLES.super_admin;
 
         infoEl.innerHTML = `
             <div style="display: grid; gap: 0.4rem; font-size: 0.9rem;">
@@ -49,25 +150,14 @@ async function loadMyAdminInfo() {
                 <div><strong>Email:</strong> ${data.email || user.email}</div>
                 <div><strong>Phone:</strong> ${data.phone || 'N/A'}</div>
                 <div><strong>Admin Code:</strong> <code style="background: rgba(0,100,210,0.08); padding: 0.1rem 0.4rem; border-radius: 4px;">${data.adminCode || 'Not set'}</code></div>
-                <div><strong>Role:</strong> <span style="background: #0064d2; color: white; padding: 0.1rem 0.5rem; border-radius: 50px; font-size: 0.75rem;">Admin</span></div>
+                <div><strong>Role:</strong> <span style="background: ${roleInfo.color}; color: white; padding: 0.15rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;">${roleInfo.label}</span></div>
             </div>
         `;
 
         // Permissions
         const perms = data.permissions || {};
-        const permLabels = {
-            manageUsers: '👥 Manage Users',
-            manageProducts: '📦 Manage Products',
-            manageOrders: '🛒 Manage Orders',
-            viewAnalytics: '📊 View Analytics',
-            monitorChats: '💬 Monitor Chats',
-            flagProducts: '🚩 Flag Products',
-            blockSellers: '🚫 Block Sellers',
-            manageDisputes: '⚖️ Manage Disputes'
-        };
-
         let permsHTML = '<div style="display: grid; gap: 0.3rem;">';
-        for (const [key, label] of Object.entries(permLabels)) {
+        for (const [key, label] of Object.entries(PERM_LABELS)) {
             const has = perms[key];
             permsHTML += `<div>${has ? '✅' : '❌'} ${label}</div>`;
         }
@@ -109,22 +199,31 @@ async function loadAllAdmins() {
         snapshot.forEach(doc => {
             const data = doc.data();
             const isMe = doc.id === currentUid;
+            const adminRole = data.adminRole || 'super_admin';
+            const roleInfo = ADMIN_ROLES[adminRole] || ADMIN_ROLES.super_admin;
 
             html += `
                 <tr style="border-bottom: 1px solid #e5e5e5;">
                     <td style="padding: 0.85rem 1rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
-                            <div style="width: 36px; height: 36px; border-radius: 50%; background: ${isMe ? '#0064d2' : '#e5e5e5'}; color: ${isMe ? 'white' : '#767676'}; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: ${roleInfo.color}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem;">
                                 ${(data.name || 'A').charAt(0).toUpperCase()}
                             </div>
                             <div>
                                 <div style="font-weight: 600; font-size: 0.9rem;">${data.name || 'Unknown'}${isMe ? ' <span style="color: #0064d2; font-size: 0.75rem;">(You)</span>' : ''}</div>
-                                <div style="font-size: 0.75rem; color: #767676;">Admin Code: ${data.adminCode || 'N/A'}</div>
+                                <div style="font-size: 0.75rem; color: #767676;">Code: ${data.adminCode || 'N/A'}</div>
                             </div>
                         </div>
                     </td>
-                    <td style="padding: 0.85rem 1rem; font-size: 0.9rem;">${data.email || 'N/A'}</td>
-                    <td style="padding: 0.85rem 1rem; font-size: 0.9rem;">${data.phone || 'N/A'}</td>
+                    <td style="padding: 0.85rem 1rem;">
+                        <div style="font-size: 0.9rem;">${data.email || 'N/A'}</div>
+                        <div style="font-size: 0.75rem; color: #767676;">${data.phone || ''}</div>
+                    </td>
+                    <td style="padding: 0.85rem 1rem;">
+                        <span style="background: ${roleInfo.color}15; color: ${roleInfo.color}; padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
+                            ${roleInfo.label}
+                        </span>
+                    </td>
                     <td style="padding: 0.85rem 1rem;">
                         <span style="background: ${data.status === 'approved' ? 'rgba(134,184,23,0.15)' : 'rgba(231,76,60,0.12)'}; color: ${data.status === 'approved' ? '#5a7e10' : '#e74c3c'}; padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;">
                             ${data.status || 'unknown'}
@@ -157,7 +256,6 @@ async function loadAllAdmins() {
    ============================ */
 
 function bindAdminButtons() {
-    // Show/Hide add admin form
     document.getElementById('showAddAdminBtn')?.addEventListener('click', () => {
         document.getElementById('addAdminForm').style.display = 'block';
         document.getElementById('adminCreatedMsg').style.display = 'none';
@@ -167,18 +265,13 @@ function bindAdminButtons() {
         document.getElementById('addAdminForm').style.display = 'none';
     });
 
-    // Create admin
     document.getElementById('createAdminBtn')?.addEventListener('click', createNewAdmin);
-
-    // Change password
     document.getElementById('changePasswordBtn')?.addEventListener('click', changeMyPassword);
-
-    // Reset my admin code
     document.getElementById('resetAdminCodeBtn')?.addEventListener('click', resetMyAdminCode);
 }
 
 /* ============================
-   CREATE NEW ADMIN
+   CREATE NEW ADMIN (with role)
    ============================ */
 
 async function createNewAdmin() {
@@ -186,6 +279,7 @@ async function createNewAdmin() {
     const email = document.getElementById('newAdminEmail').value.trim();
     const password = document.getElementById('newAdminPassword').value;
     const phone = document.getElementById('newAdminPhone').value.trim();
+    const selectedRole = document.getElementById('newAdminRole').value;
 
     if (!name || !email || !password) {
         alert('Please fill in name, email, and password.');
@@ -197,6 +291,12 @@ async function createNewAdmin() {
         return;
     }
 
+    const roleInfo = ADMIN_ROLES[selectedRole];
+    if (!roleInfo) {
+        alert('Please select a valid role.');
+        return;
+    }
+
     const btn = document.getElementById('createAdminBtn');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
@@ -204,39 +304,29 @@ async function createNewAdmin() {
     const adminCode = String(Math.floor(100000 + Math.random() * 900000));
 
     try {
-        // Save current user
         const currentUser = firebase.auth().currentUser;
 
-        // Create new user via secondary app (to avoid signing out current admin)
+        // Create new user via secondary app
         const secondaryApp = firebase.initializeApp(firebase.app().options, 'Secondary');
         const secondaryAuth = secondaryApp.auth();
 
         const cred = await secondaryAuth.createUserWithEmailAndPassword(email, password);
         await cred.user.updateProfile({ displayName: name });
 
-        // Create admin document
+        // Create admin document with role
         await firebase.firestore().collection('users').doc(cred.user.uid).set({
             name: name,
             email: email,
             phone: phone,
             role: 'admin',
+            adminRole: selectedRole,
             status: 'approved',
             adminCode: adminCode,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             createdBy: currentUser.uid,
-            permissions: {
-                manageUsers: true,
-                manageProducts: true,
-                manageOrders: true,
-                viewAnalytics: true,
-                monitorChats: true,
-                flagProducts: true,
-                blockSellers: true,
-                manageDisputes: true
-            }
+            permissions: roleInfo.permissions
         });
 
-        // Sign out from secondary app and delete it
         await secondaryAuth.signOut();
         await secondaryApp.delete();
 
@@ -244,15 +334,15 @@ async function createNewAdmin() {
         document.getElementById('addAdminForm').style.display = 'none';
         document.getElementById('adminCreatedMsg').style.display = 'block';
         document.getElementById('newAdminCredentials').innerHTML =
-            `Email: ${email}<br>Password: ${password}<br>Admin Code: <strong>${adminCode}</strong>`;
+            `Email: ${email}<br>Password: ${password}<br>Admin Code: <strong>${adminCode}</strong><br>Role: <strong>${roleInfo.label}</strong>`;
 
         // Clear form
         document.getElementById('newAdminName').value = '';
         document.getElementById('newAdminEmail').value = '';
         document.getElementById('newAdminPassword').value = '';
         document.getElementById('newAdminPhone').value = '';
+        document.getElementById('newAdminRole').selectedIndex = 1; // Reset to Manager
 
-        // Refresh admin list
         loadAllAdmins();
 
     } catch (error) {
@@ -289,16 +379,10 @@ async function changeMyPassword() {
 
     try {
         const user = firebase.auth().currentUser;
-
-        // Re-authenticate first
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
         await user.reauthenticateWithCredential(credential);
-
-        // Update password
         await user.updatePassword(newPassword);
-
         alert('✅ Password changed successfully!');
-
     } catch (error) {
         console.error('Error changing password:', error);
         let msg = error.message;
@@ -324,10 +408,7 @@ async function resetMyAdminCode() {
         });
 
         alert(`✅ New admin code generated!\n\nYour new code is: ${newCode}\n\nPlease save this code — you'll need it to log in.`);
-
-        // Refresh display
         loadMyAdminInfo();
-
     } catch (error) {
         console.error('Error resetting admin code:', error);
         alert('Error: ' + error.message);
@@ -350,7 +431,6 @@ async function resetOtherAdminCode(uid, name) {
 
         alert(`✅ New admin code for ${name}:\n\n${newCode}\n\nShare this code securely with them.`);
         loadAllAdmins();
-
     } catch (error) {
         console.error('Error:', error);
         alert('Error: ' + error.message);
@@ -367,6 +447,7 @@ async function removeAdmin(uid, name) {
     try {
         await firebase.firestore().collection('users').doc(uid).update({
             role: 'user',
+            adminRole: null,
             adminCode: null,
             permissions: null,
             adminRemovedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -375,7 +456,6 @@ async function removeAdmin(uid, name) {
 
         alert(`✅ ${name} has been removed as admin.\n\nThey are now a regular user.`);
         loadAllAdmins();
-
     } catch (error) {
         console.error('Error:', error);
         alert('Error: ' + error.message);
