@@ -1,24 +1,19 @@
 /**
  * Sankofa Market - Firebase Configuration
+ * Ghana's #1 Online Marketplace
  * 
- * IMPORTANT: Replace the placeholder values below with your actual Firebase config
- * Get your config from Firebase Console:
- * 1. Go to https://console.firebase.google.com
- * 2. Select your project
- * 3. Go to Project Settings (gear icon)
- * 4. Scroll to "Your apps" section
- * 5. Click the Web icon </>
- * 6. Copy the config and replace below
+ * Firebase Project: sankofa-market
+ * Last updated: September 2026
  */
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
+  apiKey: "AIzaSyALwyEU6XYgumx989vgt58QxdQSx0Txghg",
   authDomain: "sankofa-market.firebaseapp.com",
   projectId: "sankofa-market",
-  storageBucket: "sankofa-market.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID" // Optional, for Analytics
+  storageBucket: "sankofa-market.firebasestorage.app",
+  messagingSenderId: "98342667835",
+  appId: "1:98342667835:web:f9ca761128eaa0b5c27e1e",
+  measurementId: "G-KX92END1TJ"
 };
 
 // Initialize Firebase
@@ -27,21 +22,16 @@ let firebaseAuth = null;
 let firebaseDB = null;
 let firebaseStorage = null;
 
-// Only initialize if config is set
-if (firebaseConfig.apiKey !== "YOUR_API_KEY_HERE") {
-  try {
-    firebaseApp = firebase.initializeApp(firebaseConfig);
-    firebaseAuth = firebase.auth();
-    firebaseDB = firebase.firestore();
-    firebaseStorage = firebase.storage();
-    
-    console.log('✅ Firebase initialized successfully');
-  } catch (error) {
-    console.error('❌ Firebase initialization error:', error);
-  }
-} else {
-  console.warn('⚠️ Firebase config not set. Please update config/firebase-config.js with your actual Firebase config.');
-  console.warn('⚠️ Get your config from: https://console.firebase.google.com');
+try {
+  firebaseApp = firebase.initializeApp(firebaseConfig);
+  firebaseAuth = firebase.auth();
+  firebaseDB = firebase.firestore();
+  firebaseStorage = firebase.storage();
+  
+  console.log('✅ Firebase initialized successfully');
+  console.log('📦 Project:', firebaseConfig.projectId);
+} catch (error) {
+  console.error('❌ Firebase initialization error:', error);
 }
 
 // Export for use in other files
