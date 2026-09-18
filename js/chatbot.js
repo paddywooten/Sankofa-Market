@@ -1,6 +1,6 @@
 /**
- * Sankofa Market Chatbot Assistant
- * Helps users with FAQs and common questions
+ * Sankofa Market Chatbot Assistant - Advanced Version
+ * Features: NLP, Conversation History, Feedback, Smart Suggestions, Human Handoff
  */
 
 class SankofaChatbot {
@@ -8,14 +8,37 @@ class SankofaChatbot {
         this.isOpen = false;
         this.messages = [];
         this.faqs = [];
+        this.sessionId = this.generateSessionId();
+        this.conversationId = this.generateConversationId();
+        this.currentPageContext = this.getPageContext();
+        this.useNLP = true; // Set to false if Dialogflow not configured
         this.init();
+    }
+
+    generateSessionId() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    generateConversationId() {
+        return 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    getPageContext() {
+        const path = window.location.pathname;
+        if (path.includes('product-detail')) return 'product_detail';
+        if (path.includes('search')) return 'search';
+        if (path.includes('dashboard')) return 'dashboard';
+        if (path.includes('publish')) return 'publish';
+        return 'general';
     }
 
     async init() {
         this.createChatbotUI();
         this.attachEventListeners();
         await this.loadFAQs();
+        await this.loadConversationHistory();
         this.showWelcomeMessage();
+        await this.loadSmartSuggestions();
     }
 
     async loadFAQs() {
@@ -153,6 +176,7 @@ class SankofaChatbot {
         if (!message) return;
 
         this.addUserMessage(message);
+        this.saveToHistory('user', message);
         input.value = '';
 
         // Show typing indicator
@@ -165,11 +189,50 @@ class SankofaChatbot {
         }, 1000 + Math.random() * 1000);
     }
 
-    processMessage(message) {
-        const lowerMessage = message.toLowerCase();
-        const response = this.findBestResponse(lowerMessage);
-        
-        this.addBotMessage(response.text, response.quickReplies);
+    async processMessage(message) {
+        try {
+            let response;
+
+            // Try NLP first if enabled and Firebase is available
+            if (this.useNLP && typeof firebase !== 'undefined' && firebase.functions) {
+                try {
+                    const result = await firebase.functions()
+                        .httpsCallable('processMessage')({
+                            message,
+                            sessionId: this.sessionId,
+                            pageContext: this.currentPageContext
+                        });
+
+                    if (result.data.success && !result.data.fallback) {
+                        response = {
+                            text: result.data.response,
+                            quickReplies: result.data.quickReplies || [],
+                            intent: result.data.intent,
+                            confidence: result.data.confidence
+                        };
+                    } else {
+                        // Fallback to keyword matching
+                        response = this.findBestResponse(message.toLowerCase());
+                    }
+                } catch (error) {
+                    console.warn('NLP failed, using keyword matching:', error);
+                    response = this.findBestResponse(message.toLowerCase());
+                }
+            } else {
+                // Use keyword matching
+                response = this.findBestResponse(message.toLowerCase());
+            }
+
+            // Add bot message with feedback buttons
+            this.addBotMessage(response.text, response.quickReplies, response.intent);
+
+            // Save to conversation history
+            this.saveToHistory('bot', response.text, response.intent);
+
+        } catch (error) {
+            console.error('Process message error:', error);
+            this.addBotMessage('Sorry, I encountered an error. Please try again or contact support.');
+        }
     }
 
     findBestResponse(message) {
@@ -241,7 +304,7 @@ class SankofaChatbot {
         this.scrollToBottom();
     }
 
-    addBotMessage(text, quickReplies = []) {
+    addBotMessage(text, quickReplies = [], intent = null) {
         const messagesContainer = document.getElementById('chatbotMessages');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message bot';
@@ -264,12 +327,43 @@ class SankofaChatbot {
                 ${quickRepliesHtml}
             </div>
         `;
+        
         messagesContainer.appendChild(messageDiv);
+
+        // Add feedback buttons if intent is provided
+        if (intent && intent !== 'Default Fallback Intent') {
+            this.addFeedbackButtons(messageDiv.querySelector('.message-content'), intent);
+        }
+
         this.scrollToBottom();
+
+        // Save to history
+        this.saveToHistory('bot', text, intent);
     }
 
     handleQuickReply(text) {
+        const lowerText = text.toLowerCase();
+        
+        // Check for escalation triggers
+        if (lowerText.includes('contact support') || 
+            lowerText.includes('human') || 
+            lowerText.includes('escalate') ||
+            lowerText.includes('speak to agent')) {
+            this.addUserMessage(text);
+            this.saveToHistory('user', text);
+            this.escalateToHuman();
+            return;
+        }
+
+        // Check for conversation history trigger
+        if (lowerText.includes('view history') || lowerText.includes('past conversations')) {
+            this.addUserMessage(text);
+            this.viewConversationHistory();
+            return;
+        }
+
         this.addUserMessage(text);
+        this.saveToHistory('user', text);
         
         setTimeout(() => {
             this.showTypingIndicator();
@@ -537,3 +631,306 @@ window.handleQuickReply = function(text) {
         window.chatbot.handleQuickReply(text);
     }
 };
+
+    // =========================================================================
+    // CONVERSATION HISTORY
+    // =========================================================================
+
+    async loadConversationHistory() {
+        try {
+            if (typeof firebase === 'undefined' || !firebase.auth().currentUser) return;
+
+            const result = await firebase.functions()
+                .httpsCallable('getConversationHistory')({ limit: 10 });
+
+            if (result.data.success && result.data.conversations.length > 0) {
+                // Show option to continue previous conversation
+                const lastConv = result.data.conversations[result.data.conversations.length - 1];
+                if (lastConv.messages && lastConv.messages.length > 0) {
+                    this.showContinueConversationPrompt(lastConv);
+                }
+            }
+        } catch (error) {
+            console.warn('Could not load conversation history:', error);
+        }
+    }
+
+    showContinueConversationPrompt(conversation) {
+        const messageCount = conversation.messages.length;
+        this.addBotMessage(
+            `Welcome back! You have a previous conversation with ${messageCount} messages. Would you like to continue?`,
+            ['Continue conversation', 'Start new conversation']
+        );
+    }
+
+    saveToHistory(sender, text, intent = null) {
+        this.messages.push({
+            sender,
+            text,
+            intent,
+            timestamp: new Date().toISOString()
+        });
+
+        // Auto-save conversation periodically (every 5 messages)
+        if (this.messages.length % 5 === 0) {
+            this.saveConversation();
+        }
+    }
+
+    async saveConversation() {
+        try {
+            if (typeof firebase === 'undefined' || !firebase.auth().currentUser) return;
+            if (this.messages.length === 0) return;
+
+            await firebase.functions()
+                .httpsCallable('saveConversation')({
+                    conversationId: this.conversationId,
+                    messages: this.messages
+                });
+
+            console.log('Conversation saved');
+        } catch (error) {
+            console.warn('Could not save conversation:', error);
+        }
+    }
+
+    viewConversationHistory() {
+        window.open('/pages/user/chat-history.html', '_blank');
+    }
+
+    // =========================================================================
+    // USER FEEDBACK
+    // =========================================================================
+
+    addFeedbackButtons(messageElement, intent) {
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'message-feedback';
+        feedbackDiv.innerHTML = `
+            <span class="feedback-label">Was this helpful?</span>
+            <button class="feedback-btn positive" onclick="chatbot.submitFeedback('positive', '${intent}', this)">
+                <i class="fas fa-thumbs-up"></i> Yes
+            </button>
+            <button class="feedback-btn negative" onclick="chatbot.submitFeedback('negative', '${intent}', this)">
+                <i class="fas fa-thumbs-down"></i> No
+            </button>
+        `;
+        messageElement.appendChild(feedbackDiv);
+    }
+
+    async submitFeedback(rating, intent, button) {
+        try {
+            // Disable buttons
+            const feedbackDiv = button.parentElement;
+            feedbackDiv.querySelectorAll('.feedback-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+
+            // Highlight selected button
+            button.classList.add('selected');
+
+            // Submit feedback
+            if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+                await firebase.functions()
+                    .httpsCallable('submitFeedback')({
+                        messageId: Date.now().toString(),
+                        rating,
+                        intent,
+                        comment: ''
+                    });
+            }
+
+            // Show thank you message
+            const thankYou = document.createElement('span');
+            thankYou.className = 'feedback-thanks';
+            thankYou.textContent = rating === 'positive' ? '👍 Thanks for your feedback!' : '👎 Thanks! We\'ll improve this answer.';
+            feedbackDiv.appendChild(thankYou);
+
+            // If negative, offer to escalate
+            if (rating === 'negative') {
+                setTimeout(() => {
+                    this.addBotMessage(
+                        'I\'m sorry I couldn\'t help. Would you like to speak with a human support agent?',
+                        ['Yes, contact support', 'No, I\'ll try again']
+                    );
+                }, 1000);
+            }
+
+        } catch (error) {
+            console.error('Feedback error:', error);
+        }
+    }
+
+    // =========================================================================
+    // SMART SUGGESTIONS
+    // =========================================================================
+
+    async loadSmartSuggestions() {
+        try {
+            if (typeof firebase === 'undefined' || !firebase.auth().currentUser) {
+                this.showDefaultSuggestions();
+                return;
+            }
+
+            const result = await firebase.functions()
+                .httpsCallable('getSmartSuggestions')({
+                    pageContext: this.currentPageContext,
+                    userHistory: this.messages.slice(-5)
+                });
+
+            if (result.data.success && result.data.suggestions.length > 0) {
+                this.showSuggestions(result.data.suggestions);
+            } else {
+                this.showDefaultSuggestions();
+            }
+        } catch (error) {
+            console.warn('Could not load smart suggestions:', error);
+            this.showDefaultSuggestions();
+        }
+    }
+
+    showSuggestions(suggestions) {
+        setTimeout(() => {
+            this.addBotMessage(
+                'Based on your current page, you might want to ask:',
+                suggestions
+            );
+        }, 2000);
+    }
+
+    showDefaultSuggestions() {
+        const defaults = {
+            general: [
+                'How do I create an account?',
+                'How does payment work?',
+                'How do I list an item?'
+            ],
+            product_detail: [
+                'How do I contact the seller?',
+                'Is my payment safe?',
+                'What are the delivery options?'
+            ],
+            search: [
+                'How do I use filters?',
+                'Can I search by image?',
+                'How do I sort results?'
+            ],
+            dashboard: [
+                'How do I list an item?',
+                'How do I withdraw money?',
+                'Where are my orders?'
+            ]
+        };
+
+        const suggestions = defaults[this.currentPageContext] || defaults.general;
+        
+        setTimeout(() => {
+            this.addBotMessage(
+                'Here are some things I can help you with:',
+                suggestions
+            );
+        }, 2000);
+    }
+
+    // =========================================================================
+    // HUMAN HANDOFF
+    // =========================================================================
+
+    async escalateToHuman() {
+        try {
+            // Show typing indicator
+            this.showTypingIndicator();
+
+            // Prepare conversation summary
+            const summary = this.prepareConversationSummary();
+
+            // Create support ticket
+            if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+                const result = await firebase.functions()
+                    .httpsCallable('createSupportTicket')({
+                        subject: 'Chatbot Escalation - User Request',
+                        description: 'User requested human support from chatbot',
+                        conversationHistory: summary,
+                        priority: 'medium'
+                    });
+
+                this.hideTypingIndicator();
+
+                if (result.data.success) {
+                    this.addBotMessage(
+                        `✅ Support ticket created!<br><br>
+                        <strong>Ticket ID:</strong> ${result.data.ticketId}<br>
+                        <strong>Status:</strong> Open<br><br>
+                        Our support team will contact you within 24 hours via email. You can also check your ticket status in your dashboard.`,
+                        ['View my tickets', 'Return to homepage']
+                    );
+                } else {
+                    throw new Error('Failed to create ticket');
+                }
+            } else {
+                this.hideTypingIndicator();
+                this.addBotMessage(
+                    'Please sign in to create a support ticket. You can also contact us directly at support@sankofamarket.com',
+                    ['Sign in', 'Contact support']
+                );
+            }
+
+        } catch (error) {
+            this.hideTypingIndicator();
+            console.error('Escalation error:', error);
+            this.addBotMessage(
+                'Sorry, I couldn\'t create a support ticket. Please contact us directly at support@sankofamarket.com or call +233 XX XXX XXXX.',
+                ['Contact support', 'Try again']
+            );
+        }
+    }
+
+    prepareConversationSummary() {
+        const summary = this.messages.slice(-10).map(msg => ({
+            sender: msg.sender,
+            text: msg.text,
+            timestamp: msg.timestamp
+        }));
+
+        return summary;
+    }
+
+    // =========================================================================
+    // ENHANCED MESSAGE HANDLING
+    // =========================================================================
+
+    addBotMessageEnhanced(text, quickReplies = [], intent = null) {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message bot';
+        
+        let quickRepliesHtml = '';
+        if (quickReplies.length > 0) {
+            quickRepliesHtml = '<div class="quick-replies">' +
+                quickReplies.map(reply => 
+                    `<button class="quick-reply" onclick="chatbot.handleQuickReply('${this.escapeHtml(reply)}')">${this.escapeHtml(reply)}</button>`
+                ).join('') +
+                '</div>';
+        }
+
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <p>${text}</p>
+                ${quickRepliesHtml}
+            </div>
+        `;
+        
+        messagesContainer.appendChild(messageDiv);
+
+        // Add feedback buttons if intent is provided
+        if (intent && intent !== 'Default Fallback Intent') {
+            this.addFeedbackButtons(messageDiv.querySelector('.message-content'), intent);
+        }
+
+        this.scrollToBottom();
+
+        // Save to history
+        this.saveToHistory('bot', text, intent);
+    }
