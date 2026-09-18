@@ -2569,3 +2569,156 @@ body.sidebar-collapsed .sidebar-show-btn {
         padding-top: 0.25rem;
     }
 }
+
+/* ============================================================================
+   DESKTOP PADDING CONSISTENCY FIX
+   ============================================================================ */
+
+/* Main content area - uniform padding */
+.admin-content {
+    padding: 1.5rem 2rem 2rem !important;
+}
+
+/* Active sections - consistent top spacing */
+.admin-section.active {
+    padding-top: 0.25rem;
+}
+
+/* Section headers - consistent top and bottom spacing */
+.section-header {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 0 !important;
+}
+
+/* All grid containers - consistent gap and bottom margin */
+.stats-grid,
+.charts-row,
+.activity-row,
+.settings-grid,
+.categories-admin-grid,
+.analytics-grid,
+.legal-summary-cards {
+    gap: 1.5rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Reports list - consistent spacing */
+.reports-list {
+    margin-bottom: 2rem;
+}
+
+.report-card {
+    margin-bottom: 1rem !important;
+}
+
+.report-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Legal checklist container */
+.section-legal > div[style*="border-radius: 12px"] {
+    margin-bottom: 1.5rem;
+}
+
+/* All cards - consistent internal padding */
+.stat-card,
+.chart-card,
+.activity-card,
+.settings-card,
+.analytics-card,
+.cat-admin-card {
+    padding: 1.5rem !important;
+}
+
+/* Activity cards inside the feed */
+.activity-card .activity-item,
+.activity-card .order-item,
+.activity-card .user-item {
+    padding: 0.75rem 0;
+}
+
+/* Admin table wrapper - consistent margin */
+.admin-table-wrapper {
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: var(--radius-md, 8px);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.08));
+    overflow: hidden;
+}
+
+/* Filter bar above tables */
+.filter-bar {
+    padding: 1rem 1.5rem !important;
+    background: var(--bg-secondary, #f7f7f7);
+    border-bottom: 1px solid var(--border-color, #e5e5e5);
+    gap: 0.75rem !important;
+}
+
+/* More menu grid - consistent spacing */
+.more-menu-grid {
+    gap: 1rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.more-menu-item {
+    padding: 1.5rem 1rem !important;
+}
+
+/* Legal checklist items - consistent padding */
+.legal-checklist-item {
+    padding: 1rem 1.25rem !important;
+}
+
+.legal-section-title {
+    padding: 0.75rem 1.25rem 0.5rem !important;
+}
+
+/* Analytics specific */
+.analytics-card .big-number {
+    font-size: 1.75rem;
+    margin: 0.5rem 0;
+}
+
+.analytics-card .stat-change {
+    margin-top: 0.25rem;
+}
+
+/* Location and device lists */
+.location-list,
+.device-list {
+    margin-top: 0.5rem;
+}
+
+.location-item,
+.device-item {
+    padding: 0.5rem 0 !important;
+}
+
+/* Settings section */
+.settings-card h3 {
+    margin-bottom: 1rem !important;
+}
+
+.setting-item {
+    padding: 0.75rem 0 !important;
+}
+
+.setting-item:last-child {
+    padding-bottom: 0 !important;
+}
+
+/* Sidebar collapse button spacing */
+.sidebar-collapse-btn {
+    padding: 0.85rem 1.5rem !important;
+}
+
+/* Responsive adjustments for medium screens */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .admin-content {
+        padding: 1.25rem 1.5rem 1.5rem !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
