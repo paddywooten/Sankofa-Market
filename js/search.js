@@ -18,7 +18,54 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts(searchQuery, categoryParam);
     initMobileFilters();
     initViewToggle();
+    
+    // Log search query for analytics
+    if (searchQuery && typeof firebase !== 'undefined' && typeof firebaseDB !== 'undefined') {
+        logSearchQuery(searchQuery, categoryParam);
+    }
 });
+
+// ============================================================================
+// SEARCH ANALYTICS LOGGING
+// ============================================================================
+
+async function logSearchQuery(query, category = '') {
+    try {
+        const searchData = {
+            query: query.toLowerCase().trim(),
+            originalQuery: query.trim(),
+            category: category || '',
+            userId: getCurrentUserId(),
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            userAgent: navigator.userAgent,
+            resultsCount: 0 // Will be updated after search completes
+        };
+        
+        // Save to search_logs collection
+        const docRef = await firebaseDB.collection('search_logs').add(searchData);
+        
+        // Update the document with results count after search completes
+        setTimeout(async () => {
+            const resultsCount = document.querySelectorAll('.product-card').length;
+            await firebaseDB.collection('search_logs').doc(docRef.id).update({
+                resultsCount: resultsCount
+            });
+        }, 2000);
+        
+        console.log('Search logged:', query);
+    } catch (error) {
+        console.error('Error logging search:', error);
+        // Don't block user experience if logging fails
+    }
+}
+
+function getCurrentUserId() {
+    if (typeof firebase !== 'undefined' && firebase.auth()) {
+        const user = firebase.auth().currentUser;
+        return user ? user.uid : 'anonymous';
+    }
+    return 'anonymous';
+}
 
 // ============================================================================
 // SEARCH TITLE
