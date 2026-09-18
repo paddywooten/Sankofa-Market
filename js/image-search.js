@@ -1,6 +1,7 @@
 /**
  * Image Search Feature
- * Allows users to search for products by uploading images
+ * Allows users to search for products by uploading images or URLs
+ * Integrates with Google Cloud Vision API via Firebase Functions
  */
 
 class ImageSearch {
@@ -14,6 +15,8 @@ class ImageSearch {
         this.loadingState = null;
         this.resultsContainer = null;
         this.currentImage = null;
+        this.currentImageUrl = null;
+        this.searchHistory = [];
         this.init();
     }
 
@@ -35,26 +38,80 @@ class ImageSearch {
                     </div>
                     
                     <div class="image-search-body">
+                        <!-- Search Method Tabs -->
+                        <div class="search-method-tabs">
+                            <button class="method-tab active" data-method="upload">
+                                <i class="fas fa-upload"></i> Upload Image
+                            </button>
+                            <button class="method-tab" data-method="url">
+                                <i class="fas fa-link"></i> Image URL
+                            </button>
+                            <button class="method-tab" data-method="history">
+                                <i class="fas fa-history"></i> History
+                            </button>
+                        </div>
+
                         <!-- Upload Area -->
-                        <div class="image-upload-area" id="imageUploadArea">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h3>Upload an Image</h3>
-                            <p>Drag and drop an image here, or click to browse</p>
-                            <div class="upload-options">
-                                <button class="upload-option-btn" id="uploadFromFile">
-                                    <i class="fas fa-folder-open"></i>
-                                    Choose File
-                                </button>
-                                <button class="upload-option-btn" id="uploadFromCamera">
-                                    <i class="fas fa-camera"></i>
-                                    Take Photo
-                                </button>
+                        <div class="search-method-content active" id="uploadMethod">
+                            <div class="image-upload-area" id="imageUploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h3>Upload an Image</h3>
+                                <p>Drag and drop an image here, or click to browse</p>
+                                <div class="upload-options">
+                                    <button class="upload-option-btn" id="uploadFromFile">
+                                        <i class="fas fa-folder-open"></i>
+                                        Choose File
+                                    </button>
+                                    <button class="upload-option-btn" id="uploadFromCamera">
+                                        <i class="fas fa-camera"></i>
+                                        Take Photo
+                                    </button>
+                                </div>
+                                <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+                                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
                             </div>
-                            <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-                            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+                        </div>
+
+                        <!-- URL Input -->
+                        <div class="search-method-content" id="urlMethod">
+                            <div class="url-input-section">
+                                <h3>Enter Image URL</h3>
+                                <p>Paste the URL of an image from the web</p>
+                                <div class="url-input-wrapper">
+                                    <i class="fas fa-link"></i>
+                                    <input type="url" id="imageUrlInput" placeholder="https://example.com/image.jpg" class="url-input">
+                                    <button class="url-preview-btn" id="urlPreviewBtn">
+                                        <i class="fas fa-eye"></i> Preview
+                                    </button>
+                                </div>
+                                <div class="url-preview-container" id="urlPreviewContainer">
+                                    <img id="urlPreviewImage" src="" alt="URL Preview">
+                                    <button class="url-preview-remove" id="urlPreviewRemove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search History -->
+                        <div class="search-method-content" id="historyMethod">
+                            <div class="search-history-section">
+                                <div class="history-header">
+                                    <h3>Recent Searches</h3>
+                                    <button class="clear-history-btn" id="clearHistoryBtn">
+                                        <i class="fas fa-trash"></i> Clear All
+                                    </button>
+                                </div>
+                                <div class="search-history-list" id="searchHistoryList">
+                                    <div class="history-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>Loading history...</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <!-- Image Preview -->
+                        <!-- Image Preview (for upload) -->
                         <div class="image-preview-container" id="imagePreviewContainer">
                             <div class="image-preview-wrapper">
                                 <img id="imagePreview" src="" alt="Preview">
@@ -84,6 +141,13 @@ class ImageSearch {
                                 </select>
                             </div>
                             
+                            <!-- Image Analysis Info -->
+                            <div class="image-analysis-info" id="imageAnalysisInfo" style="display: none;">
+                                <h4><i class="fas fa-brain"></i> AI Analysis</h4>
+                                <div class="analysis-tags" id="analysisTags"></div>
+                                <div class="analysis-colors" id="analysisColors"></div>
+                            </div>
+                            
                             <button class="image-search-btn" id="imageSearchBtn">
                                 <i class="fas fa-search"></i>
                                 Search for Similar Products
@@ -94,7 +158,7 @@ class ImageSearch {
                         <div class="image-search-loading" id="imageSearchLoading">
                             <div class="loading-spinner"></div>
                             <h3>Analyzing Your Image</h3>
-                            <p>Finding similar products...</p>
+                            <p id="loadingText">Using AI to identify objects and find similar products...</p>
                         </div>
                         
                         <!-- Results -->
@@ -130,6 +194,14 @@ class ImageSearch {
         document.getElementById('imageSearchClose').addEventListener('click', () => this.close());
         this.modal.addEventListener('click', (e) => {
             if (e.target === this.modal) this.close();
+        });
+
+        // Search method tabs
+        document.querySelectorAll('.method-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const method = e.currentTarget.dataset.method;
+                this.switchSearchMethod(method);
+            });
         });
 
         // Upload area click
@@ -169,6 +241,16 @@ class ImageSearch {
             }
         });
 
+        // URL input
+        document.getElementById('urlPreviewBtn').addEventListener('click', () => this.previewImageUrl());
+        document.getElementById('urlPreviewRemove').addEventListener('click', () => this.clearUrlPreview());
+        document.getElementById('imageUrlInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.previewImageUrl();
+            }
+        });
+
         // Remove preview
         document.getElementById('imagePreviewRemove').addEventListener('click', () => {
             this.resetUpload();
@@ -176,6 +258,233 @@ class ImageSearch {
 
         // Search button
         this.searchBtn.addEventListener('click', () => this.performSearch());
+
+        // Clear history
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => this.clearSearchHistory());
+    }
+
+    switchSearchMethod(method) {
+        // Update tabs
+        document.querySelectorAll('.method-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.method === method);
+        });
+
+        // Update content
+        document.querySelectorAll('.search-method-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        const targetContent = document.getElementById(`${method}Method`);
+        if (targetContent) {
+            targetContent.classList.add('active');
+        }
+
+        // Load history if switching to history tab
+        if (method === 'history') {
+            this.loadSearchHistory();
+        }
+
+        // Reset preview when switching methods
+        this.resetUpload();
+    }
+
+    async previewImageUrl() {
+        const urlInput = document.getElementById('imageUrlInput');
+        const url = urlInput.value.trim();
+
+        if (!url) {
+            this.showFlashMessage('Please enter an image URL', 'warning');
+            return;
+        }
+
+        // Validate URL
+        try {
+            new URL(url);
+        } catch (e) {
+            this.showFlashMessage('Please enter a valid URL', 'error');
+            return;
+        }
+
+        // Show preview
+        const previewContainer = document.getElementById('urlPreviewContainer');
+        const previewImage = document.getElementById('urlPreviewImage');
+        
+        previewImage.src = url;
+        previewContainer.classList.add('active');
+
+        // Store URL for search
+        this.currentImageUrl = url;
+
+        // Switch to upload method to show search button
+        this.switchSearchMethod('upload');
+        
+        // Show preview in upload section
+        this.previewContainer.classList.add('active');
+        this.previewImage.src = url;
+        document.getElementById('imageUploadArea').style.display = 'none';
+        this.searchBtn.disabled = false;
+    }
+
+    clearUrlPreview() {
+        document.getElementById('urlPreviewContainer').classList.remove('active');
+        document.getElementById('imageUrlInput').value = '';
+        this.currentImageUrl = null;
+    }
+
+    async loadSearchHistory() {
+        const historyList = document.getElementById('searchHistoryList');
+        
+        if (!isLoggedIn()) {
+            historyList.innerHTML = `
+                <div class="history-empty">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <p>Please sign in to view search history</p>
+                </div>
+            `;
+            return;
+        }
+
+        historyList.innerHTML = `
+            <div class="history-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading history...</p>
+            </div>
+        `;
+
+        try {
+            const result = await firebase.functions().httpsCallable('getSearchHistory')();
+            
+            if (result.data.success && result.data.history.length > 0) {
+                this.searchHistory = result.data.history;
+                this.renderSearchHistory();
+            } else {
+                historyList.innerHTML = `
+                    <div class="history-empty">
+                        <i class="fas fa-history"></i>
+                        <p>No search history yet</p>
+                        <small>Your image searches will appear here</small>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Load history error:', error);
+            historyList.innerHTML = `
+                <div class="history-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Failed to load history</p>
+                </div>
+            `;
+        }
+    }
+
+    renderSearchHistory() {
+        const historyList = document.getElementById('searchHistoryList');
+        
+        historyList.innerHTML = this.searchHistory.map(item => {
+            const timestamp = item.timestamp?.toDate ? item.timestamp.toDate() : new Date();
+            const timeAgo = this.formatTimeAgo(timestamp);
+            const topLabels = item.labels?.slice(0, 3).map(l => l.description).join(', ') || 'Unknown';
+            
+            return `
+                <div class="history-item" data-id="${item.id}">
+                    <div class="history-item-image">
+                        ${item.imageData ? `<img src="${item.imageData}" alt="Search">` : '<i class="fas fa-image"></i>'}
+                    </div>
+                    <div class="history-item-info">
+                        <div class="history-item-labels">${topLabels}</div>
+                        <div class="history-item-meta">
+                            <span><i class="fas fa-clock"></i> ${timeAgo}</span>
+                            <span><i class="fas fa-box"></i> ${item.resultsCount || 0} results</span>
+                        </div>
+                    </div>
+                    <div class="history-item-actions">
+                        <button class="history-action-btn" onclick="imageSearch.replaySearch('${item.id}')">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="history-action-btn danger" onclick="imageSearch.deleteHistoryItem('${item.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async replaySearch(historyId) {
+        const historyItem = this.searchHistory.find(h => h.id === historyId);
+        if (!historyItem) return;
+
+        // Switch to upload method
+        this.switchSearchMethod('upload');
+
+        // Load the image
+        if (historyItem.imageData) {
+            this.currentImage = historyItem.imageData;
+            this.previewImage.src = historyItem.imageData;
+            this.previewContainer.classList.add('active');
+            document.getElementById('imageUploadArea').style.display = 'none';
+            this.searchBtn.disabled = false;
+        }
+
+        this.showFlashMessage('Search loaded from history', 'success');
+    }
+
+    async deleteHistoryItem(itemId) {
+        if (!confirm('Delete this search from history?')) return;
+
+        try {
+            await firebase.functions().httpsCallable('deleteSearchHistoryItem')({ itemId });
+            
+            // Remove from local array
+            this.searchHistory = this.searchHistory.filter(h => h.id !== itemId);
+            this.renderSearchHistory();
+            
+            this.showFlashMessage('Search deleted from history', 'success');
+        } catch (error) {
+            console.error('Delete history item error:', error);
+            this.showFlashMessage('Failed to delete search', 'error');
+        }
+    }
+
+    async clearSearchHistory() {
+        if (!confirm('Clear all search history? This cannot be undone.')) return;
+
+        try {
+            await firebase.functions().httpsCallable('clearSearchHistory')();
+            
+            this.searchHistory = [];
+            document.getElementById('searchHistoryList').innerHTML = `
+                <div class="history-empty">
+                    <i class="fas fa-history"></i>
+                    <p>No search history yet</p>
+                    <small>Your image searches will appear here</small>
+                </div>
+            `;
+            
+            this.showFlashMessage('Search history cleared', 'success');
+        } catch (error) {
+            console.error('Clear history error:', error);
+            this.showFlashMessage('Failed to clear history', 'error');
+        }
+    }
+
+    formatTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+        
+        return date.toLocaleDateString();
+    }
+
+    showFlashMessage(message, type = 'info') {
+        if (typeof showFlashMessage === 'function') {
+            showFlashMessage(message, type);
+        } else {
+            alert(message);
+        }
     }
 
     open() {
@@ -212,6 +521,7 @@ class ImageSearch {
 
     resetUpload() {
         this.currentImage = null;
+        this.currentImageUrl = null;
         this.previewImage.src = '';
         this.uploadArea.style.display = 'block';
         this.previewContainer.classList.remove('active');
@@ -220,192 +530,143 @@ class ImageSearch {
         this.fileInput.value = '';
         this.cameraInput.value = '';
         document.getElementById('searchCategorySelect').value = '';
+        document.getElementById('imageAnalysisInfo').style.display = 'none';
+        
+        // Clear URL input
+        document.getElementById('imageUrlInput').value = '';
+        document.getElementById('urlPreviewContainer').classList.remove('active');
     }
 
     async performSearch() {
-        if (!this.currentImage) return;
+        const hasImage = this.currentImage !== null;
+        const hasUrl = this.currentImageUrl !== null;
+        
+        if (!hasImage && !hasUrl) {
+            this.showFlashMessage('Please upload an image or enter a URL', 'warning');
+            return;
+        }
+
+        if (!isLoggedIn()) {
+            this.showFlashMessage('Please sign in to use image search', 'warning');
+            setTimeout(() => {
+                window.location.href = 'pages/auth/login.html';
+            }, 1500);
+            return;
+        }
 
         // Show loading state
         this.previewContainer.style.display = 'none';
         this.loadingState.classList.add('active');
-
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        document.getElementById('loadingText').textContent = 'Using AI to identify objects and find similar products...';
 
         // Get selected category
         const category = document.getElementById('searchCategorySelect').value;
 
-        // Perform search (demo implementation)
-        const results = await this.searchByImage(this.currentImage, category);
+        try {
+            // Call Firebase Function for image analysis
+            const functionName = hasUrl ? 'searchByUrl' : 'analyzeImage';
+            const functionData = hasUrl 
+                ? { imageUrl: this.currentImageUrl, category }
+                : { imageData: this.currentImage, category };
 
+            const result = await firebase.functions().httpsCallable(functionName)(functionData);
+
+            if (result.data.success) {
+                // Display analysis info
+                this.displayAnalysisInfo(result.data.analysis);
+                
+                // Display results
+                this.displayResults(result.data.products);
+                
+                this.showFlashMessage(result.data.message, 'success');
+            } else {
+                throw new Error(result.data.message || 'Search failed');
+            }
+
+        } catch (error) {
+            console.error('Search error:', error);
+            this.loadingState.classList.remove('active');
+            this.previewContainer.style.display = 'block';
+            
+            const errorMessage = error.message || 'Failed to analyze image. Please try again.';
+            this.showFlashMessage(errorMessage, 'error');
+        }
+    }
+
+    displayAnalysisInfo(analysis) {
+        const analysisInfo = document.getElementById('imageAnalysisInfo');
+        const tagsContainer = document.getElementById('analysisTags');
+        const colorsContainer = document.getElementById('analysisColors');
+
+        if (!analysis) {
+            analysisInfo.style.display = 'none';
+            return;
+        }
+
+        // Display detected labels
+        if (analysis.labels && analysis.labels.length > 0) {
+            tagsContainer.innerHTML = analysis.labels.slice(0, 8).map(label => 
+                `<span class="analysis-tag">${label.description} (${Math.round(label.score * 100)}%)</span>`
+            ).join('');
+        }
+
+        // Display dominant colors
+        if (analysis.colors && analysis.colors.length > 0) {
+            colorsContainer.innerHTML = '<strong>Colors:</strong> ' + 
+                analysis.colors.slice(0, 5).map(color => 
+                    `<span class="analysis-color" style="background: ${color.hex};" title="${color.hex}"></span>`
+                ).join('');
+        }
+
+        analysisInfo.style.display = 'block';
+    }
+
+    displayResults(products) {
         // Hide loading, show results
         this.loadingState.classList.remove('active');
-        this.displayResults(results);
-    }
+        this.resultsContainer.classList.add('active');
 
-    async searchByImage(imageData, category) {
-        // Demo implementation - in production, this would call an AI/ML service
-        // For now, we'll return random products with optional category filtering
-        
-        const demoProducts = this.getDemoProducts();
-        let filtered = demoProducts;
-
-        // Filter by category if selected
-        if (category) {
-            filtered = filtered.filter(p => p.category === category);
-        }
-
-        // If no results in category, show all products
-        if (filtered.length === 0) {
-            filtered = demoProducts;
-        }
-
-        // Shuffle and return random subset
-        return this.shuffleArray(filtered).slice(0, 8);
-    }
-
-    getDemoProducts() {
-        return [
-            {
-                id: 'img1',
-                title: 'iPhone 14 Pro Max - 256GB - Deep Purple',
-                price: 8500,
-                image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'new',
-                location: { city: 'Accra' },
-                sellerName: 'Sankofa Store',
-                isSankofaStore: true
-            },
-            {
-                id: 'img2',
-                title: 'Samsung 55" 4K Smart TV - Crystal UHD',
-                price: 3200,
-                image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'like-new',
-                location: { city: 'Kumasi' },
-                sellerName: 'Kwame Asante'
-            },
-            {
-                id: 'img3',
-                title: 'Leather Sofa Set - 3 Pieces - Premium',
-                price: 2800,
-                image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'home-garden',
-                condition: 'good',
-                location: { city: 'Tema' },
-                sellerName: 'Ama Boateng'
-            },
-            {
-                id: 'img4',
-                title: 'Nike Air Jordan Retro - Size 42',
-                price: 800,
-                image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'fashion',
-                condition: 'like-new',
-                location: { city: 'Accra' },
-                sellerName: 'Kofi Mensah'
-            },
-            {
-                id: 'img5',
-                title: 'Canon EOS R6 - Full Frame + Lens Kit',
-                price: 14500,
-                image: 'https://images.unsplash.com/photo-1606986628253-49e940572d03?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'like-new',
-                location: { city: 'Kumasi' },
-                sellerName: 'Sankofa Store',
-                isSankofaStore: true
-            },
-            {
-                id: 'img6',
-                title: 'MacBook Pro 2023 - M2 Chip - 16GB RAM',
-                price: 12500,
-                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'new',
-                location: { city: 'Accra' },
-                sellerName: 'Sankofa Store',
-                isSankofaStore: true
-            },
-            {
-                id: 'img7',
-                title: 'African Print Ankara Dress - Handmade',
-                price: 250,
-                image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'fashion',
-                condition: 'new',
-                location: { city: 'Kumasi' },
-                sellerName: 'Abena Osei'
-            },
-            {
-                id: 'img8',
-                title: 'PlayStation 5 - 2 Controllers + 5 Games',
-                price: 6500,
-                image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'new',
-                location: { city: 'Accra' },
-                sellerName: 'Sankofa Store',
-                isSankofaStore: true
-            },
-            {
-                id: 'img9',
-                title: 'Solid Wood Dining Table - 6 Chairs Set',
-                price: 1800,
-                image: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'home-garden',
-                condition: 'good',
-                location: { city: 'Takoradi' },
-                sellerName: 'Yaw Darkwa'
-            },
-            {
-                id: 'img10',
-                title: 'Apple Watch Series 8 - GPS + Cellular',
-                price: 2200,
-                image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=350&h=260&fit=crop&q=75&auto=format',
-                category: 'electronics',
-                condition: 'new',
-                location: { city: 'Accra' },
-                sellerName: 'Efua Adjei'
-            }
-        ];
-    }
-
-    shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
-    displayResults(results) {
         const resultsGrid = document.getElementById('resultsGrid');
         const resultsCount = document.getElementById('resultsCount');
 
-        resultsCount.textContent = `${results.length} products found`;
-
-        resultsGrid.innerHTML = results.map(product => `
-            <a href="product-detail.html?id=${product.id}" class="product-card">
-                <div class="product-image-wrapper">
-                    <img src="${product.image}" alt="${product.title}" class="product-image" loading="lazy" decoding="async">
-                    ${product.isSankofaStore ? '<span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>' : ''}
+        if (!products || products.length === 0) {
+            resultsCount.textContent = '0 products found';
+            resultsGrid.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h4>No similar products found</h4>
+                    <p>Try a different image or broaden your category filter</p>
                 </div>
-                <div class="product-content">
-                    <div class="product-title">${product.title}</div>
-                    <div class="product-price">GHS ${product.price.toLocaleString()}</div>
-                    <div class="product-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${product.location.city}</span>
-                        <span><i class="fas fa-tag"></i> ${product.condition}</span>
+            `;
+            return;
+        }
+
+        resultsCount.textContent = `${products.length} products found`;
+
+        resultsGrid.innerHTML = products.map(product => {
+            const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image';
+            const price = product.price ? `GHS ${product.price.toLocaleString()}` : 'Price on request';
+            const condition = product.condition ? `<span class="product-condition">${product.condition}</span>` : '';
+            const location = product.location?.city || 'Ghana';
+            const isSankofaStore = product.isSankofaStore === true;
+            
+            return `
+                <div class="product-card" onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <div class="product-image-wrapper">
+                        <img src="${imageUrl}" alt="${product.title}" class="product-image" loading="lazy">
+                        ${isSankofaStore ? '<span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>' : ''}
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-title">${product.title}</h4>
+                        <div class="product-price">${price}</div>
+                        ${condition}
+                        <div class="product-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${location}</span>
+                        </div>
                     </div>
                 </div>
-            </a>
-        `).join('');
-
-        this.resultsContainer.classList.add('active');
+            `;
+        }).join('');
     }
 }
 
