@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup Guide - Sankofa Market</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0064d2;
+            --primary-dark: #004a9f;
+            --accent: #f5af02;
+            --accent-dark: #e09e00;
+            --success: #86b817;
+            --error: #e74c3c;
+            --warning: #f39c12;
+            --text: #191919;
+            --text-secondary: #767676;
+            --bg: #f7f7f7;
+            --border: #e5e5e5;
+            --radius: 12px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #002d6b 100%);
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245,175,2,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .hero p {
+            opacity: 0.9;
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero .firebase-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: -2rem auto 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 2;
+            max-width: 860px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 3px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .step-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .progress-step:hover .step-circle {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .section:hover {
+            transform: translateY(-1px);
+        }
+
+        .section.accent {
+            border-left-color: var(--accent);
+        }
+
+        .section.success {
+            border-left-color: var(--success);
+        }
+
+        .section.warning {
+            border-left-color: var(--warning);
+        }
+
+        .section.error {
+            border-left-color: var(--error);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .section.accent .section-number {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        }
+
+        .section.success .section-number {
+            background: linear-gradient(135deg, var(--success), #6a9410);
+        }
+
+        .section.warning .section-number {
+            background: linear-gradient(135deg, var(--warning), #d68910);
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        /* Sub-steps */
+        .substep {
+            padding: 1rem 1.25rem;
+            margin: 0.75rem 0;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .substep-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            font-size: 0.95rem;
+        }
+
+        .substep-label .icon {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .substep p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 1.75rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .code-block .comment { color: #6c7086; }
+        .code-block .keyword { color: #cba6f7; }
+        .code-block .string { color: #a6e3a1; }
+        .code-block .property { color: #89b4fa; }
+        .code-block .value { color: #fab387; }
+        .code-block .function { color: #f9e2af; }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.65rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            color: #6c7086;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #cdd6f4;
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Inline Code */
+        code {
+            background: rgba(0, 100, 210, 0.08);
+            color: var(--primary);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.85em;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: var(--text);
+        }
+
+        .btn-accent:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #6a9410;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            margin-top: 0.1rem;
+        }
+
+        .alert-info {
+            background: rgba(0, 100, 210, 0.08);
+            border: 1px solid rgba(0, 100, 210, 0.2);
+            color: var(--primary-dark);
+        }
+
+        .alert-warning {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.25);
+            color: #8a6d0b;
+        }
+
+        .alert-success {
+            background: rgba(134, 184, 23, 0.1);
+            border: 1px solid rgba(134, 184, 23, 0.25);
+            color: #4a6b0a;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.08);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            color: #a93226;
+        }
+
+        /* Visual Diagram */
+        .diagram {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .diagram-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .diagram-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.65rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .diagram-box.accent {
+            border-color: var(--accent);
+            color: var(--accent-dark);
+        }
+
+        .diagram-box.success {
+            border-color: var(--success);
+            color: #4a6b0a;
+        }
+
+        .diagram-arrow {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist .check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.7rem;
+            color: transparent;
+        }
+
+        .checklist .check.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .checklist .check:hover {
+            border-color: var(--success);
+        }
+
+        /* Table */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-table th, .info-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-table th {
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-secondary);
+        }
+
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Config Preview */
+        .config-preview {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+
+        .config-preview .highlight {
+            background: rgba(245, 175, 2, 0.2);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        /* Time Estimate */
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(0,100,210,0.08);
+            color: var(--primary);
+            padding: 0.25rem 0.65rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Screenshot placeholder */
+        .screenshot {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+
+        .screenshot-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .guide-footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+
+        .guide-footer p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.5rem; }
+            .progress-steps { gap: 0; }
+            .step-label { font-size: 0.6rem; }
+            .section { padding: 1.25rem; }
+            .diagram-flow { flex-direction: column; }
+            .diagram-arrow { transform: rotate(90deg); }
+        }
+
+        /* Print styles */
+        @media print {
+            .hero { padding: 1.5rem; }
+            .section { break-inside: avoid; }
+            .copy-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <div class="hero">
+        <span class="hero-badge">🔥 Sankofa Market Deployment</span>
+        <span class="firebase-icon">🚀</span>
+        <h1>Firebase Setup Guide</h1>
+        <p>Complete step-by-step guide to deploy Sankofa Market to Firebase Hosting. Follow these steps and your marketplace will be live in under 15 minutes.</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <a href="#step1" class="progress-step">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Create Project</div>
+                </a>
+                <a href="#step2" class="progress-step">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Enable Services</div>
+                </a>
+                <a href="#step3" class="progress-step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Get Config</div>
+                </a>
+                <a href="#step4" class="progress-step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">CI Token</div>
+                </a>
+                <a href="#step5" class="progress-step">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Deploy</div>
+                </a>
+                <a href="#step6" class="progress-step">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Go Live!</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="section warning" id="prereqs">
+            <div class="section-header">
+                <div class="section-number">📋</div>
+                <div>
+                    <h2>Before You Start</h2>
+                    <p>Make sure you have these ready</p>
+                </div>
+            </div>
+
+            <ul class="checklist" id="prereqChecklist">
+                <li>
+                    <span class="check" onclick="toggleCheck(this)">✓</span>
+                    <span>A <strong>Google account</strong> (the one you used for Chromique works fine)</span>
+                </li>
+                <li>
+                    <span class="check" onclick="toggleCheck(this)">✓</span>
+                    <span><strong>Node.js</strong> installed on your Windows computer (<a href="https://nodejs.org" target="_blank">download here</a> if you don't have it)</span>
+                </li>
+                <li>
+                    <span class="check" onclick="toggleCheck(this)">✓</span>
+                    <span>Access to <strong>Command Prompt</strong> or <strong>PowerShell</strong> on Windows</span>
+                </li>
+                <li>
+                    <span class="check" onclick="toggleCheck(this)">✓</span>
+                    <span>About <strong>15 minutes</strong> of time</span>
+                </li>
+            </ul>
+
+            <div class="alert alert-info">
+                <span class="alert-icon">💡</span>
+                <div><strong>Tip:</strong> Open Command Prompt by pressing <code>Windows Key + R</code>, typing <code>cmd</code>, and pressing Enter. Or search for "PowerShell" in the Start menu.</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Create Firebase Project -->
+        <div class="section" id="step1">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div>
+                    <h2>Create Firebase Project</h2>
+                    <p><span class="time-badge">⏱ ~3 minutes</span></p>
+                </div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🌐</span> Open Firebase Console
+                </div>
+                <p>Go to <a href="https://console.firebase.google.com" target="_blank"><strong>console.firebase.google.com</strong></a> and sign in with your Google account.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">➕</span> Click "Add project"
+                </div>
+                <p>You'll see this button on the main Firebase dashboard page. Click it to start creating a new project.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">✏️</span> Name your project
+                </div>
+                <p>Type: <code>sankofa-market</code></p>
+                <div class="alert alert-info">
+                    <span class="alert-icon">ℹ️</span>
+                    <div>If "sankofa-market" is already taken, Firebase will automatically add numbers to make it unique (like <code>sankofa-market-a1b2c</code>). That's fine — just <strong>note down the exact project ID</strong> shown, you'll need it later.</div>
+                </div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">📊</span> Google Analytics (Optional)
+                </div>
+                <p>You can <strong>enable Google Analytics</strong> if you want to track visitors. It's free. Or you can skip it for now and enable it later.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">✅</span> Click "Create project"
+                </div>
+                <p>Firebase will take about 30 seconds to set up your project. Once done, click <strong>"Continue"</strong>.</p>
+            </div>
+
+            <div class="alert alert-success">
+                <span class="alert-icon">🎉</span>
+                <div><strong>Important:</strong> On the project dashboard, you'll see your <strong>Project ID</strong> (something like <code>sankofa-market</code> or <code>sankofa-market-a1b2c</code>). <strong>Write this down!</strong> You'll need it in Step 4.</div>
+            </div>
+        </div>
+
+        <!-- Step 2: Enable Services -->
+        <div class="section accent" id="step2">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div>
+                    <h2>Enable Firebase Services</h2>
+                    <p><span class="time-badge">⏱ ~5 minutes</span></p>
+                </div>
+            </div>
+
+            <p style="margin-bottom: 1rem;">Sankofa Market uses 4 Firebase services. Enable each one from the left sidebar in your Firebase Console:</p>
+
+            <!-- Authentication -->
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🔐</span> Enable Authentication
+                </div>
+                <p>Click <strong>Authentication</strong> in the left sidebar → Click <strong>"Get started"</strong> → Go to <strong>"Sign-in method"</strong> tab and enable:</p>
+                <table class="info-table" style="margin-top: 0.75rem;">
+                    <thead>
+                        <tr><th>Provider</th><th>Settings</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>📧 Email/Password</td><td>Enable ✅</td></tr>
+                        <tr><td>🔵 Google</td><td>Enable ✅ — Add your email as support contact</td></tr>
+                        <tr><td>📱 Phone</td><td>Enable ✅ — For SMS verification (optional)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Firestore -->
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🗄️</span> Enable Firestore Database
+                </div>
+                <p>Click <strong>Firestore Database</strong> in the left sidebar → Click <strong>"Create database"</strong></p>
+                <ul style="margin-top: 0.5rem; margin-left: 1.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <li>Choose <strong>"Start in production mode"</strong></li>
+                    <li>Select location: <strong>europe-west1</strong> (closest to Ghana 🇬🇭)</li>
+                    <li>Click <strong>"Enable"</strong></li>
+                </ul>
+            </div>
+
+            <!-- Storage -->
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">📁</span> Enable Storage
+                </div>
+                <p>Click <strong>Storage</strong> in the left sidebar → Click <strong>"Get started"</strong></p>
+                <ul style="margin-top: 0.5rem; margin-left: 1.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <li>Choose <strong>"Start in production mode"</strong></li>
+                    <li>Select the same location as Firestore</li>
+                    <li>Click <strong>"Done"</strong></li>
+                </ul>
+            </div>
+
+            <!-- Hosting -->
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🌍</span> Enable Hosting
+                </div>
+                <p>Click <strong>Hosting</strong> in the left sidebar → Click <strong>"Get started"</strong></p>
+                <ul style="margin-top: 0.5rem; margin-left: 1.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <li>You'll see setup instructions — <strong>don't follow them yet!</strong></li>
+                    <li>Just click <strong>"Next"</strong> through the wizard until you see <strong>"Finish"</strong></li>
+                    <li>Click <strong>"Finish"</strong> (we'll deploy properly in Step 5)</li>
+                </ul>
+            </div>
+
+            <div class="diagram">
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Firebase Services Architecture for Sankofa Market:</p>
+                <div class="diagram-flow">
+                    <div class="diagram-box">🌍 Hosting</div>
+                    <span class="diagram-arrow">→</span>
+                    <div class="diagram-box accent">🔐 Auth</div>
+                    <span class="diagram-arrow">→</span>
+                    <div class="diagram-box">🗄️ Firestore</div>
+                    <span class="diagram-arrow">→</span>
+                    <div class="diagram-box success">📁 Storage</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Get Config -->
+        <div class="section" id="step3">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div>
+                    <h2>Get Your Firebase Config</h2>
+                    <p><span class="time-badge">⏱ ~2 minutes</span></p>
+                </div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">⚙️</span> Go to Project Settings
+                </div>
+                <p>Click the <strong>⚙️ gear icon</strong> (top left, next to "Project Overview") → Click <strong>"Project settings"</strong></p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">📱</span> Register a Web App
+                </div>
+                <p>Scroll down to <strong>"Your apps"</strong> section → Click the <strong>Web icon <code>&lt;/&gt;</code></strong></p>
+                <ul style="margin-top: 0.5rem; margin-left: 1.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <li>App nickname: <code>sankofa-market-web</code></li>
+                    <li><strong>Don't</strong> check "Firebase Hosting" (we'll handle that separately)</li>
+                    <li>Click <strong>"Register app"</strong></li>
+                </ul>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">📋</span> Copy Your Config
+                </div>
+                <p>You'll see a code block with your Firebase config. It looks like this:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Your Config (example)</span>
+                    <span class="keyword">const</span> firebaseConfig = {<br>
+                    &nbsp;&nbsp;<span class="property">apiKey</span>: <span class="string">"<span class="highlight">AIzaSy...your-key-here</span>"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">authDomain</span>: <span class="string">"<span class="highlight">sankofa-market.firebaseapp.com</span>"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">projectId</span>: <span class="string">"<span class="highlight">sankofa-market</span>"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">storageBucket</span>: <span class="string">"<span class="highlight">sankofa-market.appspot.com</span>"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">messagingSenderId</span>: <span class="string">"<span class="highlight">123456789</span>"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">appId</span>: <span class="string">"<span class="highlight">1:123456789:web:abc123</span>"</span><br>
+                    };
+                </div>
+
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div><strong>Copy the ENTIRE config block</strong> (the <code>firebaseConfig</code> object with all its values). You'll paste it in the next step. Do NOT close this page yet!</div>
+                </div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">📝</span> Update the Config File
+                </div>
+                <p>Open the file <code>config/firebase-config.js</code> in the Sankofa Market project and replace the placeholder values with your actual config:</p>
+
+                <div class="code-block">
+                    <span class="code-label">config/firebase-config.js</span>
+                    <span class="comment">// Replace these with YOUR actual values from Firebase Console</span><br>
+                    <span class="keyword">const</span> firebaseConfig = {<br>
+                    &nbsp;&nbsp;<span class="property">apiKey</span>: <span class="string">"AIzaSy..."</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ← your actual key</span><br>
+                    &nbsp;&nbsp;<span class="property">authDomain</span>: <span class="string">"sankofa-market.firebaseapp.com"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">projectId</span>: <span class="string">"sankofa-market"</span>,&nbsp;&nbsp;&nbsp;<span class="comment">// ← your project ID</span><br>
+                    &nbsp;&nbsp;<span class="property">storageBucket</span>: <span class="string">"sankofa-market.appspot.com"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">messagingSenderId</span>: <span class="string">"123456789"</span>,<br>
+                    &nbsp;&nbsp;<span class="property">appId</span>: <span class="string">"1:123456789:web:abc123"</span><br>
+                    };
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Generate CI Token -->
+        <div class="section accent" id="step4">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div>
+                    <h2>Generate Firebase CI Token</h2>
+                    <p><span class="time-badge">⏱ ~2 minutes</span> — This lets us deploy from Arena</p>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <span class="alert-icon">🔑</span>
+                <div><strong>What is a CI Token?</strong> It's a special authentication token that allows Firebase deployments without interactive login. You generate it once on your computer, then paste it here so I can deploy your site.</div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">💻</span> Open Command Prompt on your Windows PC
+                </div>
+                <p>Press <code>Windows Key + R</code> → Type <code>cmd</code> → Press <strong>Enter</strong></p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">⚡</span> Run this command
+                </div>
+                <p>Copy and paste this entire line into Command Prompt, then press Enter:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyText(this, 'npx firebase-tools login:ci')">📋 Copy</button>
+                    <span class="function">npx</span> firebase-tools login:ci
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">If it asks to install <code>firebase-tools</code>, type <code>y</code> and press Enter.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🌐</span> Sign in with your Google account
+                </div>
+                <p>Your browser will automatically open a Google sign-in page. <strong>Sign in with the same Google account</strong> you used to create the Firebase project. Click <strong>"Allow"</strong> to grant permissions.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon">🔑</span> Copy the token
+                </div>
+                <p>After signing in, go back to Command Prompt. You'll see a long token like this:</p>
+                <div class="code-block">
+                    <span class="comment">// It will look something like this:</span><br>
+                    ✔&nbsp; Success! Use this token to login to the firebase CLI:<br><br>
+                    <span class="string">1//0abcDEFghijklMNOpqrSTUvwxYZ1234567890abcdef...</span>
+                </div>
+                <div class="alert alert-warning">
+                    <span class="alert-icon">📋</span>
+                    <div><strong>Copy the entire token</strong> (the long string starting with <code>1//</code>). Right-click in Command Prompt to paste it, or select it and press <code>Ctrl+C</code>. You'll paste this token in the next step.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Deploy -->
+        <div class="section success" id="step5">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div>
+                    <h2>Paste Your Details Here</h2>
+                    <p>Come back to Arena and share these with me</p>
+                </div>
+            </div>
+
+            <p style="margin-bottom: 1rem;">Once you have the items below, come back to our Arena chat and paste them. I'll handle the rest of the deployment automatically!</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div style="background: rgba(0,100,210,0.05); border: 2px solid var(--primary); border-radius: 8px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🆔</div>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.35rem;">Firebase Project ID</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">From Step 1 — looks like<br><code>sankofa-market</code></p>
+                </div>
+                <div style="background: rgba(245,175,2,0.05); border: 2px solid var(--accent); border-radius: 8px; padding: 1.25rem; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔑</div>
+                    <h3 style="font-size: 1rem; margin-bottom: 0.35rem;">CI Token</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">From Step 4 — the long string<br>starting with <code>1//</code></p>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <span class="alert-icon">💬</span>
+                <div><strong>Just paste them in the chat like this:</strong><br>
+                <code>Project ID: sankofa-market</code><br>
+                <code>Token: 1//0abcDEF...</code></div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">What I'll do next (automatically):</h3>
+            <ul class="checklist">
+                <li><span class="check checked">✓</span> Update <code>.firebaserc</code> with your project ID</li>
+                <li><span class="check checked">✓</span> Deploy all HTML pages, CSS, JS, and images</li>
+                <li><span class="check checked">✓</span> Configure clean URLs (e.g., <code>/help</code> → <code>help.html</code>)</li>
+                <li><span class="check checked">✓</span> Set up security headers and caching</li>
+                <li><span class="check checked">✓</span> Configure the custom 404 page</li>
+                <li><span class="check checked">✓</span> Give you the live URL!</li>
+            </ul>
+        </div>
+
+        <!-- Step 6: Go Live -->
+        <div class="section" id="step6" style="border-left-color: var(--success);">
+            <div class="section-header">
+                <div class="section-number" style="background: linear-gradient(135deg, var(--success), #4a6b0a);">✓</div>
+                <div>
+                    <h2>You're Live! 🎉</h2>
+                    <p>After deployment, your site will be available at:</p>
+                </div>
+            </div>
+
+            <div style="background: var(--bg); border-radius: 8px; padding: 1.5rem; text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Your live site URL:</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;">
+                    https://<span id="projectIdDisplay">your-project-id</span>.web.app
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                    Also available at: https://<span id="projectIdDisplay2">your-project-id</span>.firebaseapp.com
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 0.75rem;">After Deployment, You Can:</h3>
+            <table class="info-table">
+                <thead>
+                    <tr><th>Action</th><th>How</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>🌐 Add custom domain</td><td>Firebase Console → Hosting → Add custom domain → <code>sankofamarket.com.gh</code></td></tr>
+                    <tr><td>📊 View analytics</td><td>Firebase Console → Analytics (if enabled)</td></tr>
+                    <tr><td>🔄 Redeploy updates</td><td>Just ask me in Arena — I'll push new changes automatically</td></tr>
+                    <tr><td>📈 Monitor performance</td><td>Firebase Console → Performance Monitoring</td></tr>
+                    <tr><td>🗑️ Rollback</td><td>Firebase Console → Hosting → Release history → Rollback</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section error" id="troubleshoot">
+            <div class="section-header">
+                <div class="section-number" style="background: linear-gradient(135deg, var(--error), #a93226);">🔧</div>
+                <div>
+                    <h2>Troubleshooting</h2>
+                    <p>Common issues and solutions</p>
+                </div>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon" style="color: var(--error);">❌</span> "npx is not recognized"
+                </div>
+                <p>This means Node.js is not installed. Download and install it from <a href="https://nodejs.org" target="_blank">nodejs.org</a> (choose the LTS version). After installing, close and reopen Command Prompt, then try again.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon" style="color: var(--error);">❌</span> "Error: Authentication required"
+                </div>
+                <p>The CI token may have expired or wasn't copied correctly. Generate a new one by running <code>npx firebase-tools login:ci</code> again. Make sure to copy the <em>entire</em> token string.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon" style="color: var(--error);">❌</span> "Project not found"
+                </div>
+                <p>Double-check your project ID. Go to Firebase Console → ⚙️ Project Settings → look for "Project ID" at the top of the General tab. It might be different from the project name.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon" style="color: var(--error);">❌</span> Browser doesn't open for login
+                </div>
+                <p>Command Prompt will show a URL. Copy that URL and paste it into your browser manually. Complete the sign-in, then go back to Command Prompt.</p>
+            </div>
+
+            <div class="substep">
+                <div class="substep-label">
+                    <span class="icon" style="color: var(--warning);">⚠️</span> "npm WARN deprecated" messages
+                </div>
+                <p>These are just warnings and can be safely ignored. They don't affect the token generation.</p>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="section" style="border-left-color: var(--primary);">
+            <div class="section-header">
+                <div class="section-number">📎</div>
+                <div>
+                    <h2>Quick Reference</h2>
+                    <p>Useful links and commands</p>
+                </div>
+            </div>
+
+            <table class="info-table">
+                <thead>
+                    <tr><th>Resource</th><th>Link / Command</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Firebase Console</td>
+                        <td><a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a></td>
+                    </tr>
+                    <tr>
+                        <td>Generate CI Token</td>
+                        <td><code>npx firebase-tools login:ci</code></td>
+                    </tr>
+                    <tr>
+                        <td>Firebase Docs</td>
+                        <td><a href="https://firebase.google.com/docs/hosting" target="_blank">firebase.google.com/docs/hosting</a></td>
+                    </tr>
+                    <tr>
+                        <td>GitHub Repo</td>
+                        <td><a href="https://github.com/paddywooten/Sankofa-Market" target="_blank">github.com/paddywooten/Sankofa-Market</a></td>
+                    </tr>
+                    <tr>
+                        <td>GitHub Pages (backup)</td>
+                        <td><a href="https://paddywooten.github.io/Sankofa-Market" target="_blank">paddywooten.github.io/Sankofa-Market</a></td>
+                    </tr>
+                    <tr>
+                        <td>Node.js Download</td>
+                        <td><a href="https://nodejs.org" target="_blank">nodejs.org</a> (LTS version)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="guide-footer">
+            <p>📖 Sankofa Market — Firebase Setup Guide</p>
+            <p style="margin-top: 0.25rem;">Made with ❤️ in Ghana 🇬🇭 | Last updated: September 2026</p>
+            <div style="margin-top: 1rem;">
+                <a href="https://github.com/paddywooten/Sankofa-Market" target="_blank" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                    ⭐ View on GitHub
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle checklist items
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+        }
+
+        // Copy text function
+        function copyText(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copied');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '📋 Copy';
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for progress bar links
+        document.querySelectorAll('.progress-step').forEach(step => {
+            step.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Animate sections on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

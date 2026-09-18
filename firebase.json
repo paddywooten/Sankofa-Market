@@ -1,4 +1,164 @@
 {
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "FIREBASE_SETUP.md",
+      "PROJECT_URLS.*",
+      "README.md",
+      ".git/**",
+      ".gitignore"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(html)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/help",
+        "destination": "/pages/help.html"
+      },
+      {
+        "source": "/seller-guide",
+        "destination": "/pages/seller-guide.html"
+      },
+      {
+        "source": "/buyer-guide",
+        "destination": "/pages/buyer-guide.html"
+      },
+      {
+        "source": "/about",
+        "destination": "/pages/about.html"
+      },
+      {
+        "source": "/contact",
+        "destination": "/pages/contact.html"
+      },
+      {
+        "source": "/terms",
+        "destination": "/pages/terms.html"
+      },
+      {
+        "source": "/privacy",
+        "destination": "/pages/privacy.html"
+      },
+      {
+        "source": "/cookie-policy",
+        "destination": "/pages/cookie-policy.html"
+      },
+      {
+        "source": "/refund-policy",
+        "destination": "/pages/refund-policy.html"
+      },
+      {
+        "source": "/acceptable-use",
+        "destination": "/pages/acceptable-use.html"
+      },
+      {
+        "source": "/prohibited-items",
+        "destination": "/pages/prohibited-items.html"
+      },
+      {
+        "source": "/disclaimer",
+        "destination": "/pages/disclaimer.html"
+      },
+      {
+        "source": "/dashboard",
+        "destination": "/pages/user/dashboard.html"
+      },
+      {
+        "source": "/profile",
+        "destination": "/pages/user/profile.html"
+      },
+      {
+        "source": "/orders",
+        "destination": "/pages/user/orders.html"
+      },
+      {
+        "source": "/listings",
+        "destination": "/pages/user/listings.html"
+      },
+      {
+        "source": "/messages",
+        "destination": "/pages/user/messages.html"
+      },
+      {
+        "source": "/wishlist",
+        "destination": "/pages/user/wishlist.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/pages/auth/login.html"
+      },
+      {
+        "source": "/register",
+        "destination": "/pages/auth/register.html"
+      },
+      {
+        "source": "/admin",
+        "destination": "/pages/admin/dashboard.html"
+      },
+      {
+        "source": "/admin/login",
+        "destination": "/pages/admin/login.html"
+      },
+      {
+        "source": "**",
+        "destination": "/pages/404.html"
+      }
+    ]
+  },
   "functions": [
     {
       "source": "functions",
@@ -11,13 +171,7 @@
       ]
     }
   ],
-  "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "functions/**"
-    ]
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }
