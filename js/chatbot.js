@@ -250,7 +250,7 @@ class SankofaChatbot {
         }
 
         // If we found a good match (score > 0.3), return it
-        if (bestMatch && highestScore > 0.3) {
+        if (bestMatch && highestScore > 0.15) {
             return {
                 text: bestMatch.answer,
                 quickReplies: bestMatch.quickReplies || []
@@ -272,14 +272,42 @@ class SankofaChatbot {
 
     calculateMatchScore(message, keywords) {
         let score = 0;
-        const words = message.split(/\s+/);
+        const msg = message.toLowerCase().replace(/[?!.,]/g, '');
+        
+        // Remove common filler words
+        const stopWords = ['how', 'do', 'does', 'is', 'are', 'can', 'i', 'my', 'the', 'a', 'an', 'what', 'where', 'when', 'why', 'which', 'who', 'to', 'for', 'on', 'in', 'about', 'with', 'please', 'help', 'me', 'want', 'need', 'know', 'tell', 'me', 'get', 'got'];
+        const msgWords = msg.split(/\s+/).filter(w => !stopWords.includes(w));
         
         for (const keyword of keywords) {
-            const keywordWords = keyword.split(/\s+/);
+            const kw = keyword.toLowerCase();
+            const kwWords = kw.split(/\s+/);
             
-            for (const kw of keywordWords) {
-                if (message.includes(kw)) {
-                    score += 1;
+            // Exact phrase match (highest score)
+            if (msg.includes(kw)) {
+                score += 3;
+                continue;
+            }
+            
+            // Individual keyword matches
+            for (const kwWord of kwWords) {
+                if (kwWord.length < 3) continue; // Skip very short words
+                
+                // Exact word match
+                if (msgWords.includes(kwWord)) {
+                    score += 1.5;
+                }
+                // Partial/contains match
+                else if (msg.includes(kwWord)) {
+                    score += 0.8;
+                }
+                // Stem match (e.g., "selling" matches "sell")
+                else {
+                    for (const mw of msgWords) {
+                        if (mw.startsWith(kwWord) || kwWord.startsWith(mw)) {
+                            score += 0.5;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -415,7 +443,7 @@ class SankofaChatbot {
         return [
             {
                 id: 'account_creation',
-                keywords: ['create account', 'sign up', 'register', 'new account', 'join'],
+                keywords: ['create account', 'sign up', 'register', 'new account', 'join', 'signup', 'account', 'create', 'open account', 'start', 'getting started', 'new here'],
                 answer: `To create an account on Sankofa Market:<br><br>
                     <ol>
                         <li>Click "Sign Up" in the top right corner</li>
@@ -429,7 +457,7 @@ class SankofaChatbot {
             },
             {
                 id: 'verification_time',
-                keywords: ['verification time', 'how long', 'approve', 'approval time', 'wait'],
+                keywords: ['verification time', 'how long', 'approve', 'approval time', 'wait', 'verified', 'pending', 'status', 'taking long', 'still waiting', 'check status'],
                 answer: `Account verification typically takes <strong>24-48 hours</strong>. Our admin team reviews your Ghana Card details to ensure platform safety.<br><br>
                     You'll receive an email notification once your account is approved. If it takes longer, please contact our support team.`,
                 quickReplies: ['Contact support', 'Check verification status', 'What if I\'m not approved?']
@@ -449,7 +477,7 @@ class SankofaChatbot {
             },
             {
                 id: 'payment_methods',
-                keywords: ['payment', 'pay', 'how to pay', 'payment methods', 'mobile money', 'momo', 'card'],
+                keywords: ['payment', 'pay', 'how to pay', 'payment methods', 'mobile money', 'momo', 'card', 'visa', 'mastercard', 'mtn', 'vodafone', 'airteltigo', 'pay for', 'checkout'],
                 answer: `Sankofa Market supports multiple payment methods:<br><br>
                     <ul>
                         <li><strong>Mobile Money:</strong> MTN, Vodafone, AirtelTigo</li>
@@ -475,7 +503,7 @@ class SankofaChatbot {
             },
             {
                 id: 'dispute_process',
-                keywords: ['dispute', 'problem', 'issue', 'complaint', 'not as described', 'refund'],
+                keywords: ['dispute', 'problem', 'issue', 'complaint', 'not as described', 'refund', 'return', 'broken', 'damaged', 'wrong item', 'scammed', 'cheated'],
                 answer: `If you have an issue with your order:<br><br>
                     <ol>
                         <li>Go to your order details</li>
@@ -489,7 +517,7 @@ class SankofaChatbot {
             },
             {
                 id: 'list_item',
-                keywords: ['list item', 'sell', 'post item', 'create listing', 'how to sell'],
+                keywords: ['list item', 'sell', 'post item', 'create listing', 'how to sell', 'listing', 'put up', 'upload product', 'add product', 'selling', 'start selling'],
                 answer: `To list an item for sale:<br><br>
                     <ol>
                         <li>Click "Sell" or "List Item" button</li>
@@ -506,7 +534,7 @@ class SankofaChatbot {
             },
             {
                 id: 'selling_fees',
-                keywords: ['fees', 'commission', 'cost', 'charges', 'how much'],
+                keywords: ['fees', 'commission', 'cost', 'charges', 'how much', 'price', 'percentage', 'free', 'charge', 'expensive', 'rate'],
                 answer: `Sankofa Market charges a <strong>5% commission</strong> on successful sales.<br><br>
                     <strong>Example:</strong><br>
                     • Item sells for GHS 1,000<br>
@@ -517,7 +545,7 @@ class SankofaChatbot {
             },
             {
                 id: 'delivery_options',
-                keywords: ['delivery', 'shipping', 'pickup', 'free delivery', 'delivery options'],
+                keywords: ['delivery', 'shipping', 'pickup', 'free delivery', 'delivery options', 'ship', 'deliver', 'tracking', 'track order', 'receive', 'how long delivery'],
                 answer: `Sellers can offer three delivery options:<br><br>
                     <ul>
                         <li><strong>🚚 Free Delivery:</strong> Seller delivers at no extra cost</li>
@@ -529,7 +557,7 @@ class SankofaChatbot {
             },
             {
                 id: 'contact_seller',
-                keywords: ['contact seller', 'message seller', 'chat', 'talk to seller', 'reach seller'],
+                keywords: ['contact seller', 'message seller', 'chat', 'talk to seller', 'reach seller', 'message', 'communicate', 'talk to', 'send message', 'inbox'],
                 answer: `To contact a seller:<br><br>
                     <ol>
                         <li>Go to the product page</li>
@@ -542,7 +570,7 @@ class SankofaChatbot {
             },
             {
                 id: 'safety_tips',
-                keywords: ['safety', 'safe', 'scam', 'fraud', 'secure', 'protect'],
+                keywords: ['safety', 'safe', 'scam', 'fraud', 'secure', 'protect', 'trust', 'trustworthy', 'legit', 'legitimate', 'real', 'fake', 'security'],
                 answer: `Stay safe on Sankofa Market:<br><br>
                     <strong>✅ DO:</strong>
                     <ul>
@@ -563,7 +591,7 @@ class SankofaChatbot {
             },
             {
                 id: 'contact_support',
-                keywords: ['support', 'help', 'contact', 'customer service', 'assistance'],
+                keywords: ['support', 'help', 'contact', 'customer service', 'assistance', 'reach out', 'email', 'phone', 'call', 'talk to someone', 'speak to'],
                 answer: `Need help? Contact our support team:<br><br>
                     <ul>
                         <li><strong>Email:</strong> support@sankofamarket.com</li>
@@ -575,7 +603,7 @@ class SankofaChatbot {
             },
             {
                 id: 'withdraw_money',
-                keywords: ['withdraw', 'payout', 'get paid', 'receive money', 'cash out'],
+                keywords: ['withdraw', 'payout', 'get paid', 'receive money', 'cash out', 'withdrawal', 'my money', 'earnings', 'transfer', 'bank'],
                 answer: `To withdraw your earnings:<br><br>
                     <ol>
                         <li>Go to your Dashboard</li>
