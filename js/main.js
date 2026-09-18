@@ -52,8 +52,8 @@ function initTheme() {
             this.title = next === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
         });
 
-        // Insert before the first button/link in header actions
-        headerActions.insertBefore(toggle, headerActions.firstChild);
+        // Insert at the end (far right) of header actions
+        headerActions.appendChild(toggle);
     }
 }
 

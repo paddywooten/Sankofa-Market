@@ -399,7 +399,8 @@
 
     .chatbot-header {
         padding: 1rem;
-        padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+        padding-top: max(1rem, calc(env(safe-area-inset-top, 0px) + 0.5rem));
+        min-height: 60px;
     }
 
     .chatbot-messages {
