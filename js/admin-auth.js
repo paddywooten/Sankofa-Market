@@ -23,7 +23,7 @@ async function checkAdminAccess() {
                 // Not logged in - redirect to login
                 showAccessDenied('You must be logged in to access admin pages.');
                 setTimeout(() => {
-                    window.location.href = '../../pages/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
                 }, 2000);
                 return;
             }
@@ -39,7 +39,7 @@ async function checkAdminAccess() {
                     showAccessDenied('User profile not found.');
                     setTimeout(() => {
                         firebase.auth().signOut();
-                        window.location.href = '../../index.html';
+                        window.location.href = '/index.html';
                     }, 2000);
                     return;
                 }
@@ -49,7 +49,7 @@ async function checkAdminAccess() {
                 if (userData.role !== 'admin') {
                     showAccessDenied('Access denied. Admin privileges required.');
                     setTimeout(() => {
-                        window.location.href = '../../index.html';
+                        window.location.href = '/index.html';
                     }, 2000);
                     return;
                 }
@@ -80,7 +80,7 @@ async function checkAdminAccess() {
                 console.error('Error checking admin status:', error);
                 showAccessDenied('Error verifying admin status. Please try again.');
                 setTimeout(() => {
-                    window.location.href = '../../index.html';
+                    window.location.href = '/index.html';
                 }, 2000);
             }
         });
@@ -89,7 +89,7 @@ async function checkAdminAccess() {
         console.error('Admin auth error:', error);
         showAccessDenied('Authentication error. Please try again.');
         setTimeout(() => {
-            window.location.href = '../../index.html';
+            window.location.href = '/index.html';
         }, 2000);
     }
 }

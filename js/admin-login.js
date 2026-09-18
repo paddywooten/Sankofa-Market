@@ -94,7 +94,7 @@ function initAdminLogin() {
                 
                 // Redirect to admin dashboard
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = '/sm-panel/dashboard';
                 }, 1000);
 
             } else {
