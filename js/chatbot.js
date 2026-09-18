@@ -105,7 +105,10 @@ class SankofaChatbot {
         const sendBtn = document.getElementById('chatbotSend');
         const input = document.getElementById('chatbotInput');
 
-        trigger.addEventListener('click', () => this.toggleChatbot());
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleChatbot();
+        });
         sendBtn.addEventListener('click', () => this.sendMessage());
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.sendMessage();
