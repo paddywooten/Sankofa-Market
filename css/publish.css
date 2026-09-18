@@ -304,6 +304,126 @@
     border-radius: var(--radius-md);
 }
 
+/* Delivery Options */
+.delivery-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.delivery-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.delivery-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.delivery-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.delivery-option input[type="checkbox"]:checked + .delivery-card {
+    border-color: var(--primary-color);
+    background: #e3f2fd;
+    box-shadow: 0 4px 12px rgba(0, 100, 210, 0.15);
+}
+
+.delivery-card i {
+    font-size: 2rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+    transition: color 0.3s ease;
+}
+
+.delivery-option input[type="checkbox"]:checked + .delivery-card i {
+    color: var(--primary-color);
+}
+
+.delivery-card strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.delivery-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.delivery-fee-section {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.delivery-fee-section .form-group {
+    margin-bottom: 1rem;
+}
+
+.delivery-fee-section .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+    .delivery-options {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .delivery-card {
+        flex-direction: row;
+        text-align: left;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .delivery-card i {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    .delivery-card-content {
+        flex: 1;
+    }
+
+    .delivery-card strong {
+        font-size: 0.95rem;
+    }
+
+    .delivery-card p {
+        font-size: 0.8rem;
+    }
+
+    .delivery-fee-section {
+        padding: 1rem;
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .publish-main {

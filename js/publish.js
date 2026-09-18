@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     initPhotoUpload();
     initCharCounters();
+    initDeliveryOptions();
     initFormSubmission();
 });
 
@@ -96,6 +97,35 @@ function initCharCounters() {
 }
 
 // ============================================================================
+// DELIVERY OPTIONS
+// ============================================================================
+
+function initDeliveryOptions() {
+    const paidDeliveryCheckbox = document.getElementById('paidDelivery');
+    const deliveryFeeSection = document.getElementById('deliveryFeeSection');
+    const deliveryFeeInput = document.getElementById('deliveryFee');
+
+    if (!paidDeliveryCheckbox || !deliveryFeeSection) return;
+
+    paidDeliveryCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            deliveryFeeSection.style.display = 'block';
+            deliveryFeeInput.setAttribute('required', 'required');
+        } else {
+            deliveryFeeSection.style.display = 'none';
+            deliveryFeeInput.removeAttribute('required');
+            deliveryFeeInput.value = '';
+            document.getElementById('deliveryAreas').value = '';
+        }
+    });
+
+    // Initialize on page load
+    if (paidDeliveryCheckbox.checked) {
+        deliveryFeeSection.style.display = 'block';
+    }
+}
+
+// ============================================================================
 // FORM SUBMISSION
 // ============================================================================
 
@@ -164,6 +194,24 @@ function initFormSubmission() {
             if (data.city) document.getElementById('city').value = data.city;
             if (data.region) document.getElementById('region').value = data.region;
             
+            // Load delivery options
+            if (data.deliveryOptions && Array.isArray(data.deliveryOptions)) {
+                if (data.deliveryOptions.includes('free-delivery')) {
+                    document.getElementById('freeDelivery').checked = true;
+                }
+                if (data.deliveryOptions.includes('paid-delivery')) {
+                    document.getElementById('paidDelivery').checked = true;
+                    document.getElementById('deliveryFee').value = data.deliveryFee || '';
+                    document.getElementById('deliveryFeeSection').style.display = 'block';
+                }
+                if (data.deliveryOptions.includes('pickup')) {
+                    document.getElementById('pickupOnly').checked = true;
+                }
+                if (data.deliveryAreas) {
+                    document.getElementById('deliveryAreas').value = data.deliveryAreas;
+                }
+            }
+            
             // Update counters
             document.getElementById('titleCount').textContent = data.title?.length || 0;
             document.getElementById('descCount').textContent = data.description?.length || 0;
@@ -180,6 +228,25 @@ function validateForm() {
     const region = document.getElementById('region').value;
     const city = document.getElementById('city').value.trim();
     const phone = document.getElementById('phone').value.trim();
+    
+    // Check if at least one delivery option is selected
+    const freeDelivery = document.getElementById('freeDelivery').checked;
+    const paidDelivery = document.getElementById('paidDelivery').checked;
+    const pickupOnly = document.getElementById('pickupOnly').checked;
+    
+    if (!freeDelivery && !paidDelivery && !pickupOnly) {
+        showFlashMessage('Please select at least one delivery option', 'error');
+        return false;
+    }
+    
+    // Validate delivery fee if paid delivery is selected
+    if (paidDelivery) {
+        const deliveryFee = document.getElementById('deliveryFee').value;
+        if (!deliveryFee || deliveryFee < 0) {
+            showFlashMessage('Please enter a valid delivery fee', 'error');
+            return false;
+        }
+    }
     
     if (!title) {
         showFlashMessage('Please enter a title', 'error');
@@ -218,6 +285,17 @@ function validateForm() {
 }
 
 function collectFormData() {
+    const deliveryOptions = [];
+    if (document.getElementById('freeDelivery').checked) {
+        deliveryOptions.push('free-delivery');
+    }
+    if (document.getElementById('paidDelivery').checked) {
+        deliveryOptions.push('paid-delivery');
+    }
+    if (document.getElementById('pickupOnly').checked) {
+        deliveryOptions.push('pickup');
+    }
+
     return {
         title: document.getElementById('title').value.trim(),
         category: document.getElementById('category').value,
@@ -229,6 +307,9 @@ function collectFormData() {
         city: document.getElementById('city').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         showPhone: document.getElementById('showPhone').checked,
+        deliveryOptions: deliveryOptions,
+        deliveryFee: document.getElementById('paidDelivery').checked ? parseFloat(document.getElementById('deliveryFee').value) : null,
+        deliveryAreas: document.getElementById('deliveryAreas').value.trim(),
         photos: window.uploadedPhotos || [],
         createdAt: new Date().toISOString()
     };

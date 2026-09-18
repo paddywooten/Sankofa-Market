@@ -205,6 +205,26 @@
                     </div>
                 </div>
 
+                <!-- Delivery Options -->
+                <div class="filter-group">
+                    <div class="filter-group-title" onclick="toggleFilterGroup(this)">
+                        Delivery Options <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="filter-group-content">
+                        <div class="filter-checkboxes">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="free-delivery" class="delivery-filter"> <i class="fas fa-truck" style="color: #86b817;"></i> Free Delivery
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="paid-delivery" class="delivery-filter"> <i class="fas fa-shipping-fast" style="color: #0064d2;"></i> Paid Delivery
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" value="pickup" class="delivery-filter"> <i class="fas fa-store" style="color: #f5af02;"></i> Pickup Only
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="filters-footer">
                     <button class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-check"></i> Show Results</button>
                     <button class="btn btn-outline" onclick="resetFilters()"><i class="fas fa-redo"></i> Reset</button>

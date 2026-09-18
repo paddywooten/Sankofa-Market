@@ -155,9 +155,10 @@ function applyFilters() {
     const sortBy = document.getElementById('sortBy').value;
     const sellerType = document.querySelector('.seller-filter:checked')?.value || '';
     const conditions = Array.from(document.querySelectorAll('.condition-filter:checked')).map(c => c.value);
+    const deliveryOptions = Array.from(document.querySelectorAll('.delivery-filter:checked')).map(c => c.value);
     
-    applyDemoFilters(category, priceMin, priceMax, conditions, location, sellerType, sortBy);
-    updateActiveFilters(category, priceMin, priceMax, conditions, location, sellerType);
+    applyDemoFilters(category, priceMin, priceMax, conditions, location, sellerType, sortBy, deliveryOptions);
+    updateActiveFilters(category, priceMin, priceMax, conditions, location, sellerType, deliveryOptions);
 }
 
 // ============================================================================
@@ -171,6 +172,7 @@ function resetFilters() {
     document.getElementById('filterLocation').value = '';
     document.getElementById('sortBy').value = 'latest';
     document.querySelectorAll('.condition-filter').forEach(c => c.checked = false);
+    document.querySelectorAll('.delivery-filter').forEach(c => c.checked = false);
     document.querySelector('.seller-filter[value=""]').checked = true;
     document.getElementById('activeFilters').style.display = 'none';
     
@@ -182,7 +184,7 @@ function resetFilters() {
 // ACTIVE FILTERS CHIPS
 // ============================================================================
 
-function updateActiveFilters(category, priceMin, priceMax, conditions, location, sellerType) {
+function updateActiveFilters(category, priceMin, priceMax, conditions, location, sellerType, deliveryOptions) {
     const container = document.getElementById('activeFilters');
     const chips = [];
     
@@ -191,6 +193,16 @@ function updateActiveFilters(category, priceMin, priceMax, conditions, location,
     conditions.forEach(c => chips.push({ label: c.replace('-', ' '), key: 'condition', value: c }));
     if (location) chips.push({ label: location, key: 'location' });
     if (sellerType) chips.push({ label: sellerType.replace('-', ' '), key: 'seller' });
+    
+    // Add delivery options to chips
+    deliveryOptions.forEach(d => {
+        const labels = {
+            'free-delivery': 'Free Delivery',
+            'paid-delivery': 'Paid Delivery',
+            'pickup': 'Pickup Only'
+        };
+        chips.push({ label: labels[d] || d, key: 'delivery', value: d });
+    });
     
     if (chips.length === 0) {
         container.style.display = 'none';
@@ -209,6 +221,7 @@ function removeFilter(key, value) {
     if (key === 'condition') document.querySelector(`.condition-filter[value="${value}"]`).checked = false;
     if (key === 'location') document.getElementById('filterLocation').value = '';
     if (key === 'seller') document.querySelector('.seller-filter[value=""]').checked = true;
+    if (key === 'delivery') document.querySelector(`.delivery-filter[value="${value}"]`).checked = false;
     applyFilters();
 }
 
@@ -265,6 +278,18 @@ function renderProducts(products) {
         const condClass = p.condition || '';
         const condLabel = { 'new': 'New', 'like-new': 'Like New', 'good': 'Good', 'fair': 'Fair' }[p.condition] || '';
         
+        // Build delivery badges
+        const deliveryBadges = [];
+        if (p.deliveryOptions && p.deliveryOptions.includes('free-delivery')) {
+            deliveryBadges.push('<span class="delivery-badge free"><i class="fas fa-truck"></i> Free Delivery</span>');
+        }
+        if (p.deliveryOptions && p.deliveryOptions.includes('paid-delivery')) {
+            deliveryBadges.push(`<span class="delivery-badge paid"><i class="fas fa-shipping-fast"></i> Delivery: GHS ${p.deliveryFee || '0'}</span>`);
+        }
+        if (p.deliveryOptions && p.deliveryOptions.includes('pickup')) {
+            deliveryBadges.push('<span class="delivery-badge pickup"><i class="fas fa-store"></i> Pickup</span>');
+        }
+        
         return `
         <a href="product-detail.html?id=${p.id}" class="product-card ${isSS ? 'sankofa-store' : ''}">
             <div class="product-image-wrapper">
@@ -276,6 +301,7 @@ function renderProducts(products) {
                 ${condLabel ? `<span class="condition-badge ${condClass}">${condLabel}</span>` : ''}
                 <div class="product-title">${p.title}</div>
                 <div class="product-price">${formatCurr(p.price)}</div>
+                ${deliveryBadges.length > 0 ? `<div class="delivery-badges">${deliveryBadges.join('')}</div>` : ''}
                 <div class="product-meta">
                     <span><i class="fas fa-map-marker-alt"></i> ${p.location?.city || 'Ghana'}</span>
                     <span><i class="fas fa-clock"></i> ${time}</span>
@@ -303,7 +329,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Accra' }, createdAt: new Date(Date.now() - 2*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new'
+        category: 'electronics', condition: 'new',
+        deliveryOptions: ['free-delivery', 'pickup']
     },
     {
         id: 'demo2', title: 'Samsung 55" 4K Smart TV - Crystal UHD', price: 3200,
@@ -311,7 +338,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 5*3600000),
         isFeatured: true, isVerifiedSeller: true, sellerName: 'Kwame Asante',
         sellerPhoto: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'like-new'
+        category: 'electronics', condition: 'like-new',
+        deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 50
     },
     {
         id: 'demo3', title: 'Leather Sofa Set - 3 Pieces - Premium', price: 2800,
@@ -319,7 +347,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Tema' }, createdAt: new Date(Date.now() - 86400000),
         isFeatured: false, sellerName: 'Ama Boateng',
         sellerPhoto: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'home-garden', condition: 'good'
+        category: 'home-garden', condition: 'good',
+        deliveryOptions: ['paid-delivery'], deliveryFee: 100
     },
     {
         id: 'demo4', title: 'MacBook Pro 2023 - M2 Chip - 16GB RAM', price: 12500,
@@ -327,7 +356,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Accra' }, createdAt: new Date(Date.now() - 3*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new'
+        category: 'electronics', condition: 'new',
+        deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 30
     },
     {
         id: 'demo5', title: 'Nike Air Jordan Retro - Size 42', price: 800,
@@ -335,7 +365,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Accra' }, createdAt: new Date(Date.now() - 6*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Kofi Mensah',
         sellerPhoto: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'like-new'
+        category: 'fashion', condition: 'like-new',
+        deliveryOptions: ['free-delivery', 'pickup']
     },
     {
         id: 'demo6', title: 'Canon EOS R6 - Full Frame + Lens Kit', price: 14500,
@@ -343,7 +374,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 12*3600000),
         isFeatured: false, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'like-new'
+        category: 'electronics', condition: 'like-new',
+        deliveryOptions: ['free-delivery', 'pickup']
     },
     {
         id: 'demo7', title: 'Solid Wood Dining Table - 6 Chairs Set', price: 1800,
@@ -351,7 +383,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Takoradi' }, createdAt: new Date(Date.now() - 2*86400000),
         isFeatured: false, sellerName: 'Yaw Darkwa',
         sellerPhoto: 'https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'home-garden', condition: 'good'
+        category: 'home-garden', condition: 'good',
+        deliveryOptions: ['pickup']
     },
     {
         id: 'demo8', title: 'PlayStation 5 - 2 Controllers + 5 Games', price: 6500,
@@ -359,7 +392,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Accra' }, createdAt: new Date(Date.now() - 8*3600000),
         isFeatured: true, isSankofaStore: true, sellerName: 'Sankofa Store',
         sellerPhoto: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new'
+        category: 'electronics', condition: 'new',
+        deliveryOptions: ['free-delivery', 'paid-delivery', 'pickup'], deliveryFee: 25
     },
     {
         id: 'demo9', title: 'Apple Watch Series 8 - GPS + Cellular', price: 2200,
@@ -367,7 +401,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Accra' }, createdAt: new Date(Date.now() - 4*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Efua Adjei',
         sellerPhoto: 'https://images.unsplash.com/photo-1523824921871-d6f411bace62?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'electronics', condition: 'new'
+        category: 'electronics', condition: 'new',
+        deliveryOptions: ['free-delivery', 'pickup']
     },
     {
         id: 'demo10', title: 'Premium Designer Jacket - Unisex', price: 350,
@@ -375,7 +410,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Cape Coast' }, createdAt: new Date(Date.now() - 86400000),
         isFeatured: false, sellerName: 'Akosua Frimpong',
         sellerPhoto: 'https://images.unsplash.com/photo-1524638431109-93d95c968f68?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'new'
+        category: 'fashion', condition: 'new',
+        deliveryOptions: ['paid-delivery', 'pickup'], deliveryFee: 20
     },
     {
         id: 'demo11', title: 'African Print Ankara Dress - Handmade', price: 250,
@@ -383,7 +419,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Kumasi' }, createdAt: new Date(Date.now() - 10*3600000),
         isFeatured: false, isVerifiedSeller: true, sellerName: 'Abena Osei',
         sellerPhoto: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'fashion', condition: 'new'
+        category: 'fashion', condition: 'new',
+        deliveryOptions: ['free-delivery', 'pickup']
     },
     {
         id: 'demo12', title: 'Mountain Bike - 21 Speed - Barely Used', price: 1500,
@@ -391,7 +428,8 @@ const DEMO_PRODUCTS = [
         location: { city: 'Tamale' }, createdAt: new Date(Date.now() - 3*86400000),
         isFeatured: false, sellerName: 'Kofi Agyeman',
         sellerPhoto: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=40&h=40&fit=crop&crop=face&q=75&auto=format',
-        category: 'sports', condition: 'like-new'
+        category: 'sports', condition: 'like-new',
+        deliveryOptions: ['pickup']
     }
 ];
 
@@ -407,7 +445,7 @@ function renderDemoProducts(query = '', category = '') {
     renderProducts(products);
 }
 
-function applyDemoFilters(category, priceMin, priceMax, conditions, location, sellerType, sortBy) {
+function applyDemoFilters(category, priceMin, priceMax, conditions, location, sellerType, sortBy, deliveryOptions) {
     let filtered = [...DEMO_PRODUCTS];
     
     if (category) filtered = filtered.filter(p => p.category === category);
@@ -418,6 +456,14 @@ function applyDemoFilters(category, priceMin, priceMax, conditions, location, se
     if (sellerType === 'sankofa-store') filtered = filtered.filter(p => p.isSankofaStore);
     else if (sellerType === 'verified') filtered = filtered.filter(p => p.isVerifiedSeller);
     else if (sellerType === 'individual') filtered = filtered.filter(p => !p.isSankofaStore && !p.isVerifiedSeller);
+    
+    // Filter by delivery options
+    if (deliveryOptions.length > 0) {
+        filtered = filtered.filter(p => {
+            // Product must have at least one of the selected delivery options
+            return deliveryOptions.some(option => p.deliveryOptions && p.deliveryOptions.includes(option));
+        });
+    }
     
     filtered = sortProducts(filtered, sortBy);
     renderProducts(filtered);

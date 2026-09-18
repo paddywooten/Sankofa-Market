@@ -155,6 +155,58 @@
                     </div>
                 </div>
 
+                <!-- Delivery Options -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><i class="fas fa-truck"></i> Delivery Options</h2>
+                    <p class="form-hint">Select how buyers can receive this item</p>
+                    
+                    <div class="delivery-options">
+                        <label class="delivery-option">
+                            <input type="checkbox" name="delivery" value="free-delivery" id="freeDelivery">
+                            <span class="delivery-card">
+                                <i class="fas fa-truck"></i>
+                                <strong>Free Delivery</strong>
+                                <p>You'll deliver to buyer at no extra cost</p>
+                            </span>
+                        </label>
+                        
+                        <label class="delivery-option">
+                            <input type="checkbox" name="delivery" value="paid-delivery" id="paidDelivery">
+                            <span class="delivery-card">
+                                <i class="fas fa-shipping-fast"></i>
+                                <strong>Paid Delivery</strong>
+                                <p>Buyer pays delivery fee</p>
+                            </span>
+                        </label>
+                        
+                        <label class="delivery-option">
+                            <input type="checkbox" name="delivery" value="pickup" id="pickupOnly" checked>
+                            <span class="delivery-card">
+                                <i class="fas fa-store"></i>
+                                <strong>Pickup Only</strong>
+                                <p>Buyer picks up from your location</p>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="delivery-fee-section" id="deliveryFeeSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="deliveryFee">Delivery Fee (GHS) <span class="required">*</span></label>
+                            <div class="input-prefix">
+                                <span>GHS</span>
+                                <input type="number" id="deliveryFee" name="deliveryFee" placeholder="0" min="0">
+                            </div>
+                            <small class="form-text">Enter the delivery fee you'll charge buyers</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deliveryAreas">Delivery Areas</label>
+                            <textarea id="deliveryAreas" name="deliveryAreas" rows="3" placeholder="e.g. Accra, Tema, Kasoa (specify areas you deliver to)"></textarea>
+                            <small class="form-text">Optional: List specific areas where you deliver</small>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Contact -->
                 <div class="form-section">
                     <h2 class="form-section-title"><i class="fas fa-phone"></i> Contact Information</h2>
