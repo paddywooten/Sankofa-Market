@@ -2483,7 +2483,7 @@ function loadNavCounts() {
         updateCount('countCategories', adminCategoriesCache.length);
     } else {
         // If cache not loaded yet, count built-in categories
-        updateCount('countCategories', 13);
+        updateCount('countCategories', 0);
     }
 
     // Stores count (excluding built-in Sankofa Store)
