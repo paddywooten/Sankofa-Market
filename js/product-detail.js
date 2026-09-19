@@ -147,32 +147,126 @@ function copyToClipboard() {
 // ============================================================================
 
 function loadProductFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const productId = params.get('id');
+    var params = new URLSearchParams(window.location.search);
+    var productId = params.get('id');
     
-    if (productId && typeof firebaseDB !== 'undefined') {
-        // Load from Firebase
-        firebaseDB.collection('products').doc(productId).get().then(doc => {
+    if (productId && typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        console.log('Loading product:', productId);
+        firebaseDB.collection('products').doc(productId).get().then(function(doc) {
             if (doc.exists) {
-                renderProduct(doc.data());
+                var data = doc.data();
+                data._docId = doc.id;
+                renderProduct(data);
+                console.log('Product loaded:', data.title);
+            } else {
+                console.warn('Product not found:', productId);
             }
-        }).catch(err => {
+        }).catch(function(err) {
             console.error('Error loading product:', err);
         });
     }
-    // Otherwise use demo data already in HTML
 }
 
 function renderProduct(product) {
-    document.getElementById('productTitle').textContent = product.title;
-    document.getElementById('productPrice').textContent = formatCurrency(product.price);
-    document.getElementById('productLocation').textContent = product.location?.city || 'Ghana';
-    document.getElementById('breadcrumbTitle').textContent = product.title;
-    document.getElementById('breadcrumbCategory').textContent = product.category;
-    document.title = `${product.title} - Sankofa Market`;
+    // Title & breadcrumbs
+    var titleEl = document.getElementById('productTitle');
+    if (titleEl) titleEl.textContent = product.title || 'Untitled Product';
     
-    if (product.description) {
-        document.getElementById('productDescription').innerHTML = product.description;
+    var breadcrumbTitle = document.getElementById('breadcrumbTitle');
+    if (breadcrumbTitle) breadcrumbTitle.textContent = product.title || '';
+    
+    var breadcrumbCat = document.getElementById('breadcrumbCategory');
+    if (breadcrumbCat) breadcrumbCat.textContent = (product.category || '').replace(/-/g, ' ');
+    
+    document.title = (product.title || 'Product') + ' - Sankofa Market';
+    
+    // Price
+    var priceEl = document.getElementById('productPrice');
+    if (priceEl) priceEl.textContent = typeof formatCurrency === 'function' ? formatCurrency(product.price) : 'GHS ' + (product.price || 0).toLocaleString();
+    
+    // Location
+    var locEl = document.getElementById('productLocation');
+    if (locEl) locEl.textContent = (product.location && product.location.city) || product.location || 'Ghana';
+    
+    // Description
+    var descEl = document.getElementById('productDescription');
+    if (descEl && product.description) descEl.innerHTML = product.description;
+    
+    // Condition
+    var condEl = document.getElementById('productCondition');
+    if (condEl && product.condition) condEl.textContent = product.condition.replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+    
+    // Seller info
+    var sellerEl = document.getElementById('sellerName');
+    if (sellerEl) sellerEl.textContent = product.sellerName || (product.isSankofaStore ? 'Sankofa Store' : 'Seller');
+    
+    var verifiedEl = document.getElementById('sellerVerified');
+    if (verifiedEl) {
+        if (product.isVerifiedSeller || product.isSankofaStore) {
+            verifiedEl.innerHTML = '<i class="fas fa-check-circle" style="color:#0064d2;"></i> Verified';
+            verifiedEl.style.display = '';
+        } else {
+            verifiedEl.style.display = 'none';
+        }
+    }
+    
+    var officialBadge = document.getElementById('officialBadge');
+    if (officialBadge) {
+        officialBadge.style.display = product.isSankofaStore ? '' : 'none';
+    }
+    
+    // Time
+    var timeEl = document.getElementById('productTime');
+    if (timeEl) {
+        var created = product.createdAt;
+        if (created) {
+            var date = created.toDate ? created.toDate() : new Date(created);
+            timeEl.textContent = typeof formatRelativeTime === 'function' ? formatRelativeTime(date) : date.toLocaleDateString();
+        }
+    }
+    
+    // Views
+    var viewsEl = document.getElementById('productViews');
+    if (viewsEl) viewsEl.textContent = (product.views || 0) + ' views';
+    
+    // Images - update main image and thumbnails
+    var images = product.images || product.photos || [];
+    var mainImage = document.getElementById('mainImage');
+    var thumbsContainer = document.getElementById('galleryThumbs');
+    
+    if (images.length > 0) {
+        // Update main image
+        if (mainImage) mainImage.src = images[0];
+        
+        // Rebuild thumbnails
+        if (thumbsContainer) {
+            thumbsContainer.innerHTML = '';
+            images.forEach(function(imgUrl, i) {
+                var thumb = document.createElement('img');
+                thumb.src = imgUrl;
+                thumb.alt = 'Thumbnail ' + (i + 1);
+                thumb.className = 'thumb' + (i === 0 ? ' active' : '');
+                thumb.loading = 'lazy';
+                thumb.decoding = 'async';
+                thumb.addEventListener('click', function() {
+                    if (mainImage) mainImage.src = imgUrl;
+                    thumbsContainer.querySelectorAll('.thumb').forEach(function(t) { t.classList.remove('active'); });
+                    thumb.classList.add('active');
+                });
+                thumbsContainer.appendChild(thumb);
+            });
+        }
+    } else {
+        // No images - show placeholder
+        if (mainImage) mainImage.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop&q=75';
+        if (thumbsContainer) thumbsContainer.innerHTML = '';
+    }
+    
+    // Increment view count
+    if (typeof firebaseDB !== 'undefined' && product._docId) {
+        firebaseDB.collection('products').doc(product._docId).update({
+            views: (product.views || 0) + 1
+        }).catch(function() {});
     }
 }
 
@@ -181,52 +275,58 @@ function renderProduct(product) {
 // ============================================================================
 
 function loadSimilarProducts() {
-    const similarProducts = [
-        {
-            title: 'Samsung Galaxy S23 Ultra - 256GB',
-            price: 7800,
-            image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=350&h=260&fit=crop&q=75&auto=format',
-            location: 'Accra',
-            id: 'similar1'
-        },
-        {
-            title: 'iPhone 13 Pro - 128GB - Graphite',
-            price: 6200,
-            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=350&h=260&fit=crop&q=75&auto=format',
-            location: 'Kumasi',
-            id: 'similar2'
-        },
-        {
-            title: 'Google Pixel 7 Pro - 128GB',
-            price: 5500,
-            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=350&h=260&fit=crop&q=75&auto=format',
-            location: 'Tema',
-            id: 'similar3'
-        },
-        {
-            title: 'OnePlus 11 - 256GB - Titan Black',
-            price: 4800,
-            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=350&h=260&fit=crop&q=75&auto=format',
-            location: 'Accra',
-            id: 'similar4'
-        }
-    ];
+    var container = document.getElementById('similarProducts');
+    if (!container) return;
     
-    const container = document.getElementById('similarProducts');
-    container.innerHTML = similarProducts.map(product => `
-        <a href="product-detail.html?id=${product.id}" class="product-card">
-            <div class="product-image-wrapper">
-                <img src="${product.image}" alt="${product.title}" class="product-image" loading="lazy" decoding="async">
-            </div>
-            <div class="product-content">
-                <div class="product-title">${product.title}</div>
-                <div class="product-price">${formatCurrency(product.price)}</div>
-                <div class="product-meta">
-                    <span><i class="fas fa-map-marker-alt"></i> ${product.location}</span>
-                </div>
-            </div>
-        </a>
-    `).join('');
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) return;
+    
+    // Load recent products as "similar"
+    firebaseDB.collection('products')
+        .where('isActive', '==', true)
+        .limit(8)
+        .get()
+        .then(function(snapshot) {
+            if (snapshot.empty) {
+                // Fallback: load without where clause
+                return firebaseDB.collection('products').limit(8).get();
+            }
+            return snapshot;
+        })
+        .then(function(snapshot) {
+            if (!snapshot || snapshot.empty) return;
+            
+            var html = '';
+            var count = 0;
+            snapshot.forEach(function(doc) {
+                if (count >= 4) return;
+                var p = doc.data();
+                if (p.isSold) return;
+                
+                var images = p.images || p.photos || [];
+                var imgSrc = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=350&h=260&fit=crop&q=75';
+                var price = typeof formatCurrency === 'function' ? formatCurrency(p.price) : 'GHS ' + (p.price || 0).toLocaleString();
+                var location = (p.location && p.location.city) || p.location || 'Ghana';
+                var isSS = p.isSankofaStore === true;
+                
+                html += '<a href="product-detail.html?id=' + doc.id + '" class="product-card">' +
+                    '<div class="product-image-wrapper">' +
+                        '<img src="' + imgSrc + '" alt="' + (p.title || '') + '" class="product-image" loading="lazy">' +
+                        (isSS ? '<span class="sankofa-store-badge"><i class="fas fa-store"></i> Official</span>' : '') +
+                    '</div>' +
+                    '<div class="product-content">' +
+                        '<div class="product-title">' + (p.title || 'Untitled') + '</div>' +
+                        '<div class="product-price">' + price + '</div>' +
+                        '<div class="product-meta"><span><i class="fas fa-map-marker-alt"></i> ' + location + '</span></div>' +
+                    '</div>' +
+                '</a>';
+                count++;
+            });
+            
+            if (html) container.innerHTML = html;
+        })
+        .catch(function(err) {
+            console.warn('Could not load similar products:', err);
+        });
 }
 
 // =========================================================================
