@@ -26,39 +26,60 @@ function injectPaymentSafetyWarnings() {
 
 function initGallery() {
     const mainImage = document.getElementById('mainImage');
-    const thumbs = document.querySelectorAll('.thumb');
     const prevBtn = document.getElementById('prevImage');
     const nextBtn = document.getElementById('nextImage');
     
-    let currentIndex = 0;
-    const images = Array.from(thumbs).map(t => t.src.replace('w=150&h=150', 'w=800&h=600'));
+    // Dynamic: always read current thumbs from DOM (not captured at init)
+    function getCurrentImages() {
+        var thumbs = document.querySelectorAll('#galleryThumbs .thumb');
+        return Array.from(thumbs).map(function(t) { return t.src; });
+    }
     
-    thumbs.forEach((thumb, index) => {
-        thumb.addEventListener('click', () => {
-            setActiveThumb(index);
-        });
-    });
-    
-    prevBtn.addEventListener('click', () => {
-        const newIndex = (currentIndex - 1 + images.length) % images.length;
-        setActiveThumb(newIndex);
-    });
-    
-    nextBtn.addEventListener('click', () => {
-        const newIndex = (currentIndex + 1) % images.length;
-        setActiveThumb(newIndex);
-    });
+    function getCurrentIndex() {
+        var thumbs = document.querySelectorAll('#galleryThumbs .thumb');
+        for (var i = 0; i < thumbs.length; i++) {
+            if (thumbs[i].classList.contains('active')) return i;
+        }
+        return 0;
+    }
     
     function setActiveThumb(index) {
-        currentIndex = index;
+        var images = getCurrentImages();
+        var thumbs = document.querySelectorAll('#galleryThumbs .thumb');
+        if (index < 0 || index >= images.length) return;
+        
         mainImage.style.opacity = '0';
-        setTimeout(() => {
+        setTimeout(function() {
             mainImage.src = images[index];
             mainImage.style.opacity = '1';
         }, 150);
         
-        thumbs.forEach(t => t.classList.remove('active'));
-        thumbs[index].classList.add('active');
+        thumbs.forEach(function(t) { t.classList.remove('active'); });
+        if (thumbs[index]) thumbs[index].classList.add('active');
+    }
+    
+    // Attach thumb click handlers (for initial demo thumbs)
+    document.querySelectorAll('#galleryThumbs .thumb').forEach(function(thumb, index) {
+        thumb.addEventListener('click', function() { setActiveThumb(index); });
+    });
+    
+    // Prev/Next buttons - dynamically read current state
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            var images = getCurrentImages();
+            var idx = getCurrentIndex();
+            var newIndex = (idx - 1 + images.length) % images.length;
+            setActiveThumb(newIndex);
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            var images = getCurrentImages();
+            var idx = getCurrentIndex();
+            var newIndex = (idx + 1) % images.length;
+            setActiveThumb(newIndex);
+        });
     }
 }
 
