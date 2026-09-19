@@ -2722,3 +2722,351 @@ body.sidebar-collapsed .sidebar-show-btn {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 }
+
+/* ============================================================================
+   COMPREHENSIVE PADDING FIX - All admin pages
+   ============================================================================ */
+
+/* ===== DESKTOP BASE ===== */
+.admin-content {
+    padding: 1.5rem 2rem 2rem !important;
+}
+
+.admin-section.active {
+    padding-top: 0.25rem;
+    padding-bottom: 1rem;
+}
+
+/* Section headers */
+.section-header {
+    margin-bottom: 1.25rem !important;
+    padding: 0 !important;
+}
+
+/* Topbar */
+.admin-topbar {
+    padding: 0.75rem 2rem !important;
+}
+
+/* ===== CARDS - Consistent internal padding ===== */
+.stat-card,
+.chart-card,
+.activity-card,
+.settings-card,
+.analytics-card,
+.cat-admin-card,
+.report-card {
+    padding: 1.25rem !important;
+}
+
+/* ===== GRIDS - Consistent gaps ===== */
+.stats-grid,
+.charts-row,
+.activity-row,
+.settings-grid,
+.categories-admin-grid,
+.analytics-grid,
+.legal-summary-cards {
+    gap: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ===== TABLES ===== */
+.admin-table-wrapper {
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+}
+
+.admin-table th {
+    padding: 0.75rem 1rem !important;
+}
+
+.admin-table td {
+    padding: 0.75rem 1rem !important;
+}
+
+.filter-bar {
+    padding: 0.85rem 1.25rem !important;
+}
+
+/* ===== LEGAL CHECKLIST ===== */
+.legal-checklist-item {
+    padding: 0.85rem 1.25rem !important;
+}
+
+.legal-section-title {
+    padding: 0.65rem 1.25rem 0.4rem !important;
+}
+
+.legal-summary-cards {
+    gap: 1rem !important;
+    margin-bottom: 1.25rem !important;
+}
+
+/* ===== MORE MENU ===== */
+.more-menu-grid {
+    gap: 0.85rem !important;
+    padding: 0.25rem 0 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.more-menu-item {
+    padding: 1.25rem 0.75rem !important;
+}
+
+/* ===== SETTINGS ===== */
+.setting-item {
+    padding: 0.65rem 0 !important;
+}
+
+.settings-card h3 {
+    margin-bottom: 0.85rem !important;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar-nav .nav-item {
+    padding: 0.7rem 1.5rem !important;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1.5rem !important;
+}
+
+.sidebar-footer {
+    padding: 0.5rem 0 !important;
+}
+
+.sidebar-collapse-btn {
+    padding: 0.7rem 1.5rem !important;
+}
+
+/* ===== SIDEBAR COLLAPSED STATE ===== */
+body.sidebar-collapsed .admin-content {
+    padding: 1.5rem 2.5rem 2rem !important;
+}
+
+body.sidebar-collapsed .admin-topbar {
+    padding: 0.75rem 2.5rem !important;
+}
+
+/* ===== MODAL ===== */
+.modal-content {
+    padding: 1.75rem !important;
+    border-radius: 16px !important;
+}
+
+.modal-header {
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* ===== STORE PROFILE CARD ===== */
+.settings-card[style*="border-left"] {
+    padding: 1.5rem !important;
+}
+
+/* ===== REPORTS ===== */
+.reports-list {
+    margin-bottom: 1.5rem;
+}
+
+.report-card {
+    margin-bottom: 0.85rem !important;
+}
+
+/* ============================================================================
+   MOBILE PADDING FIX (<=768px)
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    /* Main layout */
+    .admin-main {
+        padding-bottom: 72px !important;
+    }
+
+    .admin-content {
+        padding: 0.85rem !important;
+    }
+
+    /* Topbar - compact */
+    .admin-topbar {
+        padding: 0.5rem 0.85rem !important;
+        padding-top: calc(0.5rem + env(safe-area-inset-top, 0px)) !important;
+    }
+
+    /* Section headers - tighter */
+    .section-header {
+        margin-bottom: 0.85rem !important;
+        padding: 0 !important;
+    }
+
+    .section-header h1 {
+        font-size: 1.15rem !important;
+    }
+
+    /* Cards - tighter internal padding */
+    .stat-card,
+    .chart-card,
+    .activity-card,
+    .settings-card,
+    .analytics-card,
+    .cat-admin-card,
+    .report-card {
+        padding: 1rem !important;
+    }
+
+    /* Grids - tighter gaps */
+    .stats-grid,
+    .charts-row,
+    .activity-row,
+    .settings-grid,
+    .categories-admin-grid,
+    .analytics-grid,
+    .legal-summary-cards {
+        gap: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Tables - compact */
+    .admin-table th,
+    .admin-table td {
+        padding: 0.55rem 0.65rem !important;
+    }
+
+    .filter-bar {
+        padding: 0.65rem 0.85rem !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Legal checklist - compact */
+    .legal-checklist-item {
+        padding: 0.7rem 0.85rem !important;
+    }
+
+    .legal-section-title {
+        padding: 0.55rem 0.85rem 0.35rem !important;
+    }
+
+    .legal-item-meta {
+        gap: 0.35rem !important;
+    }
+
+    .legal-tag {
+        font-size: 0.62rem !important;
+        padding: 0.15rem 0.4rem !important;
+    }
+
+    /* More menu */
+    .more-menu-grid {
+        gap: 0.65rem !important;
+    }
+
+    .more-menu-item {
+        padding: 1rem 0.5rem !important;
+    }
+
+    /* Settings */
+    .settings-card h3 {
+        font-size: 0.95rem !important;
+        margin-bottom: 0.7rem !important;
+    }
+
+    .setting-item {
+        padding: 0.5rem 0 !important;
+    }
+
+    /* Store profile card */
+    .settings-card[style*="border-left"] {
+        padding: 1.15rem !important;
+    }
+
+    /* Reports */
+    .report-card {
+        padding: 0.85rem !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    .report-actions {
+        gap: 0.4rem !important;
+    }
+
+    /* Analytics */
+    .analytics-card .big-number {
+        font-size: 1.35rem !important;
+    }
+
+    /* Category stats */
+    .cat-admin-stats {
+        font-size: 0.7rem !important;
+    }
+
+    /* Buttons */
+    .btn-small {
+        padding: 0.4rem 0.7rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Stats grid horizontal scroll */
+    .stats-grid {
+        padding-bottom: 0.35rem;
+    }
+
+    .stat-card {
+        min-width: 150px;
+        padding: 0.85rem !important;
+    }
+
+    .stat-card .stat-info h3 {
+        font-size: 1.2rem !important;
+    }
+
+    /* Bottom nav - proper safe area */
+    .bottom-nav {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Modal */
+    .modal-content {
+        padding: 1.25rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+
+    /* Form inputs */
+    .form-group {
+        margin-bottom: 0.85rem !important;
+    }
+
+    /* Product table images */
+    .admin-table img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+}
+
+/* ============================================================================
+   SMALL PHONES (<=380px)
+   ============================================================================ */
+
+@media (max-width: 380px) {
+    .admin-content {
+        padding: 0.65rem !important;
+    }
+
+    .admin-topbar {
+        padding: 0.4rem 0.65rem !important;
+        padding-top: calc(0.4rem + env(safe-area-inset-top, 0px)) !important;
+    }
+
+    .stat-card {
+        min-width: 135px;
+        padding: 0.75rem !important;
+    }
+
+    .more-menu-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .categories-admin-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
