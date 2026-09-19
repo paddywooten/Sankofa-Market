@@ -27,6 +27,7 @@ function initAdminDashboard() {
     loadAdminProducts(); loadNavCounts();
     initStoreProfile();
     initStoreManagement();
+    initCommissionRates();
     loadNavCounts();
 
     // Product filters are hooked up in initProductManagement()
@@ -2612,5 +2613,112 @@ function updateCount(elementId, count) {
         el.style.opacity = '0.4';
     } else {
         el.style.opacity = '1';
+    }
+}
+
+// ============================================================================
+// COMMISSION RATES MANAGEMENT
+// ============================================================================
+
+var defaultCommissionRates = {
+    'electronics': { name: 'Electronics', icon: 'fa-mobile-alt', rate: 5 },
+    'fashion': { name: 'Fashion & Clothing', icon: 'fa-tshirt', rate: 8 },
+    'home-garden': { name: 'Home & Garden', icon: 'fa-home', rate: 5 },
+    'vehicles': { name: 'Vehicles', icon: 'fa-car', rate: 3 },
+    'services': { name: 'Services', icon: 'fa-concierge-bell', rate: 5 },
+    'sports': { name: 'Sports', icon: 'fa-futbol', rate: 5 },
+    'books-media': { name: 'Books & Media', icon: 'fa-book', rate: 5 },
+    'baby-kids': { name: 'Baby & Kids', icon: 'fa-baby', rate: 5 },
+    'beauty-health': { name: 'Beauty & Health', icon: 'fa-spa', rate: 5 },
+    'food-groceries': { name: 'Food & Groceries', icon: 'fa-utensils', rate: 5 },
+    'pets': { name: 'Pets', icon: 'fa-paw', rate: 5 },
+    'jobs-skills': { name: 'Jobs & Skills', icon: 'fa-briefcase', rate: 5 },
+    'real-estate': { name: 'Real Estate', icon: 'fa-building', rate: 3 }
+};
+
+function initCommissionRates() {
+    var grid = document.getElementById('commissionRatesGrid');
+    var saveBtn = document.getElementById('saveCommissionBtn');
+    if (!grid) return;
+
+    // Load rates from Firestore or use defaults
+    var rates = Object.assign({}, defaultCommissionRates);
+
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('settings').doc('commissionRates').get().then(function(doc) {
+            if (doc.exists) {
+                var saved = doc.data();
+                Object.keys(saved).forEach(function(key) {
+                    if (rates[key]) {
+                        rates[key].rate = parseFloat(saved[key]) || rates[key].rate;
+                    }
+                });
+            }
+            renderCommissionGrid(grid, rates);
+        }).catch(function() {
+            renderCommissionGrid(grid, rates);
+        });
+    } else {
+        renderCommissionGrid(grid, rates);
+    }
+
+    // Save button
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            saveCommissionRates(grid, saveBtn);
+        });
+    }
+}
+
+function renderCommissionGrid(grid, rates) {
+    var html = '';
+    Object.keys(rates).forEach(function(key) {
+        var cat = rates[key];
+        html += '<div style="display: flex; align-items: center; gap: 0.65rem; padding: 0.65rem 0.85rem; background: var(--bg-secondary, #f7f7f7); border-radius: 8px; border: 1px solid var(--border-color, #e5e5e5);">' +
+            '<i class="fas ' + cat.icon + '" style="color: var(--primary-color, #0064d2); width: 20px; text-align: center;"></i>' +
+            '<div style="flex: 1; min-width: 0;">' +
+                '<div style="font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + cat.name + '</div>' +
+            '</div>' +
+            '<div style="display: flex; align-items: center; gap: 0.25rem;">' +
+                '<input type="number" class="commission-input" data-category="' + key + '" value="' + cat.rate + '" min="0" max="50" step="0.5" style="width: 55px; padding: 0.35rem 0.5rem; border: 1.5px solid var(--border-color, #e5e5e5); border-radius: 6px; font-size: 0.85rem; text-align: center; font-weight: 600;">' +
+                '<span style="font-size: 0.82rem; color: #767676; font-weight: 600;">%</span>' +
+            '</div>' +
+        '</div>';
+    });
+    grid.innerHTML = html;
+}
+
+function saveCommissionRates(grid, saveBtn) {
+    var inputs = grid.querySelectorAll('.commission-input');
+    var rates = {};
+    
+    inputs.forEach(function(input) {
+        var category = input.getAttribute('data-category');
+        var rate = parseFloat(input.value);
+        if (isNaN(rate) || rate < 0) rate = 0;
+        if (rate > 50) rate = 50;
+        input.value = rate;
+        rates[category] = rate;
+    });
+
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    var statusEl = document.getElementById('commissionStatus');
+
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('settings').doc('commissionRates').set(rates).then(function() {
+            if (statusEl) statusEl.innerHTML = '<span style="color: #22c55e;"><i class="fas fa-check-circle"></i> Commission rates saved!</span>';
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Commission Rates';
+        }).catch(function(err) {
+            if (statusEl) statusEl.innerHTML = '<span style="color: #e74c3c;">Error: ' + err.message + '</span>';
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Commission Rates';
+        });
+    } else {
+        if (statusEl) statusEl.innerHTML = '<span style="color: #e74c3c;">Firebase not connected</span>';
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Commission Rates';
     }
 }
