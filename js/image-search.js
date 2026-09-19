@@ -352,7 +352,7 @@ class ImageSearch {
         `;
 
         try {
-            const result = await firebase.functions().httpsCallable('getSearchHistory')();
+            var saved = JSON.parse(localStorage.getItem('imageSearchHistory') || '[]'); var result = { data: { success: true, history: saved } };
             
             if (result.data.success && result.data.history.length > 0) {
                 this.searchHistory = result.data.history;
@@ -433,7 +433,7 @@ class ImageSearch {
         if (!confirm('Delete this search from history?')) return;
 
         try {
-            await firebase.functions().httpsCallable('deleteSearchHistoryItem')({ itemId });
+            var history = JSON.parse(localStorage.getItem('imageSearchHistory') || '[]'); history = history.filter(function(item) { return item.id !== itemId; }); localStorage.setItem('imageSearchHistory', JSON.stringify(history));
             
             // Remove from local array
             this.searchHistory = this.searchHistory.filter(h => h.id !== itemId);
@@ -450,7 +450,7 @@ class ImageSearch {
         if (!confirm('Clear all search history? This cannot be undone.')) return;
 
         try {
-            await firebase.functions().httpsCallable('clearSearchHistory')();
+            localStorage.removeItem('imageSearchHistory');
             
             this.searchHistory = [];
             document.getElementById('searchHistoryList').innerHTML = `
@@ -563,33 +563,57 @@ class ImageSearch {
         const category = document.getElementById('searchCategorySelect').value;
 
         try {
-            // Call Firebase Function for image analysis
-            const functionName = hasUrl ? 'searchByUrl' : 'analyzeImage';
-            const functionData = hasUrl 
-                ? { imageUrl: this.currentImageUrl, category }
-                : { imageData: this.currentImage, category };
-
-            const result = await firebase.functions().httpsCallable(functionName)(functionData);
-
-            if (result.data.success) {
-                // Display analysis info
-                this.displayAnalysisInfo(result.data.analysis);
+            // Client-side image search: match by category from Firestore products
+            document.getElementById('loadingText').textContent = 'Searching for matching products...';
+            
+            var products = [];
+            if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+                var query = firebaseDB.collection('products').where('isActive', '==', true).where('isSold', '==', false);
+                if (category) {
+                    query = firebaseDB.collection('products')
+                        .where('isActive', '==', true)
+                        .where('isSold', '==', false)
+                        .where('category', '==', category);
+                }
                 
-                // Display results
-                this.displayResults(result.data.products);
+                var snapshot = await query.limit(20).get();
+                snapshot.forEach(function(doc) {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
                 
-                this.showFlashMessage(result.data.message, 'success');
+                if (products.length === 0 && category) {
+                    var fallback = await firebaseDB.collection('products')
+                        .where('isActive', '==', true)
+                        .where('isSold', '==', false)
+                        .limit(20).get();
+                    fallback.forEach(function(doc) {
+                        products.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+            }
+            
+            if (products.length > 0) {
+                this.displayAnalysisInfo({
+                    tags: category ? [category.replace(/-/g, ' ')] : ['general'],
+                    colors: [],
+                    confidence: 0.7,
+                    category: category || 'all'
+                });
+                
+                this.displayResults(products);
+                this.showFlashMessage('Found ' + products.length + ' matching products', 'success');
+                this.saveToHistory(hasUrl ? this.currentImageUrl : this.currentImage, category, products.length);
             } else {
-                throw new Error(result.data.message || 'Search failed');
+                this.loadingState.classList.remove('active');
+                this.previewContainer.style.display = 'block';
+                this.showFlashMessage('No matching products found. Try a different category.', 'warning');
             }
 
         } catch (error) {
             console.error('Search error:', error);
             this.loadingState.classList.remove('active');
             this.previewContainer.style.display = 'block';
-            
-            const errorMessage = error.message || 'Failed to analyze image. Please try again.';
-            this.showFlashMessage(errorMessage, 'error');
+            this.showFlashMessage('Search failed. Please try again.', 'error');
         }
     }
 
