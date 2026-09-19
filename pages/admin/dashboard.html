@@ -268,16 +268,16 @@
 
                 <!-- Store Tabs -->
                 <div class="store-tabs" id="storeTabs">
-                    <button class="store-tab active" data-store="all">
+                    <button class="store-tab active" data-store="all" onclick="selectStoreTab(this)">
                         <i class="fas fa-th"></i> All Stores
                         <span class="store-tab-count" id="storeCountAll">0</span>
                     </button>
-                    <button class="store-tab" data-store="sankofa-store">
+                    <button class="store-tab" data-store="sankofa-store" onclick="selectStoreTab(this)">
                         <i class="fas fa-store"></i> Sankofa Store
                         <span class="store-tab-count" id="storeCountSankofa">0</span>
                     </button>
                     <!-- Dynamic store tabs loaded by JS -->
-                    <button class="store-tab" data-store="marketplace">
+                    <button class="store-tab" data-store="marketplace" onclick="selectStoreTab(this)">
                         <i class="fas fa-users"></i> Marketplace
                         <span class="store-tab-count" id="storeCountMarketplace">0</span>
                     </button>
@@ -1207,7 +1207,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=4"></script>
-    <script src="../../js/admin.js?v=17"></script>
+    <script src="../../js/admin.js?v=18"></script>
     <script src="../../js/admin-management.js"></script>
     <script src="../../js/admin-auth.js"></script>
 </body>

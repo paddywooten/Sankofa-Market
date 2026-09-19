@@ -1931,20 +1931,6 @@ function initStoreTabs() {
     var tabsContainer = document.getElementById('storeTabs');
     if (!tabsContainer) return;
     
-    // Use event delegation - single listener on the container
-    tabsContainer.addEventListener('click', function(e) {
-        var tab = e.target.closest('.store-tab');
-        if (!tab) return;
-        
-        // Remove active from all tabs
-        tabsContainer.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-        
-        activeStoreFilter = tab.getAttribute('data-store');
-        console.log('Store filter changed to:', activeStoreFilter);
-        filterAdminProducts();
-    });
-    
     // Load stores from Firestore and create dynamic tabs
     if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
         firebaseDB.collection('stores').get().then(function(snapshot) {
@@ -1955,6 +1941,7 @@ function initStoreTabs() {
                 var btn = document.createElement('button');
                 btn.className = 'store-tab';
                 btn.setAttribute('data-store', 'store_' + doc.id);
+                btn.setAttribute('onclick', 'selectStoreTab(this)');
                 var imgHtml = store.profilePicture 
                     ? '<img src="' + store.profilePicture + '" alt="' + (store.name || '') + '">'
                     : '<i class="fas fa-store"></i>';
@@ -1964,6 +1951,16 @@ function initStoreTabs() {
             updateStoreCounts();
         }).catch(function() {});
     }
+}
+
+// Global function called by onclick on store tabs
+function selectStoreTab(tabEl) {
+    // Remove active from all tabs
+    document.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
+    tabEl.classList.add('active');
+    
+    activeStoreFilter = tabEl.getAttribute('data-store');
+    filterAdminProducts();
 }
 
 function updateStoreCounts() {
