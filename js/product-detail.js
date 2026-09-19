@@ -170,6 +170,13 @@ function copyToClipboard() {
 function loadProductFromURL() {
     var params = new URLSearchParams(window.location.search);
     var productId = params.get('id');
+    var loading = document.getElementById('productLoading');
+    var content = document.getElementById('productContent');
+    
+    function showContent() {
+        if (loading) loading.style.display = 'none';
+        if (content) content.style.display = '';
+    }
     
     if (productId && typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
         console.log('Loading product:', productId);
@@ -182,9 +189,14 @@ function loadProductFromURL() {
             } else {
                 console.warn('Product not found:', productId);
             }
+            showContent();
         }).catch(function(err) {
             console.error('Error loading product:', err);
+            showContent();
         });
+    } else {
+        // No product ID or no Firebase - show page as-is
+        showContent();
     }
 }
 
@@ -234,6 +246,25 @@ function renderProduct(product) {
     var officialBadge = document.getElementById('officialBadge');
     if (officialBadge) {
         officialBadge.style.display = product.isSankofaStore ? '' : 'none';
+    }
+    
+    // Load Sankofa Store profile picture
+    if (product.isSankofaStore && typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('settings').doc('sankofaStore').get().then(function(doc) {
+            if (doc.exists) {
+                var storeData = doc.data();
+                if (storeData.profilePicture) {
+                    // Update seller avatar if there's one in the page
+                    var sellerAvatar = document.querySelector('.seller-avatar, .seller-photo, .seller-img');
+                    if (sellerAvatar) sellerAvatar.src = storeData.profilePicture;
+                }
+                if (storeData.storeName && sellerEl) sellerEl.textContent = storeData.storeName;
+                if (storeData.storeTagline) {
+                    var taglineEl = document.getElementById('sellerTagline') || document.querySelector('.seller-tagline');
+                    if (taglineEl) taglineEl.textContent = storeData.storeTagline;
+                }
+            }
+        }).catch(function() {});
     }
     
     // Time

@@ -592,6 +592,42 @@
                     <h1>Site Settings</h1>
                 </div>
 
+                <!-- Sankofa Store Profile -->
+                <div class="settings-card" style="margin-bottom: 1.5rem; border-left: 4px solid #0064d2;">
+                    <h3><i class="fas fa-store" style="color: #0064d2;"></i> Sankofa Store Profile</h3>
+                    <p style="font-size: 0.85rem; color: #767676; margin-bottom: 1rem;">This profile picture appears on all Sankofa Store product pages.</p>
+                    
+                    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="text-align: center;">
+                            <img id="storeProfilePic" src="https://ui-avatars.com/api/?name=Sankofa+Store&size=120&background=0064d2&color=fff&bold=true" 
+                                 alt="Store Profile" 
+                                 style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #0064d2;">
+                            <p style="font-size: 0.75rem; color: #767676; margin-top: 0.5rem;">Current picture</p>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 200px;">
+                            <div class="setting-item">
+                                <label>Store Name</label>
+                                <input type="text" id="storeName" value="Sankofa Store" class="setting-input">
+                            </div>
+                            <div class="setting-item">
+                                <label>Store Tagline</label>
+                                <input type="text" id="storeTagline" placeholder="Official marketplace store" class="setting-input">
+                            </div>
+                            <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                                <label class="btn btn-outline btn-small" style="cursor: pointer; margin: 0;">
+                                    <i class="fas fa-camera"></i> Upload Photo
+                                    <input type="file" id="storeProfileUpload" accept="image/*" style="display: none;">
+                                </label>
+                                <button class="btn btn-primary btn-small" id="saveStoreProfileBtn" style="margin: 0;">
+                                    <i class="fas fa-save"></i> Save Profile
+                                </button>
+                            </div>
+                            <div id="storeProfileStatus" style="margin-top: 0.5rem; font-size: 0.82rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="settings-grid">
                     <div class="settings-card">
                         <h3><i class="fas fa-store"></i> Marketplace Settings</h3>
@@ -1120,7 +1156,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=4"></script>
-    <script src="../../js/admin.js?v=5"></script>
+    <script src="../../js/admin.js?v=6"></script>
     <script src="../../js/admin-management.js"></script>
     <script src="../../js/admin-auth.js"></script>
 </body>

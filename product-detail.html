@@ -46,7 +46,15 @@
     </nav>
 
     <main class="product-detail-main">
-        <div class="container">
+        <!-- Loading State -->
+        <div class="product-loading" id="productLoading">
+            <div class="product-loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading product details...</p>
+            </div>
+        </div>
+
+        <div class="container" id="productContent" style="display: none;">
             <div class="product-detail-grid">
                 <!-- Image Gallery -->
                 <div class="product-gallery">
@@ -326,7 +334,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="config/firebase-config.js"></script>
     <script src="js/main.js?v=4"></script>
-    <script src="js/product-detail.js?v=3"></script>
+    <script src="js/product-detail.js?v=4"></script>
     <script src="js/payment-warnings.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/wishlist.js"></script>

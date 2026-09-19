@@ -25,6 +25,7 @@ function initAdminDashboard() {
     initBottomNav();
     initSidebarCollapse();
     loadAdminProducts();
+    initStoreProfile();
 
     // Hook up product filters
     var productSearch = document.getElementById('productSearch');
@@ -1598,4 +1599,135 @@ function deleteAdminProduct(id, title) {
             loadAdminProducts();
         })
         .catch(function(err) { showFlashMessage('Error: ' + err.message, 'error'); });
+}
+
+// ============================================================================
+// SANKOFA STORE PROFILE
+// ============================================================================
+
+function initStoreProfile() {
+    var uploadInput = document.getElementById('storeProfileUpload');
+    var saveBtn = document.getElementById('saveStoreProfileBtn');
+    var profilePic = document.getElementById('storeProfilePic');
+    var statusEl = document.getElementById('storeProfileStatus');
+    
+    if (!uploadInput || !saveBtn) return;
+    
+    var pendingImageURL = null;
+    
+    // Load existing store profile
+    loadStoreProfile();
+    
+    // Handle image upload
+    uploadInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        
+        if (file.size > 5 * 1024 * 1024) {
+            statusEl.innerHTML = '<span style="color:#e74c3c;">Image must be under 5MB</span>';
+            return;
+        }
+        
+        statusEl.innerHTML = '<span style="color:#0064d2;"><i class="fas fa-spinner fa-spin"></i> Uploading...</span>';
+        
+        // Upload to Firebase Storage
+        if (typeof firebase !== 'undefined' && firebase.storage) {
+            var storageRef = firebase.storage().ref();
+            var fileRef = storageRef.child('store-profile/logo_' + Date.now() + '.' + file.name.split('.').pop());
+            
+            fileRef.put(file).then(function(snapshot) {
+                return snapshot.ref.getDownloadURL();
+            }).then(function(url) {
+                pendingImageURL = url;
+                profilePic.src = url;
+                statusEl.innerHTML = '<span style="color:#22c55e;"><i class="fas fa-check"></i> Image uploaded! Click Save to apply.</span>';
+            }).catch(function(err) {
+                console.error('Upload error:', err);
+                // Fallback: use data URL
+                var reader = new FileReader();
+                reader.onload = function(ev) {
+                    pendingImageURL = ev.target.result;
+                    profilePic.src = ev.target.result;
+                    statusEl.innerHTML = '<span style="color:#f59e0b;"><i class="fas fa-check"></i> Image ready (local). Click Save to apply.</span>';
+                };
+                reader.readAsDataURL(file);
+            });
+        } else {
+            // No Firebase Storage - use data URL
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                pendingImageURL = ev.target.result;
+                profilePic.src = ev.target.result;
+                statusEl.innerHTML = '<span style="color:#f59e0b;"><i class="fas fa-check"></i> Image ready. Click Save to apply.</span>';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Save store profile
+    saveBtn.addEventListener('click', function() {
+        var storeName = document.getElementById('storeName').value.trim() || 'Sankofa Store';
+        var storeTagline = document.getElementById('storeTagline').value.trim();
+        
+        var profileData = {
+            storeName: storeName,
+            storeTagline: storeTagline,
+            updatedAt: new Date().toISOString()
+        };
+        
+        if (pendingImageURL) {
+            profileData.profilePicture = pendingImageURL;
+        }
+        
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        
+        if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+            firebaseDB.collection('settings').doc('sankofaStore').set(profileData, { merge: true })
+                .then(function() {
+                    statusEl.innerHTML = '<span style="color:#22c55e;"><i class="fas fa-check-circle"></i> Store profile saved!</span>';
+                    pendingImageURL = null;
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Profile';
+                })
+                .catch(function(err) {
+                    statusEl.innerHTML = '<span style="color:#e74c3c;">Error: ' + err.message + '</span>';
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Profile';
+                });
+        } else {
+            // Save to localStorage as fallback
+            localStorage.setItem('sankofaStoreProfile', JSON.stringify(profileData));
+            statusEl.innerHTML = '<span style="color:#22c55e;"><i class="fas fa-check-circle"></i> Saved locally (Firebase not connected)</span>';
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Profile';
+        }
+    });
+}
+
+function loadStoreProfile() {
+    var profilePic = document.getElementById('storeProfilePic');
+    var storeNameInput = document.getElementById('storeName');
+    var storeTaglineInput = document.getElementById('storeTagline');
+    
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('settings').doc('sankofaStore').get().then(function(doc) {
+            if (doc.exists) {
+                var data = doc.data();
+                if (data.profilePicture && profilePic) profilePic.src = data.profilePicture;
+                if (data.storeName && storeNameInput) storeNameInput.value = data.storeName;
+                if (data.storeTagline && storeTaglineInput) storeTaglineInput.value = data.storeTagline;
+            }
+        }).catch(function(err) {
+            console.warn('Could not load store profile:', err);
+        });
+    } else {
+        // Try localStorage
+        try {
+            var saved = JSON.parse(localStorage.getItem('sankofaStoreProfile') || '{}');
+            if (saved.profilePicture && profilePic) profilePic.src = saved.profilePicture;
+            if (saved.storeName && storeNameInput) storeNameInput.value = saved.storeName;
+            if (saved.storeTagline && storeTaglineInput) storeTaglineInput.value = saved.storeTagline;
+        } catch(e) {}
+    }
 }
