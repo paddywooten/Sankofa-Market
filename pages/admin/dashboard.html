@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/main.css?v=4">
-    <link rel="stylesheet" href="../../css/admin.css?v=9">
+    <link rel="stylesheet" href="../../css/admin.css?v=10">
 </head>
 <body>
     <!-- Admin Sidebar -->
@@ -33,25 +33,27 @@
             </a>
             <a href="#" class="nav-item" data-section="products">
                 <i class="fas fa-box"></i> <span>Products</span>
-                <span class="nav-badge" id="pendingProducts" style="display:none;">0</span>
+                <span class="nav-count" id="countProducts">0</span>
             </a>
             <a href="#" class="nav-item" data-section="users">
                 <i class="fas fa-users"></i> <span>Users</span>
+                <span class="nav-count" id="countUsers">0</span>
             </a>
             <a href="#" class="nav-item" data-section="orders">
                 <i class="fas fa-shopping-cart"></i> <span>Orders</span>
-                <span class="nav-badge" id="pendingOrders" style="display:none;">0</span>
+                <span class="nav-count" id="countOrders">0</span>
             </a>
             <a href="/sm-panel/messages" class="nav-item">
                 <i class="fas fa-comments"></i> <span>Messages</span>
-                <span class="nav-badge" id="unreadMessages" style="display:none;">0</span>
+                <span class="nav-count" id="countMessages">0</span>
             </a>
             <a href="#" class="nav-item" data-section="categories">
                 <i class="fas fa-th-large"></i> <span>Categories</span>
+                <span class="nav-count" id="countCategories">13</span>
             </a>
             <a href="#" class="nav-item" data-section="reports">
                 <i class="fas fa-flag"></i> <span>Reports</span>
-                <span class="nav-badge danger" id="reportCount" style="display:none;">0</span>
+                <span class="nav-count" id="countReports">0</span>
             </a>
             <a href="#" class="nav-item" data-section="analytics">
                 <i class="fas fa-chart-line"></i> <span>Analytics</span>
@@ -61,6 +63,7 @@
             </a>
             <a href="#" class="nav-item" data-section="stores">
                 <i class="fas fa-store"></i> <span>Stores</span>
+                <span class="nav-count" id="countStores">0</span>
             </a>
             <a href="#" class="nav-item" data-section="admins">
                 <i class="fas fa-user-shield"></i> <span>Admin Management</span>
@@ -1178,7 +1181,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=4"></script>
-    <script src="../../js/admin.js?v=8"></script>
+    <script src="../../js/admin.js?v=9"></script>
     <script src="../../js/admin-management.js"></script>
     <script src="../../js/admin-auth.js"></script>
 </body>

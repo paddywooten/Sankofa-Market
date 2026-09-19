@@ -24,9 +24,10 @@ function initAdminDashboard() {
     initLegalChecklist();
     initBottomNav();
     initSidebarCollapse();
-    loadAdminProducts();
+    loadAdminProducts(); loadNavCounts();
     initStoreProfile();
     initStoreManagement();
+    loadNavCounts();
 
     // Hook up product filters
     var productSearch = document.getElementById('productSearch');
@@ -1639,7 +1640,7 @@ function toggleFeaturedProduct(id, featured) {
     firebaseDB.collection('products').doc(id).update({ isFeatured: featured })
         .then(function() {
             showFlashMessage(featured ? 'Product marked as featured ⭐' : 'Product unfeatured', 'success');
-            loadAdminProducts();
+            loadAdminProducts(); loadNavCounts();
         })
         .catch(function(err) { showFlashMessage('Error: ' + err.message, 'error'); });
 }
@@ -1650,7 +1651,7 @@ function deleteAdminProduct(id, title) {
     firebaseDB.collection('products').doc(id).delete()
         .then(function() {
             showFlashMessage('Product deleted', 'success');
-            loadAdminProducts();
+            loadAdminProducts(); loadNavCounts();
         })
         .catch(function(err) { showFlashMessage('Error: ' + err.message, 'error'); });
 }
@@ -1797,7 +1798,7 @@ function initStoreManagement() {
     if (!addBtn) return;
     
     addBtn.addEventListener('click', function() { openStoreModal(); });
-    loadStores();
+    loadStores(); loadNavCounts();
 }
 
 function loadStores() {
@@ -2028,7 +2029,7 @@ function openStoreModal(storeId) {
             promise.then(function() {
                 showFlashMessage(isEdit ? 'Store updated!' : 'Store created! 🏪', 'success');
                 modal.remove();
-                loadStores();
+                loadStores(); loadNavCounts();
             }).catch(function(err) {
                 document.getElementById('storeModalStatus').innerHTML = '<span style="color:#e74c3c;">Error: ' + err.message + '</span>';
                 saveBtn.disabled = false;
@@ -2048,9 +2049,84 @@ function deleteStore(storeId, storeName) {
     if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
         firebaseDB.collection('stores').doc(storeId).delete().then(function() {
             showFlashMessage('Store deleted', 'success');
-            loadStores();
+            loadStores(); loadNavCounts();
         }).catch(function(err) {
             showFlashMessage('Error: ' + err.message, 'error');
         });
+    }
+}
+
+// ============================================================================
+// NAV COUNT BADGES - Load item counts from Firestore
+// ============================================================================
+
+function loadNavCounts() {
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) return;
+
+    // Products count
+    firebaseDB.collection('products').get().then(function(snap) {
+        updateCount('countProducts', snap.size);
+    }).catch(function() {});
+
+    // Users count (non-admin users)
+    firebaseDB.collection('users').get().then(function(snap) {
+        var count = 0;
+        snap.forEach(function(doc) {
+            if (doc.data().role !== 'admin') count++;
+        });
+        updateCount('countUsers', count);
+    }).catch(function() {});
+
+    // Orders count
+    firebaseDB.collection('orders').get().then(function(snap) {
+        updateCount('countOrders', snap.size);
+    }).catch(function() {});
+
+    // Messages/conversations count
+    firebaseDB.collection('conversations').get().then(function(snap) {
+        updateCount('countMessages', snap.size);
+    }).catch(function() {
+        // Try 'chats' collection as fallback
+        firebaseDB.collection('chats').get().then(function(snap2) {
+            updateCount('countMessages', snap2.size);
+        }).catch(function() {});
+    });
+
+    // Reports count (flagged products + disputes)
+    var reportCount = 0;
+    firebaseDB.collection('products').where('isFlagged', '==', true).get().then(function(snap) {
+        reportCount += snap.size;
+        updateCount('countReports', reportCount);
+    }).catch(function() {
+        // If flagged query fails, just count disputes
+    });
+    firebaseDB.collection('disputes').get().then(function(snap) {
+        reportCount += snap.size;
+        updateCount('countReports', reportCount);
+    }).catch(function() {});
+    firebaseDB.collection('reports').get().then(function(snap) {
+        reportCount += snap.size;
+        updateCount('countReports', reportCount);
+    }).catch(function() {});
+
+    // Stores count (excluding built-in Sankofa Store)
+    firebaseDB.collection('stores').get().then(function(snap) {
+        updateCount('countStores', snap.size);
+    }).catch(function() {});
+}
+
+function updateCount(elementId, count) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+    
+    var displayCount = count > 999 ? '999+' : count.toString();
+    el.textContent = displayCount;
+    el.setAttribute('data-count', count);
+    
+    // Hide if zero
+    if (count === 0) {
+        el.style.opacity = '0.4';
+    } else {
+        el.style.opacity = '1';
     }
 }
