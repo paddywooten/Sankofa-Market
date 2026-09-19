@@ -471,7 +471,7 @@ function contactSeller() {
 }
 
 function callSeller() {
-    showFlashMessage('Phone: +233 XX XXX XXXX', 'info');
+    showFlashMessage('Phone: 0273659806', 'info');
     // Implement call functionality
 }
 

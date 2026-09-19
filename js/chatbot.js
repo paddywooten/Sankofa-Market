@@ -611,8 +611,8 @@ class SankofaChatbot {
                 keywords: ['support', 'help', 'contact', 'customer service', 'assistance', 'reach out', 'email', 'phone', 'call', 'talk to someone', 'speak to'],
                 answer: `Need help? Contact our support team:<br><br>
                     <ul>
-                        <li><strong>Email:</strong> support@sankofamarket.com</li>
-                        <li><strong>Phone:</strong> +233 XX XXX XXXX</li>
+                        <li><strong>Email:</strong> sankofamarketgh@gmail.com</li>
+                        <li><strong>Phone:</strong> 0273659806</li>
                         <li><strong>Hours:</strong> Mon-Fri, 9 AM - 6 PM</li>
                     </ul>
                     <br>For urgent issues, you can also reach us through the "Contact Support" button in your dashboard.`,
@@ -901,7 +901,7 @@ class SankofaChatbot {
             } else {
                 this.hideTypingIndicator();
                 this.addBotMessage(
-                    'Please sign in to create a support ticket. You can also contact us directly at support@sankofamarket.com',
+                    'Please sign in to create a support ticket. You can also contact us directly at sankofamarketgh@gmail.com',
                     ['Sign in', 'Contact support']
                 );
             }
@@ -910,7 +910,7 @@ class SankofaChatbot {
             this.hideTypingIndicator();
             console.error('Escalation error:', error);
             this.addBotMessage(
-                'Sorry, I couldn\'t create a support ticket. Please contact us directly at support@sankofamarket.com or call +233 XX XXX XXXX.',
+                'Sorry, I couldn\'t create a support ticket. Please contact us directly at sankofamarketgh@gmail.com or call 0273659806.',
                 ['Contact support', 'Try again']
             );
         }
