@@ -29,13 +29,7 @@ function initAdminDashboard() {
     initStoreManagement();
     loadNavCounts();
 
-    // Hook up product filters
-    var productSearch = document.getElementById('productSearch');
-    var categoryFilter = document.getElementById('productCategoryFilter');
-    var statusFilter = document.getElementById('productStatusFilter');
-    if (productSearch) productSearch.addEventListener('input', filterAdminProducts);
-    if (categoryFilter) categoryFilter.addEventListener('change', filterAdminProducts);
-    if (statusFilter) statusFilter.addEventListener('change', filterAdminProducts);
+    // Product filters are hooked up in initProductManagement()
 }
 
 // ============================================================================
@@ -99,24 +93,20 @@ function initProductManagement() {
         });
     }
     
-    // Product search
+    // Filter event listeners (using filterAdminProducts with store support)
     if (productSearch) {
         productSearch.addEventListener('input', debounce(function() {
-            filterProducts();
+            filterAdminProducts();
         }, 300));
     }
-    
-    // Category filter
     if (categoryFilter) {
         categoryFilter.addEventListener('change', function() {
-            filterProducts();
+            filterAdminProducts();
         });
     }
-    
-    // Status filter
     if (statusFilter) {
         statusFilter.addEventListener('change', function() {
-            filterProducts();
+            filterAdminProducts();
         });
     }
     
@@ -673,39 +663,7 @@ function removeProduct(productId) {
     }
 }
 
-// ============================================================================
-// FILTER PRODUCTS
-// ============================================================================
-
-function filterProducts() {
-    const search = document.getElementById('productSearch').value.toLowerCase();
-    const category = document.getElementById('productCategoryFilter').value;
-    const status = document.getElementById('productStatusFilter').value;
-    
-    const rows = document.querySelectorAll('#productsTableBody tr');
-    
-    rows.forEach(row => {
-        const productName = row.querySelector('strong').textContent.toLowerCase();
-        const productCategory = row.querySelectorAll('td')[3].textContent.toLowerCase();
-        const productStatus = row.querySelector('.status-pill').textContent.toLowerCase();
-        
-        let show = true;
-        
-        if (search && !productName.includes(search)) {
-            show = false;
-        }
-        
-        if (category && productCategory !== category) {
-            show = false;
-        }
-        
-        if (status && productStatus !== status) {
-            show = false;
-        }
-        
-        row.style.display = show ? '' : 'none';
-    });
-}
+// filterProducts removed - replaced by filterAdminProducts with store support
 
 // ============================================================================
 // EXPORT PRODUCTS
@@ -1338,7 +1296,7 @@ window.adminDashboard = {
     removeProduct,
     viewProduct,
     exportProducts,
-    filterProducts,
+    filterAdminProducts,
     saveSettings
 };
 
@@ -1758,7 +1716,7 @@ window.adminDashboard = {
     removeProduct,
     viewProduct,
     exportProducts,
-    filterProducts,
+    filterAdminProducts,
     saveSettings,
     flagProduct,
     blockSeller,
