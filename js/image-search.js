@@ -700,18 +700,4 @@ document.addEventListener('DOMContentLoaded', () => {
             form.style.alignItems = 'center';
         }
     });
-
-    // Add to header actions if exists
-    const headerActions = document.querySelector('.header-actions');
-    if (headerActions) {
-        const imageSearchHeaderBtn = document.createElement('button');
-        imageSearchHeaderBtn.type = 'button';
-        imageSearchHeaderBtn.className = 'image-search-trigger';
-        imageSearchHeaderBtn.innerHTML = '<i class="fas fa-camera"></i>';
-        imageSearchHeaderBtn.title = 'Search by image';
-        imageSearchHeaderBtn.addEventListener('click', () => window.imageSearch.open());
-        
-        // Insert at the beginning
-        headerActions.insertBefore(imageSearchHeaderBtn, headerActions.firstChild);
-    }
 });
