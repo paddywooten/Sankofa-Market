@@ -21,20 +21,63 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================================================
 
 async function loadCategories() {
-    try {
-        const response = await fetch('data/categories.json');
-        const data = await response.json();
-        
-        renderCategories(data.categories);
-    } catch (error) {
-        console.error('Error loading categories:', error);
-        document.getElementById('categoriesGrid').innerHTML = `
-            <div class="loading-state">
-                <i class="fas fa-exclamation-circle"></i>
-                <p>Error loading categories</p>
-            </div>
-        `;
+    // Built-in categories (defaults)
+    var builtIn = [
+        { id: 'electronics', name: 'Electronics', icon: 'fas fa-mobile-alt', color: '#0064d2' },
+        { id: 'fashion', name: 'Fashion', icon: 'fas fa-tshirt', color: '#e74c3c' },
+        { id: 'home-garden', name: 'Home & Garden', icon: 'fas fa-home', color: '#86b817' },
+        { id: 'vehicles', name: 'Vehicles', icon: 'fas fa-car', color: '#f5af02' },
+        { id: 'services', name: 'Services', icon: 'fas fa-concierge-bell', color: '#9b59b6' },
+        { id: 'sports', name: 'Sports', icon: 'fas fa-futbol', color: '#3498db' },
+        { id: 'books-media', name: 'Books & Media', icon: 'fas fa-book', color: '#795548' },
+        { id: 'baby-kids', name: 'Baby & Kids', icon: 'fas fa-baby', color: '#e91e63' },
+        { id: 'beauty-health', name: 'Beauty & Health', icon: 'fas fa-spa', color: '#ff69b4' },
+        { id: 'food-groceries', name: 'Food & Groceries', icon: 'fas fa-utensils', color: '#ff5722' },
+        { id: 'pets', name: 'Pets', icon: 'fas fa-paw', color: '#8bc34a' },
+        { id: 'jobs-skills', name: 'Jobs & Skills', icon: 'fas fa-briefcase', color: '#3f51b5' },
+        { id: 'real-estate', name: 'Real Estate', icon: 'fas fa-building', color: '#607d8b' }
+    ];
+
+    var categories = builtIn.slice(); // start with built-in
+
+    // Load custom/edited categories from Firestore
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        try {
+            var snapshot = await firebaseDB.collection('categories').get();
+            var disabledIds = {};
+
+            snapshot.forEach(function(doc) {
+                var data = doc.data();
+                if (data.isActive === false) {
+                    disabledIds[doc.id] = true;
+                    return;
+                }
+                // Check if it overrides a built-in
+                var existingIdx = categories.findIndex(function(c) { return c.id === doc.id; });
+                if (existingIdx >= 0) {
+                    // Override built-in with saved edits
+                    if (data.name) categories[existingIdx].name = data.name;
+                    if (data.icon) categories[existingIdx].icon = 'fas ' + data.icon;
+                    if (data.color) categories[existingIdx].color = data.color;
+                } else {
+                    // Add new custom category
+                    categories.push({
+                        id: doc.id,
+                        name: data.name || doc.id,
+                        icon: 'fas ' + (data.icon || 'fa-tag'),
+                        color: data.color || '#0064d2'
+                    });
+                }
+            });
+
+            // Remove disabled categories
+            categories = categories.filter(function(c) { return !disabledIds[c.id]; });
+        } catch (err) {
+            console.warn('Could not load categories from Firestore:', err);
+        }
     }
+
+    renderCategories(categories);
 }
 
 function renderCategories(categories) {

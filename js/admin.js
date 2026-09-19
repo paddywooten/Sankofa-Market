@@ -325,6 +325,9 @@ function openAddProductModal() {
     // Load stores into seller dropdown
     loadStoresIntoDropdown();
     
+    // Load custom categories into category dropdown
+    loadCustomCategoriesIntoModal();
+    
     // Initialize form submission
     const form = document.getElementById('addProductForm');
     form.addEventListener('submit', handleAddProduct);
@@ -2720,5 +2723,62 @@ function saveCommissionRates(grid, saveBtn) {
         if (statusEl) statusEl.innerHTML = '<span style="color: #e74c3c;">Firebase not connected</span>';
         saveBtn.disabled = false;
         saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Commission Rates';
+    }
+}
+
+// ============================================================================
+// LOAD CUSTOM CATEGORIES INTO ADD PRODUCT MODAL
+// ============================================================================
+
+function loadCustomCategoriesIntoModal() {
+    var select = document.getElementById('productCategory');
+    if (!select) return;
+
+    var builtInIds = ['electronics','fashion','home-garden','vehicles','services','sports','books-media','baby-kids','beauty-health','food-groceries','pets','jobs-skills','real-estate'];
+
+    // Use adminCategoriesCache if available
+    if (typeof adminCategoriesCache !== 'undefined' && adminCategoriesCache.length > 0) {
+        adminCategoriesCache.forEach(function(cat) {
+            if (builtInIds.indexOf(cat.id) < 0) {
+                // Custom category - add to dropdown
+                var opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name || cat.id;
+                select.appendChild(opt);
+            } else {
+                // Built-in - update label if edited
+                if (cat.name) {
+                    Array.from(select.options).forEach(function(existingOpt) {
+                        if (existingOpt.value === cat.id) {
+                            existingOpt.textContent = cat.name;
+                        }
+                    });
+                }
+            }
+        });
+        return;
+    }
+
+    // Fallback: load from Firestore
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('categories').get().then(function(snapshot) {
+            snapshot.forEach(function(doc) {
+                var data = doc.data();
+                if (data.isActive === false) return;
+                
+                if (builtInIds.indexOf(doc.id) < 0) {
+                    var opt = document.createElement('option');
+                    opt.value = doc.id;
+                    opt.textContent = data.name || doc.id;
+                    select.appendChild(opt);
+                } else if (data.name) {
+                    Array.from(select.options).forEach(function(existingOpt) {
+                        if (existingOpt.value === doc.id) {
+                            existingOpt.textContent = data.name;
+                        }
+                    });
+                }
+            });
+        }).catch(function() {});
     }
 }

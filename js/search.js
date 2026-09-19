@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts(searchQuery, categoryParam);
     initMobileFilters();
     initViewToggle();
+    loadCustomCategories();
     
     // Log search query for analytics
     if (searchQuery && typeof firebase !== 'undefined' && typeof firebaseDB !== 'undefined') {
@@ -433,4 +434,59 @@ function formatRelTime(date) {
     if (hrs < 24) return `${hrs}h ago`;
     if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
+}
+
+
+// ============================================================================
+// LOAD CUSTOM CATEGORIES FROM FIRESTORE
+// ============================================================================
+
+function loadCustomCategories() {
+    var select = document.getElementById('filterCategory');
+    if (!select) return;
+
+    // Built-in category IDs
+    var builtInIds = ['electronics','fashion','home-garden','vehicles','services','sports','books-media','baby-kids','beauty-health','food-groceries','pets','jobs-skills','real-estate','sankofa-store',''];
+
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) return;
+
+    firebaseDB.collection('categories').get().then(function(snapshot) {
+        var customCategories = [];
+        var editedBuiltIns = {};
+
+        snapshot.forEach(function(doc) {
+            var data = doc.data();
+            if (data.isActive === false) return;
+
+            if (builtInIds.indexOf(doc.id) >= 0) {
+                // Track edits to built-in categories
+                if (data.name) editedBuiltIns[doc.id] = data.name;
+            } else {
+                // New custom category
+                customCategories.push({ id: doc.id, name: data.name || doc.id });
+            }
+        });
+
+        // Update built-in option labels if edited
+        Array.from(select.options).forEach(function(opt) {
+            if (editedBuiltIns[opt.value]) {
+                opt.textContent = editedBuiltIns[opt.value];
+            }
+        });
+
+        // Append custom categories
+        if (customCategories.length > 0) {
+            var optgroup = document.createElement('optgroup');
+            optgroup.label = 'More Categories';
+            customCategories.forEach(function(cat) {
+                var opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name;
+                optgroup.appendChild(opt);
+            });
+            select.appendChild(optgroup);
+        }
+    }).catch(function(err) {
+        console.warn('Could not load custom categories:', err);
+    });
 }
