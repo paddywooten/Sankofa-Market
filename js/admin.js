@@ -840,6 +840,9 @@ function renderAdminCategories() {
     });
     
     grid.innerHTML = html;
+    
+    // Update nav count badge for categories
+    updateCount('countCategories', adminCategoriesCache.length);
 }
 
 function openCategoryModal(categoryId) {
@@ -2474,6 +2477,14 @@ function loadNavCounts() {
         reportCount += snap.size;
         updateCount('countReports', reportCount);
     }).catch(function() {});
+
+    // Categories count (from adminCategoriesCache - loaded by loadAdminCategories)
+    if (typeof adminCategoriesCache !== 'undefined' && adminCategoriesCache.length > 0) {
+        updateCount('countCategories', adminCategoriesCache.length);
+    } else {
+        // If cache not loaded yet, count built-in categories
+        updateCount('countCategories', 13);
+    }
 
     // Stores count (excluding built-in Sankofa Store)
     firebaseDB.collection('stores').get().then(function(snap) {
