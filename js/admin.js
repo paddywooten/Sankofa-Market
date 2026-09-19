@@ -387,20 +387,66 @@ function handleAddProduct(e) {
         alert('Please fill in all required fields');
         return;
     }
-    
-    // Simulate API call
-    console.log('Adding product:', formData);
-    
-    // Show success message
-    showFlashMessage('Product added successfully!', 'success');
-    
-    // Close modal
-    closeAddProductModal();
-    
-    // Refresh product list (in real app, this would fetch from API)
-    setTimeout(() => {
-        location.reload();
-    }, 1500);
+
+    // Get uploaded image URLs from preview
+    var uploadedImages = [];
+    var previewImgs = document.querySelectorAll('#imagePreview img');
+    previewImgs.forEach(function(img) {
+        if (img.src) uploadedImages.push(img.src);
+    });
+
+    // Build the product document for Firestore
+    var isSankofaStore = formData.seller === 'sankofa-store';
+    var isVerified = formData.seller === 'verified-seller' || isSankofaStore;
+
+    var productData = {
+        title: formData.title,
+        category: formData.category,
+        description: formData.description,
+        price: formData.price,
+        condition: formData.condition,
+        location: { city: formData.location },
+        sellerType: formData.seller,
+        sellerName: isSankofaStore ? 'Sankofa Store' : (isVerified ? 'Verified Seller' : 'Individual Seller'),
+        isSankofaStore: isSankofaStore,
+        isVerifiedSeller: isVerified,
+        isFeatured: formData.featured,
+        isActive: true,
+        isSold: false,
+        views: 0,
+        images: uploadedImages,
+        photos: uploadedImages,
+        deliveryOptions: formData.delivery,
+        sellerId: (typeof firebase !== 'undefined' && firebase.auth().currentUser) ? firebase.auth().currentUser.uid : 'admin',
+        createdAt: (typeof firebase !== 'undefined') ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+    };
+
+    // Disable submit button
+    var submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        // Save to Firestore
+        firebaseDB.collection('products').add(productData)
+            .then(function(docRef) {
+                console.log('✅ Product added with ID:', docRef.id);
+                showFlashMessage('Product added successfully! 🎉', 'success');
+                closeAddProductModal();
+                setTimeout(function() { location.reload(); }, 1500);
+            })
+            .catch(function(error) {
+                console.error('❌ Error adding product:', error);
+                showFlashMessage('Error: ' + error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
+            });
+    } else {
+        // Firebase not available
+        showFlashMessage('Firebase not connected. Cannot save product.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Product';
+    }
 }
 
 // ============================================================================
