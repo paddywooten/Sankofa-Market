@@ -1931,10 +1931,23 @@ function initStoreTabs() {
     var tabsContainer = document.getElementById('storeTabs');
     if (!tabsContainer) return;
     
+    // Use event delegation - single listener on the container
+    tabsContainer.addEventListener('click', function(e) {
+        var tab = e.target.closest('.store-tab');
+        if (!tab) return;
+        
+        // Remove active from all tabs
+        tabsContainer.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        
+        activeStoreFilter = tab.getAttribute('data-store');
+        console.log('Store filter changed to:', activeStoreFilter);
+        filterAdminProducts();
+    });
+    
     // Load stores from Firestore and create dynamic tabs
     if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
         firebaseDB.collection('stores').get().then(function(snapshot) {
-            // Insert dynamic store tabs before the Marketplace tab
             var marketplaceBtn = tabsContainer.querySelector('[data-store="marketplace"]');
             snapshot.forEach(function(doc) {
                 var store = doc.data();
@@ -1946,26 +1959,11 @@ function initStoreTabs() {
                     ? '<img src="' + store.profilePicture + '" alt="' + (store.name || '') + '">'
                     : '<i class="fas fa-store"></i>';
                 btn.innerHTML = imgHtml + ' ' + (store.name || 'Store') + ' <span class="store-tab-count" id="storeCount_' + doc.id + '">0</span>';
-                btn.addEventListener('click', function() { selectStoreTab(this); });
                 tabsContainer.insertBefore(btn, marketplaceBtn);
             });
-            
-            // Update store counts from product cache
             updateStoreCounts();
         }).catch(function() {});
     }
-    
-    // Attach click handlers to static tabs
-    tabsContainer.querySelectorAll('.store-tab').forEach(function(tab) {
-        tab.addEventListener('click', function() { selectStoreTab(this); });
-    });
-}
-
-function selectStoreTab(tabEl) {
-    document.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
-    tabEl.classList.add('active');
-    activeStoreFilter = tabEl.getAttribute('data-store');
-    filterAdminProducts();
 }
 
 function updateStoreCounts() {
