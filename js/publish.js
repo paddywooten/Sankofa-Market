@@ -22,8 +22,8 @@ function initPhotoUpload() {
     photoInput.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
         
-        if (photos.length + files.length > 8) {
-            showFlashMessage('Maximum 8 photos allowed', 'warning');
+        if (photos.length + files.length > 4) {
+            showFlashMessage('Maximum 4 photos allowed', 'warning');
             return;
         }
         
@@ -39,6 +39,12 @@ function initPhotoUpload() {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 if (!file.type.startsWith('image/')) continue;
+                
+                // Enforce 5MB file size limit
+                if (file.size > 5 * 1024 * 1024) {
+                    showFlashMessage('"' + (file.name || 'Image') + '" is ' + Math.round(file.size / 1024 / 1024) + 'MB. Max 5MB allowed.', 'error');
+                    continue;
+                }
                 
                 try {
                     var compressed = (typeof compressImage === 'function') 

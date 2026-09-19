@@ -262,8 +262,8 @@ function openAddProductModal() {
                             <input type="file" id="productImages" multiple accept="image/*" style="display: none;">
                             <div class="upload-placeholder" onclick="document.getElementById('productImages').click()">
                                 <i class="fas fa-cloud-upload-alt"></i>
-                                <p>Click to upload images (max 8)</p>
-                                <small>JPG, PNG up to 5MB each</small>
+                                <p>Click to upload images (max 4)</p>
+                                <small>JPG, PNG, WebP — max 5MB each</small>
                             </div>
                             <div class="image-preview" id="imagePreview"></div>
                         </div>
@@ -373,6 +373,13 @@ function initProductImageUpload() {
         (async function() {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
+                
+                // Enforce 5MB file size limit
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('"' + (file.name || 'Image') + '" is ' + Math.round(file.size / 1024 / 1024) + 'MB. Max 5MB allowed.');
+                    continue;
+                }
+                
                 var dataUrl;
                 
                 try {
