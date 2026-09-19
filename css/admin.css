@@ -3496,3 +3496,180 @@ body.sidebar-collapsed .admin-topbar {
         align-items: flex-start !important;
     }
 }
+
+/* ============================================================================
+   EDGE PADDING FIX - Settings, Stores, Admin Mgmt, Legal
+   Content too close to screen edges
+   ============================================================================ */
+
+/* Desktop: Add extra breathing room for these sections */
+#section-settings,
+#section-stores,
+#section-admins,
+#section-legal {
+    padding: 0.5rem 0.5rem 1rem !important;
+}
+
+/* Ensure all direct children respect bounds */
+#section-settings > *,
+#section-stores > *,
+#section-admins > *,
+#section-legal > * {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Settings cards - prevent edge overflow */
+#section-settings .settings-grid {
+    padding: 0 0.25rem;
+}
+
+#section-settings .settings-card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Stores grid - prevent edge overflow */
+#section-stores .categories-admin-grid {
+    padding: 0 0.25rem;
+}
+
+/* Admin management - prevent edge overflow */
+#section-admins .settings-grid {
+    padding: 0 0.25rem;
+}
+
+#section-admins #addAdminForm {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Legal checklist - prevent edge overflow */
+#section-legal .legal-summary-cards {
+    padding: 0 0.25rem;
+}
+
+#section-legal > div[style*="border-radius: 12px"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#section-legal > div[style*="rgba(0,100,210"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Mobile: Extra edge padding for these sections */
+@media (max-width: 768px) {
+    /* Increase base content padding on mobile */
+    .admin-content {
+        padding: 1rem !important;
+    }
+
+    /* These 4 sections get extra side padding */
+    #section-settings,
+    #section-stores,
+    #section-admins,
+    #section-legal {
+        padding: 0.25rem 0.35rem 1rem !important;
+    }
+
+    /* Cards need internal breathing room */
+    #section-settings .settings-card,
+    #section-admins .settings-card {
+        padding: 1.25rem !important;
+    }
+
+    #section-stores .cat-admin-card {
+        padding: 1.1rem !important;
+    }
+
+    /* Legal cards */
+    #section-legal .legal-summary-card {
+        padding: 1rem !important;
+    }
+
+    /* Legal checklist container */
+    #section-legal > div[style*="border-radius: 12px"] {
+        border-radius: 10px !important;
+    }
+
+    /* Store profile card on mobile - stack vertically with more space */
+    #section-settings .settings-card > div[style*="flex"] {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+        gap: 1rem !important;
+    }
+
+    #section-settings .settings-card > div[style*="flex"] > div[style*="flex: 1"] {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    /* Admin form on mobile - full width */
+    #section-admins #addAdminForm {
+        padding: 1.25rem !important;
+        border-width: 1.5px !important;
+    }
+
+    /* Legal info note */
+    #section-legal > div[style*="rgba(0,100,210"] {
+        padding: 1rem !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Buttons in these sections - don't overflow */
+    #section-settings .btn,
+    #section-admins .btn,
+    #section-stores .btn {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Section headers - wrap properly */
+    #section-settings .section-header,
+    #section-stores .section-header,
+    #section-admins .section-header,
+    #section-legal .section-header {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    #section-settings .header-actions,
+    #section-stores .header-actions,
+    #section-admins .header-actions,
+    #section-legal .header-actions {
+        width: 100%;
+    }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+    .admin-content {
+        padding: 0.85rem !important;
+    }
+
+    #section-settings,
+    #section-stores,
+    #section-admins,
+    #section-legal {
+        padding: 0.15rem 0.15rem 0.75rem !important;
+    }
+
+    #section-settings .settings-card,
+    #section-admins .settings-card {
+        padding: 1rem !important;
+    }
+
+    #section-stores .cat-admin-card {
+        padding: 0.9rem !important;
+    }
+
+    #section-admins #addAdminForm {
+        padding: 1rem !important;
+    }
+}
