@@ -247,6 +247,12 @@ service cloud.firestore {
     }
     
     // ========================================================================
+    // STORES COLLECTION
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // SETTINGS COLLECTION (Admin Only)
     // ========================================================================
     
@@ -259,6 +265,12 @@ service cloud.firestore {
     }
   }
     
+    // STORES COLLECTION
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // SETTINGS COLLECTION
     match /settings/{settingId} {
       allow read: if true;

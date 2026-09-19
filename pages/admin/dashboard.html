@@ -59,6 +59,9 @@
             <a href="#" class="nav-item" data-section="settings">
                 <i class="fas fa-cog"></i> <span>Settings</span>
             </a>
+            <a href="#" class="nav-item" data-section="stores">
+                <i class="fas fa-store"></i> <span>Stores</span>
+            </a>
             <a href="#" class="nav-item" data-section="admins">
                 <i class="fas fa-user-shield"></i> <span>Admin Management</span>
             </a>
@@ -733,6 +736,21 @@
                 </div>
             </section>
 
+            <!-- Stores Section -->
+            <section class="admin-section" id="section-stores">
+                <div class="section-header">
+                    <h1><i class="fas fa-store" style="color: var(--primary-color);"></i> Store Management</h1>
+                    <button class="btn btn-primary btn-small" id="addStoreBtn"><i class="fas fa-plus"></i> Add Store</button>
+                </div>
+
+                <div id="storesGrid" class="categories-admin-grid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #767676;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #ccc;"></i>
+                        <p>Loading stores...</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Admin Management Section -->
             <section class="admin-section" id="section-admins">
                 <div class="section-header">
@@ -869,6 +887,10 @@
                     <div class="more-menu-item" data-goto="settings">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
+                    </div>
+                    <div class="more-menu-item" data-goto="stores">
+                        <i class="fas fa-store"></i>
+                        <span>Stores</span>
                     </div>
                     <div class="more-menu-item" data-goto="admins">
                         <i class="fas fa-user-shield"></i>
@@ -1156,7 +1178,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=4"></script>
-    <script src="../../js/admin.js?v=6"></script>
+    <script src="../../js/admin.js?v=7"></script>
     <script src="../../js/admin-management.js"></script>
     <script src="../../js/admin-auth.js"></script>
 </body>

@@ -26,6 +26,7 @@ function initAdminDashboard() {
     initSidebarCollapse();
     loadAdminProducts();
     initStoreProfile();
+    initStoreManagement();
 
     // Hook up product filters
     var productSearch = document.getElementById('productSearch');
@@ -276,9 +277,14 @@ function openAddProductModal() {
                             <label for="productSeller">Seller *</label>
                             <select id="productSeller" required>
                                 <option value="">Select Seller</option>
-                                <option value="sankofa-store">Sankofa Store</option>
-                                <option value="verified-seller">Verified Seller</option>
-                                <option value="individual">Individual Seller</option>
+                                <option value="sankofa-store">🏪 Sankofa Store (Official)</option>
+                                <optgroup label="Your Stores" id="storesDropdownGroup">
+                                    <!-- Populated by JS -->
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="verified-seller">Verified Seller</option>
+                                    <option value="individual">Individual Seller</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -323,6 +329,9 @@ function openAddProductModal() {
     
     // Initialize image upload
     initProductImageUpload();
+    
+    // Load stores into seller dropdown
+    loadStoresIntoDropdown();
     
     // Initialize form submission
     const form = document.getElementById('addProductForm');
@@ -377,6 +386,45 @@ function removeImage(index) {
     }
 }
 
+
+function loadStoresIntoDropdown() {
+    var group = document.getElementById('storesDropdownGroup');
+    if (!group) return;
+    
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) return;
+    
+    firebaseDB.collection('stores').where('isActive', '==', true).get().then(function(snapshot) {
+        group.innerHTML = '';
+        if (snapshot.empty) {
+            group.innerHTML = '<option value="" disabled>No stores created yet</option>';
+            return;
+        }
+        snapshot.forEach(function(doc) {
+            var store = doc.data();
+            var opt = document.createElement('option');
+            opt.value = 'store_' + doc.id;
+            opt.textContent = '🏪 ' + (store.name || 'Untitled');
+            group.appendChild(opt);
+        });
+    }).catch(function() {
+        // Fallback: try without where clause
+        firebaseDB.collection('stores').get().then(function(snapshot) {
+            group.innerHTML = '';
+            snapshot.forEach(function(doc) {
+                var store = doc.data();
+                if (store.isActive === false) return;
+                var opt = document.createElement('option');
+                opt.value = 'store_' + doc.id;
+                opt.textContent = '🏪 ' + (store.name || 'Untitled');
+                group.appendChild(opt);
+            });
+            if (group.children.length === 0) {
+                group.innerHTML = '<option value="" disabled>No stores created yet</option>';
+            }
+        }).catch(function() {});
+    });
+}
+
 function handleAddProduct(e) {
     e.preventDefault();
     
@@ -406,8 +454,12 @@ function handleAddProduct(e) {
     });
 
     // Build the product document for Firestore
+    // Determine seller info
     var isSankofaStore = formData.seller === 'sankofa-store';
-    var isVerified = formData.seller === 'verified-seller' || isSankofaStore;
+    var isStoreId = formData.seller && formData.seller.startsWith('store_');
+    var storeData = isStoreId ? storesCache.find(function(s) { return 'store_' + s.id === formData.seller; }) : null;
+    var sellerName = isSankofaStore ? 'Sankofa Store' : (storeData ? storeData.name : (formData.seller === 'verified-seller' ? 'Verified Seller' : 'Individual Seller'));
+    var isVerified = isSankofaStore || formData.seller === 'verified-seller' || !!storeData;
 
     var productData = {
         title: formData.title,
@@ -417,7 +469,9 @@ function handleAddProduct(e) {
         condition: formData.condition,
         location: { city: formData.location },
         sellerType: formData.seller,
-        sellerName: isSankofaStore ? 'Sankofa Store' : (isVerified ? 'Verified Seller' : 'Individual Seller'),
+        sellerName: sellerName,
+        storeId: storeData ? storeData.id : null,
+        storeProfilePicture: storeData ? (storeData.profilePicture || '') : '',
         isSankofaStore: isSankofaStore,
         isVerifiedSeller: isVerified,
         isFeatured: formData.featured,
@@ -1729,5 +1783,249 @@ function loadStoreProfile() {
             if (saved.storeName && storeNameInput) storeNameInput.value = saved.storeName;
             if (saved.storeTagline && storeTaglineInput) storeTaglineInput.value = saved.storeTagline;
         } catch(e) {}
+    }
+}
+
+// ============================================================================
+// STORE MANAGEMENT
+// ============================================================================
+
+var storesCache = [];
+
+function initStoreManagement() {
+    var addBtn = document.getElementById('addStoreBtn');
+    if (!addBtn) return;
+    
+    addBtn.addEventListener('click', function() { openStoreModal(); });
+    loadStores();
+}
+
+function loadStores() {
+    var grid = document.getElementById('storesGrid');
+    if (!grid) return;
+    
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><p>Firebase not connected</p></div>';
+        return;
+    }
+    
+    firebaseDB.collection('stores').orderBy('createdAt', 'desc').get().then(function(snapshot) {
+        storesCache = [];
+        if (snapshot.empty) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><i class="fas fa-store" style="font-size:2.5rem;color:#ccc;display:block;margin-bottom:0.75rem;"></i><p>No stores yet. Click "Add Store" to create one.</p></div>';
+            return;
+        }
+        snapshot.forEach(function(doc) {
+            storesCache.push({ id: doc.id, ...doc.data() });
+        });
+        renderStores();
+    }).catch(function(err) {
+        // Fallback without orderBy
+        firebaseDB.collection('stores').get().then(function(snapshot) {
+            storesCache = [];
+            if (snapshot.empty) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><i class="fas fa-store" style="font-size:2.5rem;color:#ccc;display:block;margin-bottom:0.75rem;"></i><p>No stores yet. Click "Add Store" to create one.</p></div>';
+                return;
+            }
+            snapshot.forEach(function(doc) {
+                storesCache.push({ id: doc.id, ...doc.data() });
+            });
+            renderStores();
+        }).catch(function(err2) {
+            console.error('Error loading stores:', err2);
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#e74c3c;"><p>Error: ' + err2.message + '</p></div>';
+        });
+    });
+}
+
+function renderStores() {
+    var grid = document.getElementById('storesGrid');
+    if (!grid || storesCache.length === 0) return;
+    
+    var html = '';
+    storesCache.forEach(function(store) {
+        var imgSrc = store.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(store.name || 'S') + '&size=120&background=0064d2&color=fff&bold=true';
+        var productCount = store.productCount || 0;
+        
+        html += '<div class="cat-admin-card" style="position:relative;">' +
+            '<div class="cat-admin-header">' +
+                '<img src="' + imgSrc + '" alt="' + (store.name || '') + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #0064d2;">' +
+                '<div class="cat-admin-actions">' +
+                    '<button class="action-btn" title="Edit" onclick="openStoreModal(\'' + store.id + '\')"><i class="fas fa-edit"></i></button>' +
+                    '<button class="action-btn danger" title="Delete" onclick="deleteStore(\'' + store.id + '\',\'' + (store.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+            '</div>' +
+            '<h4>' + (store.name || 'Untitled Store') + '</h4>' +
+            '<p style="font-size:0.78rem;color:#767676;margin:0.25rem 0;">' + (store.tagline || 'No tagline') + '</p>' +
+            '<div class="cat-admin-stats">' +
+                '<span><i class="fas fa-box"></i> ' + productCount + ' products</span>' +
+                '<span><i class="fas fa-calendar"></i> ' + (store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—') + '</span>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    grid.innerHTML = html;
+}
+
+function openStoreModal(storeId) {
+    var store = storeId ? storesCache.find(function(s) { return s.id === storeId; }) : null;
+    var isEdit = !!store;
+    
+    // Remove existing modal
+    var existing = document.getElementById('storeModal');
+    if (existing) existing.remove();
+    
+    var modal = document.createElement('div');
+    modal.id = 'storeModal';
+    modal.className = 'modal-overlay';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    
+    var imgSrc = (store && store.profilePicture) || 'https://ui-avatars.com/api/?name=Store&size=120&background=0064d2&color=fff&bold=true';
+    
+    modal.innerHTML = '<div class="modal-content" style="background:white;border-radius:16px;padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">' +
+            '<h2 style="margin:0;">' + (isEdit ? 'Edit Store' : 'Add New Store') + '</h2>' +
+            '<button onclick="document.getElementById(\'storeModal\').remove()" style="background:none;border:none;font-size:1.25rem;cursor:pointer;color:#767676;"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+        
+        '<div style="text-align:center;margin-bottom:1.5rem;">' +
+            '<img id="storeModalPic" src="' + imgSrc + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #0064d2;margin-bottom:0.5rem;">' +
+            '<br>' +
+            '<label class="btn btn-outline btn-small" style="cursor:pointer;margin:0;font-size:0.8rem;">' +
+                '<i class="fas fa-camera"></i> Change Photo' +
+                '<input type="file" id="storeModalImageInput" accept="image/*" style="display:none;">' +
+            '</label>' +
+        '</div>' +
+        
+        '<form id="storeModalForm">' +
+            '<div class="form-group" style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Store Name *</label>' +
+                '<input type="text" id="storeModalName" value="' + (store ? (store.name || '').replace(/"/g, '&quot;') : '') + '" required placeholder="e.g. Accra Electronics Hub" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Tagline</label>' +
+                '<input type="text" id="storeModalTagline" value="' + (store ? (store.tagline || '').replace(/"/g, '&quot;') : '') + '" placeholder="e.g. Best electronics in Accra" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Description</label>' +
+                '<textarea id="storeModalDesc" rows="3" placeholder="Brief description of the store..." style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;resize:vertical;">' + (store ? (store.description || '') : '') + '</textarea>' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Contact Email</label>' +
+                '<input type="email" id="storeModalEmail" value="' + (store ? (store.email || '').replace(/"/g, '&quot;') : '') + '" placeholder="store@example.com" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Phone</label>' +
+                '<input type="tel" id="storeModalPhone" value="' + (store ? (store.phone || '').replace(/"/g, '&quot;') : '') + '" placeholder="0XX XXX XXXX" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:1.5rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Location</label>' +
+                '<input type="text" id="storeModalLocation" value="' + (store ? (store.location || '').replace(/"/g, '&quot;') : '') + '" placeholder="e.g. Accra, Ghana" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            '<div id="storeModalStatus" style="font-size:0.82rem;margin-bottom:1rem;"></div>' +
+            '<div style="display:flex;gap:0.75rem;justify-content:flex-end;">' +
+                '<button type="button" onclick="document.getElementById(\'storeModal\').remove()" class="btn btn-outline">Cancel</button>' +
+                '<button type="submit" class="btn btn-primary" id="storeModalSaveBtn"><i class="fas fa-save"></i> ' + (isEdit ? 'Update Store' : 'Create Store') + '</button>' +
+            '</div>' +
+        '</form>' +
+    '</div>';
+    
+    document.body.appendChild(modal);
+    
+    // Close on backdrop click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.remove();
+    });
+    
+    // Image upload
+    var pendingImg = null;
+    var imgInput = document.getElementById('storeModalImageInput');
+    var modalPic = document.getElementById('storeModalPic');
+    
+    imgInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            document.getElementById('storeModalStatus').innerHTML = '<span style="color:#e74c3c;">Image must be under 5MB</span>';
+            return;
+        }
+        
+        if (typeof firebase !== 'undefined' && firebase.storage) {
+            var ref = firebase.storage().ref().child('store-profiles/' + Date.now() + '_' + file.name);
+            ref.put(file).then(function(snap) { return snap.ref.getDownloadURL(); }).then(function(url) {
+                pendingImg = url;
+                modalPic.src = url;
+            }).catch(function() {
+                var reader = new FileReader();
+                reader.onload = function(ev) { pendingImg = ev.target.result; modalPic.src = ev.target.result; };
+                reader.readAsDataURL(file);
+            });
+        } else {
+            var reader = new FileReader();
+            reader.onload = function(ev) { pendingImg = ev.target.result; modalPic.src = ev.target.result; };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Form submit
+    document.getElementById('storeModalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        var data = {
+            name: document.getElementById('storeModalName').value.trim(),
+            tagline: document.getElementById('storeModalTagline').value.trim(),
+            description: document.getElementById('storeModalDesc').value.trim(),
+            email: document.getElementById('storeModalEmail').value.trim(),
+            phone: document.getElementById('storeModalPhone').value.trim(),
+            location: document.getElementById('storeModalLocation').value.trim(),
+            isActive: true
+        };
+        
+        if (!data.name) {
+            document.getElementById('storeModalStatus').innerHTML = '<span style="color:#e74c3c;">Store name is required</span>';
+            return;
+        }
+        
+        if (pendingImg) data.profilePicture = pendingImg;
+        if (!isEdit) data.createdAt = new Date().toISOString();
+        data.updatedAt = new Date().toISOString();
+        data.productCount = store ? (store.productCount || 0) : 0;
+        
+        var saveBtn = document.getElementById('storeModalSaveBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        
+        if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+            var promise = isEdit 
+                ? firebaseDB.collection('stores').doc(storeId).update(data)
+                : firebaseDB.collection('stores').add(data);
+            
+            promise.then(function() {
+                showFlashMessage(isEdit ? 'Store updated!' : 'Store created! 🏪', 'success');
+                modal.remove();
+                loadStores();
+            }).catch(function(err) {
+                document.getElementById('storeModalStatus').innerHTML = '<span style="color:#e74c3c;">Error: ' + err.message + '</span>';
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isEdit ? 'Update Store' : 'Create Store');
+            });
+        } else {
+            document.getElementById('storeModalStatus').innerHTML = '<span style="color:#e74c3c;">Firebase not connected</span>';
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isEdit ? 'Update Store' : 'Create Store');
+        }
+    });
+}
+
+function deleteStore(storeId, storeName) {
+    if (!confirm('Delete store "' + storeName + '"?\n\nProducts from this store will not be deleted, but they will lose their store association.')) return;
+    
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('stores').doc(storeId).delete().then(function() {
+            showFlashMessage('Store deleted', 'success');
+            loadStores();
+        }).catch(function(err) {
+            showFlashMessage('Error: ' + err.message, 'error');
+        });
     }
 }
