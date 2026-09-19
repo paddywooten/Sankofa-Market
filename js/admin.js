@@ -1925,6 +1925,73 @@ function initSidebarCollapse() {
 // ============================================================================
 
 var adminProductsCache = [];
+var activeStoreFilter = 'all';
+
+function initStoreTabs() {
+    var tabsContainer = document.getElementById('storeTabs');
+    if (!tabsContainer) return;
+    
+    // Load stores from Firestore and create dynamic tabs
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('stores').get().then(function(snapshot) {
+            // Insert dynamic store tabs before the Marketplace tab
+            var marketplaceBtn = tabsContainer.querySelector('[data-store="marketplace"]');
+            snapshot.forEach(function(doc) {
+                var store = doc.data();
+                if (store.isActive === false) return;
+                var btn = document.createElement('button');
+                btn.className = 'store-tab';
+                btn.setAttribute('data-store', 'store_' + doc.id);
+                var imgHtml = store.profilePicture 
+                    ? '<img src="' + store.profilePicture + '" alt="' + (store.name || '') + '">'
+                    : '<i class="fas fa-store"></i>';
+                btn.innerHTML = imgHtml + ' ' + (store.name || 'Store') + ' <span class="store-tab-count" id="storeCount_' + doc.id + '">0</span>';
+                btn.addEventListener('click', function() { selectStoreTab(this); });
+                tabsContainer.insertBefore(btn, marketplaceBtn);
+            });
+            
+            // Update store counts from product cache
+            updateStoreCounts();
+        }).catch(function() {});
+    }
+    
+    // Attach click handlers to static tabs
+    tabsContainer.querySelectorAll('.store-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() { selectStoreTab(this); });
+    });
+}
+
+function selectStoreTab(tabEl) {
+    document.querySelectorAll('.store-tab').forEach(function(t) { t.classList.remove('active'); });
+    tabEl.classList.add('active');
+    activeStoreFilter = tabEl.getAttribute('data-store');
+    filterAdminProducts();
+}
+
+function updateStoreCounts() {
+    var counts = { all: 0, 'sankofa-store': 0, marketplace: 0 };
+    adminProductsCache.forEach(function(p) {
+        counts.all++;
+        if (p.isSankofaStore) {
+            counts['sankofa-store']++;
+        } else if (p.storeId) {
+            var key = 'store_' + p.storeId;
+            counts[key] = (counts[key] || 0) + 1;
+        } else {
+            counts.marketplace++;
+        }
+    });
+    
+    // Update count badges
+    Object.keys(counts).forEach(function(key) {
+        var elId = key === 'all' ? 'storeCountAll' 
+            : key === 'sankofa-store' ? 'storeCountSankofa'
+            : key === 'marketplace' ? 'storeCountMarketplace'
+            : 'storeCount_' + key.replace('store_', '');
+        var el = document.getElementById(elId);
+        if (el) el.textContent = counts[key];
+    });
+}
 
 function loadAdminProducts() {
     var tbody = document.getElementById('productsTableBody');
@@ -1948,6 +2015,7 @@ function loadAdminProducts() {
             });
 
             renderAdminProducts(adminProductsCache);
+            updateStoreCounts();
         })
         .catch(function(error) {
             // Fallback without orderBy
@@ -1962,6 +2030,7 @@ function loadAdminProducts() {
                         adminProductsCache.push({ id: doc.id, ...doc.data() });
                     });
                     renderAdminProducts(adminProductsCache);
+                    updateStoreCounts();
                 })
                 .catch(function(err) {
                     console.error('Error loading products:', err);
@@ -1990,15 +2059,26 @@ function renderAdminProducts(products) {
         var sellerLabel = p.isSankofaStore ? '<span style="color:#0064d2;font-weight:600;">🏪 Sankofa Store</span>' : (p.sellerName || 'Unknown');
         var featuredBadge = p.isFeatured ? ' <span style="background:#f5af02;color:#000;padding:0.1rem 0.4rem;border-radius:50px;font-size:0.65rem;font-weight:600;">⭐ Featured</span>' : '';
 
+        // Store label
+        var storeLabel = '';
+        if (p.isSankofaStore) {
+            storeLabel = '<span style="color:#f5af02;font-weight:600;font-size:0.8rem;">🏪 Sankofa Store</span>';
+        } else if (p.storeId && p.sellerName) {
+            var storeImg = p.storeProfilePicture ? '<img src="' + p.storeProfilePicture + '" style="width:16px;height:16px;border-radius:50%;object-fit:cover;vertical-align:middle;"> ' : '';
+            storeLabel = '<span style="color:#0064d2;font-weight:500;font-size:0.8rem;">' + storeImg + p.sellerName + '</span>';
+        } else {
+            storeLabel = '<span style="color:#767676;font-size:0.8rem;">🏷️ Marketplace</span>';
+        }
+
         html += '<tr>' +
             '<td><div style="display:flex;align-items:center;gap:0.75rem;">' +
                 '<img src="' + imgSrc + '" style="width:48px;height:48px;border-radius:8px;object-fit:cover;" loading="lazy">' +
                 '<div><strong style="font-size:0.85rem;">' + (p.title || 'Untitled') + '</strong>' + featuredBadge +
                 '<br><small style="color:#767676;">' + (p.condition || '') + '</small></div>' +
             '</div></td>' +
+            '<td>' + storeLabel + '</td>' +
             '<td><span style="text-transform:capitalize;">' + (p.category || '—').replace(/-/g, ' ') + '</span></td>' +
             '<td><strong>GH₵ ' + (p.price ? p.price.toLocaleString() : '0') + '</strong></td>' +
-            '<td>' + sellerLabel + '</td>' +
             '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
             '<td style="font-size:0.82rem;color:#767676;">' + date + '</td>' +
             '<td><div style="display:flex;gap:0.35rem;">' +
@@ -2022,7 +2102,19 @@ function filterAdminProducts() {
         var matchSearch = !search || (p.title || '').toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search);
         var matchCategory = !category || p.category === category;
         var matchStatus = !status || (status === 'active' && p.isActive && !p.isSold) || (status === 'sold' && p.isSold) || (status === 'flagged' && p.isFlagged) || (status === 'pending' && !p.isActive && !p.isSold);
-        return matchSearch && matchCategory && matchStatus;
+        
+        // Store filter
+        var matchStore = true;
+        if (activeStoreFilter === 'sankofa-store') {
+            matchStore = p.isSankofaStore === true;
+        } else if (activeStoreFilter === 'marketplace') {
+            matchStore = !p.isSankofaStore && !p.storeId;
+        } else if (activeStoreFilter !== 'all' && activeStoreFilter.startsWith('store_')) {
+            var storeId = activeStoreFilter.replace('store_', '');
+            matchStore = p.storeId === storeId;
+        }
+        
+        return matchSearch && matchCategory && matchStatus && matchStore;
     });
 
     renderAdminProducts(filtered);

@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/main.css?v=4">
-    <link rel="stylesheet" href="../../css/admin.css?v=10">
+    <link rel="stylesheet" href="../../css/admin.css?v=11">
 </head>
 <body>
     <!-- Admin Sidebar -->
@@ -266,6 +266,23 @@
                     </div>
                 </div>
 
+                <!-- Store Tabs -->
+                <div class="store-tabs" id="storeTabs">
+                    <button class="store-tab active" data-store="all">
+                        <i class="fas fa-th"></i> All Stores
+                        <span class="store-tab-count" id="storeCountAll">0</span>
+                    </button>
+                    <button class="store-tab" data-store="sankofa-store">
+                        <i class="fas fa-store"></i> Sankofa Store
+                        <span class="store-tab-count" id="storeCountSankofa">0</span>
+                    </button>
+                    <!-- Dynamic store tabs loaded by JS -->
+                    <button class="store-tab" data-store="marketplace">
+                        <i class="fas fa-users"></i> Marketplace
+                        <span class="store-tab-count" id="storeCountMarketplace">0</span>
+                    </button>
+                </div>
+
                 <div class="filter-bar">
                     <select class="filter-select" id="productCategoryFilter">
                         <option value="">All Categories</option>
@@ -273,6 +290,15 @@
                         <option value="fashion">Fashion</option>
                         <option value="home-garden">Home & Garden</option>
                         <option value="vehicles">Vehicles</option>
+                        <option value="services">Services</option>
+                        <option value="sports">Sports</option>
+                        <option value="books-media">Books & Media</option>
+                        <option value="baby-kids">Baby & Kids</option>
+                        <option value="beauty-health">Beauty & Health</option>
+                        <option value="food-groceries">Food & Groceries</option>
+                        <option value="pets">Pets</option>
+                        <option value="jobs-skills">Jobs & Skills</option>
+                        <option value="real-estate">Real Estate</option>
                     </select>
                     <select class="filter-select" id="productStatusFilter">
                         <option value="">All Status</option>
@@ -289,9 +315,9 @@
                         <thead>
                             <tr>
                                 <th>Product</th>
+                                <th>Store</th>
                                 <th>Category</th>
                                 <th>Price</th>
-                                <th>Seller</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Actions</th>
@@ -1181,7 +1207,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=4"></script>
-    <script src="../../js/admin.js?v=15"></script>
+    <script src="../../js/admin.js?v=16"></script>
     <script src="../../js/admin-management.js"></script>
     <script src="../../js/admin-auth.js"></script>
 </body>

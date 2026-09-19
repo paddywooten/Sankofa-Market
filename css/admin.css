@@ -3715,3 +3715,93 @@ body.sidebar-collapsed .admin-topbar {
         min-width: 18px;
     }
 }
+
+/* ============================================================================
+   STORE TABS - Products grouped by store
+   ============================================================================ */
+
+.store-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+.store-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border-color, #e5e5e5);
+    border-radius: 50px;
+    background: white;
+    color: var(--text-secondary, #767676);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.store-tab:hover {
+    border-color: var(--primary-color, #0064d2);
+    color: var(--primary-color, #0064d2);
+    background: rgba(0, 100, 210, 0.04);
+}
+
+.store-tab.active {
+    background: var(--primary-color, #0064d2);
+    color: white;
+    border-color: var(--primary-color, #0064d2);
+}
+
+.store-tab.active .store-tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.store-tab-count {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text-secondary, #767676);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 50px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.store-tab img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Mobile store tabs */
+@media (max-width: 768px) {
+    .store-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 0.5rem;
+    }
+
+    .store-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .store-tab {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .store-tab-count {
+        font-size: 0.65rem;
+        padding: 0.05rem 0.35rem;
+    }
+}
