@@ -2000,3 +2000,51 @@ a:hover {
         width: 100%;
     }
 }
+
+/* ============================================================================
+   SKELETON LOADING ANIMATION
+   ============================================================================ */
+
+.skeleton-card {
+    background: white;
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.08));
+    padding-bottom: 1rem;
+}
+
+.skeleton-img {
+    width: 100%;
+    height: 200px;
+    background: #e9ecef;
+    margin-bottom: 0.75rem;
+}
+
+.skeleton-text {
+    height: 14px;
+    background: #e9ecef;
+    border-radius: 4px;
+    margin: 0.5rem 1rem 0;
+}
+
+.shimmer {
+    background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Mobile skeleton adjustments */
+@media (max-width: 768px) {
+    .skeleton-img {
+        height: 160px;
+    }
+    .skeleton-text {
+        height: 12px;
+        margin: 0.4rem 0.75rem 0;
+    }
+}
