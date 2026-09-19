@@ -24,6 +24,15 @@ function initAdminDashboard() {
     initLegalChecklist();
     initBottomNav();
     initSidebarCollapse();
+    loadAdminProducts();
+
+    // Hook up product filters
+    var productSearch = document.getElementById('productSearch');
+    var categoryFilter = document.getElementById('productCategoryFilter');
+    var statusFilter = document.getElementById('productStatusFilter');
+    if (productSearch) productSearch.addEventListener('input', filterAdminProducts);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterAdminProducts);
+    if (statusFilter) statusFilter.addEventListener('change', filterAdminProducts);
 }
 
 // ============================================================================
@@ -1455,4 +1464,138 @@ function initSidebarCollapse() {
             document.body.classList.remove('sidebar-collapsed');
         }
     });
+}
+
+// ============================================================================
+// LOAD ADMIN PRODUCTS FROM FIRESTORE
+// ============================================================================
+
+var adminProductsCache = [];
+
+function loadAdminProducts() {
+    var tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><p>Firebase not connected</p></td></tr>';
+        return;
+    }
+
+    firebaseDB.collection('products').orderBy('createdAt', 'desc').limit(50).get()
+        .then(function(snapshot) {
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-box-open" style="font-size:2rem;color:#ccc;"></i><p>No products yet. Click "Add Product" to create one.</p></td></tr>';
+                return;
+            }
+
+            adminProductsCache = [];
+            snapshot.forEach(function(doc) {
+                adminProductsCache.push({ id: doc.id, ...doc.data() });
+            });
+
+            renderAdminProducts(adminProductsCache);
+        })
+        .catch(function(error) {
+            // Fallback without orderBy
+            firebaseDB.collection('products').limit(50).get()
+                .then(function(snapshot) {
+                    if (snapshot.empty) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-box-open" style="font-size:2rem;color:#ccc;"></i><p>No products yet.</p></td></tr>';
+                        return;
+                    }
+                    adminProductsCache = [];
+                    snapshot.forEach(function(doc) {
+                        adminProductsCache.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderAdminProducts(adminProductsCache);
+                })
+                .catch(function(err) {
+                    console.error('Error loading products:', err);
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;"><p>Error loading products: ' + err.message + '</p></td></tr>';
+                });
+        });
+}
+
+function renderAdminProducts(products) {
+    var tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+
+    if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-search" style="font-size:2rem;color:#ccc;"></i><p>No products match your filters</p></td></tr>';
+        return;
+    }
+
+    var html = '';
+    products.forEach(function(p) {
+        var images = p.images || p.photos || [];
+        var imgSrc = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=80&h=80&fit=crop&q=75';
+        var status = p.isSold ? 'sold' : (p.isActive ? 'active' : 'inactive');
+        var statusLabel = p.isSold ? 'Sold' : (p.isActive ? 'Active' : 'Inactive');
+        var statusClass = p.isSold ? 'cancelled' : (p.isActive ? 'active' : 'draft');
+        var date = p.createdAt ? (p.createdAt.toDate ? p.createdAt.toDate().toLocaleDateString() : new Date(p.createdAt).toLocaleDateString()) : '—';
+        var sellerLabel = p.isSankofaStore ? '<span style="color:#0064d2;font-weight:600;">🏪 Sankofa Store</span>' : (p.sellerName || 'Unknown');
+        var featuredBadge = p.isFeatured ? ' <span style="background:#f5af02;color:#000;padding:0.1rem 0.4rem;border-radius:50px;font-size:0.65rem;font-weight:600;">⭐ Featured</span>' : '';
+
+        html += '<tr>' +
+            '<td><div style="display:flex;align-items:center;gap:0.75rem;">' +
+                '<img src="' + imgSrc + '" style="width:48px;height:48px;border-radius:8px;object-fit:cover;" loading="lazy">' +
+                '<div><strong style="font-size:0.85rem;">' + (p.title || 'Untitled') + '</strong>' + featuredBadge +
+                '<br><small style="color:#767676;">' + (p.condition || '') + '</small></div>' +
+            '</div></td>' +
+            '<td><span style="text-transform:capitalize;">' + (p.category || '—').replace(/-/g, ' ') + '</span></td>' +
+            '<td><strong>GH₵ ' + (p.price ? p.price.toLocaleString() : '0') + '</strong></td>' +
+            '<td>' + sellerLabel + '</td>' +
+            '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+            '<td style="font-size:0.82rem;color:#767676;">' + date + '</td>' +
+            '<td><div style="display:flex;gap:0.35rem;">' +
+                '<button class="btn btn-outline btn-small" onclick="viewAdminProduct(\'' + p.id + '\')" title="View" style="padding:0.3rem 0.5rem;font-size:0.75rem;"><i class="fas fa-eye"></i></button>' +
+                '<button class="btn btn-outline btn-small" onclick="toggleFeaturedProduct(\'' + p.id + '\',' + !p.isFeatured + ')" title="' + (p.isFeatured ? 'Unfeature' : 'Feature') + '" style="padding:0.3rem 0.5rem;font-size:0.75rem;"><i class="fas fa-star"></i></button>' +
+                '<button class="btn btn-small" onclick="deleteAdminProduct(\'' + p.id + '\',\'' + (p.title || '').replace(/'/g, "\\'") + '\')" title="Delete" style="padding:0.3rem 0.5rem;font-size:0.75rem;background:#e74c3c;color:white;border:none;"><i class="fas fa-trash"></i></button>' +
+            '</div></td>' +
+        '</tr>';
+    });
+
+    tbody.innerHTML = html;
+}
+
+// Filter/search products
+function filterAdminProducts() {
+    var search = (document.getElementById('productSearch')?.value || '').toLowerCase();
+    var category = document.getElementById('productCategoryFilter')?.value || '';
+    var status = document.getElementById('productStatusFilter')?.value || '';
+
+    var filtered = adminProductsCache.filter(function(p) {
+        var matchSearch = !search || (p.title || '').toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search);
+        var matchCategory = !category || p.category === category;
+        var matchStatus = !status || (status === 'active' && p.isActive && !p.isSold) || (status === 'sold' && p.isSold) || (status === 'flagged' && p.isFlagged) || (status === 'pending' && !p.isActive && !p.isSold);
+        return matchSearch && matchCategory && matchStatus;
+    });
+
+    renderAdminProducts(filtered);
+}
+
+// Product actions
+function viewAdminProduct(id) {
+    window.open('/product-detail.html?id=' + id, '_blank');
+}
+
+function toggleFeaturedProduct(id, featured) {
+    if (typeof firebaseDB === 'undefined') return;
+    firebaseDB.collection('products').doc(id).update({ isFeatured: featured })
+        .then(function() {
+            showFlashMessage(featured ? 'Product marked as featured ⭐' : 'Product unfeatured', 'success');
+            loadAdminProducts();
+        })
+        .catch(function(err) { showFlashMessage('Error: ' + err.message, 'error'); });
+}
+
+function deleteAdminProduct(id, title) {
+    if (!confirm('Delete "' + title + '"? This cannot be undone.')) return;
+    if (typeof firebaseDB === 'undefined') return;
+    firebaseDB.collection('products').doc(id).delete()
+        .then(function() {
+            showFlashMessage('Product deleted', 'success');
+            loadAdminProducts();
+        })
+        .catch(function(err) { showFlashMessage('Error: ' + err.message, 'error'); });
 }
