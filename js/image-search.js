@@ -617,6 +617,24 @@ class ImageSearch {
         }
     }
 
+    saveToHistory(imageData, category, resultCount) {
+        try {
+            var history = JSON.parse(localStorage.getItem('imageSearchHistory') || '[]');
+            history.unshift({
+                id: 'search_' + Date.now(),
+                imageData: typeof imageData === 'string' && imageData.length < 500 ? imageData : '',
+                category: category || '',
+                resultCount: resultCount || 0,
+                timestamp: new Date().toISOString()
+            });
+            // Keep only last 20 searches
+            if (history.length > 20) history = history.slice(0, 20);
+            localStorage.setItem('imageSearchHistory', JSON.stringify(history));
+        } catch (err) {
+            console.warn('Could not save search history:', err);
+        }
+    }
+
     displayAnalysisInfo(analysis) {
         const analysisInfo = document.getElementById('imageAnalysisInfo');
         const tagsContainer = document.getElementById('analysisTags');
