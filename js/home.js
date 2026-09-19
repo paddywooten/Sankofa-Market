@@ -61,11 +61,10 @@ async function loadFeaturedProducts() {
             return;
         }
         
+        // Simple query - single where clause, no composite index needed
         const snapshot = await firebaseDB.collection('products')
             .where('isFeatured', '==', true)
-            .where('isActive', '==', true)
-            .where('isSold', '==', false)
-            .limit(8)
+            .limit(12)
             .get();
         
         if (snapshot.empty) {
@@ -73,14 +72,40 @@ async function loadFeaturedProducts() {
             return;
         }
         
+        // Filter client-side for active and not sold
         const products = [];
         snapshot.forEach(doc => {
-            products.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            if (data.isActive !== false && data.isSold !== true) {
+                products.push({ id: doc.id, ...data });
+            }
         });
         
-        renderProducts('featuredProducts', products);
+        if (products.length === 0) {
+            renderDemoProducts('featuredProducts', 'featured');
+            return;
+        }
+        
+        renderProducts('featuredProducts', products.slice(0, 8));
     } catch (error) {
         console.error('Error loading featured products:', error);
+        // Try loading ALL products as fallback
+        try {
+            const allSnapshot = await firebaseDB.collection('products').limit(8).get();
+            if (!allSnapshot.empty) {
+                const products = [];
+                allSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.isActive !== false && data.isSold !== true) {
+                        products.push({ id: doc.id, ...data });
+                    }
+                });
+                if (products.length > 0) {
+                    renderProducts('featuredProducts', products);
+                    return;
+                }
+            }
+        } catch(e) {}
         renderDemoProducts('featuredProducts', 'featured');
     }
 }
@@ -96,11 +121,10 @@ async function loadRecentProducts() {
             return;
         }
         
+        // Simple query - orderBy only, no composite index needed
         const snapshot = await firebaseDB.collection('products')
-            .where('isActive', '==', true)
-            .where('isSold', '==', false)
             .orderBy('createdAt', 'desc')
-            .limit(8)
+            .limit(20)
             .get();
         
         if (snapshot.empty) {
@@ -108,14 +132,40 @@ async function loadRecentProducts() {
             return;
         }
         
+        // Filter client-side for active and not sold
         const products = [];
         snapshot.forEach(doc => {
-            products.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            if (data.isActive !== false && data.isSold !== true) {
+                products.push({ id: doc.id, ...data });
+            }
         });
         
-        renderProducts('recentProducts', products);
+        if (products.length === 0) {
+            renderDemoProducts('recentProducts', 'recent');
+            return;
+        }
+        
+        renderProducts('recentProducts', products.slice(0, 8));
     } catch (error) {
         console.error('Error loading recent products:', error);
+        // Fallback: load without orderBy
+        try {
+            const fallback = await firebaseDB.collection('products').limit(20).get();
+            if (!fallback.empty) {
+                const products = [];
+                fallback.forEach(doc => {
+                    const data = doc.data();
+                    if (data.isActive !== false && data.isSold !== true) {
+                        products.push({ id: doc.id, ...data });
+                    }
+                });
+                if (products.length > 0) {
+                    renderProducts('recentProducts', products.slice(0, 8));
+                    return;
+                }
+            }
+        } catch(e) {}
         renderDemoProducts('recentProducts', 'recent');
     }
 }

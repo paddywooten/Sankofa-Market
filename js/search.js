@@ -167,15 +167,21 @@ async function loadProducts(query = '', category = '') {
     }
     
     try {
-        let queryRef = firebaseDB.collection('products')
-            .where('isActive', '==', true).where('isSold', '==', false);
-        if (category) queryRef = queryRef.where('category', '==', category);
-        
-        const snapshot = await queryRef.limit(50).get();
+        // Simple query - load all products, filter client-side (no composite index needed)
+        const snapshot = await firebaseDB.collection('products').limit(100).get();
         if (snapshot.empty) { renderDemoProducts(query, category); return; }
         
         let products = [];
-        snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.isActive !== false && data.isSold !== true) {
+                if (!category || data.category === category) {
+                    products.push({ id: doc.id, ...data });
+                }
+            }
+        });
+        
+        if (products.length === 0) { renderDemoProducts(query, category); return; }
         
         if (query) {
             const q = query.toLowerCase();
