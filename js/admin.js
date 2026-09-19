@@ -1804,37 +1804,40 @@ function loadStores() {
     var grid = document.getElementById('storesGrid');
     if (!grid) return;
     
+    storesCache = [];
+    
     if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><p>Firebase not connected</p></div>';
+        // Show Sankofa Store as default + offline message
+        storesCache.push({ id: 'sankofa-store', name: 'Sankofa Store', tagline: 'Official marketplace store', isOfficial: true, profilePicture: '', productCount: 0, createdAt: null });
+        renderStores();
         return;
     }
     
-    firebaseDB.collection('stores').orderBy('createdAt', 'desc').get().then(function(snapshot) {
-        storesCache = [];
-        if (snapshot.empty) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><i class="fas fa-store" style="font-size:2.5rem;color:#ccc;display:block;margin-bottom:0.75rem;"></i><p>No stores yet. Click "Add Store" to create one.</p></div>';
-            return;
-        }
+    // Load Sankofa Store profile from settings
+    var sankofaPromise = firebaseDB.collection('settings').doc('sankofaStore').get().then(function(doc) {
+        var data = doc.exists ? doc.data() : {};
+        storesCache.push({
+            id: 'sankofa-store',
+            name: data.storeName || 'Sankofa Store',
+            tagline: data.storeTagline || 'Official marketplace store',
+            profilePicture: data.profilePicture || '',
+            isOfficial: true,
+            productCount: 0,
+            createdAt: null
+        });
+    }).catch(function() {
+        storesCache.push({ id: 'sankofa-store', name: 'Sankofa Store', tagline: 'Official marketplace store', isOfficial: true, profilePicture: '', productCount: 0, createdAt: null });
+    });
+    
+    // Load other stores
+    var otherStoresPromise = firebaseDB.collection('stores').get().then(function(snapshot) {
         snapshot.forEach(function(doc) {
             storesCache.push({ id: doc.id, ...doc.data() });
         });
+    }).catch(function() {});
+    
+    Promise.all([sankofaPromise, otherStoresPromise]).then(function() {
         renderStores();
-    }).catch(function(err) {
-        // Fallback without orderBy
-        firebaseDB.collection('stores').get().then(function(snapshot) {
-            storesCache = [];
-            if (snapshot.empty) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#767676;"><i class="fas fa-store" style="font-size:2.5rem;color:#ccc;display:block;margin-bottom:0.75rem;"></i><p>No stores yet. Click "Add Store" to create one.</p></div>';
-                return;
-            }
-            snapshot.forEach(function(doc) {
-                storesCache.push({ id: doc.id, ...doc.data() });
-            });
-            renderStores();
-        }).catch(function(err2) {
-            console.error('Error loading stores:', err2);
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#e74c3c;"><p>Error: ' + err2.message + '</p></div>';
-        });
     });
 }
 
@@ -1846,25 +1849,47 @@ function renderStores() {
     storesCache.forEach(function(store) {
         var imgSrc = store.profilePicture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(store.name || 'S') + '&size=120&background=0064d2&color=fff&bold=true';
         var productCount = store.productCount || 0;
+        var isOfficial = store.isOfficial === true;
+        var borderColor = isOfficial ? '#f5af02' : '#0064d2';
+        var officialBadge = isOfficial ? ' <span style="background:#f5af02;color:#000;padding:0.15rem 0.5rem;border-radius:50px;font-size:0.65rem;font-weight:700;margin-left:0.35rem;">⭐ OFFICIAL</span>' : '';
         
-        html += '<div class="cat-admin-card" style="position:relative;">' +
+        var editAction = isOfficial 
+            ? '<button class="action-btn" title="Edit Store Profile" onclick="editSankofaStoreProfile()"><i class="fas fa-edit"></i></button>'
+            : '<button class="action-btn" title="Edit" onclick="openStoreModal(\'' + store.id + '\')"><i class="fas fa-edit"></i></button>';
+        
+        var deleteAction = isOfficial 
+            ? '' 
+            : '<button class="action-btn danger" title="Delete" onclick="deleteStore(\'' + store.id + '\',\'' + (store.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>';
+        
+        var dateDisplay = isOfficial ? 'Built-in' : (store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—');
+        
+        html += '<div class="cat-admin-card" style="position:relative;border-top:3px solid ' + borderColor + ';">' +
             '<div class="cat-admin-header">' +
-                '<img src="' + imgSrc + '" alt="' + (store.name || '') + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #0064d2;">' +
-                '<div class="cat-admin-actions">' +
-                    '<button class="action-btn" title="Edit" onclick="openStoreModal(\'' + store.id + '\')"><i class="fas fa-edit"></i></button>' +
-                    '<button class="action-btn danger" title="Delete" onclick="deleteStore(\'' + store.id + '\',\'' + (store.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>' +
-                '</div>' +
+                '<img src="' + imgSrc + '" alt="' + (store.name || '') + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ' + borderColor + ';">' +
+                '<div class="cat-admin-actions">' + editAction + deleteAction + '</div>' +
             '</div>' +
-            '<h4>' + (store.name || 'Untitled Store') + '</h4>' +
+            '<h4>' + (store.name || 'Untitled Store') + officialBadge + '</h4>' +
             '<p style="font-size:0.78rem;color:#767676;margin:0.25rem 0;">' + (store.tagline || 'No tagline') + '</p>' +
             '<div class="cat-admin-stats">' +
                 '<span><i class="fas fa-box"></i> ' + productCount + ' products</span>' +
-                '<span><i class="fas fa-calendar"></i> ' + (store.createdAt ? new Date(store.createdAt).toLocaleDateString() : '—') + '</span>' +
+                '<span><i class="fas fa-calendar"></i> ' + dateDisplay + '</span>' +
             '</div>' +
         '</div>';
     });
     
     grid.innerHTML = html;
+}
+
+function editSankofaStoreProfile() {
+    // Scroll to the Sankofa Store Profile card in Settings
+    var navItems = document.querySelectorAll('.sidebar-nav .nav-item, .bottom-nav-item');
+    navItems.forEach(function(item) {
+        if (item.dataset.section === 'settings') item.click();
+    });
+    setTimeout(function() {
+        var profileCard = document.getElementById('storeProfilePic');
+        if (profileCard) profileCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
 }
 
 function openStoreModal(storeId) {
