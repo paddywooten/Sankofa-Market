@@ -350,33 +350,59 @@ function initProductImageUpload() {
     const input = document.getElementById('productImages');
     const preview = document.getElementById('imagePreview');
     
-    if (input) {
-        input.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            
-            if (files.length > 8) {
-                alert('Maximum 8 images allowed');
-                return;
+    if (!input || !preview) return;
+    
+    input.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        
+        if (files.length > 8) {
+            alert('Maximum 8 images allowed');
+            return;
+        }
+        
+        preview.innerHTML = '';
+        
+        // Show compression indicator
+        var compressMsg = document.createElement('div');
+        compressMsg.id = 'adminCompressIndicator';
+        compressMsg.style.cssText = 'text-align:center;padding:0.5rem;color:#0064d2;font-size:0.82rem;';
+        compressMsg.innerHTML = '<i class="fas fa-compress-arrows-alt fa-spin"></i> Compressing images...';
+        preview.appendChild(compressMsg);
+        
+        // Compress and display each file
+        (async function() {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var dataUrl;
+                
+                try {
+                    dataUrl = (typeof compressImage === 'function')
+                        ? await compressImage(file)
+                        : await new Promise(function(resolve) {
+                            var r = new FileReader();
+                            r.onload = function(ev) { resolve(ev.target.result); };
+                            r.readAsDataURL(file);
+                        });
+                } catch(err) {
+                    dataUrl = await new Promise(function(resolve) {
+                        var r = new FileReader();
+                        r.onload = function(ev) { resolve(ev.target.result); };
+                        r.readAsDataURL(file);
+                    });
+                }
+                
+                var imgDiv = document.createElement('div');
+                imgDiv.className = 'preview-image';
+                imgDiv.innerHTML = '<img src="' + dataUrl + '" alt="Preview ' + (i + 1) + '">' +
+                    '<button type="button" class="remove-image" onclick="removeImage(' + i + ')"><i class="fas fa-times"></i></button>';
+                preview.appendChild(imgDiv);
             }
             
-            preview.innerHTML = '';
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgDiv = document.createElement('div');
-                    imgDiv.className = 'preview-image';
-                    imgDiv.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview ${index + 1}">
-                        <button type="button" class="remove-image" onclick="removeImage(${index})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    preview.appendChild(imgDiv);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-    }
+            // Remove compression indicator
+            var indicator = document.getElementById('adminCompressIndicator');
+            if (indicator) indicator.remove();
+        })();
+    });
 }
 
 function removeImage(index) {

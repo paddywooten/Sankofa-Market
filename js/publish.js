@@ -27,16 +27,46 @@ function initPhotoUpload() {
             return;
         }
         
-        files.forEach(file => {
-            if (!file.type.startsWith('image/')) return;
+        // Show compression indicator
+        var compressMsg = document.createElement('div');
+        compressMsg.id = 'compressIndicator';
+        compressMsg.style.cssText = 'text-align:center;padding:0.5rem;color:#0064d2;font-size:0.85rem;font-weight:500;';
+        compressMsg.innerHTML = '<i class="fas fa-compress-arrows-alt fa-spin"></i> Compressing images...';
+        photoGrid.appendChild(compressMsg);
+        
+        // Compress and add each file
+        (async function() {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+                
+                try {
+                    var compressed = (typeof compressImage === 'function') 
+                        ? await compressImage(file) 
+                        : await new Promise(function(resolve) {
+                            var r = new FileReader();
+                            r.onload = function(e) { resolve(e.target.result); };
+                            r.readAsDataURL(file);
+                        });
+                    photos.push(compressed);
+                } catch (err) {
+                    console.error('Compression error:', err);
+                    // Fallback: use original
+                    var fallback = await new Promise(function(resolve) {
+                        var r = new FileReader();
+                        r.onload = function(e) { resolve(e.target.result); };
+                        r.readAsDataURL(file);
+                    });
+                    photos.push(fallback);
+                }
+            }
             
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                photos.push(event.target.result);
-                renderPhotos();
-            };
-            reader.readAsDataURL(file);
-        });
+            // Remove compression indicator
+            var indicator = document.getElementById('compressIndicator');
+            if (indicator) indicator.remove();
+            
+            renderPhotos();
+        })();
         
         // Reset input so same file can be selected again
         this.value = '';

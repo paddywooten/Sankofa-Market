@@ -436,3 +436,96 @@ window.SankofaMarket = {
     uploadFile,
     deleteFile
 };
+
+// ============================================================================
+// IMAGE COMPRESSION UTILITY
+// Compresses images client-side before upload to save Firebase Storage
+// ============================================================================
+
+/**
+ * Compress an image file using Canvas API
+ * @param {File} file - The image file to compress
+ * @param {Object} options - Compression options
+ * @param {number} options.maxWidth - Max width in pixels (default: 1200)
+ * @param {number} options.maxHeight - Max height in pixels (default: 1200)
+ * @param {number} options.quality - JPEG quality 0-1 (default: 0.75)
+ * @returns {Promise<string>} - Compressed image as data URL
+ */
+function compressImage(file, options) {
+    options = options || {};
+    var maxWidth = options.maxWidth || 1200;
+    var maxHeight = options.maxHeight || 1200;
+    var quality = options.quality || 0.75;
+    
+    return new Promise(function(resolve, reject) {
+        // If not an image, return as-is
+        if (!file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            reader.onload = function(e) { resolve(e.target.result); };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+            return;
+        }
+        
+        // If file is already small (< 200KB), skip compression
+        if (file.size < 200 * 1024) {
+            var reader2 = new FileReader();
+            reader2.onload = function(e) { resolve(e.target.result); };
+            reader2.onerror = reject;
+            reader2.readAsDataURL(file);
+            return;
+        }
+        
+        var img = new Image();
+        var objectUrl = URL.createObjectURL(file);
+        
+        img.onload = function() {
+            URL.revokeObjectURL(objectUrl);
+            
+            // Calculate new dimensions
+            var width = img.width;
+            var height = img.height;
+            
+            if (width > maxWidth) {
+                height = Math.round(height * (maxWidth / width));
+                width = maxWidth;
+            }
+            if (height > maxHeight) {
+                width = Math.round(width * (maxHeight / height));
+                height = maxHeight;
+            }
+            
+            // Create canvas and draw resized image
+            var canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            
+            // Use high quality rendering
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Export as JPEG with compression
+            var compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            // Log compression ratio
+            var originalKB = Math.round(file.size / 1024);
+            var compressedKB = Math.round((compressedDataUrl.length * 0.75) / 1024);
+            console.log('📸 Compressed: ' + originalKB + 'KB → ' + compressedKB + 'KB (' + Math.round((1 - compressedKB/originalKB) * 100) + '% smaller)');
+            
+            resolve(compressedDataUrl);
+        };
+        
+        img.onerror = function() {
+            URL.revokeObjectURL(objectUrl);
+            // Fallback: return original file as data URL
+            var reader3 = new FileReader();
+            reader3.onload = function(e) { resolve(e.target.result); };
+            reader3.onerror = reject;
+            reader3.readAsDataURL(file);
+        };
+        
+        img.src = objectUrl;
+    });
+}
