@@ -810,13 +810,6 @@ function renderAdminCategories() {
     
     // Count products per category from cache
     var categoryCounts = {};
-    if (typeof adminProductsCache !== 'undefined') {
-        adminProductsCache.forEach(function(p) {
-            if (p.category) {
-                categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
-            }
-        });
-    }
     
     var html = '';
     adminCategoriesCache.forEach(function(cat) {
@@ -843,6 +836,42 @@ function renderAdminCategories() {
     
     // Update nav count badge for categories
     updateCount('countCategories', adminCategoriesCache.length);
+    
+    // Load product counts per category from Firestore
+    loadCategoryProductCounts();
+}
+
+function loadCategoryProductCounts() {
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) return;
+    
+    // Get all products and count by category
+    firebaseDB.collection('products').get().then(function(snapshot) {
+        var counts = {};
+        snapshot.forEach(function(doc) {
+            var data = doc.data();
+            if (data.category && data.isActive !== false && data.isSold !== true) {
+                counts[data.category] = (counts[data.category] || 0) + 1;
+            }
+        });
+        
+        // Update each category card's count
+        adminCategoriesCache.forEach(function(cat) {
+            var count = counts[cat.id] || 0;
+            // Find the stats span in the card
+            var cards = document.querySelectorAll('#categoriesAdminGrid .cat-admin-card');
+            cards.forEach(function(card) {
+                var h4 = card.querySelector('h4');
+                if (h4 && h4.textContent.replace(/\s*\(custom\)/, '').trim() === cat.name) {
+                    var statsSpans = card.querySelectorAll('.cat-admin-stats span');
+                    if (statsSpans[0]) {
+                        statsSpans[0].innerHTML = '<i class="fas fa-box"></i> ' + count + ' listings';
+                    }
+                }
+            });
+        });
+    }).catch(function(err) {
+        console.warn('Could not load category counts:', err);
+    });
 }
 
 function openCategoryModal(categoryId) {
