@@ -736,8 +736,333 @@ function initOrderManagement() {
 // ============================================================================
 
 function initCategoryManagement() {
-    // Initialize category management functionality
-    console.log('Category management initialized');
+    var addBtn = document.getElementById('addCategoryBtn');
+    if (!addBtn) return;
+    
+    addBtn.addEventListener('click', function() { openCategoryModal(); });
+    loadAdminCategories();
+}
+
+var adminCategoriesCache = [];
+
+function loadAdminCategories() {
+    var grid = document.getElementById('categoriesAdminGrid');
+    if (!grid) return;
+    
+    // First show the 13 built-in categories
+    var builtIn = [
+        { id: 'electronics', name: 'Electronics', icon: 'fa-mobile-alt', color: '#0064d2' },
+        { id: 'fashion', name: 'Fashion', icon: 'fa-tshirt', color: '#e74c3c' },
+        { id: 'home-garden', name: 'Home & Garden', icon: 'fa-home', color: '#86b817' },
+        { id: 'vehicles', name: 'Vehicles', icon: 'fa-car', color: '#f5af02' },
+        { id: 'services', name: 'Services', icon: 'fa-concierge-bell', color: '#9b59b6' },
+        { id: 'sports', name: 'Sports', icon: 'fa-futbol', color: '#3498db' },
+        { id: 'books-media', name: 'Books & Media', icon: 'fa-book', color: '#795548' },
+        { id: 'baby-kids', name: 'Baby & Kids', icon: 'fa-baby', color: '#e91e63' },
+        { id: 'beauty-health', name: 'Beauty & Health', icon: 'fa-spa', color: '#ff69b4' },
+        { id: 'food-groceries', name: 'Food & Groceries', icon: 'fa-utensils', color: '#ff5722' },
+        { id: 'pets', name: 'Pets', icon: 'fa-paw', color: '#8bc34a' },
+        { id: 'jobs-skills', name: 'Jobs & Skills', icon: 'fa-briefcase', color: '#3f51b5' },
+        { id: 'real-estate', name: 'Real Estate', icon: 'fa-building', color: '#607d8b' }
+    ];
+    
+    adminCategoriesCache = builtIn;
+    
+    // Load custom categories from Firestore
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('categories').get().then(function(snapshot) {
+            snapshot.forEach(function(doc) {
+                adminCategoriesCache.push({ id: doc.id, ...doc.data(), isCustom: true });
+            });
+            renderAdminCategories();
+        }).catch(function() {
+            renderAdminCategories();
+        });
+    } else {
+        renderAdminCategories();
+    }
+}
+
+function renderAdminCategories() {
+    var grid = document.getElementById('categoriesAdminGrid');
+    if (!grid) return;
+    
+    // Count products per category from cache
+    var categoryCounts = {};
+    if (typeof adminProductsCache !== 'undefined') {
+        adminProductsCache.forEach(function(p) {
+            if (p.category) {
+                categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
+            }
+        });
+    }
+    
+    var html = '';
+    adminCategoriesCache.forEach(function(cat) {
+        var count = categoryCounts[cat.id] || 0;
+        var isCustom = cat.isCustom === true;
+        
+        html += '<div class="cat-admin-card">' +
+            '<div class="cat-admin-header">' +
+                '<div class="cat-admin-icon" style="background: ' + (cat.color || '#0064d2') + ';"><i class="fas ' + (cat.icon || 'fa-tag') + '"></i></div>' +
+                '<div class="cat-admin-actions">' +
+                    '<button class="action-btn" title="Edit" onclick="openCategoryModal(\'' + cat.id + '\')"><i class="fas fa-edit"></i></button>' +
+                    (isCustom ? '<button class="action-btn danger" title="Delete" onclick="deleteCategory(\'' + cat.id + '\',\'' + (cat.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>' : '') +
+                '</div>' +
+            '</div>' +
+            '<h4>' + (cat.name || 'Untitled') + (isCustom ? ' <span style="font-size:0.65rem;color:#767676;">(custom)</span>' : '') + '</h4>' +
+            '<div class="cat-admin-stats">' +
+                '<span><i class="fas fa-box"></i> ' + count + ' listings</span>' +
+                '<span><i class="fas fa-eye"></i> 0 views</span>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    grid.innerHTML = html;
+}
+
+function openCategoryModal(categoryId) {
+    var cat = categoryId ? adminCategoriesCache.find(function(c) { return c.id === categoryId; }) : null;
+    var isEdit = !!cat;
+    
+    var existing = document.getElementById('categoryModal');
+    if (existing) existing.remove();
+    
+    var modal = document.createElement('div');
+    modal.id = 'categoryModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    
+    // Extended icon list for marketplace categories
+    var icons = [
+        'fa-mobile-alt','fa-laptop','fa-tablet-alt','fa-desktop','fa-tv','fa-headphones','fa-camera','fa-gamepad',
+        'fa-tshirt','fa-shoe-prints','fa-hat-cowboy','fa-glasses','fa-ring','fa-gem','fa-vest',
+        'fa-home','fa-couch','fa-bed','fa-bath','fa-blender','fa-fan','fa-lightbulb','fa-door-open',
+        'fa-car','fa-motorcycle','fa-bicycle','fa-truck','fa-bus','fa-tractor','fa-ship','fa-plane',
+        'fa-utensils','fa-apple-alt','fa-bread-slice','fa-cheese','fa-fish','fa-drumstick-bite','fa-cookie','fa-wine-bottle',
+        'fa-futbol','fa-basketball-ball','fa-baseball-ball','fa-table-tennis','fa-dumbbell','fa-running','fa-swimmer','fa-skiing',
+        'fa-book','fa-music','fa-film','fa-palette','fa-theater-masks','fa-guitar','fa-microphone','fa-photo-video',
+        'fa-baby','fa-child','fa-baby-carriage','fa-puzzle-piece','fa-school','fa-chalkboard-teacher',
+        'fa-spa','fa-pump-medical','fa-pills','fa-heartbeat','fa-tooth','fa-eye','fa-brain',
+        'fa-paw','fa-dog','fa-cat','fa-fish','fa-feather','fa-bone',
+        'fa-briefcase','fa-graduation-cap','fa-tools','fa-wrench','fa-laptop-code','fa-user-tie',
+        'fa-building','fa-house-user','fa-hotel','fa-warehouse','fa-store','fa-city',
+        'fa-tag','fa-gift','fa-crown','fa-star','fa-fire','fa-bolt','fa-heart','fa-leaf',
+        'fa-clock','fa-watch','fa-stopwatch','fa-hourglass-half',
+        'fa-seedling','fa-tree','fa-frog','fa-sun','fa-cloud-rain','fa-mountain',
+        'fa-scissors','fa-paint-brush','fa-paint-roller','fa-hammer','fa-ruler','fa-tape',
+        'fa-shopping-bag','fa-shopping-cart','fa-cash-register','fa-credit-card','fa-money-bill-wave',
+        'fa-wifi','fa-satellite-dish','fa-battery-full','fa-plug','fa-usb','fa-memory',
+        'fa-stethoscope','fa-first-aid','fa-wheelchair','fa-procedures',
+        'fa-pray','fa-mosque','fa-church','fa-synagogue','fa-om','fa-cross',
+        'fa-passport','fa-suitcase-rolling','fa-map-marked-alt','fa-compass'
+    ];
+    
+    // Preset colors
+    var presetColors = [
+        '#0064d2','#1a73e8','#00bcd4','#009688','#4caf50','#8bc34a',
+        '#ffeb3b','#ffc107','#ff9800','#ff5722','#e74c3c','#e91e63',
+        '#9c27b0','#673ab7','#3f51b5','#795548','#607d8b','#191919',
+        '#ff69b4','#f5af02','#86b817','#3498db','#2ecc71','#1abc9c'
+    ];
+    
+    var currentIcon = cat ? (cat.icon || 'fa-tag') : 'fa-tag';
+    var currentColor = cat ? (cat.color || '#0064d2') : '#0064d2';
+    
+    // Build icon grid HTML
+    var iconGridHtml = icons.map(function(ic) {
+        var selected = ic === currentIcon ? 'border:2px solid #0064d2;background:rgba(0,100,210,0.1);' : 'border:2px solid #e5e5e5;background:white;';
+        return '<button type="button" class="cat-icon-btn" data-icon="' + ic + '" style="' + selected + 'width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:#333;transition:all 0.15s;" title="' + ic.replace('fa-','') + '"><i class="fas ' + ic + '"></i></button>';
+    }).join('');
+    
+    // Build color preset HTML
+    var colorPresetHtml = presetColors.map(function(co) {
+        var selected = co === currentColor ? 'border:3px solid #191919;transform:scale(1.15);' : 'border:2px solid #e5e5e5;';
+        return '<button type="button" class="cat-color-btn" data-color="' + co + '" style="' + selected + 'width:32px;height:32px;border-radius:50%;background:' + co + ';cursor:pointer;transition:all 0.15s;"></button>';
+    }).join('');
+    
+    // Parse current color to RGB
+    var rgb = hexToRgb(currentColor) || {r:0,g:100,b:210};
+    
+    modal.innerHTML = '<div style="background:white;border-radius:16px;padding:1.75rem;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">' +
+            '<h2 style="margin:0;font-size:1.2rem;">' + (isEdit ? 'Edit Category' : 'Add New Category') + '</h2>' +
+            '<button onclick="document.getElementById(\'categoryModal\').remove()" style="background:none;border:none;font-size:1.25rem;cursor:pointer;color:#767676;"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+        '<form id="categoryModalForm">' +
+            '<div style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.35rem;">Category Name *</label>' +
+                '<input type="text" id="catModalName" value="' + (cat ? (cat.name || '').replace(/"/g, '&quot;') : '') + '" required placeholder="e.g. Electronics" style="width:100%;padding:0.7rem;border:1.5px solid #e5e5e5;border-radius:8px;font-size:0.95rem;">' +
+            '</div>' +
+            
+            '<div style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.5rem;">Icon</label>' +
+                '<div id="catIconGrid" style="display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;padding:4px;border:1px solid #e5e5e5;border-radius:8px;">' + iconGridHtml + '</div>' +
+                '<input type="hidden" id="catModalIcon" value="' + currentIcon + '">' +
+            '</div>' +
+            
+            '<div style="margin-bottom:1rem;">' +
+                '<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:0.5rem;">Color</label>' +
+                '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;">' +
+                    '<div id="catColorPreview" style="width:48px;height:48px;border-radius:50%;background:' + currentColor + ';border:3px solid #e5e5e5;flex-shrink:0;"></div>' +
+                    '<div style="flex:1;">' +
+                        '<div style="display:flex;flex-wrap:wrap;gap:6px;" id="catColorPresets">' + colorPresetHtml + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="border:1px solid #e5e5e5;border-radius:8px;padding:0.75rem;">' +
+                    '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">' +
+                        '<label style="font-size:0.75rem;font-weight:600;width:14px;color:#e74c3c;">R</label>' +
+                        '<input type="range" id="catSliderR" min="0" max="255" value="' + rgb.r + '" style="flex:1;accent-color:#e74c3c;">' +
+                        '<span id="catValR" style="font-size:0.75rem;width:28px;text-align:right;">' + rgb.r + '</span>' +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">' +
+                        '<label style="font-size:0.75rem;font-weight:600;width:14px;color:#4caf50;">G</label>' +
+                        '<input type="range" id="catSliderG" min="0" max="255" value="' + rgb.g + '" style="flex:1;accent-color:#4caf50;">' +
+                        '<span id="catValG" style="font-size:0.75rem;width:28px;text-align:right;">' + rgb.g + '</span>' +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:0.5rem;">' +
+                        '<label style="font-size:0.75rem;font-weight:600;width:14px;color:#0064d2;">B</label>' +
+                        '<input type="range" id="catSliderB" min="0" max="255" value="' + rgb.b + '" style="flex:1;accent-color:#0064d2;">' +
+                        '<span id="catValB" style="font-size:0.75rem;width:28px;text-align:right;">' + rgb.b + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<input type="hidden" id="catModalColor" value="' + currentColor + '">' +
+            '</div>' +
+            
+            '<div id="catModalStatus" style="font-size:0.82rem;margin-bottom:0.75rem;"></div>' +
+            '<div style="display:flex;gap:0.75rem;justify-content:flex-end;">' +
+                '<button type="button" onclick="document.getElementById(\'categoryModal\').remove()" class="btn btn-outline">Cancel</button>' +
+                '<button type="submit" class="btn btn-primary" id="catModalSaveBtn"><i class="fas fa-save"></i> ' + (isEdit ? 'Update' : 'Add Category') + '</button>' +
+            '</div>' +
+        '</form>' +
+    '</div>';
+    
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
+    
+    // Icon selection
+    modal.querySelectorAll('.cat-icon-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            modal.querySelectorAll('.cat-icon-btn').forEach(function(b) {
+                b.style.border = '2px solid #e5e5e5';
+                b.style.background = 'white';
+            });
+            this.style.border = '2px solid #0064d2';
+            this.style.background = 'rgba(0,100,210,0.1)';
+            document.getElementById('catModalIcon').value = this.dataset.icon;
+        });
+    });
+    
+    // Color preset selection
+    modal.querySelectorAll('.cat-color-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var color = this.dataset.color;
+            modal.querySelectorAll('.cat-color-btn').forEach(function(b) {
+                b.style.border = '2px solid #e5e5e5';
+                b.style.transform = 'scale(1)';
+            });
+            this.style.border = '3px solid #191919';
+            this.style.transform = 'scale(1.15)';
+            updateCatColor(color);
+        });
+    });
+    
+    // RGB sliders
+    function updateCatColor(hex) {
+        document.getElementById('catColorPreview').style.background = hex;
+        document.getElementById('catModalColor').value = hex;
+        var rgb = hexToRgb(hex);
+        if (rgb) {
+            document.getElementById('catSliderR').value = rgb.r;
+            document.getElementById('catSliderG').value = rgb.g;
+            document.getElementById('catSliderB').value = rgb.b;
+            document.getElementById('catValR').textContent = rgb.r;
+            document.getElementById('catValG').textContent = rgb.g;
+            document.getElementById('catValB').textContent = rgb.b;
+        }
+    }
+    
+    ['catSliderR','catSliderG','catSliderB'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() {
+            var r = parseInt(document.getElementById('catSliderR').value);
+            var g = parseInt(document.getElementById('catSliderG').value);
+            var b = parseInt(document.getElementById('catSliderB').value);
+            document.getElementById('catValR').textContent = r;
+            document.getElementById('catValG').textContent = g;
+            document.getElementById('catValB').textContent = b;
+            var hex = rgbToHex(r, g, b);
+            document.getElementById('catColorPreview').style.background = hex;
+            document.getElementById('catModalColor').value = hex;
+            // Deselect presets
+            modal.querySelectorAll('.cat-color-btn').forEach(function(btn) {
+                btn.style.border = '2px solid #e5e5e5';
+                btn.style.transform = 'scale(1)';
+            });
+        });
+    });
+    
+    // Form submit
+    document.getElementById('categoryModalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        var name = document.getElementById('catModalName').value.trim();
+        var icon = document.getElementById('catModalIcon').value;
+        var color = document.getElementById('catModalColor').value;
+        
+        if (!name) {
+            document.getElementById('catModalStatus').innerHTML = '<span style="color:#e74c3c;">Name is required</span>';
+            return;
+        }
+        
+        var saveBtn = document.getElementById('catModalSaveBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        
+        var catId = isEdit ? categoryId : name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        var data = { name: name, icon: icon, color: color, isActive: true, updatedAt: new Date().toISOString() };
+        if (!isEdit) data.createdAt = new Date().toISOString();
+        
+        if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+            firebaseDB.collection('categories').doc(catId).set(data, { merge: true }).then(function() {
+                showFlashMessage(isEdit ? 'Category updated!' : 'Category added! \u{1F4C2}', 'success');
+                modal.remove();
+                loadAdminCategories();
+                loadNavCounts();
+            }).catch(function(err) {
+                document.getElementById('catModalStatus').innerHTML = '<span style="color:#e74c3c;">Error: ' + err.message + '</span>';
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isEdit ? 'Update' : 'Add Category');
+            });
+        } else {
+            document.getElementById('catModalStatus').innerHTML = '<span style="color:#e74c3c;">Firebase not connected</span>';
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> ' + (isEdit ? 'Update' : 'Add Category');
+        }
+    });
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+}
+
+function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(function(x) {
+        var hex = x.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
+}
+
+function deleteCategory(catId, catName) {
+    if (!confirm('Delete category "' + catName + '"?')) return;
+    
+    if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+        firebaseDB.collection('categories').doc(catId).delete().then(function() {
+            showFlashMessage('Category deleted', 'success');
+            loadAdminCategories();
+        }).catch(function(err) {
+            showFlashMessage('Error: ' + err.message, 'error');
+        });
+    }
 }
 
 // ============================================================================
