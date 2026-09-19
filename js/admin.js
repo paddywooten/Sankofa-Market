@@ -768,11 +768,32 @@ function loadAdminCategories() {
     
     adminCategoriesCache = builtIn;
     
-    // Load custom categories from Firestore
+    // Load custom categories and disabled categories from Firestore
     if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
         firebaseDB.collection('categories').get().then(function(snapshot) {
+            var disabledIds = {};
             snapshot.forEach(function(doc) {
-                adminCategoriesCache.push({ id: doc.id, ...doc.data(), isCustom: true });
+                var data = doc.data();
+                if (data.isActive === false) {
+                    // Mark built-in category as disabled
+                    disabledIds[doc.id] = true;
+                } else {
+                    // Custom active category
+                    var exists = adminCategoriesCache.some(function(c) { return c.id === doc.id; });
+                    if (exists) {
+                        // Override built-in with saved data (edited)
+                        adminCategoriesCache = adminCategoriesCache.map(function(c) {
+                            if (c.id === doc.id) return { id: doc.id, ...data };
+                            return c;
+                        });
+                    } else {
+                        adminCategoriesCache.push({ id: doc.id, ...data, isCustom: true });
+                    }
+                }
+            });
+            // Remove disabled built-in categories
+            adminCategoriesCache = adminCategoriesCache.filter(function(c) {
+                return !disabledIds[c.id];
             });
             renderAdminCategories();
         }).catch(function() {
@@ -807,7 +828,7 @@ function renderAdminCategories() {
                 '<div class="cat-admin-icon" style="background: ' + (cat.color || '#0064d2') + ';"><i class="fas ' + (cat.icon || 'fa-tag') + '"></i></div>' +
                 '<div class="cat-admin-actions">' +
                     '<button class="action-btn" title="Edit" onclick="openCategoryModal(\'' + cat.id + '\')"><i class="fas fa-edit"></i></button>' +
-                    (isCustom ? '<button class="action-btn danger" title="Delete" onclick="deleteCategory(\'' + cat.id + '\',\'' + (cat.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>' : '') +
+                    '<button class="action-btn danger" title="Delete" onclick="deleteCategory(\'' + cat.id + '\',\'' + (cat.name || '').replace(/'/g, "\\'") + '\')"><i class="fas fa-trash"></i></button>' +
                 '</div>' +
             '</div>' +
             '<h4>' + (cat.name || 'Untitled') + (isCustom ? ' <span style="font-size:0.65rem;color:#767676;">(custom)</span>' : '') + '</h4>' +
@@ -1053,15 +1074,35 @@ function rgbToHex(r, g, b) {
 }
 
 function deleteCategory(catId, catName) {
-    if (!confirm('Delete category "' + catName + '"?')) return;
+    if (!confirm('Delete category "' + catName + '"?\n\nProducts in this category will become uncategorized.')) return;
+    
+    // Check if it's a built-in category
+    var builtInIds = ['electronics','fashion','home-garden','vehicles','services','sports','books-media','baby-kids','beauty-health','food-groceries','pets','jobs-skills','real-estate'];
+    var isBuiltIn = builtInIds.indexOf(catId) >= 0;
     
     if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
-        firebaseDB.collection('categories').doc(catId).delete().then(function() {
-            showFlashMessage('Category deleted', 'success');
-            loadAdminCategories();
-        }).catch(function(err) {
-            showFlashMessage('Error: ' + err.message, 'error');
-        });
+        if (isBuiltIn) {
+            // For built-in categories, mark as disabled in Firestore
+            firebaseDB.collection('categories').doc(catId).set({
+                isActive: false,
+                disabledAt: new Date().toISOString()
+            }, { merge: true }).then(function() {
+                showFlashMessage('Category "' + catName + '" removed', 'success');
+                loadAdminCategories();
+                loadNavCounts();
+            }).catch(function(err) {
+                showFlashMessage('Error: ' + err.message, 'error');
+            });
+        } else {
+            // For custom categories, delete from Firestore
+            firebaseDB.collection('categories').doc(catId).delete().then(function() {
+                showFlashMessage('Category deleted', 'success');
+                loadAdminCategories();
+                loadNavCounts();
+            }).catch(function(err) {
+                showFlashMessage('Error: ' + err.message, 'error');
+            });
+        }
     }
 }
 
