@@ -56,10 +56,12 @@ function renderCategories(categories) {
 
 async function loadFeaturedProducts() {
     try {
-        if (typeof firebaseDB === 'undefined') {
+        if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
+            console.warn('⚠️ firebaseDB not available for featured products');
             renderDemoProducts('featuredProducts', 'featured');
             return;
         }
+        console.log('⭐ Loading featured products from Firestore...');
         
         // Simple query - single where clause, no composite index needed
         const snapshot = await firebaseDB.collection('products')
@@ -116,10 +118,12 @@ async function loadFeaturedProducts() {
 
 async function loadRecentProducts() {
     try {
-        if (typeof firebaseDB === 'undefined') {
+        if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
+            console.warn('⚠️ firebaseDB not available, showing empty state');
             renderDemoProducts('recentProducts', 'recent');
             return;
         }
+        console.log('📦 Loading recent products from Firestore...');
         
         // Simple query - orderBy only, no composite index needed
         const snapshot = await firebaseDB.collection('products')
@@ -146,6 +150,7 @@ async function loadRecentProducts() {
             return;
         }
         
+        console.log('✅ Loaded ' + products.length + ' products');
         renderProducts('recentProducts', products.slice(0, 8));
     } catch (error) {
         console.error('Error loading recent products:', error);
@@ -161,7 +166,8 @@ async function loadRecentProducts() {
                     }
                 });
                 if (products.length > 0) {
-                    renderProducts('recentProducts', products.slice(0, 8));
+                    console.log('✅ Loaded ' + products.length + ' products');
+        renderProducts('recentProducts', products.slice(0, 8));
                     return;
                 }
             }
@@ -188,8 +194,9 @@ function renderProducts(containerId, products) {
     }
     
     container.innerHTML = products.map(product => {
-        const imageUrl = product.images && product.images.length > 0 
-            ? product.images[0] 
+        const productImages = product.images || product.photos || [];
+        const imageUrl = productImages.length > 0 
+            ? productImages[0] 
             : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop';
         
         const relativeTime = product.createdAt 

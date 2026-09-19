@@ -159,7 +159,8 @@ function initFormSubmission() {
                     const userData = userDoc.data();
                     
                     if (userData.status === 'pending') {
-                        showFlashMessage('Your account is pending admin approval. You cannot publish listings until your account is approved.', 'warning');
+                        showFlashMessage('⚠️ Your account is pending admin approval. Please wait for an admin to approve your account before publishing listings.', 'warning');
+                        console.warn('Account status: pending - cannot publish');
                         return;
                     } else if (userData.status === 'rejected') {
                         showFlashMessage('Your account registration was rejected. Please contact support for more information.', 'error');
@@ -178,7 +179,9 @@ function initFormSubmission() {
         try {
             if (typeof firebaseDB !== 'undefined') {
                 // Upload to Firebase
+                console.log('📤 Publishing to Firebase...', formData);
                 await publishToFirebase(formData);
+                console.log('✅ Published successfully!');
             } else {
                 // Demo mode - simulate success
                 await new Promise(resolve => setTimeout(resolve, 1500));
@@ -350,6 +353,7 @@ async function publishToFirebase(data) {
     const productData = {
         ...data,
         photos: photoURLs,
+        images: photoURLs,
         sellerId: user.uid,
         isActive: true,
         isSold: false,

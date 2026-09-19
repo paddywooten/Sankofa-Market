@@ -324,7 +324,7 @@ function renderProducts(products) {
     }
     
     container.innerHTML = products.map(p => {
-        const img = p.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=350&h=260&fit=crop&q=75&auto=format';
+        const img = (p.images || p.photos || [])[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=350&h=260&fit=crop&q=75&auto=format';
         const time = p.createdAt ? formatRelTime(p.createdAt.toDate ? p.createdAt.toDate() : new Date(p.createdAt)) : 'Recently';
         const isSS = p.isSankofaStore === true;
         const isV = p.isVerifiedSeller === true;
