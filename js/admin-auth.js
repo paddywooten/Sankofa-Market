@@ -99,13 +99,13 @@ function getAuthUser() {
     return new Promise((resolve) => {
         let resolved = false;
         
-        // Set a timeout - if auth doesn't resolve in 5 seconds, assume not logged in
+        // Set a timeout - if auth doesn't resolve in 10 seconds, assume not logged in
         const timeout = setTimeout(() => {
             if (!resolved) {
                 resolved = true;
                 resolve(null);
             }
-        }, 5000);
+        }, 10000);
 
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             if (!resolved) {

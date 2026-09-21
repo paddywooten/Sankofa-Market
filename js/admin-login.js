@@ -45,6 +45,8 @@ function initAdminLogin() {
                 // ===== REAL FIREBASE AUTH =====
                 
                 // Step 1: Sign in with email/password
+                // Set auth persistence to LOCAL so it survives page redirects
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
                 const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
                 
                 // Step 2: Check user document for admin role
@@ -82,10 +84,14 @@ function initAdminLogin() {
                     return;
                 }
 
-                // Success! Update last login
-                await firebase.firestore().collection('users').doc(cred.user.uid).update({
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                // Success! Update last login (non-blocking)
+                try {
+                    await firebase.firestore().collection('users').doc(cred.user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (updateErr) {
+                    console.warn('Could not update lastLogin:', updateErr);
+                }
 
                 // Store admin session flag
                 sessionStorage.setItem('sankofa_admin', 'true');
