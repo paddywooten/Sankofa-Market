@@ -23,15 +23,32 @@ let firebaseDB = null;
 let firebaseStorage = null;
 
 try {
-  firebaseApp = firebase.initializeApp(firebaseConfig);
+  // Check if Firebase app already initialized (e.g., from another script)
+  if (firebase.apps.length === 0) {
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+  } else {
+    firebaseApp = firebase.app();
+  }
   firebaseAuth = firebase.auth();
   firebaseDB = firebase.firestore();
   firebaseStorage = firebase.storage();
+  
+  // Set auth persistence to LOCAL so it survives page redirects
+  firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
   
   console.log('✅ Firebase initialized successfully');
   console.log('📦 Project:', firebaseConfig.projectId);
 } catch (error) {
   console.error('❌ Firebase initialization error:', error);
+  // Fallback: try to use existing Firebase app
+  try {
+    firebaseAuth = firebase.auth();
+    firebaseDB = firebase.firestore();
+    firebaseStorage = firebase.storage();
+    console.log('✅ Firebase recovered from existing app');
+  } catch (e) {
+    console.error('❌ Firebase recovery failed:', e);
+  }
 }
 
 // Export for use in other files

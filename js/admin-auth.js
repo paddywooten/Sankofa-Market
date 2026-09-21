@@ -9,51 +9,68 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function checkAdminAccess() {
+    console.log('🔐 Checking admin access...');
+    
     try {
         if (typeof firebase === 'undefined' || !firebase.auth) {
+            console.error('Firebase SDK not loaded');
             showAccessDenied('Firebase not configured. Admin access requires authentication.');
             return;
         }
 
+        // Ensure auth persistence is set
+        try {
+            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        } catch (e) {
+            console.warn('Could not set auth persistence:', e);
+        }
+
         // Wait for auth state to resolve (important on mobile after redirect)
+        console.log('Waiting for auth state...');
         const user = await getAuthUser();
 
         if (!user) {
+            console.log('No user found - not logged in');
             showAccessDenied('You must be logged in to access admin pages.');
             setTimeout(() => {
                 window.location.href = '/sm-panel/login';
-            }, 2000);
+            }, 3000);
             return;
         }
 
+        console.log('User found:', user.email, 'UID:', user.uid);
+
         // Check if user is admin
         try {
+            console.log('Reading user document from Firestore...');
             const userDoc = await firebase.firestore()
                 .collection('users')
                 .doc(user.uid)
                 .get();
 
             if (!userDoc.exists) {
-                showAccessDenied('User profile not found.');
+                console.log('User document not found in Firestore');
+                showAccessDenied('User profile not found in database.');
                 setTimeout(() => {
-                    firebase.auth().signOut();
                     window.location.href = '/sm-panel/login';
-                }, 2000);
+                }, 3000);
                 return;
             }
 
             const userData = userDoc.data();
+            console.log('User data:', { role: userData.role, name: userData.name, status: userData.status });
 
             if (userData.role !== 'admin') {
+                console.log('User is not an admin. Role:', userData.role);
                 showAccessDenied('Access denied. Admin privileges required.');
                 setTimeout(() => {
                     window.location.href = '../../index.html';
-                }, 2000);
+                }, 3000);
                 return;
             }
 
             // Admin access granted
-            console.log('Admin access granted for:', userData.name || user.email);
+            console.log('✅ Admin access granted for:', userData.name || user.email);
             
             // Update topbar with admin's name and avatar initial
             const adminName = userData.name || user.displayName || user.email?.split('@')[0] || 'Admin';
@@ -76,18 +93,18 @@ async function checkAdminAccess() {
 
         } catch (error) {
             console.error('Error checking admin status:', error);
-            showAccessDenied('Error verifying admin status. Please try again.');
+            showAccessDenied('Error verifying admin status: ' + error.message);
             setTimeout(() => {
                 window.location.href = '/sm-panel/login';
-            }, 2000);
+            }, 5000);
         }
 
     } catch (error) {
         console.error('Admin auth error:', error);
-        showAccessDenied('Authentication error. Please try again.');
+        showAccessDenied('Authentication error: ' + error.message);
         setTimeout(() => {
             window.location.href = '/sm-panel/login';
-        }, 2000);
+        }, 5000);
     }
 }
 
