@@ -167,9 +167,9 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>0</h3>
+                            <h3 id="overviewTotalUsers">0</h3>
                             <p>Registered Users</p>
-                            <span class="stat-change">—</span>
+                            <span class="stat-change" id="overviewUsersChange">—</span>
                         </div>
                     </div>
                 </div>
@@ -372,6 +372,8 @@
                                 <th>User</th>
                                 <th>Email</th>
                                 <th>Phone</th>
+                                <th>Ghana Card</th>
+                                <th>Sign-up</th>
                                 <th>Status</th>
                                 <th>Joined</th>
                                 <th>Actions</th>
@@ -379,7 +381,7 @@
                         </thead>
                         <tbody id="usersTableBody">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem; color: #767676;">
+                                <td colspan="8" style="text-align: center; padding: 2rem; color: #767676;">
                                     <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #ccc;"></i>
                                     <p>Loading users...</p>
                                 </td>

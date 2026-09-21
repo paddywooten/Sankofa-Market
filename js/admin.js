@@ -759,6 +759,10 @@ function loadAdminUsers() {
         updateCount('countUsers', total);
         
         renderAdminUsers('');
+        
+        // Update overview Registered Users stat
+        var overviewEl = document.getElementById('overviewTotalUsers');
+        if (overviewEl) overviewEl.textContent = adminUsersCache.filter(function(u) { return u.role !== 'admin'; }).length;
     }).catch(function(err) {
         console.error('Error loading users:', err);
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#e74c3c;"><p>Error: ' + err.message + '</p></td></tr>';
