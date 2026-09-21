@@ -42,27 +42,45 @@ function loadUserData() {
     const user = localStorage.getItem('sankofa_user');
     
     if (!user && typeof firebaseAuth === 'undefined') {
-        // Demo mode - show demo data
+        // Firebase not loaded - show basic greeting
         document.getElementById('userName').textContent = 'Welcome!';
-        document.getElementById('userEmail').textContent = 'kwame@example.com';
+        document.getElementById('userEmail').textContent = '';
         return;
     }
     
-    if (user) {
-        const userData = JSON.parse(user);
-        document.getElementById('userName').textContent = `Welcome, ${userData.name}!`;
-        document.getElementById('userEmail').textContent = userData.email;
-    }
+
     
-    // Firebase auth state
+    // Firebase auth state + Firestore profile loading
     if (typeof firebaseAuth !== 'undefined') {
-        firebaseAuth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('userName').textContent = `Welcome, ${user.displayName || 'User'}!`;
-                document.getElementById('userEmail').textContent = user.email;
-            } else {
-                // Redirect to login
+        firebaseAuth.onAuthStateChanged(function(user) {
+            if (!user) {
                 window.location.href = '../auth/login.html';
+                return;
+            }
+            document.getElementById('userName').textContent = 'Welcome, ' + (user.displayName || 'User') + '!';
+            document.getElementById('userEmail').textContent = user.email;
+            
+            // Load full profile from Firestore
+            if (typeof firebaseDB !== 'undefined') {
+                firebaseDB.collection('users').doc(user.uid).get().then(function(doc) {
+                    if (doc.exists) {
+                        var d = doc.data();
+                        var name = d.firstName || d.name || user.displayName || 'User';
+                        document.getElementById('userName').textContent = 'Welcome, ' + name + '!';
+                        document.getElementById('userEmail').textContent = d.email || user.email;
+                        if (d.firstName) document.getElementById('settingsFirstName').value = d.firstName;
+                        if (d.lastName) document.getElementById('settingsLastName').value = d.lastName;
+                        if (d.email) document.getElementById('settingsEmail').value = d.email;
+                        if (d.phone) document.getElementById('settingsPhone').value = d.phone;
+                        if (d.region) document.getElementById('settingsRegion').value = d.region;
+                        if (d.city) document.getElementById('settingsCity').value = d.city;
+                    }
+                }).catch(function(e) { console.warn('Profile load error:', e); });
+                
+                // Load user listing count
+                firebaseDB.collection('products').where('sellerId', '==', user.uid).get().then(function(snap) {
+                    document.getElementById('totalListings').textContent = snap.size;
+                }).catch(function() {});
             }
         });
     }
@@ -177,12 +195,8 @@ function initSettingsForm() {
                 await firebaseDB.collection('users').doc(firebaseAuth.currentUser.uid).update(formData);
             }
             
-            // Demo mode
-            localStorage.setItem('sankofa_user', JSON.stringify({
-                ...JSON.parse(localStorage.getItem('sankofa_user') || '{}'),
-                ...formData,
-                name: `${formData.firstName} ${formData.lastName}`
-            }));
+            // Update display name
+            document.getElementById('userName').textContent = 'Welcome, ' + (formData.firstName || 'User') + '!';
             
             showFlashMessage('Settings saved successfully!', 'success');
             
