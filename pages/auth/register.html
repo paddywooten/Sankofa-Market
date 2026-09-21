@@ -125,26 +125,7 @@
                     </div>
                 </div>
 
-                <!-- Ghana Card Verification -->
-                <div class="section-label"><i class="fas fa-id-card"></i> Ghana Card Verification</div>
 
-                <div class="form-group">
-                    <label for="ghanaCardNumber">Ghana Card Number</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-id-card field-icon"></i>
-                        <input type="text" id="ghanaCardNumber" name="ghanaCardNumber" placeholder="GHA-XXXXXXXXX-X" required pattern="GHA-[0-9]{9}-[0-9]" title="Format: GHA-123456789-0">
-                    </div>
-                    <div class="field-hint">Format: GHA-123456789-0</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="ghanaCardName">Name on Ghana Card</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-signature field-icon"></i>
-                        <input type="text" id="ghanaCardName" name="ghanaCardName" placeholder="As it appears on your card" required>
-                    </div>
-                    <div class="field-hint">Must match your Ghana Card exactly</div>
-                </div>
 
                 <!-- Terms -->
                 <div class="terms-group">
@@ -218,18 +199,17 @@
             var phone = document.getElementById('phone').value.trim();
             var password = document.getElementById('password').value;
             var confirmPassword = document.getElementById('confirmPassword').value;
-            var ghanaCardNumber = document.getElementById('ghanaCardNumber').value.trim();
-            var ghanaCardName = document.getElementById('ghanaCardName').value.trim();
+
             var terms = document.getElementById('terms').checked;
 
             // Validation
-            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || !ghanaCardNumber || !ghanaCardName) {
+            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
                 showFlash('Please fill in all fields', 'error'); return;
             }
             if (password.length < 8) { showFlash('Password must be at least 8 characters', 'error'); return; }
             if (password !== confirmPassword) { showFlash('Passwords do not match', 'error'); return; }
             if (!terms) { showFlash('Please accept the Terms of Service', 'error'); return; }
-            if (!/^GHA-[0-9]{9}-[0-9]$/.test(ghanaCardNumber)) { showFlash('Invalid Ghana Card format. Use: GHA-123456789-0', 'error'); return; }
+
 
             var btnSpan = registerBtn.querySelector('span');
             var btnIcon = registerBtn.querySelector('i');
@@ -252,13 +232,9 @@
                                 name: firstName + ' ' + lastName,
                                 email: email,
                                 phone: phone,
-                                ghanaCard: {
-                                    number: ghanaCardNumber,
-                                    name: ghanaCardName,
-                                    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                                },
                                 role: 'user',
-                                status: 'pending',
+                                status: 'approved',
+                                verified: false,
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                         })

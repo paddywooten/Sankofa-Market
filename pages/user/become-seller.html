@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Seller - Sankofa Market</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/user-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .verification-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .verification-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .verification-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .verification-header p {
+            color: var(--text-secondary);
+        }
+        
+        .verification-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: #f9f9f9;
+        }
+        
+        .upload-area.has-file {
+            border-color: var(--success-color);
+            background: #f0fdf4;
+        }
+        
+        .upload-area i {
+            font-size: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-area.has-file i {
+            color: var(--success-color);
+        }
+        
+        .upload-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 1rem auto;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .info-box h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-box ul {
+            margin: 0.5rem 0 0 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.3rem;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .already-verified {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #f0fdf4;
+            border-radius: 12px;
+            border: 2px solid var(--success-color);
+        }
+        
+        .already-verified i {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+        
+        .already-verified h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .already-verified p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="user-dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html">
+                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i> My Orders
+                </a>
+                <a href="listings.html" class="nav-item">
+                    <i class="fas fa-box"></i> My Listings
+                </a>
+                <a href="messages.html" class="nav-item">
+                    <i class="fas fa-comments"></i> Messages
+                </a>
+                <a href="wishlist.html" class="nav-item">
+                    <i class="fas fa-heart"></i> Wishlist
+                </a>
+                <a href="become-seller.html" class="nav-item active">
+                    <i class="fas fa-store"></i> Become a Seller
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="../../index.html" class="nav-item">
+                    <i class="fas fa-home"></i> Back to Market
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="verification-container" id="verificationContainer">
+                <div class="verification-header">
+                    <h1><i class="fas fa-store"></i> Become a Verified Seller</h1>
+                    <p>Submit your documents to start selling on Sankofa Market</p>
+                </div>
+
+                <div class="verification-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Upload Documents</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Submit for Review</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Start Selling</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3><i class="fas fa-info-circle"></i> Requirements</h3>
+                    <ul>
+                        <li>Valid Ghana Card (front side)</li>
+                        <li>Clear passport-style photo of yourself</li>
+                        <li>Ghana Card number (format: GHA-XXXXXXXXX-X)</li>
+                    </ul>
+                </div>
+
+                <form id="verificationForm">
+                    <div class="form-group">
+                        <label>Ghana Card (Front Side) *</label>
+                        <div class="upload-area" id="ghanaCardUpload">
+                            <i class="fas fa-id-card"></i>
+                            <p>Click to upload Ghana Card (front side)</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">JPG, PNG (max 5MB)</p>
+                        </div>
+                        <input type="file" id="ghanaCardFile" accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ghanaCardNumber">Ghana Card Number *</label>
+                        <input type="text" id="ghanaCardNumber" placeholder="GHA-XXXXXXXXX-X" pattern="GHA-[0-9]{9}-[0-9]" title="Format: GHA-123456789-0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Passport Photo *</label>
+                        <div class="upload-area" id="passportUpload">
+                            <i class="fas fa-user"></i>
+                            <p>Click to upload passport-style photo</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">Clear photo of your face (JPG, PNG, max 5MB)</p>
+                        </div>
+                        <input type="file" id="passportFile" accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="info-box" style="background: #fef3c7; border-color: #f59e0b;">
+                        <h3><i class="fas fa-shield-alt"></i> Important Notes</h3>
+                        <ul>
+                            <li>Documents will be reviewed within 24-48 hours</li>
+                            <li>Your Ghana Card information is encrypted and secure</li>
+                            <li>Only approved sellers can list products</li>
+                            <li>False information will result in account suspension</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i> Submit for Verification
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="../../config/firebase-config.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Check if user is logged in
+        firebase.auth().onAuthStateChanged(async function(user) {
+            if (!user) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            // Check if user is already verified
+            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+            if (userDoc.exists && userDoc.data().verified === true) {
+                document.getElementById('verificationContainer').innerHTML = `
+                    <div class="already-verified">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>You're Already a Verified Seller!</h2>
+                        <p>You can now list products and start selling on Sankofa Market.</p>
+                        <a href="../../publish.html" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 2rem; background: var(--primary-color); color: white; text-decoration: none; border-radius: 8px;">
+                            <i class="fas fa-plus"></i> List a Product
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Set up file uploads
+            const ghanaCardUpload = document.getElementById('ghanaCardUpload');
+            const ghanaCardFile = document.getElementById('ghanaCardFile');
+            const passportUpload = document.getElementById('passportUpload');
+            const passportFile = document.getElementById('passportFile');
+            const submitBtn = document.getElementById('submitBtn');
+
+            let ghanaCardData = null;
+            let passportData = null;
+
+            ghanaCardUpload.addEventListener('click', () => ghanaCardFile.click());
+            passportUpload.addEventListener('click', () => passportFile.click());
+
+            ghanaCardFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        ghanaCardData = e.target.result;
+                        ghanaCardUpload.classList.add('has-file');
+                        ghanaCardUpload.innerHTML = `
+                            <img src="${e.target.result}" class="upload-preview" alt="Ghana Card">
+                            <p style="color: var(--success-color); font-weight: 600;">✓ Ghana Card uploaded</p>
+                        `;
+                        checkFormValidity();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            passportFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        passportData = e.target.result;
+                        passportUpload.classList.add('has-file');
+                        passportUpload.innerHTML = `
+                            <img src="${e.target.result}" class="upload-preview" alt="Passport Photo">
+                            <p style="color: var(--success-color); font-weight: 600;">✓ Passport photo uploaded</p>
+                        `;
+                        checkFormValidity();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            function checkFormValidity() {
+                const ghanaCardNumber = document.getElementById('ghanaCardNumber').value.trim();
+                const isValid = ghanaCardData && passportData && ghanaCardNumber && /^GHA-[0-9]{9}-[0-9]$/.test(ghanaCardNumber);
+                submitBtn.disabled = !isValid;
+            }
+
+            document.getElementById('ghanaCardNumber').addEventListener('input', checkFormValidity);
+
+            // Submit form
+            document.getElementById('verificationForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const ghanaCardNumber = document.getElementById('ghanaCardNumber').value.trim();
+                
+                if (!ghanaCardData || !passportData || !ghanaCardNumber) {
+                    alert('Please complete all fields');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+                try {
+                    // Upload images to Firebase Storage
+                    const ghanaCardRef = firebase.storage().ref(`verification/${user.uid}/ghana-card-${Date.now()}`);
+                    const passportRef = firebase.storage().ref(`verification/${user.uid}/passport-${Date.now()}`);
+
+                    const ghanaCardSnapshot = await ghanaCardRef.putString(ghanaCardData, 'data_url');
+                    const passportSnapshot = await passportRef.putString(passportData, 'data_url');
+
+                    const ghanaCardURL = await ghanaCardSnapshot.ref.getDownloadURL();
+                    const passportURL = await passportSnapshot.ref.getDownloadURL();
+
+                    // Update user document
+                    await firebase.firestore().collection('users').doc(user.uid).update({
+                        ghanaCard: {
+                            number: ghanaCardNumber,
+                            photoURL: ghanaCardURL,
+                            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        },
+                        passportPhoto: passportURL,
+                        verificationStatus: 'pending',
+                        verificationSubmittedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    alert('Verification documents submitted successfully! We will review your documents within 24-48 hours.');
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    console.error('Error submitting verification:', error);
+                    alert('Error submitting verification. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit for Verification';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

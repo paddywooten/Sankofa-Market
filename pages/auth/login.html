@@ -184,7 +184,8 @@
                                 phone: user.phoneNumber || '',
                                 photoURL: user.photoURL || '',
                                 role: 'user',
-                                status: 'pending',
+                                status: 'approved',
+                                verified: false,
                                 authProvider: 'google',
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
@@ -195,17 +196,12 @@
                                 sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
                             }
                             await firebase.auth().signOut();
-                            alert('Signed out. Account created with status: pending');
-                            showFlash('Account created! Pending admin approval. Check your email.', 'success');
+                            showFlash('Account created! You can now log in and start shopping.', 'success');
+                            setTimeout(function() { window.location.href = '../user/dashboard.html'; }, 1200);
                             return;
                         } else {
                             var data = userDoc.data();
                             console.log('User status:', data.status);
-                            if (data.status === 'pending') {
-                                await firebase.auth().signOut();
-                                showFlash('Your account is pending admin approval.', 'warning');
-                                return;
-                            }
                             if (data.status === 'blocked' || data.status === 'suspended') {
                                 await firebase.auth().signOut();
                                 showFlash('Your account has been blocked. Contact support.', 'error');

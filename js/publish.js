@@ -202,6 +202,15 @@ function initFormSubmission() {
                         showFlashMessage('Your account registration was rejected. Please contact support for more information.', 'error');
                         return;
                     }
+                    
+                    // Check if user is verified to sell
+                    if (userData.verified !== true) {
+                        showFlashMessage('⚠️ You must be a verified seller to list products. Please complete seller verification first.', 'warning');
+                        setTimeout(() => {
+                            window.location.href = 'pages/user/become-seller.html';
+                        }, 2000);
+                        return;
+                    }
                 }
             }
         }

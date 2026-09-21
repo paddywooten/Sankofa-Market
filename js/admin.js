@@ -2920,3 +2920,94 @@ function loadCustomCategoriesIntoModal() {
         }).catch(function() {});
     }
 }
+
+
+function viewVerification(userId) {
+    var user = adminUsersCache.find(function(u) { return u.id === userId; });
+    if (!user || !user.ghanaCard || !user.passportPhoto) {
+        alert('Verification data not found');
+        return;
+    }
+    
+    // Create modal
+    var modal = document.createElement('div');
+    modal.id = 'verificationModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    
+    modal.innerHTML = '<div style="background:white;border-radius:12px;padding:2rem;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">' +
+            '<h2 style="margin:0;"><i class="fas fa-id-card"></i> Seller Verification Review</h2>' +
+            '<button onclick="document.getElementById(\'verificationModal\').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#767676;"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">' +
+            '<div>' +
+                '<h3 style="font-size:1rem;margin-bottom:0.5rem;">Ghana Card</h3>' +
+                '<img src="' + user.ghanaCard.photoURL + '" style="width:100%;border-radius:8px;border:2px solid #e5e5e5;">' +
+                '<p style="margin-top:0.5rem;font-size:0.9rem;"><strong>Card Number:</strong> ' + (user.ghanaCard.number || 'N/A') + '</p>' +
+            '</div>' +
+            '<div>' +
+                '<h3 style="font-size:1rem;margin-bottom:0.5rem;">Passport Photo</h3>' +
+                '<img src="' + user.passportPhoto + '" style="width:100%;border-radius:8px;border:2px solid #e5e5e5;">' +
+                '<p style="margin-top:0.5rem;font-size:0.9rem;"><strong>Name:</strong> ' + (user.name || user.firstName || 'N/A') + '</p>' +
+            '</div>' +
+        '</div>' +
+        '<div style="background:#f5f5f5;padding:1rem;border-radius:8px;margin-bottom:1.5rem;">' +
+            '<p style="margin:0;font-size:0.9rem;"><strong>Email:</strong> ' + (user.email || 'N/A') + '</p>' +
+            '<p style="margin:0.5rem 0 0;font-size:0.9rem;"><strong>Phone:</strong> ' + (user.phone || 'N/A') + '</p>' +
+            '<p style="margin:0.5rem 0 0;font-size:0.9rem;"><strong>Submitted:</strong> ' + (user.verificationSubmittedAt ? new Date(user.verificationSubmittedAt.seconds * 1000).toLocaleString() : 'N/A') + '</p>' +
+        '</div>' +
+        '<div style="display:flex;gap:1rem;justify-content:flex-end;">' +
+            '<button onclick="rejectVerification(\'' + userId + '\')" style="padding:0.75rem 1.5rem;background:#e74c3c;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">' +
+                '<i class="fas fa-times"></i> Reject' +
+            '</button>' +
+            '<button onclick="approveVerification(\'' + userId + '\')" style="padding:0.75rem 1.5rem;background:#22c55e;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">' +
+                '<i class="fas fa-check"></i> Approve & Verify' +
+            '</button>' +
+        '</div>' +
+    '</div>';
+    
+    document.body.appendChild(modal);
+    
+    // Close on backdrop click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.remove();
+    });
+}
+
+function approveVerification(userId) {
+    if (!confirm('Approve this seller verification? They will be able to list products.')) return;
+    
+    if (typeof firebaseDB === 'undefined') return;
+    
+    firebaseDB.collection('users').doc(userId).update({
+        verified: true,
+        verificationStatus: 'approved',
+        verificationApprovedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+        alert('Seller verified successfully!');
+        document.getElementById('verificationModal').remove();
+        loadAdminUsers();
+    }).catch(function(err) {
+        alert('Error approving verification: ' + err.message);
+    });
+}
+
+function rejectVerification(userId) {
+    var reason = prompt('Reason for rejection (optional):');
+    if (reason === null) return;
+    
+    if (typeof firebaseDB === 'undefined') return;
+    
+    firebaseDB.collection('users').doc(userId).update({
+        verified: false,
+        verificationStatus: 'rejected',
+        verificationRejectionReason: reason || '',
+        verificationRejectedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function() {
+        alert('Verification rejected.');
+        document.getElementById('verificationModal').remove();
+        loadAdminUsers();
+    }).catch(function(err) {
+        alert('Error rejecting verification: ' + err.message);
+    });
+}
