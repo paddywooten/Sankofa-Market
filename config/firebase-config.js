@@ -29,26 +29,27 @@ try {
   } else {
     firebaseApp = firebase.app();
   }
-  firebaseAuth = firebase.auth();
-  firebaseDB = firebase.firestore();
-  firebaseStorage = firebase.storage();
+  
+  // Initialize each service separately so one failure doesn't break others
+  try { firebaseAuth = firebase.auth(); } catch(e) { console.error('Auth init failed:', e); }
+  try { firebaseDB = firebase.firestore(); } catch(e) { console.error('Firestore init failed:', e); }
+  try { firebaseStorage = firebase.storage(); } catch(e) { console.warn('Storage init failed (SDK may not be loaded):', e.message); }
   
   // Set auth persistence to LOCAL so it survives page redirects
-  firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
+  if (firebaseAuth) {
+    firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
+  }
   
   console.log('✅ Firebase initialized successfully');
   console.log('📦 Project:', firebaseConfig.projectId);
+  console.log('Auth:', !!firebaseAuth, '| Firestore:', !!firebaseDB, '| Storage:', !!firebaseStorage);
 } catch (error) {
   console.error('❌ Firebase initialization error:', error);
-  // Fallback: try to use existing Firebase app
-  try {
-    firebaseAuth = firebase.auth();
-    firebaseDB = firebase.firestore();
-    firebaseStorage = firebase.storage();
-    console.log('✅ Firebase recovered from existing app');
-  } catch (e) {
-    console.error('❌ Firebase recovery failed:', e);
-  }
+  // Fallback: try to recover individual services
+  try { firebaseAuth = firebase.auth(); } catch(e) {}
+  try { firebaseDB = firebase.firestore(); } catch(e) {}
+  try { firebaseStorage = firebase.storage(); } catch(e) {}
+  console.log('Firebase recovery - Auth:', !!firebaseAuth, '| Firestore:', !!firebaseDB, '| Storage:', !!firebaseStorage);
 }
 
 // Export for use in other files
