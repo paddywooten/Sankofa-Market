@@ -39,19 +39,16 @@
             <div class="dashboard-header">
                 <div class="user-profile-card">
                     <div class="user-avatar-large">
-                        <img src="" alt="Your photo" 
-                             alt="Profile" 
-                             id="userAvatar"
-                             loading="lazy"
-                             decoding="async">
+                        <img src="" alt="Profile" id="userAvatar" loading="lazy" decoding="async" style="display:none;">
+                        <div id="userAvatarFallback" style="width:96px;height:96px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;border:3px solid #0064d2;">U</div>
                         <button class="avatar-edit-btn" title="Change photo"><i class="fas fa-camera"></i></button>
                     </div>
                     <div class="user-info-large">
                         <h1 id="userName">Welcome!</h1>
                         <p id="userEmail"></p>
                         <div class="user-badges">
-                            <span class="user-badge"><i class="fas fa-check-circle"></i> Verified</span>
-                            <span class="user-badge"><i class="fas fa-calendar"></i> Member since 2024</span>
+                            <span class="user-badge" id="verifiedBadge" style="display:none;"><i class="fas fa-check-circle"></i> Verified</span>
+                            <span class="user-badge" id="memberSinceBadge"><i class="fas fa-calendar"></i> <span id="memberSinceText">Member</span></span>
                         </div>
                     </div>
                 </div>
@@ -303,7 +300,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=5"></script>
-    <script src="../../js/dashboard.js?v=3"></script>
+    <script src="../../js/dashboard.js?v=4"></script>
     <script src="../../js/chatbot.js?v=9"></script>
 </body>
 </html>

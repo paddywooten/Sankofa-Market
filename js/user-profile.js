@@ -75,6 +75,43 @@ async function loadUserProfile(user) {
                 avatar.src = data.photoURL;
             }
 
+            // Update profile display elements
+            var profileEmail = document.getElementById('profileEmail');
+            if (profileEmail) profileEmail.textContent = data.email || user.email || '';
+            
+            var profilePhone = document.getElementById('profilePhone');
+            if (profilePhone) profilePhone.textContent = data.phone || 'Not set';
+            
+            var profileLocation = document.getElementById('profileLocation');
+            if (profileLocation) {
+                var loc = '';
+                if (data.city) loc += data.city;
+                if (data.region) loc += (loc ? ', ' : '') + data.region.replace(/-/g, ' ').replace(/\w/g, function(c) { return c.toUpperCase(); });
+                profileLocation.textContent = loc || 'Not set';
+            }
+            
+            var profileMemberSince = document.getElementById('profileMemberSince');
+            if (profileMemberSince && data.createdAt) {
+                var joinDate = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+                var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                profileMemberSince.textContent = months[joinDate.getMonth()] + ' ' + joinDate.getFullYear();
+            }
+            
+            // Update verification status badge
+            var statusBadge = document.querySelector('.status-badge');
+            if (statusBadge) {
+                if (data.status === 'approved') {
+                    statusBadge.className = 'status-badge success';
+                    statusBadge.textContent = 'Verified';
+                } else if (data.status === 'pending') {
+                    statusBadge.className = 'status-badge pending';
+                    statusBadge.textContent = 'Pending Review';
+                } else {
+                    statusBadge.className = 'status-badge';
+                    statusBadge.textContent = data.status || 'Not Verified';
+                }
+            }
+
             // Store UID for later use
             window.currentUserId = user.uid;
             window.currentUserData = data;

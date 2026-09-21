@@ -74,6 +74,32 @@ function loadUserData() {
                         if (d.phone) document.getElementById('settingsPhone').value = d.phone;
                         if (d.region) document.getElementById('settingsRegion').value = d.region;
                         if (d.city) document.getElementById('settingsCity').value = d.city;
+                        
+                        // Update avatar
+                        var avatarImg = document.getElementById('userAvatar');
+                        var avatarFallback = document.getElementById('userAvatarFallback');
+                        if (d.photoURL) {
+                            avatarImg.src = d.photoURL;
+                            avatarImg.style.display = '';
+                            if (avatarFallback) avatarFallback.style.display = 'none';
+                        } else {
+                            var initial = (d.firstName || d.name || name || 'U').charAt(0).toUpperCase();
+                            if (avatarFallback) avatarFallback.textContent = initial;
+                        }
+                        
+                        // Update verified badge
+                        var verifiedBadge = document.getElementById('verifiedBadge');
+                        if (verifiedBadge && d.status === 'approved') {
+                            verifiedBadge.style.display = '';
+                        }
+                        
+                        // Update member since badge
+                        var memberSinceText = document.getElementById('memberSinceText');
+                        if (memberSinceText && d.createdAt) {
+                            var joinDate = d.createdAt.toDate ? d.createdAt.toDate() : new Date(d.createdAt);
+                            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                            memberSinceText.textContent = 'Member since ' + months[joinDate.getMonth()] + ' ' + joinDate.getFullYear();
+                        }
                     }
                 }).catch(function(e) { console.warn('Profile load error:', e); });
                 
