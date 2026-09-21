@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Users - Sankofa Market</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="../../config/firebase-config.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; }
+        .user-card { border: 1px solid #ddd; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+        .status { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-blocked { background: #fee2e2; color: #991b1b; }
+        pre { background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>All Users in Firestore</h1>
+    <div id="users-list">Loading...</div>
+    
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                document.getElementById('users-list').innerHTML = '<p>Please sign in first. <a href="/pages/auth/login.html">Login</a></p>';
+                return;
+            }
+            
+            console.log('Signed in as:', user.email);
+            
+            firebase.firestore().collection('users').get()
+                .then(function(snapshot) {
+                    var html = '<p><strong>Total users:</strong> ' + snapshot.size + '</p>';
+                    
+                    if (snapshot.empty) {
+                        html += '<p>No users found in Firestore!</p>';
+                    } else {
+                        snapshot.forEach(function(doc) {
+                            var data = doc.data();
+                            var statusClass = 'status-' + (data.status || 'unknown');
+                            html += '<div class="user-card">';
+                            html += '<h3>' + (data.name || data.firstName || 'Unknown') + '</h3>';
+                            html += '<p><strong>ID:</strong> ' + doc.id + '</p>';
+                            html += '<p><strong>Email:</strong> ' + (data.email || 'N/A') + '</p>';
+                            html += '<p><strong>Status:</strong> <span class="status ' + statusClass + '">' + (data.status || 'unknown') + '</span></p>';
+                            html += '<p><strong>Auth Provider:</strong> ' + (data.authProvider || 'N/A') + '</p>';
+                            html += '<p><strong>Role:</strong> ' + (data.role || 'N/A') + '</p>';
+                            html += '<details><summary>Full Data</summary><pre>' + JSON.stringify(data, null, 2) + '</pre></details>';
+                            html += '</div>';
+                        });
+                    }
+                    
+                    document.getElementById('users-list').innerHTML = html;
+                })
+                .catch(function(err) {
+                    document.getElementById('users-list').innerHTML = '<p style="color: red;">Error: ' + err.message + '</p>';
+                    console.error('Error:', err);
+                });
+        });
+    </script>
+</body>
+</html>
