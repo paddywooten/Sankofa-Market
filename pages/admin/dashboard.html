@@ -335,6 +335,60 @@
                 </div>
             </section>
 
+            <!-- Users Section -->
+            <section class="admin-section" id="section-users">
+                <div class="section-header">
+                    <h1><i class="fas fa-users" style="color: var(--primary-color);"></i> User Management</h1>
+                    <div class="header-actions">
+                        <input type="text" class="filter-search" placeholder="Search users..." id="userSearch" style="max-width: 250px;">
+                    </div>
+                </div>
+
+                <!-- User Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="userStatTotal">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Total Users</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #22c55e;" id="userStatApproved">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Approved</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;" id="userStatPending">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Pending</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #e74c3c;" id="userStatBlocked">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Blocked</div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="admin-table-wrapper">
+                    <table class="admin-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 2rem; color: #767676;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #ccc;"></i>
+                                    <p>Loading users...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Categories Section -->
             <section class="admin-section" id="section-categories">
                 <div class="section-header">

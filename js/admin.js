@@ -712,9 +712,143 @@ function viewProduct(productId) {
 // USER MANAGEMENT
 // ============================================================================
 
+var adminUsersCache = [];
+
 function initUserManagement() {
-    // Initialize user management functionality
-    console.log('User management initialized');
+    loadAdminUsers();
+    
+    var searchInput = document.getElementById('userSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            renderAdminUsers(this.value.toLowerCase());
+        });
+    }
+}
+
+function loadAdminUsers() {
+    var tbody = document.getElementById('usersTableBody');
+    if (!tbody) return;
+    
+    if (typeof firebaseDB === 'undefined' || firebaseDB === null) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#767676;"><p>Firebase not connected</p></td></tr>';
+        return;
+    }
+    
+    firebaseDB.collection('users').get().then(function(snapshot) {
+        adminUsersCache = [];
+        snapshot.forEach(function(doc) {
+            adminUsersCache.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Update stats
+        var total = adminUsersCache.length;
+        var approved = 0, pending = 0, blocked = 0;
+        adminUsersCache.forEach(function(u) {
+            if (u.status === 'approved') approved++;
+            else if (u.status === 'pending') pending++;
+            else if (u.status === 'blocked' || u.status === 'suspended') blocked++;
+        });
+        
+        var el;
+        el = document.getElementById('userStatTotal'); if (el) el.textContent = total;
+        el = document.getElementById('userStatApproved'); if (el) el.textContent = approved;
+        el = document.getElementById('userStatPending'); if (el) el.textContent = pending;
+        el = document.getElementById('userStatBlocked'); if (el) el.textContent = blocked;
+        
+        // Also update nav count badge
+        updateCount('countUsers', total);
+        
+        renderAdminUsers('');
+    }).catch(function(err) {
+        console.error('Error loading users:', err);
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#e74c3c;"><p>Error: ' + err.message + '</p></td></tr>';
+    });
+}
+
+function renderAdminUsers(searchTerm) {
+    var tbody = document.getElementById('usersTableBody');
+    if (!tbody) return;
+    
+    var filtered = adminUsersCache;
+    if (searchTerm) {
+        filtered = adminUsersCache.filter(function(u) {
+            var name = (u.name || u.firstName || '').toLowerCase();
+            var email = (u.email || '').toLowerCase();
+            var phone = (u.phone || '').toLowerCase();
+            return name.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
+        });
+    }
+    
+    // Filter out admins
+    filtered = filtered.filter(function(u) { return u.role !== 'admin'; });
+    
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-users" style="font-size:2rem;color:#ccc;display:block;margin-bottom:0.5rem;"></i><p>' + (searchTerm ? 'No users match your search' : 'No registered users yet') + '</p></td></tr>';
+        return;
+    }
+    
+    var html = '';
+    filtered.forEach(function(u) {
+        var name = u.name || (u.firstName ? u.firstName + ' ' + (u.lastName || '') : 'Unknown');
+        var email = u.email || '—';
+        var phone = u.phone || '—';
+        var status = u.status || 'pending';
+        var statusClass = status === 'approved' ? 'delivered' : (status === 'pending' ? 'pending' : 'cancelled');
+        var statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        
+        var joinDate = '—';
+        if (u.createdAt) {
+            var d = u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt);
+            joinDate = d.toLocaleDateString();
+        }
+        
+        var initial = name.charAt(0).toUpperCase();
+        var avatarHtml = u.photoURL 
+            ? '<img src="' + u.photoURL + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">'
+            : '<div style="width:36px;height:36px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.85rem;">' + initial + '</div>';
+        
+        var actions = '';
+        if (status === 'pending') {
+            actions = '<button class="btn btn-small" onclick="approveUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#22c55e;color:white;border:none;"><i class="fas fa-check"></i> Approve</button> ' +
+                      '<button class="btn btn-small" onclick="blockUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#e74c3c;color:white;border:none;"><i class="fas fa-ban"></i> Block</button>';
+        } else if (status === 'approved') {
+            actions = '<button class="btn btn-small" onclick="blockUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#e74c3c;color:white;border:none;"><i class="fas fa-ban"></i> Block</button>';
+        } else {
+            actions = '<button class="btn btn-small" onclick="approveUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#22c55e;color:white;border:none;"><i class="fas fa-check"></i> Approve</button>';
+        }
+        
+        html += '<tr>' +
+            '<td><div style="display:flex;align-items:center;gap:0.65rem;">' + avatarHtml + '<strong style="font-size:0.85rem;">' + name + '</strong></div></td>' +
+            '<td style="font-size:0.85rem;">' + email + '</td>' +
+            '<td style="font-size:0.85rem;">' + phone + '</td>' +
+            '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+            '<td style="font-size:0.82rem;color:#767676;">' + joinDate + '</td>' +
+            '<td>' + actions + '</td>' +
+        '</tr>';
+    });
+    
+    tbody.innerHTML = html;
+}
+
+function approveUser(userId) {
+    if (typeof firebaseDB === 'undefined') return;
+    firebaseDB.collection('users').doc(userId).update({ status: 'approved' }).then(function() {
+        showFlashMessage('User approved!', 'success');
+        loadAdminUsers();
+    }).catch(function(err) {
+        showFlashMessage('Error: ' + err.message, 'error');
+    });
+}
+
+function blockUser(userId) {
+    if (!confirm('Block this user? They will not be able to log in.')) return;
+    if (typeof firebaseDB === 'undefined') return;
+    firebaseDB.collection('users').doc(userId).update({ status: 'blocked' }).then(function() {
+        showFlashMessage('User blocked', 'success');
+        loadAdminUsers();
+    }).catch(function(err) {
+        showFlashMessage('Error: ' + err.message, 'error');
+    });
 }
 
 // ============================================================================
