@@ -153,6 +153,7 @@
         googleBtn.addEventListener('click', async function() {
             if (typeof firebase === 'undefined' || !firebase.auth) { showFlash('Firebase not configured', 'error'); return; }
             
+            alert('🔐 Google sign-in handler is running!');
             console.log('🔐 Starting Google sign-in...');
             console.log('firebase.auth:', !!firebase.auth, '| firebase.firestore:', !!firebase.firestore);
             
@@ -164,6 +165,7 @@
                 
                 // Check/create Firestore document
                 if (firebase.firestore) {
+                    alert('📄 Checking Firestore document for UID: ' + user.uid);
                     console.log('📄 Checking Firestore document...');
                     try {
                         var userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
