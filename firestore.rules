@@ -50,8 +50,8 @@ service cloud.firestore {
       // Users can update their own profile, admins can update any
       allow update: if isOwner(userId) || isAdmin();
       
-      // Only admins can delete users
-      allow delete: if isAdmin();
+      // Users can delete their own profile, admins can delete any
+      allow delete: if isOwner(userId) || isAdmin();
     }
     
     // ========================================================================
