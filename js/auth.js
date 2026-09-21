@@ -94,7 +94,41 @@ function initLogin() {
         try {
             if (typeof firebaseAuth !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
                 const provider = new firebase.auth.GoogleAuthProvider();
-                await firebaseAuth.signInWithPopup(provider);
+                const result = await firebaseAuth.signInWithPopup(provider);
+                const user = result.user;
+                
+                // Create Firestore document if it doesn't exist
+                if (typeof firebaseDB !== 'undefined') {
+                    const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
+                    if (!userDoc.exists) {
+                        var nameParts = (user.displayName || '').split(' ');
+                        await firebaseDB.collection('users').doc(user.uid).set({
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            name: user.displayName || '',
+                            email: user.email || '',
+                            phone: user.phoneNumber || '',
+                            photoURL: user.photoURL || '',
+                            role: 'user',
+                            status: 'pending',
+                            authProvider: 'google',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    } else {
+                        // Check if user is approved
+                        var data = userDoc.data();
+                        if (data.status === 'pending') {
+                            await firebaseAuth.signOut();
+                            showFlashMessage('Your account is pending admin approval.', 'warning');
+                            return;
+                        } else if (data.status === 'blocked' || data.status === 'suspended') {
+                            await firebaseAuth.signOut();
+                            showFlashMessage('Your account has been blocked. Contact support.', 'error');
+                            return;
+                        }
+                    }
+                }
+                
                 showFlashMessage('Signed in with Google!', 'success');
                 redirectAfterAuth();
             } else {
@@ -263,6 +297,9 @@ function initRegister() {
                     });
                 }
                 
+                // Send welcome email
+                sendWelcomeEmail(email, firstName);
+                
                 // Sign out user since account is pending approval
                 await firebaseAuth.signOut();
                 
@@ -301,9 +338,34 @@ function initRegister() {
         try {
             if (typeof firebaseAuth !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
                 const provider = new firebase.auth.GoogleAuthProvider();
-                await firebaseAuth.signInWithPopup(provider);
-                showFlashMessage('Signed up with Google!', 'success');
-                redirectAfterAuth();
+                const result = await firebaseAuth.signInWithPopup(provider);
+                const user = result.user;
+                
+                // Create Firestore document for new Google user
+                if (typeof firebaseDB !== 'undefined') {
+                    var nameParts = (user.displayName || '').split(' ');
+                    await firebaseDB.collection('users').doc(user.uid).set({
+                        firstName: nameParts[0] || '',
+                        lastName: nameParts.slice(1).join(' ') || '',
+                        name: user.displayName || '',
+                        email: user.email || '',
+                        phone: user.phoneNumber || '',
+                        photoURL: user.photoURL || '',
+                        role: 'user',
+                        status: 'pending',
+                        authProvider: 'google',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                }
+                
+                // Send welcome email
+                sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
+                
+                showFlashMessage('Signed up with Google! Your account is pending admin approval.', 'success');
+                await firebaseAuth.signOut();
+                setTimeout(function() {
+                    window.location.href = 'login.html';
+                }, 2000);
             } else {
                 showFlashMessage('Google sign up requires Firebase setup', 'warning');
             }
@@ -412,4 +474,46 @@ function getAuthErrorMessage(code) {
         'auth/network-request-failed': 'Network error. Check your connection'
     };
     return messages[code] || 'An error occurred. Please try again.';
+}
+
+// ============================================================================
+// WELCOME EMAIL (via EmailJS - free tier: 200 emails/month)
+// ============================================================================
+// SETUP INSTRUCTIONS:
+// 1. Create a free account at https://www.emailjs.com
+// 2. Add an email service (connect your Gmail: sankofamarketgh@gmail.com)
+// 3. Create an email template with variables: {{to_email}}, {{user_name}}
+// 4. Replace the IDs below with your actual EmailJS IDs
+
+var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+var EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
+var EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
+
+function sendWelcomeEmail(toEmail, userName) {
+    // Skip if EmailJS is not configured
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
+        console.log('📧 Welcome email skipped - EmailJS not configured. Set up at https://www.emailjs.com');
+        return;
+    }
+    
+    if (typeof emailjs === 'undefined') {
+        console.warn('EmailJS SDK not loaded');
+        return;
+    }
+    
+    try {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: toEmail,
+            user_name: userName,
+            from_name: 'Sankofa Market',
+            message: 'Welcome to Sankofa Market, ' + userName + '! Your account has been created successfully and is pending admin approval. You will receive another email once your account is approved. Thank you for joining Ghana\'s #1 online marketplace!'
+        }).then(function() {
+            console.log('✅ Welcome email sent to ' + toEmail);
+        }).catch(function(err) {
+            console.error('Failed to send welcome email:', err);
+        });
+    } catch (err) {
+        console.error('Welcome email error:', err);
+    }
 }
