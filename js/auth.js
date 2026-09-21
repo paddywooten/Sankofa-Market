@@ -114,6 +114,8 @@ function initLogin() {
                             authProvider: 'google',
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
+                        // Send welcome email to new Google user
+                        sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
                     } else {
                         // Check if user is approved
                         var data = userDoc.data();
