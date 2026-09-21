@@ -485,9 +485,9 @@ function getAuthErrorMessage(code) {
 // 3. Create an email template with variables: {{to_email}}, {{user_name}}
 // 4. Replace the IDs below with your actual EmailJS IDs
 
-var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
-var EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
-var EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
+var EMAILJS_PUBLIC_KEY = 'nQCOm9xJnMIZHqmIW';
+var EMAILJS_SERVICE_ID = 'service_ud6z4l6';
+var EMAILJS_TEMPLATE_ID = 'welcome_template';
 
 function sendWelcomeEmail(toEmail, userName) {
     // Skip if EmailJS is not configured
