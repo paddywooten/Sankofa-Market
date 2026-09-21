@@ -150,15 +150,75 @@
         });
 
         // Google login
-        googleBtn.addEventListener('click', function() {
+        googleBtn.addEventListener('click', async function() {
             if (typeof firebase === 'undefined' || !firebase.auth) { showFlash('Firebase not configured', 'error'); return; }
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider)
-                .then(function(result) {
-                    showFlash('Signed in with Google!', 'success');
-                    setTimeout(function() { window.location.replace('../user/dashboard.html'); }, 1200);
-                })
-                .catch(function(err) { showFlash(err.message || 'Google sign-in failed', 'error'); });
+            
+            console.log('🔐 Starting Google sign-in...');
+            console.log('firebase.auth:', !!firebase.auth, '| firebase.firestore:', !!firebase.firestore);
+            
+            try {
+                var provider = new firebase.auth.GoogleAuthProvider();
+                var result = await firebase.auth().signInWithPopup(provider);
+                var user = result.user;
+                console.log('✅ Google sign-in success. UID:', user.uid, '| Email:', user.email);
+                
+                // Check/create Firestore document
+                if (firebase.firestore) {
+                    console.log('📄 Checking Firestore document...');
+                    try {
+                        var userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                        console.log('Firestore doc exists:', userDoc.exists);
+                        
+                        if (!userDoc.exists) {
+                            console.log('📝 Creating new Firestore document for Google user...');
+                            var nameParts = (user.displayName || '').split(' ');
+                            await firebase.firestore().collection('users').doc(user.uid).set({
+                                firstName: nameParts[0] || '',
+                                lastName: nameParts.slice(1).join(' ') || '',
+                                name: user.displayName || '',
+                                email: user.email || '',
+                                phone: user.phoneNumber || '',
+                                photoURL: user.photoURL || '',
+                                role: 'user',
+                                status: 'pending',
+                                authProvider: 'google',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            console.log('✅ Firestore document created');
+                            // Send welcome email
+                            if (typeof sendWelcomeEmail === 'function') {
+                                sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
+                            }
+                            await firebase.auth().signOut();
+                            showFlash('Account created! Pending admin approval. Check your email.', 'success');
+                            return;
+                        } else {
+                            var data = userDoc.data();
+                            console.log('User status:', data.status);
+                            if (data.status === 'pending') {
+                                await firebase.auth().signOut();
+                                showFlash('Your account is pending admin approval.', 'warning');
+                                return;
+                            }
+                            if (data.status === 'blocked' || data.status === 'suspended') {
+                                await firebase.auth().signOut();
+                                showFlash('Your account has been blocked. Contact support.', 'error');
+                                return;
+                            }
+                        }
+                    } catch (err) {
+                        console.error('❌ Firestore error:', err);
+                        showFlash('Database error: ' + err.message, 'error');
+                        return;
+                    }
+                }
+                
+                showFlash('Signed in with Google!', 'success');
+                setTimeout(function() { window.location.replace('../user/dashboard.html'); }, 1200);
+            } catch (err) {
+                console.error('❌ Google sign-in error:', err);
+                showFlash(err.message || 'Google sign-in failed', 'error');
+            }
         });
 
         // Form submit
