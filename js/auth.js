@@ -93,42 +93,62 @@ function initLogin() {
     googleBtn.addEventListener('click', async function() {
         try {
             if (typeof firebaseAuth !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
+                console.log('🔐 Starting Google sign-in...');
+                console.log('firebaseAuth:', !!firebaseAuth, '| firebaseDB:', !!firebaseDB);
+                
                 const provider = new firebase.auth.GoogleAuthProvider();
                 const result = await firebaseAuth.signInWithPopup(provider);
                 const user = result.user;
+                console.log('✅ Google sign-in success. UID:', user.uid, '| Email:', user.email);
                 
                 // Create Firestore document if it doesn't exist
-                if (typeof firebaseDB !== 'undefined') {
-                    const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
-                    if (!userDoc.exists) {
-                        var nameParts = (user.displayName || '').split(' ');
-                        await firebaseDB.collection('users').doc(user.uid).set({
-                            firstName: nameParts[0] || '',
-                            lastName: nameParts.slice(1).join(' ') || '',
-                            name: user.displayName || '',
-                            email: user.email || '',
-                            phone: user.phoneNumber || '',
-                            photoURL: user.photoURL || '',
-                            role: 'user',
-                            status: 'pending',
-                            authProvider: 'google',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        // Send welcome email to new Google user
-                        sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
-                    } else {
-                        // Check if user is approved
-                        var data = userDoc.data();
-                        if (data.status === 'pending') {
-                            await firebaseAuth.signOut();
-                            showFlashMessage('Your account is pending admin approval.', 'warning');
-                            return;
-                        } else if (data.status === 'blocked' || data.status === 'suspended') {
-                            await firebaseAuth.signOut();
-                            showFlashMessage('Your account has been blocked. Contact support.', 'error');
-                            return;
+                if (typeof firebaseDB !== 'undefined' && firebaseDB !== null) {
+                    console.log('📄 Checking Firestore document for user...');
+                    try {
+                        const userDoc = await firebaseDB.collection('users').doc(user.uid).get();
+                        console.log('Firestore doc exists:', userDoc.exists);
+                        
+                        if (!userDoc.exists) {
+                            console.log('📝 Creating new Firestore document for Google user...');
+                            var nameParts = (user.displayName || '').split(' ');
+                            await firebaseDB.collection('users').doc(user.uid).set({
+                                firstName: nameParts[0] || '',
+                                lastName: nameParts.slice(1).join(' ') || '',
+                                name: user.displayName || '',
+                                email: user.email || '',
+                                phone: user.phoneNumber || '',
+                                photoURL: user.photoURL || '',
+                                role: 'user',
+                                status: 'pending',
+                                authProvider: 'google',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            console.log('✅ Firestore document created successfully');
+                            // Send welcome email to new Google user
+                            sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
+                        } else {
+                            console.log('📄 User document already exists. Status:', userDoc.data().status);
+                            // Check if user is approved
+                            var data = userDoc.data();
+                            if (data.status === 'pending') {
+                                await firebaseAuth.signOut();
+                                showFlashMessage('Your account is pending admin approval.', 'warning');
+                                return;
+                            } else if (data.status === 'blocked' || data.status === 'suspended') {
+                                await firebaseAuth.signOut();
+                                showFlashMessage('Your account has been blocked. Contact support.', 'error');
+                                return;
+                            }
                         }
+                    } catch (err) {
+                        console.error('❌ Firestore error:', err);
+                        showFlashMessage('Error: ' + err.message, 'error');
+                        return;
                     }
+                } else {
+                    console.error('❌ firebaseDB is null or undefined!');
+                    showFlashMessage('Database error. Please try again.', 'error');
+                    return;
                 }
                 
                 showFlashMessage('Signed in with Google!', 'success');
