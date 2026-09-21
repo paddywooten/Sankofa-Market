@@ -258,3 +258,76 @@ function initSettingsForm() {
         }
     });
 }
+
+// ============================================================================
+// ACCOUNT DEACTIVATE & DELETE (Dashboard Settings)
+// ============================================================================
+
+(function() {
+    // Deactivate Account
+    var deactivateBtn = document.getElementById('dashDeactivateBtn');
+    if (deactivateBtn) {
+        deactivateBtn.addEventListener('click', function() {
+            if (!confirm('Are you sure you want to deactivate your account?\n\nYour listings will be hidden and you won\'t be able to buy or sell until you reactivate.\n\nYou can reactivate by contacting support at sankofamarketgh@gmail.com')) return;
+            
+            if (typeof firebaseAuth === 'undefined' || !firebaseAuth.currentUser) return;
+            var uid = firebaseAuth.currentUser.uid;
+            
+            deactivateBtn.disabled = true;
+            deactivateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deactivating...';
+            
+            firebase.firestore().collection('users').doc(uid).update({
+                status: 'deactivated',
+                deactivatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(function() {
+                return firebaseAuth.signOut();
+            }).then(function() {
+                showFlashMessage('Account deactivated. Contact support to reactivate.', 'success');
+                setTimeout(function() { window.location.href = '../../index.html'; }, 2000);
+            }).catch(function(err) {
+                showFlashMessage('Error: ' + err.message, 'error');
+                deactivateBtn.disabled = false;
+                deactivateBtn.innerHTML = '<i class="fas fa-pause"></i> Deactivate';
+            });
+        });
+    }
+    
+    // Delete Account
+    var deleteBtn = document.getElementById('dashDeleteAccountBtn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            if (!confirm('⚠️ WARNING: This action is PERMANENT!\n\nAll your data, listings, orders, and messages will be permanently deleted.\n\nThis CANNOT be undone.')) return;
+            
+            var input = prompt('Type DELETE to confirm account deletion:');
+            if (input !== 'DELETE') {
+                showFlashMessage('Account deletion cancelled.', 'info');
+                return;
+            }
+            
+            if (typeof firebaseAuth === 'undefined' || !firebaseAuth.currentUser) return;
+            var uid = firebaseAuth.currentUser.uid;
+            
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            
+            // Delete user's products
+            firebase.firestore().collection('products').where('sellerId', '==', uid).get().then(function(snap) {
+                var batch = firebase.firestore().batch();
+                snap.forEach(function(doc) { batch.delete(doc.ref); });
+                return batch.commit();
+            }).then(function() {
+                // Delete user document
+                return firebase.firestore().collection('users').doc(uid).delete();
+            }).then(function() {
+                // Delete auth account
+                return firebaseAuth.currentUser.delete();
+            }).then(function() {
+                window.location.href = '../../index.html';
+            }).catch(function(err) {
+                showFlashMessage('Error deleting account. Please contact support at sankofamarketgh@gmail.com: ' + err.message, 'error');
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete Account';
+            });
+        });
+    }
+})();

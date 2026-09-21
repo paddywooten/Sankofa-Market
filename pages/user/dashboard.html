@@ -280,6 +280,32 @@
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                         </div>
                     </form>
+
+                    <!-- Danger Zone -->
+                    <div style="margin-top: 2rem; padding: 1.5rem; border: 2px solid #e74c3c; border-radius: 12px; background: rgba(231,76,60,0.03);">
+                        <h3 style="color: #e74c3c; margin-bottom: 0.5rem; font-size: 1rem;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+                        <p style="font-size: 0.85rem; color: #767676; margin-bottom: 1rem;">These actions are irreversible. Please be careful.</p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-top: 1px solid rgba(231,76,60,0.15);">
+                            <div>
+                                <strong style="font-size: 0.9rem;">Deactivate Account</strong>
+                                <p style="font-size: 0.8rem; color: #767676; margin: 0.15rem 0 0;">Temporarily hide your profile and listings. You can reactivate later.</p>
+                            </div>
+                            <button class="btn btn-outline btn-small" id="dashDeactivateBtn" style="color: #e74c3c; border-color: #e74c3c; white-space: nowrap;">
+                                <i class="fas fa-pause"></i> Deactivate
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-top: 1px solid rgba(231,76,60,0.15);">
+                            <div>
+                                <strong style="font-size: 0.9rem;">Delete Account</strong>
+                                <p style="font-size: 0.8rem; color: #767676; margin: 0.15rem 0 0;">Permanently delete your account, listings, and all data. Cannot be undone.</p>
+                            </div>
+                            <button class="btn btn-small" id="dashDeleteAccountBtn" style="background: #e74c3c; color: white; border: none; white-space: nowrap;">
+                                <i class="fas fa-trash"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -300,7 +326,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="../../config/firebase-config.js"></script>
     <script src="../../js/main.js?v=5"></script>
-    <script src="../../js/dashboard.js?v=4"></script>
+    <script src="../../js/dashboard.js?v=5"></script>
     <script src="../../js/chatbot.js?v=9"></script>
 </body>
 </html>
