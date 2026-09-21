@@ -161,6 +161,7 @@
                 var provider = new firebase.auth.GoogleAuthProvider();
                 var result = await firebase.auth().signInWithPopup(provider);
                 var user = result.user;
+                alert('✅ Google sign-in success! UID: ' + user.uid + ' | Email: ' + user.email + ' | firestore exists: ' + !!firebase.firestore);
                 console.log('✅ Google sign-in success. UID:', user.uid, '| Email:', user.email);
                 
                 // Check/create Firestore document
