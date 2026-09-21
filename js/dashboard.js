@@ -81,6 +81,25 @@ function loadUserData() {
                 firebaseDB.collection('products').where('sellerId', '==', user.uid).get().then(function(snap) {
                     document.getElementById('totalListings').textContent = snap.size;
                 }).catch(function() {});
+                
+                // Load unread message count
+                firebaseDB.collection('conversations')
+                    .where('participants', 'array-contains', user.uid)
+                    .get().then(function(snap) {
+                        var unread = 0;
+                        snap.forEach(function(doc) {
+                            var d = doc.data();
+                            if (d.unreadBy && d.unreadBy.indexOf(user.uid) >= 0) {
+                                unread++;
+                            }
+                        });
+                        // Update dashboard badge
+                        var badge = document.getElementById('dashMsgBadge');
+                        if (badge && unread > 0) {
+                            badge.textContent = unread;
+                            badge.style.display = '';
+                        }
+                    }).catch(function() {});
             }
         });
     }
