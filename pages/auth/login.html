@@ -171,6 +171,7 @@
                     try {
                         var userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
                         console.log('Firestore doc exists:', userDoc.exists);
+                        alert('Firestore doc exists: ' + userDoc.exists);
                         
                         if (!userDoc.exists) {
                             console.log('📝 Creating new Firestore document for Google user...');
@@ -188,11 +189,13 @@
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                             console.log('✅ Firestore document created');
+                            alert('✅ Firestore document created successfully!');
                             // Send welcome email
                             if (typeof sendWelcomeEmail === 'function') {
                                 sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
                             }
                             await firebase.auth().signOut();
+                            alert('Signed out. Account created with status: pending');
                             showFlash('Account created! Pending admin approval. Check your email.', 'success');
                             return;
                         } else {
