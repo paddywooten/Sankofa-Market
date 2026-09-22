@@ -798,7 +798,8 @@ function renderAdminUsers(searchTerm) {
         var phone = u.phone || '—';
         var status = u.status || 'pending';
         var statusClass = status === 'approved' ? 'delivered' : (status === 'pending' ? 'pending' : 'cancelled');
-        var statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        var statusLabel = status === 'approved' ? 'Approved' : (status === 'pending' ? 'Pending' : 'Blocked');
+        
         
         var joinDate = '—';
         if (u.createdAt) {

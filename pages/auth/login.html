@@ -184,7 +184,7 @@
                                 phone: user.phoneNumber || '',
                                 photoURL: user.photoURL || '',
                                 role: 'user',
-                                status: 'approved',
+                                status: 'pending',
                                 verified: false,
                                 authProvider: 'google',
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -196,8 +196,9 @@
                                 sendWelcomeEmail(user.email, user.displayName || nameParts[0] || 'there');
                             }
                             await firebase.auth().signOut();
-                            showFlash('Account created! You can now log in and start shopping.', 'success');
-                            setTimeout(function() { window.location.href = '../user/dashboard.html'; }, 1200);
+                            showFlash('Account created! Your account is pending admin approval.', 'success');
+                            await firebase.auth().signOut();
+                            setTimeout(function() { window.location.href = 'login.html'; }, 2000);
                             return;
                         } else {
                             var data = userDoc.data();
