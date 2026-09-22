@@ -787,7 +787,7 @@ function renderAdminUsers(searchTerm) {
     filtered = filtered.filter(function(u) { return u.role !== 'admin'; });
     
     if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-users" style="font-size:2rem;color:#ccc;display:block;margin-bottom:0.5rem;"></i><p>' + (searchTerm ? 'No users match your search' : 'No registered users yet') + '</p></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-users" style="font-size:2rem;color:#ccc;display:block;margin-bottom:0.5rem;"></i><p>' + (searchTerm ? 'No users match your search' : 'No registered users yet') + '</p></td></tr>';
         return;
     }
     
@@ -800,6 +800,27 @@ function renderAdminUsers(searchTerm) {
         var statusClass = status === 'approved' ? 'delivered' : (status === 'pending' ? 'pending' : 'cancelled');
         var statusLabel = status === 'approved' ? 'Approved' : (status === 'pending' ? 'Pending' : 'Blocked');
         
+        // Ghana Card info
+        var ghanaCardHtml = '—';
+        if (u.ghanaCard && u.ghanaCard.number) {
+            ghanaCardHtml = '<div style="font-size:0.82rem;"><strong>' + u.ghanaCard.number + '</strong></div>';
+            if (u.ghanaCard.name) {
+                ghanaCardHtml += '<div style="font-size:0.75rem;color:#767676;">' + u.ghanaCard.name + '</div>';
+            }
+        }
+        
+        // Sign-up method
+        var signUpMethod = u.authProvider === 'google' ? '<i class="fab fa-google" style="color:#ea4335;"></i> Google' : '<i class="fas fa-envelope" style="color:#0064d2;"></i> Email';
+        
+        // Verified status (seller verification)
+        var verifiedHtml = '<span style="color:#767676;font-size:0.8rem;">Not verified</span>';
+        if (u.verified === true) {
+            verifiedHtml = '<span class="status-badge" style="background:#22c55e;color:white;">✓ Verified</span>';
+        } else if (u.verificationStatus === 'pending') {
+            verifiedHtml = '<span class="status-badge" style="background:#f59e0b;color:white;">Pending</span>';
+        } else if (u.verificationStatus === 'rejected') {
+            verifiedHtml = '<span class="status-badge" style="background:#e74c3c;color:white;">Rejected</span>';
+        }
         
         var joinDate = '—';
         if (u.createdAt) {
@@ -818,6 +839,9 @@ function renderAdminUsers(searchTerm) {
                       '<button class="btn btn-small" onclick="blockUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#e74c3c;color:white;border:none;"><i class="fas fa-ban"></i> Block</button>';
         } else if (status === 'approved') {
             actions = '<button class="btn btn-small" onclick="blockUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#e74c3c;color:white;border:none;"><i class="fas fa-ban"></i> Block</button>';
+            if (u.verificationStatus === 'pending') {
+                actions += ' <button class="btn btn-small" onclick="viewVerification(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#0064d2;color:white;border:none;"><i class="fas fa-eye"></i> Review</button>';
+            }
         } else {
             actions = '<button class="btn btn-small" onclick="approveUser(' + "'" + u.id + "'" + ')" style="padding:0.3rem 0.6rem;font-size:0.75rem;background:#22c55e;color:white;border:none;"><i class="fas fa-check"></i> Approve</button>';
         }
@@ -826,7 +850,10 @@ function renderAdminUsers(searchTerm) {
             '<td><div style="display:flex;align-items:center;gap:0.65rem;">' + avatarHtml + '<strong style="font-size:0.85rem;">' + name + '</strong></div></td>' +
             '<td style="font-size:0.85rem;">' + email + '</td>' +
             '<td style="font-size:0.85rem;">' + phone + '</td>' +
+            '<td>' + ghanaCardHtml + '</td>' +
+            '<td style="font-size:0.82rem;">' + signUpMethod + '</td>' +
             '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+            '<td>' + verifiedHtml + '</td>' +
             '<td style="font-size:0.82rem;color:#767676;">' + joinDate + '</td>' +
             '<td>' + actions + '</td>' +
         '</tr>';
