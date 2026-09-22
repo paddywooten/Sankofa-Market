@@ -1800,9 +1800,7 @@ window.adminDashboard = {
     editUser,
     suspendUser,
     deleteUser,
-    approveUser,
-    rejectUser,
-    reactivateUser
+    approveUser
 };
 
 // ============================================================================
