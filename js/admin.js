@@ -2979,16 +2979,34 @@ function approveVerification(userId) {
     
     if (typeof firebaseDB === 'undefined') return;
     
+    // Disable approve button immediately
+    var approveBtn = document.querySelector('#verificationModal button[onclick*="approveVerification"]');
+    if (approveBtn) {
+        approveBtn.disabled = true;
+        approveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Approving...';
+    }
+    
     firebaseDB.collection('users').doc(userId).update({
         verified: true,
         verificationStatus: 'approved',
         verificationApprovedAt: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function() {
-        alert('Seller verified successfully!');
-        document.getElementById('verificationModal').remove();
+        // Close modal immediately
+        var modal = document.getElementById('verificationModal');
+        if (modal) modal.remove();
+        
+        // Show success message
+        showAdminFlash('Seller verified successfully!', 'success');
+        
+        // Refresh users list
         loadAdminUsers();
     }).catch(function(err) {
         alert('Error approving verification: ' + err.message);
+        // Re-enable button on error
+        if (approveBtn) {
+            approveBtn.disabled = false;
+            approveBtn.innerHTML = '<i class="fas fa-check"></i> Approve & Verify';
+        }
     });
 }
 
@@ -2998,16 +3016,34 @@ function rejectVerification(userId) {
     
     if (typeof firebaseDB === 'undefined') return;
     
+    // Disable reject button immediately
+    var rejectBtn = document.querySelector('#verificationModal button[onclick*="rejectVerification"]');
+    if (rejectBtn) {
+        rejectBtn.disabled = true;
+        rejectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Rejecting...';
+    }
+    
     firebaseDB.collection('users').doc(userId).update({
         verified: false,
         verificationStatus: 'rejected',
         verificationRejectionReason: reason || '',
         verificationRejectedAt: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function() {
-        alert('Verification rejected.');
-        document.getElementById('verificationModal').remove();
+        // Close modal immediately
+        var modal = document.getElementById('verificationModal');
+        if (modal) modal.remove();
+        
+        // Show success message
+        showAdminFlash('Verification rejected.', 'warning');
+        
+        // Refresh users list
         loadAdminUsers();
     }).catch(function(err) {
         alert('Error rejecting verification: ' + err.message);
+        // Re-enable button on error
+        if (rejectBtn) {
+            rejectBtn.disabled = false;
+            rejectBtn.innerHTML = '<i class="fas fa-times"></i> Reject';
+        }
     });
 }
