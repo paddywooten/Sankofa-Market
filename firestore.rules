@@ -1144,8 +1144,9 @@ service cloud.firestore {
 
       // Waitlist subcollection — users waiting for scheduled auction
       match /waitlist/{userId} {
-        // Anyone can read waitlist count (public) — seller needs to see number
-        allow read: if true;
+        // Signed-in members only. The document id is the member's uid, so public
+        // reads would expose who is interested in every auction.
+        allow read: if isAuthenticated();
         // Any authenticated non-seller can join; must match userId
         allow create: if isAuthenticated() && request.auth.uid == userId && request.auth.uid != get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId;
         // User can leave their own waitlist entry; the seller can clear the list when
@@ -1159,8 +1160,9 @@ service cloud.firestore {
 
       // Chat subcollection — group chat for wait room → live (seller + waitlist + bidders)
       match /chat/{messageId} {
-        // Anyone can read chat history (public to encourage joining)
-        allow read: if true;
+        // Signed-in members only. Messages can contain personal details and the
+        // sender's uid, so anonymous reads are not allowed.
+        allow read: if isAuthenticated();
         // Any signed-in user can send (seller + waitlist + bidders); must match senderId and valid text
         allow create: if isAuthenticated()
           && request.auth.uid == request.resource.data.senderId

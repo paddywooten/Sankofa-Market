@@ -233,6 +233,58 @@ function auctionBelongsToViewer(auction) {
     return !!uid && !!(auction && auction.sellerId) && uid === String(auction.sellerId);
 }
 
+// The waitlist and chat are readable only by signed-in members. window.currentUser
+// can be populated before Auth has hydrated, so check the SDK user that actually
+// signs the Firestore request.
+function auctionHasAuthUser() {
+    try {
+        return !!(typeof firebaseAuth !== 'undefined' && firebaseAuth && firebaseAuth.currentUser);
+    } catch (e) { return false; }
+}
+
+function stopAuctionRealtimeReads() {
+    if (_waitlistUnsub) try { _waitlistUnsub(); } catch (e) {}
+    _waitlistUnsub = null;
+    if (window._waitlistSync) { try { clearInterval(window._waitlistSync); } catch (e) {} window._waitlistSync = null; }
+    if (_chatUnsub) try { _chatUnsub(); } catch (e) {}
+    _chatUnsub = null;
+}
+
+// Start or stop the access-controlled subscriptions as the user signs in or out.
+function syncAuctionRealtimeAccess() {
+    if (!_currentAuctionId) return;
+    if (auctionHasAuthUser()) {
+        listenWaitlist(_currentAuctionId);
+        listenAuctionChat(_currentAuctionId);
+        return;
+    }
+    stopAuctionRealtimeReads();
+    _waitlistCache = [];
+    _chatCache = [];
+    updateWaitlistUI();
+    renderAuctionChat([]);
+    var st = _currentAuction ? getAuctionStatus(_currentAuction, Date.now()) : '';
+    if (st === 'scheduled' || st === 'live') updateChatComposerState();
+}
+
+function updateChatComposerState() {
+    var input = document.getElementById('auctionChatInput');
+    var btn = document.getElementById('auctionChatSend');
+    if (!input && !btn) return;
+    var signedIn = auctionHasAuthUser();
+    if (input) {
+        input.disabled = !signedIn;
+        if (!signedIn) {
+            input.placeholder = 'Sign in to join the chat';
+            input.style.background = '#f3f4f6';
+        }
+    }
+    if (btn) {
+        btn.disabled = !signedIn;
+        btn.style.opacity = signedIn ? '1' : '0.5';
+    }
+}
+
 function renderLiveAuctions(list, container){
     if (!container) return;
     if (list.length===0){
@@ -446,6 +498,9 @@ function initAuctionDetail(){
                     ensureAuctionWinnerOrder(_currentAuction);
                     updateWaitlistUI();
                 }
+                // Waitlist/chat are members-only, so (re)start them only once the
+                // current Firebase user is known, and stop them again on sign-out.
+                syncAuctionRealtimeAccess();
             }, 350);
         });
     }
@@ -474,10 +529,8 @@ function initAuctionDetail(){
         if (root) root.innerHTML = '<p style="color:#e74c3c;padding:2rem;text-align:center;">Error: '+escapeHtml(err.message)+'</p>';
     });
 
-    // Waitlist listener - seller sees count (single)
-    listenWaitlist(id);
-    // Group chat for wait room → live
-    listenAuctionChat(id);
+    // Waitlist count and group chat are readable only by signed-in members. The auth
+    // listener above starts them once the current user is known (and on sign-in).
 
     // Bids listener
     _bidsUnsub = firebaseDB.collection('auctions').doc(id).collection('bids').orderBy('createdAt','desc').limit(30).onSnapshot(function(snap){
@@ -699,7 +752,7 @@ function renderAuctionDetail(a){
             bidSection = '<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:1.1rem;text-align:center;margin-top:1rem;">'
             + '<i class="fas fa-hourglass-half" style="font-size:1.4rem;color:#d97706;"></i>'
             + '<h3 style="margin:0.5rem 0 0.2rem;font-size:1rem;color:#92400e;">Get ready - starts in <span id="detailScheduledIn">--:--</span></h3>'
-            + '<p style="margin:0;color:#a16207;font-size:0.82rem;"><span id="waitlistCount">'+_waitCount+'</span> waiting • Header blinking amber for all</p>'
+            + '<p style="margin:0;color:#a16207;font-size:0.82rem;">'+(auctionHasAuthUser() ? '<span id="waitlistCount">'+_waitCount+'</span> waiting • Header blinking amber for all' : '<i class="fas fa-lock"></i> Sign in to see who is waiting')+'</p>'
             + '<div style="margin-top:0.8rem;display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">'
             + '<button onclick="joinWaitlist()" id="joinWaitlistBtn" style="background:#f59e0b;color:#fff;border:none;padding:0.65rem 1.1rem;border-radius:8px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;"><i class="fas fa-plus"></i> Join Waitlist</button>'
             + '<button onclick="leaveWaitlist()" id="leaveWaitlistBtn" style="display:none;background:#fff;border:1.5px solid #e5e7eb;color:#374151;padding:0.65rem 1.1rem;border-radius:8px;font-weight:700;cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Leave</button>'
@@ -830,6 +883,11 @@ function renderAuctionDetail(a){
         + '</div>'
         + '</div>'
         + '<style>@media(max-width:860px){ #auctionDetailRoot > div { grid-template-columns:1fr !important; } }</style>';
+
+    // Keep the chat composer disabled for signed-out visitors.
+    if (status==='scheduled' || status==='live'){
+        setTimeout(updateChatComposerState, 0);
+    }
 
     try{ setTimeout(function(){ fillAuctionFeeInfo(a.sellerId, a); }, 300); }catch(e){}
 
@@ -1106,8 +1164,12 @@ function placeBid(){
 
 function listenWaitlist(auctionId){
     if (_waitlistUnsub) try{ _waitlistUnsub(); }catch(e){}
+    _waitlistUnsub = null;
     _waitlistCache = [];
     if (typeof firebaseDB === 'undefined' || !firebaseDB || !auctionId) return;
+    if (window._waitlistSync) { try{ clearInterval(window._waitlistSync); }catch(e){} window._waitlistSync = null; }
+    // Members-only read: show the sign-in prompt instead of a denied query.
+    if (!auctionHasAuthUser()) { updateWaitlistUI(); return; }
     var _myUidLog = (typeof firebaseAuth!=='undefined'&&firebaseAuth.currentUser) ? firebaseAuth.currentUser.uid : (window.currentUser?window.currentUser.uid:'anon');
     console.log('👂 Listening waitlist for', auctionId, 'as', _myUidLog, 'sellerId:', (_currentAuction? _currentAuction.sellerId : 'unknown'));
     // Periodic sync every 4s to fix "0 waiting" if snapshot missed (mobile background, cache, etc.) — force server read
@@ -1161,7 +1223,19 @@ function updateWaitlistUI(){
     var statusEl = document.getElementById('waitlistStatus');
     var sellerBox = document.getElementById('sellerWaitlistBox');
     var count = _waitlistCache.length;
-    console.log('👥 Waitlist UI update — count:', count, 'cache:', _waitlistCache.map(function(w){return w.userName||w._id;}));
+    // Signed-out visitors cannot read the list, so show a prompt instead of "0 waiting".
+    if (!auctionHasAuthUser()) {
+        if (countEl) countEl.textContent = '—';
+        if (btnJoin) btnJoin.style.display = 'inline-flex';
+        if (btnLeave) btnLeave.style.display = 'none';
+        if (statusEl) statusEl.textContent = 'Sign in to see who is waiting and join the waiting room.';
+        if (sellerBox) sellerBox.style.display = 'none';
+        var guestChatCount = document.getElementById('auctionChatWaitCount');
+        if (guestChatCount) guestChatCount.style.display = 'none';
+        var guestChatStatus = document.getElementById('auctionChatStatus');
+        if (guestChatStatus) guestChatStatus.textContent = 'Sign in to view messages';
+        return;
+    }
     // Update main waiting count (seller + bidder)
     if (countEl) countEl.textContent = count + ' waiting';
     // Fallback: also update seller count elements directly even if sellerBox hidden
@@ -1235,8 +1309,11 @@ function updateWaitlistUI(){
 // ============================================================================
 function listenAuctionChat(auctionId){
     if (_chatUnsub) try{ _chatUnsub(); }catch(e){}
+    _chatUnsub = null;
     _chatCache = [];
     if (typeof firebaseDB === 'undefined' || !firebaseDB || !auctionId) return;
+    // Members-only read: render the sign-in prompt instead of a denied query.
+    if (!auctionHasAuthUser()) { renderAuctionChat([]); return; }
     console.log('💬 Listening auction chat for', auctionId, 'as', (typeof firebaseAuth!=='undefined'&&firebaseAuth.currentUser?firebaseAuth.currentUser.uid:'anon'));
     // Prime with server get to ensure chat appears even if snapshot from cache is stale
     firebaseDB.collection('auctions').doc(auctionId).collection('chat').orderBy('createdAt','asc').limit(100).get({source:'server'}).catch(function(){ return firebaseDB.collection('auctions').doc(auctionId).collection('chat').orderBy('createdAt','asc').limit(100).get(); }).then(function(snap){
@@ -1285,6 +1362,19 @@ function renderAuctionChat(messages){
     var list = document.getElementById('auctionChatList');
     var statusEl = document.getElementById('auctionChatStatus');
     if (!list) return;
+    if (!auctionHasAuthUser()) {
+        var loginHref = 'pages/auth/login.html?redirect=' + encodeURIComponent('auction-detail.html?id=' + (_currentAuctionId || ''));
+        list.innerHTML = '<div style="text-align:center;padding:1.2rem;color:#5f6b7a;">'
+            + '<i class="fas fa-lock" style="font-size:1.4rem;display:block;margin-bottom:0.4rem;"></i>'
+            + '<p style="margin:0 0 0.35rem;font-weight:700;color:#374151;">Chat is for signed-in members</p>'
+            + '<p style="margin:0 0 0.7rem;font-size:0.82rem;">Sign in to read the conversation and ask the seller a question.</p>'
+            + '<a href="'+loginHref+'" style="display:inline-block;background:#0064d2;color:#fff;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.82rem;">Sign in to view chat</a>'
+            + '</div>';
+        if (statusEl) statusEl.textContent = 'Sign in to view messages';
+        list._lastSig = 'signed-out';
+        list._rendered = true;
+        return;
+    }
     // Prevent flicker: check if messages actually changed (by last id + length)
     var sig = (messages ? messages.length : 0) + '|' + (messages && messages.length ? messages[messages.length-1]._id : '') + '|' + (messages && messages[0] ? messages[0]._id : '');
     if (list._lastSig === sig && list._rendered) return;
