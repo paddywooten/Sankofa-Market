@@ -186,7 +186,14 @@ function displayAuctionOrder(order){
     }, 50);
 }
 
-function escHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function escHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 function paymentEscape(s){ return s; }
 
 function calculateAuctionTotals(order){

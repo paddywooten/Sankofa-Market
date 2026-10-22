@@ -3161,9 +3161,12 @@ function initGlobalSearch() {
 // ============================================================================
 
 function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text == null ? '' : String(text);
-    return div.innerHTML;
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function debounce(func, wait) {
@@ -3890,9 +3893,9 @@ function initStoreTabs() {
                 btn.setAttribute('data-store', 'store_' + doc.id);
                 btn.setAttribute('onclick', 'selectStoreTab(this)');
                 var imgHtml = store.profilePicture 
-                    ? '<img src="' + store.profilePicture + '" alt="' + (store.name || '') + '">'
+                    ? '<img src="' + escapeHtml(store.profilePicture) + '" alt="' + escapeHtml(store.name || '') + '">'
                     : '<i class="fas fa-store"></i>';
-                btn.innerHTML = imgHtml + ' ' + (store.name || 'Store') + ' <span class="store-tab-count" id="storeCount_' + doc.id + '">0</span>';
+                btn.innerHTML = imgHtml + ' ' + escapeHtml(store.name || 'Store') + ' <span class="store-tab-count" id="storeCount_' + escapeHtml(doc.id) + '">0</span>';
                 tabsContainer.insertBefore(btn, marketplaceBtn);
             });
             updateStoreCounts();

@@ -50,7 +50,14 @@ function formatAuctionCountdown(ms){
     return String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
 }
 
-function escapeHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 // ============================================================================
 // LISTING PAGE - auction.html

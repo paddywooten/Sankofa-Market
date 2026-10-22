@@ -1,116 +1,116 @@
 {
   "inputs": {
     "js/admin.js": {
-      "bytes": 427179,
+      "bytes": 427278,
       "imports": [],
       "format": "esm"
     },
     "js/main.js": {
-      "bytes": 83267,
+      "bytes": 83360,
       "imports": [],
       "format": "esm"
     },
     "js/search.js": {
-      "bytes": 50937,
+      "bytes": 51003,
       "imports": [],
       "format": "esm"
     },
     "js/product-detail.js": {
-      "bytes": 114828,
+      "bytes": 114916,
       "imports": [],
       "format": "esm"
     },
     "js/auction.js": {
-      "bytes": 177712,
+      "bytes": 177811,
       "imports": [],
       "format": "esm"
     }
   },
   "outputs": {
-    "dist/admin-4PKE5BUI.js.map": {
+    "dist/admin-F6YTZYXI.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 606133
+      "bytes": 606334
     },
-    "dist/admin-4PKE5BUI.js": {
+    "dist/admin-F6YTZYXI.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/admin.js",
       "inputs": {
         "js/admin.js": {
-          "bytesInOutput": 309675
+          "bytesInOutput": 309760
         }
       },
-      "bytes": 309719
+      "bytes": 309804
     },
-    "dist/main-TOATJ45B.js.map": {
+    "dist/main-7XWOFUM3.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 119401
+      "bytes": 119580
     },
-    "dist/main-TOATJ45B.js": {
+    "dist/main-7XWOFUM3.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/main.js",
       "inputs": {
         "js/main.js": {
-          "bytesInOutput": 47068
+          "bytesInOutput": 47130
         }
       },
-      "bytes": 47111
+      "bytes": 47173
     },
-    "dist/search-DBWEJB6Q.js.map": {
+    "dist/search-KNIDYYKL.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 73699
+      "bytes": 73828
     },
-    "dist/search-DBWEJB6Q.js": {
+    "dist/search-KNIDYYKL.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/search.js",
       "inputs": {
         "js/search.js": {
-          "bytesInOutput": 35452
+          "bytesInOutput": 35493
         }
       },
-      "bytes": 35497
+      "bytes": 35538
     },
-    "dist/product-detail-WLAJBHVO.js.map": {
+    "dist/product-detail-LR7MSDIC.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 164973
+      "bytes": 165130
     },
-    "dist/product-detail-WLAJBHVO.js": {
+    "dist/product-detail-LR7MSDIC.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/product-detail.js",
       "inputs": {
         "js/product-detail.js": {
-          "bytesInOutput": 80160
+          "bytesInOutput": 80207
         }
       },
-      "bytes": 80213
+      "bytes": 80260
     },
-    "dist/auction-DCI4T7KA.js.map": {
+    "dist/auction-6G3CZ6V4.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 245765
+      "bytes": 245953
     },
-    "dist/auction-DCI4T7KA.js": {
+    "dist/auction-6G3CZ6V4.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/auction.js",
       "inputs": {
         "js/auction.js": {
-          "bytesInOutput": 131485
+          "bytesInOutput": 131547
         }
       },
-      "bytes": 131531
+      "bytes": 131593
     }
   }
 }

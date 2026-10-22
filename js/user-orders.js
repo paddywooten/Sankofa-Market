@@ -297,7 +297,14 @@ function renderOrders(){
     container.innerHTML = html;
 }
 
-function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 /* ---------------------------------------------------------------- seller actions */
 

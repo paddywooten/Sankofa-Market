@@ -401,12 +401,12 @@ function listenAdminMessages(convId) {
                     var isImage = m.fileType && m.fileType.startsWith('image/');
                     var isAudio = m.fileType && m.fileType.startsWith('audio/');
                     if (isImage) {
-                        fileHtml = '<div style="margin-bottom:0.4rem;"><a href="' + m.fileUrl + '" target="_blank" rel="noopener"><img src="' + m.fileUrl + '" alt="' + escapeHtmlAdmin(m.fileName || 'image') + '" style="max-width:200px; max-height:200px; border-radius:8px; display:block; cursor:pointer; border:1px solid rgba(0,0,0,0.08);"></a></div>';
+                        fileHtml = '<div style="margin-bottom:0.4rem;"><a href="' + escapeHtmlAdmin(m.fileUrl) + '" target="_blank" rel="noopener"><img src="' + escapeHtmlAdmin(m.fileUrl) + '" alt="' + escapeHtmlAdmin(m.fileName || 'image') + '" style="max-width:200px; max-height:200px; border-radius:8px; display:block; cursor:pointer; border:1px solid rgba(0,0,0,0.08);"></a></div>';
                     } else if (isAudio) {
                         var dur = m.fileDuration ? ' &bull; ' + escapeHtmlAdmin(m.fileDuration) : '';
-                        fileHtml = '<div style="margin-bottom:0.4rem;"><audio controls preload="metadata" src="' + m.fileUrl + '" style="width:200px; max-width:100%; height:32px; display:block; border-radius:8px; background:#f1f5f9;"></audio><div style="font-size:0.68rem; opacity:0.8; margin-top:0.2rem; display:flex; align-items:center; gap:0.3rem;' + (bubbleClass==='seller'?' color:rgba(255,255,255,0.85);':'') + '"><i class="fas fa-microphone" style="color:' + (bubbleClass==='seller'?'#fff':'#ef4444') + ';"></i> Voice note' + dur + '</div></div>';
+                        fileHtml = '<div style="margin-bottom:0.4rem;"><audio controls preload="metadata" src="' + escapeHtmlAdmin(m.fileUrl) + '" style="width:200px; max-width:100%; height:32px; display:block; border-radius:8px; background:#f1f5f9;"></audio><div style="font-size:0.68rem; opacity:0.8; margin-top:0.2rem; display:flex; align-items:center; gap:0.3rem;' + (bubbleClass==='seller'?' color:rgba(255,255,255,0.85);':'') + '"><i class="fas fa-microphone" style="color:' + (bubbleClass==='seller'?'#fff':'#ef4444') + ';"></i> Voice note' + dur + '</div></div>';
                     } else {
-                        fileHtml = '<div style="margin-bottom:0.4rem;"><a href="' + m.fileUrl + '" target="_blank" rel="noopener" download="' + escapeHtmlAdmin(m.fileName || 'file') + '" style="display:inline-flex; align-items:center; gap:0.5rem; background:' + (bubbleClass==='seller'?'rgba(255,255,255,0.15)':'rgba(0,0,0,0.06)') + '; border:1px solid ' + (bubbleClass==='seller'?'rgba(255,255,255,0.2)':'rgba(0,0,0,0.08)') + '; padding:0.5rem 0.7rem; border-radius:8px; text-decoration:none; color:' + (bubbleClass==='seller'?'white':'inherit') + '; font-size:0.82rem;"><i class="fas fa-file" style="color:' + (bubbleClass==='seller'?'white':'#0064d2') + ';"></i><span>' + escapeHtmlAdmin(m.fileName || 'file') + '</span><i class="fas fa-download" style="opacity:0.6; font-size:0.7rem;"></i></a></div>';
+                        fileHtml = '<div style="margin-bottom:0.4rem;"><a href="' + escapeHtmlAdmin(m.fileUrl) + '" target="_blank" rel="noopener" download="' + escapeHtmlAdmin(m.fileName || 'file') + '" style="display:inline-flex; align-items:center; gap:0.5rem; background:' + (bubbleClass==='seller'?'rgba(255,255,255,0.15)':'rgba(0,0,0,0.06)') + '; border:1px solid ' + (bubbleClass==='seller'?'rgba(255,255,255,0.2)':'rgba(0,0,0,0.08)') + '; padding:0.5rem 0.7rem; border-radius:8px; text-decoration:none; color:' + (bubbleClass==='seller'?'white':'inherit') + '; font-size:0.82rem;"><i class="fas fa-file" style="color:' + (bubbleClass==='seller'?'white':'#0064d2') + ';"></i><span>' + escapeHtmlAdmin(m.fileName || 'file') + '</span><i class="fas fa-download" style="opacity:0.6; font-size:0.7rem;"></i></a></div>';
                     }
                 }
                 var textHtml = m.text ? '<div class="admin-msg-text" style="word-break:break-word;">' + escapeHtmlAdmin(m.text) + '</div>' : '';
@@ -690,9 +690,12 @@ function formatAdminTime(date) {
 }
 
 function escapeHtmlAdmin(text) {
-    var div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 

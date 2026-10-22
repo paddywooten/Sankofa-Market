@@ -845,10 +845,13 @@ function applyDemoFilters(category, priceMin, priceMax, conditions, location, se
 // UTILITIES
 // ============================================================================
 
-function escapeHtmlSearch(text){
-    var div=document.createElement('div');
-    div.textContent=text==null?'':String(text);
-    return div.innerHTML;
+function escapeHtmlSearch(text) {
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 function formatCurr(amount) {
     return `GHS ${amount.toLocaleString()}`;

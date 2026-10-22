@@ -1,4 +1,11 @@
-function escapeHtmlDetail(text){var d=document.createElement('div');d.textContent=text==null?'':String(text);return d.innerHTML;}
+function escapeHtmlDetail(text) {
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 window.escapeHtmlDetail = escapeHtmlDetail;
 function isUserLoggedIn(){
   try{

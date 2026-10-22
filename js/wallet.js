@@ -353,7 +353,14 @@ function renderTxSnap(snap){
     list.innerHTML = html;
 }
 
-function escWallet(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function escWallet(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 function initTopupChips(){
     document.querySelectorAll('.topup-chip').forEach(function(chip){

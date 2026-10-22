@@ -569,15 +569,15 @@ function fetchMessages(convId) {
                 if (m.fileUrl) {
                     var isImage = m.fileType && m.fileType.startsWith('image/');
                     var isAudio = m.fileType && m.fileType.startsWith('audio/');
-                    var safeUrl = m.fileUrl.replace(/'/g,"\'").replace(/"/g,'&quot;');
-                    var safeName = (m.fileName||'file').replace(/'/g,"\'");
-                    var safeType = (m.fileType||'').replace(/'/g,"\'");
+                    var safeUrl = escJsAttr(m.fileUrl);
+                    var safeName = escJsAttr(m.fileName||'file');
+                    var safeType = escJsAttr(m.fileType||'');
                     var sizeStr = m.fileSize ? ' • ' + (m.fileSize/1024).toFixed(1) + ' KB' : '';
                     var cacheKey = 'dl_' + btoa(m.fileUrl).replace(/[^a-zA-Z0-9]/g,'').slice(0,20);
                     // a private link can expire (90 days) or be revoked; if the file has a stored
                     // path we can quietly ask for a fresh link and swap the src in place
                     var pathAttr = m.filePath
-                        ? ' data-filepath="' + String(m.filePath).replace(/"/g,'&quot;') + '" data-convid="' + String(currentConversationId || '') + '" onerror="smReattach(this)"'
+                        ? ' data-filepath="' + escapeHtml(m.filePath) + '" data-convid="' + String(currentConversationId || '') + '" onerror="smReattach(this)"'
                         : '';
                     if (isImage) {
                         // Clear preview — tap image to download & save (mobile: no overlay text/icon per request)
@@ -591,7 +591,7 @@ function fetchMessages(convId) {
                         '</div><div id="preview_' + cacheKey + '" style="display:none; margin-bottom:0.4rem;"></div>';
                     } else if (isAudio) {
                         var dur2 = m.fileDuration ? ' • ' + escapeHtml(m.fileDuration) : '';
-                        fileHtml = '<div style="margin-bottom:0.4rem;"><audio controls preload="metadata" src="' + m.fileUrl + '" style="width:220px; max-width:100%; height:36px; border-radius:8px; display:block; background:#f1f5f9;"></audio><div style="font-size:0.68rem; color:inherit; opacity:0.7; margin-top:0.2rem; display:flex; align-items:center; gap:0.3rem;"><i class="fas fa-microphone" style="color:#ef4444;"></i> Voice note' + dur2 + '</div></div>';
+                        fileHtml = '<div style="margin-bottom:0.4rem;"><audio controls preload="metadata" src="' + escapeHtml(m.fileUrl) + '" style="width:220px; max-width:100%; height:36px; border-radius:8px; display:block; background:#f1f5f9;"></audio><div style="font-size:0.68rem; color:inherit; opacity:0.7; margin-top:0.2rem; display:flex; align-items:center; gap:0.3rem;"><i class="fas fa-microphone" style="color:#ef4444;"></i> Voice note' + dur2 + '</div></div>';
                     } else {
                         fileHtml = '<div id="file_' + cacheKey + '" style="margin-bottom:0.4rem; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:8px; padding:0.6rem; display:flex; align-items:center; gap:0.6rem;">' +
                             '<div style="width:44px; height:44px; background:#e0e7ff; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="fas fa-file" style="color:#4f46e5;"></i></div>' +
@@ -611,11 +611,11 @@ function fetchMessages(convId) {
                                     if(!previewEl || !rowEl) return;
                                     var blobUrl=URL.createObjectURL(req.result.blob);
                                     if(isImg){
-                                        previewEl.innerHTML='<a href="#" onclick="openAttachment(event,\'' + url.replace(/'/g,"\'") + '\',\'' + (req.result.fileName||'image').replace(/'/g,"\'") + '\',\'' + (req.result.fileType||'').replace(/'/g,"\'") + '\');return false;" style="display:block;"><img src="' + blobUrl + '" alt="' + escapeHtml(req.result.fileName||'image') + '" style="max-width:220px; max-height:220px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved on phone — tap to open</div>';
+                                        previewEl.innerHTML='<a href="#" onclick="openAttachment(event,\'' + escJsAttr(url) + '\',\'' + escJsAttr(req.result.fileName||'image') + '\',\'' + escJsAttr(req.result.fileType||'') + '\');return false;" style="display:block;"><img src="' + blobUrl + '" alt="' + escapeHtml(req.result.fileName||'image') + '" style="max-width:220px; max-height:220px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved on phone — tap to open</div>';
                                     } else if(isAud){
                                         previewEl.innerHTML='<audio controls src="' + blobUrl + '" style="width:220px; max-width:100%; height:32px; display:block; background:#f1f5f9; border-radius:8px;"></audio><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved — playing from phone</div>';
                                     } else {
-                                        previewEl.innerHTML='<a href="#" onclick="openAttachment(event,\'' + url.replace(/'/g,"\'") + '\',\'' + (req.result.fileName||'file').replace(/'/g,"\'") + '\',\'' + (req.result.fileType||'').replace(/'/g,"\'") + '\');return false;" style="display:inline-flex; align-items:center; gap:0.5rem; background:#f0fdf4; border:1px solid #bbf7d0; padding:0.5rem 0.7rem; border-radius:8px; color:#166534; font-size:0.82rem; text-decoration:none;"><i class="fas fa-check-circle" style="color:#16a34a;"></i> ' + escapeHtml(req.result.fileName||'file') + ' — Tap to open from phone</a>';
+                                        previewEl.innerHTML='<a href="#" onclick="openAttachment(event,\'' + escJsAttr(url) + '\',\'' + escJsAttr(req.result.fileName||'file') + '\',\'' + escJsAttr(req.result.fileType||'') + '\');return false;" style="display:inline-flex; align-items:center; gap:0.5rem; background:#f0fdf4; border:1px solid #bbf7d0; padding:0.5rem 0.7rem; border-radius:8px; color:#166534; font-size:0.82rem; text-decoration:none;"><i class="fas fa-check-circle" style="color:#16a34a;"></i> ' + escapeHtml(req.result.fileName||'file') + ' — Tap to open from phone</a>';
                                     }
                                     previewEl.style.display='block';
                                     rowEl.style.display='none';
@@ -630,9 +630,9 @@ function fetchMessages(convId) {
                     if (m.fileUrl) {
                         var isImg2 = m.fileType && m.fileType.startsWith('image/');
                         var isAud2 = m.fileType && m.fileType.startsWith('audio/');
-                        if (isImg2) adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><a href="' + m.fileUrl + '" target="_blank" rel="noopener"><img src="' + m.fileUrl + '" alt="' + escapeHtml(m.fileName || 'image') + '" style="max-width:200px; max-height:200px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a></div>';
-                        else if (isAud2) adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><audio controls src="' + m.fileUrl + '" style="width:200px; max-width:100%; height:32px;"></audio><div style="font-size:0.68rem; opacity:0.8; margin-top:0.2rem;"><i class="fas fa-microphone" style="color:#b7791f;"></i> Voice note' + (m.fileDuration ? ' • ' + escapeHtml(m.fileDuration) : '') + '</div></div>';
-                        else adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><a href="' + m.fileUrl + '" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.5rem; background:#fff8e1; border:1px solid #ffe69c; padding:0.4rem 0.6rem; border-radius:8px; font-size:0.8rem; color:#7a4a00; text-decoration:none;"><i class="fas fa-file"></i> ' + escapeHtml(m.fileName || 'file') + '</a></div>';
+                        if (isImg2) adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><a href="' + escapeHtml(m.fileUrl) + '" target="_blank" rel="noopener"><img src="' + m.fileUrl + '" alt="' + escapeHtml(m.fileName || 'image') + '" style="max-width:200px; max-height:200px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a></div>';
+                        else if (isAud2) adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><audio controls src="' + escapeHtml(m.fileUrl) + '" style="width:200px; max-width:100%; height:32px;"></audio><div style="font-size:0.68rem; opacity:0.8; margin-top:0.2rem;"><i class="fas fa-microphone" style="color:#b7791f;"></i> Voice note' + (m.fileDuration ? ' • ' + escapeHtml(m.fileDuration) : '') + '</div></div>';
+                        else adminFileHtml2 = '<div style="margin-bottom:0.4rem;"><a href="' + escapeHtml(m.fileUrl) + '" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.5rem; background:#fff8e1; border:1px solid #ffe69c; padding:0.4rem 0.6rem; border-radius:8px; font-size:0.8rem; color:#7a4a00; text-decoration:none;"><i class="fas fa-file"></i> ' + escapeHtml(m.fileName || 'file') + '</a></div>';
                     }
                     var adminText2 = m.text ? '<div class="msg-text">' + escapeHtml(m.text) + '</div>' : '';
                     html += '<div class="admin-announcement" style="align-self:center; width:92%; max-width:520px; background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%); border:1px solid #fde68a; border-left:4px solid #f5af02; border-radius:10px; padding:0.7rem 0.9rem; margin:0.4rem auto; box-shadow:0 1px 4px rgba(245,175,2,0.12);">' +
@@ -1148,10 +1148,27 @@ function formatMsgTime(date) {
 }
 
 function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
+  return String(text == null ? '' : text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
+
+// Escapes a value for BOTH an HTML attribute and a single-quoted JS string
+// inside an inline handler (e.g. onclick="fn('...')"). Entities are decoded by
+// the HTML parser before the JS runs, so quotes must be handled twice.
+function escJsAttr(v) {
+  return String(v == null ? '' : v)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/\r?\n/g, ' ');
+}
+
 
 function showMessagesError(message) {
     if (typeof showFlashMessage === 'function') {
@@ -1345,11 +1362,11 @@ function downloadAttachment(url, fileName, fileType, cacheKey){
                 var isImg = fileType && fileType.startsWith('image/');
                 var isAud = fileType && fileType.startsWith('audio/');
                 if (isImg) {
-                    previewEl.innerHTML = '<a href="#" onclick="openAttachment(event,\'' + url.replace(/'/g,"\'") + '\',\'' + fileName.replace(/'/g,"\'") + '\',\'' + fileType.replace(/'/g,"\'") + '\');return false;" style="display:block;"><img src="' + blobUrl + '" alt="' + escapeHtml(fileName) + '" style="max-width:220px; max-height:220px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved on phone — tap to open offline</div>';
+                    previewEl.innerHTML = '<a href="#" onclick="openAttachment(event,\'' + escJsAttr(url) + '\',\'' + escJsAttr(fileName) + '\',\'' + escJsAttr(fileType) + '\');return false;" style="display:block;"><img src="' + blobUrl + '" alt="' + escapeHtml(fileName) + '" style="max-width:220px; max-height:220px; border-radius:8px; display:block; border:1px solid rgba(0,0,0,0.08);"></a><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved on phone — tap to open offline</div>';
                 } else if (isAud) {
                     previewEl.innerHTML = '<audio controls src="' + blobUrl + '" style="width:220px; max-width:100%; height:32px; display:block; background:#f1f5f9; border-radius:8px;"></audio><div style="font-size:0.62rem; color:#16a34a; margin-top:0.2rem;"><i class="fas fa-check-circle"></i> Saved — playing from phone</div>';
                 } else {
-                    previewEl.innerHTML = '<a href="#" onclick="openAttachment(event,\'' + url.replace(/'/g,"\'") + '\',\'' + fileName.replace(/'/g,"\'") + '\',\'' + fileType.replace(/'/g,"\'") + '\');return false;" style="display:inline-flex; align-items:center; gap:0.5rem; background:#f0fdf4; border:1px solid #bbf7d0; padding:0.5rem 0.7rem; border-radius:8px; color:#166534; font-size:0.82rem; text-decoration:none;"><i class="fas fa-check-circle" style="color:#16a34a;"></i> ' + escapeHtml(fileName) + ' — Tap to open from phone</a>';
+                    previewEl.innerHTML = '<a href="#" onclick="openAttachment(event,\'' + escJsAttr(url) + '\',\'' + escJsAttr(fileName) + '\',\'' + escJsAttr(fileType) + '\');return false;" style="display:inline-flex; align-items:center; gap:0.5rem; background:#f0fdf4; border:1px solid #bbf7d0; padding:0.5rem 0.7rem; border-radius:8px; color:#166534; font-size:0.82rem; text-decoration:none;"><i class="fas fa-check-circle" style="color:#16a34a;"></i> ' + escapeHtml(fileName) + ' — Tap to open from phone</a>';
                 }
                 previewEl.style.display = 'block';
             }
@@ -1359,7 +1376,7 @@ function downloadAttachment(url, fileName, fileType, cacheKey){
             console.log('Background cache failed (direct download already done):', err.message);
             // Still show success because direct download already started
             if (previewEl) {
-                previewEl.innerHTML = '<div style="display:flex; align-items:center; gap:0.5rem; padding:0.4rem; color:#16a34a; font-size:0.82rem;"><i class="fas fa-check-circle"></i> Download started — check Downloads. <a href="#" onclick="openAttachment(event,\'' + url.replace(/'/g,"\'") + '\',\'' + fileName.replace(/'/g,"\'") + '\',\'' + fileType.replace(/'/g,"\'") + '\');return false;" style="color:#0064d2; text-decoration:underline; margin-left:0.3rem;">Open</a></div>';
+                previewEl.innerHTML = '<div style="display:flex; align-items:center; gap:0.5rem; padding:0.4rem; color:#16a34a; font-size:0.82rem;"><i class="fas fa-check-circle"></i> Download started — check Downloads. <a href="#" onclick="openAttachment(event,\'' + escJsAttr(url) + '\',\'' + escJsAttr(fileName) + '\',\'' + escJsAttr(fileType) + '\');return false;" style="color:#0064d2; text-decoration:underline; margin-left:0.3rem;">Open</a></div>';
                 previewEl.style.display = 'block';
             }
             if (rowEl) rowEl.style.display = 'none';

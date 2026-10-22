@@ -1141,8 +1141,13 @@ function updateHeaderMsgBadge(count) {
     updateAppNavBadge(count);
 }
 
-function escapeHtmlMsg(s){
-    var d=document.createElement('div'); d.textContent = s||''; return d.innerHTML;
+function escapeHtmlMsg(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function showMessageToast(convId, data){
