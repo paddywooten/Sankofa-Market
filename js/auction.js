@@ -2466,6 +2466,8 @@ window.clearEndedAuctions = clearEndedAuctions;
 window.ensureAuctionWinnerOrder = ensureAuctionWinnerOrder;
 window.getAuctionStatus = getAuctionStatus;
 
+window.updateChatComposerState = updateChatComposerState;
+
 /* ===== GLOBAL BRIDGE (auto-generated) — DO NOT DELETE ===== */
 /* This file is served as a bundled “classic” <script>, so every top-level
    function must stay reachable on window. Without this, the bundler deletes

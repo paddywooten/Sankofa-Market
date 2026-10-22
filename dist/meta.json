@@ -21,7 +21,7 @@
       "format": "esm"
     },
     "js/auction.js": {
-      "bytes": 182254,
+      "bytes": 182313,
       "imports": [],
       "format": "esm"
     }
@@ -95,22 +95,22 @@
       },
       "bytes": 80260
     },
-    "dist/auction-RH52VJ3Z.js.map": {
+    "dist/auction-C3J5PT2Z.js.map": {
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 252021
+      "bytes": 252101
     },
-    "dist/auction-RH52VJ3Z.js": {
+    "dist/auction-C3J5PT2Z.js": {
       "imports": [],
       "exports": [],
       "entryPoint": "js/auction.js",
       "inputs": {
         "js/auction.js": {
-          "bytesInOutput": 134388
+          "bytesInOutput": 134443
         }
       },
-      "bytes": 134434
+      "bytes": 134489
     }
   }
 }

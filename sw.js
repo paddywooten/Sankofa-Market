@@ -4,7 +4,7 @@
 // so phones can never get stuck showing last week's design (some users kept seeing the
 // old wishlist layout because their offline copy never refreshed).
 // (v14: image requests can never crash the worker; all fallbacks are local files.)
-const CACHE_VERSION = 'sankofa-v125';
+const CACHE_VERSION = 'sankofa-v126';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
