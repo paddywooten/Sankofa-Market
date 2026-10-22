@@ -56,14 +56,28 @@ service cloud.firestore {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
 
-      // Self-service signup may only create a NORMAL user that is not pre-approved.
-      // (Without this, anyone could register themselves as an admin or as approved
-      //  and skip the whole approval flow.)
+      // Self-service signup may only create a NORMAL, unverified profile.
+      // The old rule only blocked role/isAdmin/status. Because the owner can delete
+      // and recreate their profile, privilege/money fields must also be blocked at
+      // CREATE time — otherwise a user could register directly with Diamond Premium,
+      // founding-seller status, a verified badge, or a wallet balance.
+      function signupBlockedFields() {
+        return [
+          'isPremium', 'premiumTier', 'premiumExpiry', 'premiumStatus', 'premiumReference',
+          'premiumAmount', 'premiumSince', 'premiumActivatedBy', 'premiumDuration', 'premiumPrice',
+          'commissionRate', 'isFoundingSeller', 'sellerTier',
+          'isVerified', 'isApproved', 'verificationStatus', 'verifiedAt', 'verifiedBy',
+          'adminRole', 'adminCode', 'permissions', 'balance', 'walletBalance',
+          'isBoosted', 'boostLevel'
+        ];
+      }
       allow create: if isAdmin() || (
         isAuthenticated() && request.auth.uid == userId &&
         (!('role' in request.resource.data) || request.resource.data.role == 'user') &&
         (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin != true) &&
-        (!('status' in request.resource.data) || request.resource.data.status != 'approved')
+        (!('status' in request.resource.data) || request.resource.data.status == 'pending') &&
+        (!('verified' in request.resource.data) || request.resource.data.verified == false) &&
+        !request.resource.data.keys().hasAny(signupBlockedFields())
       );
 
       // The owner may edit PROFILE fields only. Privilege and money fields
@@ -948,13 +962,6 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     
-    // ========================================================================
-    // STORES COLLECTION
-    match /stores/{storeId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
     // SETTINGS COLLECTION (Admin Only)
     // ========================================================================
     

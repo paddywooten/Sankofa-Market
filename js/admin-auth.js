@@ -32,6 +32,12 @@ async function checkAdminAccess() {
 
         if (!user) {
             console.log('No user found - not logged in');
+            // Do not leave a prior admin-code session behind after sign-out.
+            try {
+                sessionStorage.removeItem('sankofa_admin');
+                sessionStorage.removeItem('sankofa_admin_uid');
+                sessionStorage.removeItem('sankofa_admin_auth_time');
+            } catch (e) { /* sessionStorage unavailable */ }
             showAccessDenied('You must be logged in to access admin pages.');
             setTimeout(() => {
                 window.location.href = '/sm-panel/login';
@@ -54,9 +60,11 @@ async function checkAdminAccess() {
         // fallback for an admin who has not been given a claim yet — without this, an admin
         // promoted via the claim alone saw the "access denied" screen on every panel page.
         let claimsOk = false;
+        let adminAuthTime = '';
         try {
             const tok = await user.getIdTokenResult();
             claimsOk = !!(tok && tok.claims && tok.claims.admin === true);
+            adminAuthTime = String((tok && tok.claims && tok.claims.auth_time) || '');
         } catch (e) { console.warn('could not read the admin claim', e); }
 
         if (!userDoc.exists && !claimsOk) {
@@ -76,6 +84,28 @@ async function checkAdminAccess() {
             showAccessDenied('Access denied. Admin privileges required.');
             setTimeout(() => {
                 window.location.href = '/index.html';
+            }, 3000);
+            return;
+        }
+
+        // Being an admin is not enough: the 6-digit code from /sm-panel/login must
+        // have been verified in THIS sign-in session. The marker is bound to the
+        // current auth_time, so signing in elsewhere (for example /login) or after a
+        // sign-out invalidates an old code session. This closes the previous bypass
+        // where an admin could sign in at /login and open /sm-panel directly.
+        let codeSession = null, codeSessionUid = null, codeSessionAuthTime = '';
+        try {
+            codeSession = sessionStorage.getItem('sankofa_admin');
+            codeSessionUid = sessionStorage.getItem('sankofa_admin_uid');
+            codeSessionAuthTime = sessionStorage.getItem('sankofa_admin_auth_time') || '';
+        } catch (e) { /* sessionStorage unavailable */ }
+
+        if (codeSession !== 'true' || codeSessionUid !== user.uid ||
+            !adminAuthTime || codeSessionAuthTime !== adminAuthTime) {
+            console.log('Admin code session missing or stale');
+            showAccessDenied('Admin verification required. Please sign in through the admin login page and enter your 6-digit admin code.');
+            setTimeout(() => {
+                window.location.href = '/sm-panel/login';
             }, 3000);
             return;
         }

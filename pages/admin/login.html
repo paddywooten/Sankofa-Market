@@ -476,8 +476,25 @@
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp()
             }).catch(function() {});
 
+            // Bind the verified-code session to this exact sign-in. The panel guard
+            // compares this value with the token's auth_time, so signing in again
+            // elsewhere invalidates an old admin-code session.
+            let adminAuthTime = '';
+            try {
+                const idToken = await user.getIdTokenResult(true);
+                adminAuthTime = String((idToken && idToken.claims && idToken.claims.auth_time) || '');
+            } catch (e) {
+                console.warn('Could not read auth_time for admin session', e);
+            }
+            if (!adminAuthTime) {
+                await firebase.auth().signOut();
+                showFlash('Could not create a secure admin session. Please try again.', 'error');
+                return null;
+            }
+
             sessionStorage.setItem('sankofa_admin', 'true');
             sessionStorage.setItem('sankofa_admin_uid', user.uid);
+            sessionStorage.setItem('sankofa_admin_auth_time', adminAuthTime);
             return userData;
         }
 

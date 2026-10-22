@@ -384,8 +384,14 @@ exports.setAdminClaim = functions.https.onCall(async (data, context) => {
   // data.admin === false clears the claim (used when an admin is demoted)
   const grant = !(data && data.admin === false);
   await admin.auth().setCustomUserClaims(uid, grant ? { admin: true } : { admin: false });
-  await db.collection('users').doc(uid).set({ role: 'admin' }, { merge: true });
-  return { success: true, message: 'Admin claim set for ' + uid };
+  // Demotion must also remove the Firestore role. The previous code always wrote
+  // role:'admin', which silently restored the role after js/admin-management.js
+  // had set it to 'user'.
+  await db.collection('users').doc(uid).set(
+    { role: grant ? 'admin' : 'user', updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+    { merge: true }
+  );
+  return { success: true, message: 'Admin claim ' + (grant ? 'granted' : 'revoked') + ' for ' + uid };
 });
 
 // ============================================================================
