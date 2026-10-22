@@ -74,16 +74,17 @@ try {
     firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
   }
 
-  console.log('✅ Firebase initialized successfully');
-  console.log('📦 Project:', firebaseConfig.projectId);
-  console.log('Auth:', !!firebaseAuth, '| Firestore:', !!firebaseDB, '| Storage:', !!firebaseStorage);
+  // Keep the console clean in production; opt in with localStorage sm_debug=1
+  if (localStorage.getItem('sm_debug') === '1') {
+    console.log('Firebase ready:', { auth: !!firebaseAuth, firestore: !!firebaseDB, storage: !!firebaseStorage });
+  }
 } catch (error) {
   console.error('❌ Firebase initialization error:', error);
   // Fallback: try to recover individual services
   try { firebaseAuth = firebase.auth(); } catch(e) {}
   try { firebaseDB = firebase.firestore(); } catch(e) {}
   try { firebaseStorage = firebase.storage(); } catch(e) {}
-  console.log('Firebase recovery - Auth:', !!firebaseAuth, '| Firestore:', !!firebaseDB, '| Storage:', !!firebaseStorage);
+  if (localStorage.getItem('sm_debug') === '1') console.log('Firebase recovery:', { auth: !!firebaseAuth, firestore: !!firebaseDB, storage: !!firebaseStorage });
 }
 
 // Export for use in other files

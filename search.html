@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Search products on Sankofa Market - Ghana's premier C2C marketplace">
     <title>Search - Sankofa Market</title>
-    <link rel="canonical" href="https://sankofa-market.web.app/search.html">
+    <link rel="canonical" href="https://sankofa-market.web.app/search">
     <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@
             <div class="header-search">
                 <form class="search-form" action="search.html" method="GET">
                     <input type="text" name="q" id="headerSearchInput" placeholder="Search for anything..." class="search-input">
-                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button aria-label="Search">
                 </form>
             </div>
             <div class="header-actions">
@@ -119,7 +119,7 @@
                 <!-- Mobile Header -->
                 <div class="mobile-filters-header" style="display: none;">
                     <h2 class="filters-heading"><i class="fas fa-filter"></i> Filters</h2>
-                    <button class="mobile-filters-close" id="mobileFiltersClose"><i class="fas fa-times"></i></button>
+                    <button class="mobile-filters-close" id="mobileFiltersClose"><i class="fas fa-times"></i></button aria-label="Close">
                 </div>
 
                 <div class="filters-header">
@@ -280,8 +280,8 @@
                             <option value="rating">Top Rated</option>
                         </select>
                         <div class="view-toggle">
-                            <button class="active" id="gridViewBtn" onclick="setView('grid')" title="Grid view"><i class="fas fa-th"></i></button>
-                            <button id="listViewBtn" onclick="setView('list')" title="List view"><i class="fas fa-list"></i></button>
+                            <button class="active" id="gridViewBtn" onclick="setView('grid')" title="Grid view"><i class="fas fa-th"></i></button aria-label="Button">
+                            <button id="listViewBtn" onclick="setView('list')" title="List view"><i class="fas fa-list"></i></button aria-label="Button">
                         </div>
                     </div>
                 </div>
@@ -369,7 +369,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-    <script defer src="/config/firebase-config.js?v=8"></script>
+    <script defer src="/config/firebase-config.js?v=9"></script>
     <script defer src="/js/watchdog.js?v=2"></script>
     <script defer src="/dist/main-7XWOFUM3.js"></script>
     <script defer src="/js/variants.js?v=1"></script>

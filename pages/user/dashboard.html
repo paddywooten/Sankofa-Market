@@ -39,7 +39,7 @@
             <div class="header-search">
                 <form class="search-form" action="../../search.html" method="GET">
                     <input type="text" name="q" placeholder="Search for anything..." class="search-input">
-                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button aria-label="Search">
                 </form>
             </div>
             <div class="header-actions">
@@ -57,7 +57,7 @@
                     <div class="user-avatar-large">
                         <img alt="Profile" id="userAvatar" loading="lazy" decoding="async" style="display:none;">
                         <div id="userAvatarFallback" style="width:96px;height:96px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;border:3px solid #0064d2;">U</div>
-                        <button class="avatar-edit-btn" title="Change photo"><i class="fas fa-camera"></i></button>
+                        <button class="avatar-edit-btn" title="Change photo"><i class="fas fa-camera"></i></button aria-label="Camera">
                     </div>
                     <div class="user-info-large">
                         <h1 id="userName">Welcome!</h1>
@@ -451,7 +451,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script defer src="/config/firebase-config.js?v=8"></script>
+    <script defer src="/config/firebase-config.js?v=9"></script>
     <script defer src="/js/watchdog.js?v=2"></script>
     <script defer src="/dist/main-7XWOFUM3.js"></script>
     <script defer src="/js/dashboard.js?v=9"></script>
