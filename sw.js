@@ -1,10 +1,11 @@
 // Sankofa Market — Service Worker — Cache shell for instant loads, GHS data via IndexedDB (Firestore persistence) already
-// Version: v15 — forced refresh after the wishlist/mobile redesign. Bump CACHE_VERSION on
+// Version: v129 — fresh HTML navigations + videos bypass the image cache.
+// Bump CACHE_VERSION on
 // any visual overhaul: activate wipes every old cache and the page reloads itself once,
 // so phones can never get stuck showing last week's design (some users kept seeing the
 // old wishlist layout because their offline copy never refreshed).
 // (v14: image requests can never crash the worker; all fallbacks are local files.)
-const CACHE_VERSION = 'sankofa-v127';
+const CACHE_VERSION = 'sankofa-v129';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
@@ -34,14 +35,14 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate — clean old caches
+// Activate — remove caches from older versions, keep this version's fresh shell
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    // Wipe EVERY cache (including previous versions) so a stale or wrong picture
-    // cached by an older worker can never be served again.
+    // Drop caches from older versions so a stale page (and its old CSP header) or a
+    // wrong picture can never be served again. Keep the shell this worker just cached.
     try {
       const keys = await caches.keys();
-      await Promise.all(keys.map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => !k.startsWith(CACHE_VERSION)).map(k => caches.delete(k)));
     } catch (e) {}
     try { await caches.open(SHELL_CACHE); } catch (e) {}
   })());
@@ -63,8 +64,10 @@ self.addEventListener('fetch', (event) => {
   if (url.hostname.includes('securetoken.googleapis.com')) return;
   if (url.hostname.includes('googleapis.com') && (url.pathname.includes('token') || url.pathname.includes('identity') || url.pathname.includes('auth'))) return;
   if (url.hostname === 'www.googleapis.com') return;
-  if (url.hostname.includes('firebasestorage.googleapis.com') && url.search.includes('token')) {
-    // Cache storage images (product photos) — CacheFirst 30d
+  if (url.hostname.includes('firebasestorage.googleapis.com') && url.search.includes('token') && req.destination === 'image') {
+    // Cache storage images (product photos) — CacheFirst 30d.
+    // Videos are deliberately excluded: they go straight to the browser so Range
+    // requests work and the SW never caches a partial 206 response.
     event.respondWith(cacheFirst(req, IMAGE_CACHE, 30*24*60*60));
     return;
   }
@@ -100,9 +103,12 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(staleWhileRevalidate(req, SHELL_CACHE));
       return;
     }
-    // Navigations (HTML) — NetworkFirst, fallback to cache, then offline.html
+    // Navigations (HTML) — NetworkFirst with a forced revalidation. Bypassing the
+    // HTTP cache matters because the CSP is delivered as an HTML header: without it,
+    // a page cached before a CSP change keeps enforcing the old policy until the HTTP
+    // cache expires. The SW cache is only a fallback for offline use.
     if (req.mode === 'navigate' || req.destination === 'document' || url.pathname.endsWith('.html')) {
-      event.respondWith(networkFirst(req, PAGE_CACHE));
+      event.respondWith(networkFirst(req, PAGE_CACHE, true));
       return;
     }
   }
@@ -218,10 +224,10 @@ async function staleWhileRevalidate(request, cacheName) {
   return new Response('', { status: 504, statusText: 'Offline' });
 }
 
-async function networkFirst(request, cacheName) {
+async function networkFirst(request, cacheName, bypassHttpCache) {
   const cache = await caches.open(cacheName);
   try {
-    const res = await fetch(request);
+    const res = await fetch(request, bypassHttpCache ? { cache: 'reload' } : undefined);
     if (res && (res.ok || res.type === 'opaque')) cache.put(request, res.clone());
     return res;
   } catch (e) {
