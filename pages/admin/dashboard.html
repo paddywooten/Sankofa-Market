@@ -7,6 +7,8 @@
     <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/icons.css?v=2">
     <link rel="stylesheet" href="/css/main.css?v=33">
@@ -45,7 +47,7 @@ main.admin-main,
     <!-- Admin Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
-            <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+            <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo" decoding="async">
             <span class="sidebar-badge">Admin</span>
             <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
                 <i class="fas fa-times"></i>
@@ -1004,7 +1006,7 @@ main.admin-main,
                         <div style="text-align: center;">
                             <img id="storeProfilePic" src="https://ui-avatars.com/api/?name=Sankofa+Store&size=120&background=0064d2&color=fff&bold=true" 
                                  alt="Store Profile" 
-                                 style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #0064d2;">
+                                 style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #0064d2;" decoding="async">
                             <p style="font-size: 0.75rem; color: #767676; margin-top: 0.5rem;">Current picture</p>
                         </div>
                         
@@ -1906,23 +1908,23 @@ main.admin-main,
         </button>
     </nav>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <!-- Needed so the panel can call Cloud Functions (e.g. set the admin claim when promoting a member) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
-    <script src="/config/firebase-config.js?v=7"></script>
-    <script src="/js/watchdog.js?v=2"></script>
-    <script src="/js/main.js?v=31"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script defer src="/config/firebase-config.js?v=7"></script>
+    <script defer src="/js/watchdog.js?v=2"></script>
+    <script defer src="/js/main.js?v=31"></script>
     <!-- carousel.js provides the shared slide builders (sanitising + preview markup)
          used by the Carousel editor; it does not boot on this page (no #carouselTrack). -->
-    <script src="/js/carousel.js?v=4"></script>
-    <script src="/js/variants.js?v=1"></script>
-    <script src="/js/admin.js?v=93"></script>
-    <script src="/js/admin-management.js"></script>
-    <script src="/js/admin-auth.js?v=6"></script>
+    <script defer src="/js/carousel.js?v=4"></script>
+    <script defer src="/js/variants.js?v=1"></script>
+    <script defer src="/js/admin.js?v=93"></script>
+    <script defer src="/js/admin-management.js"></script>
+    <script defer src="/js/admin-auth.js?v=6"></script>
     <script>
     // Cancel an auction from the admin monitor (used by the Cancel button below).
 // One global helper = no nested-quote breakage inside generated HTML.
@@ -2023,7 +2025,7 @@ window.adminCancelAuction = function(auctionDocId){
                       var bid = a.currentBid||a.startingPrice||0;
                       var waitInfo = a.waitingMinutes!=null ? a.waitingMinutes+'m wait' : '';
                       html+='<tr>'
-                        +'<td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;"><div><div style="font-weight:700;font-size:0.82rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+(a.auctionId||a._id).slice(0,8)+' • '+waitInfo+'</div></div></div></td>'
+                        +'<td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;" decoding="async"><div><div style="font-weight:700;font-size:0.82rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+(a.auctionId||a._id).slice(0,8)+' • '+waitInfo+'</div></div></div></td>'
                         +'<td><div style="font-weight:600;font-size:0.82rem;">'+(a.sellerName||'Seller')+'</div><div style="font-size:0.7rem;color:#767676;">'+(a.sellerTier||'')+' • '+a.sellerId.slice(0,6)+'</div></td>'
                         +'<td style="font-size:0.75rem;">'+when+'</td>'
                         +'<td style="font-weight:800;color:#0064d2;">GHS '+bid.toLocaleString()+' <span style="font-size:0.65rem;color:#6b7280;font-weight:500;">('+ (a.bidCount||0)+' bids)</span></td>'
@@ -2083,7 +2085,7 @@ window.adminCancelAuction = function(auctionDocId){
                             var badge2 = st==='live' ? '<span style="background:#ef4444;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">LIVE</span>' : st==='scheduled' ? '<span style="background:#f59e0b;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">SOON</span>' : '<span style="background:#e5e7eb;color:#374151;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;">'+st+'</span>';
                             var when2 = st==='scheduled' ? new Date(r.startMs).toLocaleString('en-GB',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : st==='live' ? 'ends '+ new Date(r.endMs).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : new Date(r.endMs||r.startMs).toLocaleDateString('en-GB');
                             var bid2 = a.currentBid||a.startingPrice||0;
-                            h2+='<tr><td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><div><div style="font-weight:700;font-size:0.82rem;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+a._id.slice(0,8)+'</div></div></div></td><td>'+(a.sellerName||'Seller')+'</td><td style="font-size:0.75rem;">'+when2+'</td><td style="font-weight:800;color:#0064d2;">GHS '+bid2.toLocaleString()+'</td><td>'+badge2+'</td><td style="text-align:center;">—</td><td><a href="/auction-detail.html?id='+a._id+'" target="_blank" style="background:#0064d2;color:#fff;padding:0.3rem 0.55rem;border-radius:6px;font-size:0.7rem;text-decoration:none;">View</a></td></tr>';
+                            h2+='<tr><td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;" decoding="async"><div><div style="font-weight:700;font-size:0.82rem;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+a._id.slice(0,8)+'</div></div></div></td><td>'+(a.sellerName||'Seller')+'</td><td style="font-size:0.75rem;">'+when2+'</td><td style="font-weight:800;color:#0064d2;">GHS '+bid2.toLocaleString()+'</td><td>'+badge2+'</td><td style="text-align:center;">—</td><td><a href="/auction-detail.html?id='+a._id+'" target="_blank" style="background:#0064d2;color:#fff;padding:0.3rem 0.55rem;border-radius:6px;font-size:0.7rem;text-decoration:none;">View</a></td></tr>';
                           });
                           tbody2.innerHTML = h2;
                         }
@@ -2373,6 +2375,6 @@ window.adminCancelAuction = function(auctionDocId){
         </div>
     </div>
 </div>
-    <script src="/js/maintenance-mode.js?v=1"></script>
+    <script defer src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

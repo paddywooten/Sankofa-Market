@@ -69,10 +69,12 @@
   .mono{font-family:'Consolas',monospace;font-size:0.78rem;color:#374151;word-break:break-all;}
   @media print{ header.sm-top,.actions,.no-print{display:none!important;} body{background:#fff;} .card{border-color:#ddd;} }
 </style>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com">
 </head>
 <body>
 <header class="sm-top no-print">
-  <img src="/images/logo.png" alt="Sankofa Market" onerror="this.style.display='none'">
+  <img src="/images/logo.png" alt="Sankofa Market" onerror="this.style.display='none'" decoding="async">
   <div class="brand">Sankofa <span>Market</span></div>
   <a class="home" href="/"><i class="fas fa-house"></i> Home</a>
 </header>
@@ -152,14 +154,14 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-<script src="/config/firebase-config.js?v=7"></script>
-<script src="/js/watchdog.js?v=2"></script>
-<script src="/dist/main-7XWOFUM3.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script defer src="/config/firebase-config.js?v=7"></script>
+<script defer src="/js/watchdog.js?v=2"></script>
+<script defer src="/dist/main-7XWOFUM3.js"></script>
 <script>
 /* Order confirmation / receipt page.
    Everything here is defensive: this page is what a buyer lands on straight after paying,
@@ -272,7 +274,7 @@
       var brand = it.brand ? '<div class="s">' + esc(it.brand) + '</div>' : '';
       box.insertAdjacentHTML('beforeend',
         '<div class="item">' +
-          '<img src="' + esc(imgFor(it)) + '" alt="" onerror="this.src=\'/images/placeholders/product.svg\'">' +
+          '<img src="' + esc(imgFor(it)) + '" alt="" onerror="this.src=\'/images/placeholders/product.svg\'" decoding="async">' +
           '<div><div class="t">' + esc(it.title || 'Item') + '</div>' + brand +
           (it.variant && typeof it.variant === 'object' ? '<div class="s">' + esc(Object.keys(it.variant).map(function (k) { return k + ': ' + it.variant[k]; }).join(', ')) + '</div>' : '') +
           '<div class="s">Qty ' + qty + (it.seller ? ' • ' + esc(it.seller) : '') + '</div></div>' +
@@ -382,6 +384,6 @@
   else start();
 })();
 </script>
-    <script src="/js/maintenance-mode.js?v=1"></script>
+    <script defer src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

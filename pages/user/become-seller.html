@@ -57,11 +57,13 @@
         .info-strip i { color:#0064d2; margin-top:0.15rem; }
         @media(max-width:640px){ .tier-grid{grid-template-columns:1fr;} .duration-switch{gap:0.35rem;} .duration-btn{padding:0.5rem 0.85rem; font-size:0.8rem;} }
     </style>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <div class="header-logo"><a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a></div>
+            <div class="header-logo"><a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" decoding="async"></a></div>
             <div class="header-search"><form class="search-form" action="../../search.html" method="GET"><input type="text" name="q" placeholder="Search..." class="search-input"><button type="submit" class="search-btn"><i class="fas fa-search"></i></button></form></div>
             <div class="header-actions"><a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a><a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a></div>
         </div>
