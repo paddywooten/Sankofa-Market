@@ -1,8 +1,10 @@
 {
   "hosting": {
+    "site": "sankofa-market",
     "public": ".",
     "ignore": [
       "firebase.json",
+      ".firebaserc",
       "**/node_modules/**",
       ".git/**",
       ".gitignore",
@@ -11,6 +13,7 @@
       "docs/**",
       "functions/**",
       "**/.DS_Store",
+      "tools-*.mjs",
       "EMAIL_TEMPLATES.html",
       "FIREBASE_SETUP_GUIDE.html",
       "LEGAL_DOCUMENTS_COMPILATION.html",
