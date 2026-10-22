@@ -4,7 +4,7 @@
 // so phones can never get stuck showing last week's design (some users kept seeing the
 // old wishlist layout because their offline copy never refreshed).
 // (v14: image requests can never crash the worker; all fallbacks are local files.)
-const CACHE_VERSION = 'sankofa-v126';
+const CACHE_VERSION = 'sankofa-v127';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
@@ -71,9 +71,15 @@ self.addEventListener('fetch', (event) => {
   if (url.hostname.includes('paystack') || url.hostname.includes('js.paystack.co')) return;
   if (url.hostname === 'www.gstatic.com') return;
 
-  // Images (unsplash, etc) — CacheFirst
-  if (req.destination === 'image' || url.hostname.includes('images.unsplash.com')) {
-    event.respondWith(cacheFirst(req, IMAGE_CACHE, 30*24*60*60));
+  // Images — cache only same-origin pictures. Cross-origin pictures (Google profile
+  // photos, ui-avatars, seller-hosted URLs) are left to the browser: a service-worker
+  // fetch() is governed by connect-src, while a normal <img> load is governed by
+  // img-src (which allows https:). Intercepting every image made those avatars fail
+  // with a CSP error and fall back to the placeholder tile.
+  if (req.destination === 'image') {
+    if (url.origin === self.location.origin) {
+      event.respondWith(cacheFirst(req, IMAGE_CACHE, 30*24*60*60));
+    }
     return;
   }
 
