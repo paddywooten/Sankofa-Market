@@ -1481,6 +1481,7 @@ async function releaseEscrowCore(orderId, opts) {
   const actorUid = (opts && opts.actorUid) || null;
   const isAdmin = !!(opts && opts.isAdmin);
   const auto = !!(opts && opts.auto);
+  const deliveryCode = (opts && opts.deliveryCode) ? String(opts.deliveryCode).trim() : null;
   const orderRef = db.collection('orders').doc(orderId);
 
   // Read the order (and any per-seller child orders) up front so every seller's
@@ -1519,6 +1520,13 @@ async function releaseEscrowCore(orderId, opts) {
     if (!auto && !isBuyer && !isAdmin) {
       throw new functions.https.HttpsError('permission-denied',
         'Only the buyer or Sankofa support can release this payment. Sellers cannot release their own escrow — that is what protects buyers.');
+    }
+
+    // ---- Delivery confirmation code (buyer self-confirm requires valid code if present) ----
+    if (!auto && isBuyer && !isAdmin && order.deliveryConfirmationCode) {
+      if (!deliveryCode || deliveryCode !== String(order.deliveryConfirmationCode).trim()) {
+        throw new functions.https.HttpsError('failed-precondition', 'Invalid delivery confirmation code. Please enter the code sent to your email/notifications.');
+      }
     }
 
     // ---- Idempotency: a second call is a no-op, never a second payout ----
@@ -1667,6 +1675,7 @@ async function releaseEscrowCore(orderId, opts) {
 exports.releaseEscrowToWallet = functions.https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
   const orderId = (data || {}).orderId;
+  const deliveryCode = (data || {}).deliveryCode || (data || {}).code || null;
   if (!orderId) throw new functions.https.HttpsError('invalid-argument', 'orderId required');
 
   let isAdmin = false;
@@ -1675,7 +1684,7 @@ exports.releaseEscrowToWallet = functions.https.onCall(async (data, context) => 
     isAdmin = u.exists && u.data().role === 'admin';
   } catch (e) { /* treat as non-admin */ }
 
-  const r = await releaseEscrowCore(orderId, { actorUid: context.auth.uid, isAdmin });
+  const r = await releaseEscrowCore(orderId, { actorUid: context.auth.uid, isAdmin, deliveryCode });
   console.log(r.multi
     ? `✅ Escrow released: multi-seller order ${orderId} → ${(r.perSeller || []).length} sellers, GHS ${r.payout} in total`
     : `✅ Escrow released: order ${orderId} → seller ${r.sellerId} GHS ${r.payout}${r.rate === 0 ? ' at 0% fee — kept everything' : ''}${r.alreadyReleased ? ' (already released, no second payout)' : ''}`);
@@ -3445,6 +3454,7 @@ function composeEmail(kind, v) {
       subject: 'Did it arrive? — order #' + short(v.orderId),
       heading: 'Please confirm your delivery',
       body: (v.name || 'Hello') + ', the seller marked "' + (v.title || 'your order') + '" as delivered.\n\n' +
+            (v.deliveryCode ? 'Delivery confirmation code: ' + v.deliveryCode + '\n\n' : '') +
             'Check the item, then confirm delivery so the seller gets paid. If anything is wrong, raise a dispute instead — the money stays frozen until Sankofa support decides.\n\n' +
             'If you do nothing, the payment is released to the seller 48 hours after delivery.',
       cta_text: 'Confirm delivery',
@@ -3560,6 +3570,50 @@ async function emailForUser(uid) {
     return u.email || null;
   } catch (e) {}
   return null;
+}
+
+/** Get user profile data (phone, prefs). */
+async function profileForUser(uid) {
+  if (!uid) return {};
+  try {
+    const d = await db.collection('users').doc(uid).get();
+    if (d.exists) return d.data() || {};
+  } catch (e) {}
+  return {};
+}
+
+/** Get notification settings. */
+async function notificationSettings() {
+  try {
+    const d = await db.collection('settings').doc('notifications').get();
+    if (d.exists) return d.data() || {};
+  } catch (e) {}
+  return {};
+}
+
+/** Send WhatsApp/SMS notification if configured. Gracefully skips if not configured. */
+async function sendWhatsAppNotification(to, message, meta) {
+  try {
+    if (!to || !message) return { sent: false, reason: 'missing' };
+    const cfg = await notificationSettings();
+    const webhook = cfg.whatsappWebhookUrl || process.env.WHATSAPP_WEBHOOK_URL || cfg.smsWebhookUrl || process.env.SMS_WEBHOOK_URL;
+    if (!webhook) return { sent: false, reason: 'not_configured' };
+    const payload = {
+      to: to,
+      phone: to,
+      message: message,
+      ... (meta || {})
+    };
+    const res = await fetch(webhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return { sent: res.ok, status: res.status };
+  } catch (e) {
+    console.error('whatsapp/sms notification failed', e && e.message);
+    return { sent: false, reason: 'error' };
+  }
 }
 
 /** Admin: send a test receipt to yourself to check the template. */
@@ -3742,7 +3796,7 @@ exports.emailOrderStatusUpdates = functions.firestore
   .onUpdate(async (change, context) => {
     try {
       const before = change.before.data() || {};
-      const after = change.after.data() || {};
+      let after = change.after.data() || {};
       if (before.status === after.status) return null;
       const orderId = context.params.orderId;
       const base = {
@@ -3753,9 +3807,50 @@ exports.emailOrderStatusUpdates = functions.firestore
       if (after.status === 'shipped') {
         const to = await emailForUser(after.buyerId || after.userId);
         await sendEmail('order_shipped', to, Object.assign({}, base, { name: after.buyerName, tracking: after.trackingNumber }));
+        try {
+          const buyer = await profileForUser(after.buyerId || after.userId);
+          if (buyer && buyer.phone && (buyer.notificationsEnabled !== false)) {
+            await sendWhatsAppNotification(buyer.phone, 'Sankofa Market: Your order #' + short(orderId) + ' has been shipped. Track in My Orders.', { type: 'order_shipped', orderId: orderId });
+          }
+        } catch (e) { /* best effort */ }
       } else if (after.status === 'delivered') {
+        // Generate delivery confirmation code if not present (server-side)
+        if (!after.deliveryConfirmationCode) {
+          try {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            await change.after.ref.update({
+              deliveryConfirmationCode: code,
+              deliveryCodeGeneratedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            after = Object.assign({}, after, { deliveryConfirmationCode: code });
+          } catch (e) {
+            console.error('delivery code generation failed', e && e.message);
+          }
+        }
         const to = await emailForUser(after.buyerId || after.userId);
-        await sendEmail('order_delivered', to, Object.assign({}, base, { name: after.buyerName }));
+        await sendEmail('order_delivered', to, Object.assign({}, base, { name: after.buyerName, deliveryCode: after.deliveryConfirmationCode }));
+        // Also create in-app notification for buyer
+        try {
+          await db.collection('notifications').add({
+            userId: after.buyerId || after.userId,
+            type: 'order_status_update',
+            title: 'Item delivered',
+            message: after.deliveryConfirmationCode
+              ? 'Your order has been delivered. Use delivery code ' + after.deliveryConfirmationCode + ' to confirm receipt.'
+              : 'Your order has been delivered. Please confirm receipt on the confirm delivery page.',
+            orderId: orderId,
+            isRead: false,
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (e) {
+          console.error('delivery notification failed', e && e.message);
+        }
+        try {
+          const buyer = await profileForUser(after.buyerId || after.userId);
+          if (buyer && buyer.phone && (buyer.notificationsEnabled !== false)) {
+            await sendWhatsAppNotification(buyer.phone, 'Sankofa Market: Your order #' + short(orderId) + ' has been delivered. Confirm delivery' + (after.deliveryConfirmationCode ? ' with code ' + after.deliveryConfirmationCode : '') + ' to release payment.', { type: 'order_delivered', orderId: orderId });
+          }
+        } catch (e) { /* best effort */ }
       }
     } catch (e) {
       console.error('emailOrderStatusUpdates failed', e && e.message);

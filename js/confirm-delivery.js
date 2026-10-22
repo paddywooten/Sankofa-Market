@@ -342,14 +342,13 @@ async function confirmDelivery() {
 
         // Releasing the money is a SERVER job: the Cloud Function re-checks who is asking,
         // that a real payment is being held, and that the seller has not been paid already.
-        // (This page used to call a browser function called releaseEscrow that does not exist
-        // anywhere, so the button always failed with "Failed to confirm delivery" and the
-        // seller was never paid.)
         if (typeof firebase === 'undefined' || !firebase.functions) {
             throw new Error('Firebase Functions not ready — please refresh the page');
         }
+        const deliveryCodeInput = document.getElementById('deliveryCodeInput');
+        const deliveryCode = deliveryCodeInput ? deliveryCodeInput.value : null;
         const releaseFn = firebase.functions().httpsCallable('releaseEscrowToWallet');
-        const res = await releaseFn({ orderId: currentOrder.id });
+        const res = await releaseFn({ orderId: currentOrder.id, deliveryCode: deliveryCode });
         const payout = res.data && res.data.payout;
         
         // Stop countdown

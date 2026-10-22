@@ -536,7 +536,9 @@ service cloud.firestore {
               == request.auth.uid
             || get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('userId', '')
               == request.auth.uid)
-        && ratingOk();
+        && (get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('status', '') in ['delivered','completed'])
+        && ratingOk()
+        && request.resource.data.get('isVerifiedPurchase', false) == true;
 
       // The author may fix their wording, never the target of the review or the score's owner.
       allow update: if isAuthenticated() &&
