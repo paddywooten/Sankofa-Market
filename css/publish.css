@@ -216,6 +216,85 @@
     font-weight: 600;
 }
 
+/* Photo upload progress overlay */
+.photo-upload-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.62);
+    color: white;
+    padding: 0.75rem;
+    text-align: center;
+    transition: opacity 0.4s ease;
+}
+
+.photo-upload-overlay.done {
+    background: rgba(34, 197, 94, 0.75);
+}
+
+.photo-upload-overlay.error {
+    background: rgba(231, 76, 60, 0.8);
+}
+
+.photo-upload-status {
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.photo-progress-track {
+    width: 85%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.photo-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #ffffff;
+    border-radius: 3px;
+    transition: width 0.25s ease;
+}
+
+.photo-upload-overlay.done .photo-progress-fill {
+    background: #ffffff;
+}
+
+.photo-retry-btn {
+    background: white;
+    color: #e74c3c;
+    border: none;
+    border-radius: 6px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.photos-upload-summary {
+    grid-column: 1 / -1;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 /* Condition Options */
 .condition-options {
     display: grid;
@@ -317,7 +396,7 @@
     cursor: pointer;
 }
 
-.delivery-option input[type="checkbox"] {
+.delivery-option input[type="radio"] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -335,10 +414,18 @@
     background: white;
 }
 
-.delivery-option input[type="checkbox"]:checked + .delivery-card {
+.delivery-card:hover {
     border-color: var(--primary-color);
-    background: #e3f2fd;
-    box-shadow: 0 4px 12px rgba(0, 100, 210, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 100, 210, 0.1);
+}
+
+.delivery-option input[type="radio"]:checked + .delivery-card {
+    border-color: var(--primary-color);
+    border-width: 3px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 6px 20px rgba(0, 100, 210, 0.25);
+    transform: translateY(-2px);
 }
 
 .delivery-card i {
@@ -348,8 +435,9 @@
     transition: color 0.3s ease;
 }
 
-.delivery-option input[type="checkbox"]:checked + .delivery-card i {
+.delivery-option input[type="radio"]:checked + .delivery-card i {
     color: var(--primary-color);
+    transform: scale(1.1);
 }
 
 .delivery-card strong {
@@ -357,6 +445,12 @@
     font-size: 1rem;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.delivery-option input[type="radio"]:checked + .delivery-card strong {
+    color: var(--primary-color);
+    font-weight: 700;
 }
 
 .delivery-card p {
@@ -380,6 +474,28 @@
 
 .delivery-fee-section .form-group:last-child {
     margin-bottom: 0;
+}
+
+.delivery-areas-section {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+    border: 2px solid #22c55e;
+    animation: slideDown 0.3s ease;
+}
+
+.delivery-areas-section label {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.delivery-areas-section .form-group {
+    margin-bottom: 0;
+}
+
+.delivery-areas-section .form-text {
+    color: #16a34a;
 }
 
 .form-text {
@@ -703,4 +819,66 @@
     .transparency-warning .warning-content ul {
         font-size: 0.8rem;
     }
+}
+
+/* Pickup Location Section */
+.pickup-location-section {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #0ea5e9;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pickup-location-section::before {
+    content: '📍 Pickup Location Details';
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0369a1;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #0ea5e9;
+}
+
+.pickup-location-section .form-group {
+    margin-bottom: 1rem;
+}
+
+.pickup-location-section .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.pickup-location-section label {
+    color: #0c4a6e;
+    font-weight: 500;
+}
+
+.pickup-location-section input,
+.pickup-location-section textarea {
+    background: white;
+    border-color: #7dd3fc;
+}
+
+.pickup-location-section input:focus,
+.pickup-location-section textarea:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.pickup-location-section .form-text {
+    color: #0369a1;
+    font-size: 0.8rem;
 }

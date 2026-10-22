@@ -3,22 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Your Sankofa Market seller dashboard.">
     <title>My Dashboard - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/main.css?v=4">
-    <link rel="stylesheet" href="../../css/dashboard.css">
-    <link rel="stylesheet" href="../../css/user-dashboard.css">
-    <link rel="stylesheet" href="../../css/chatbot.css?v=3">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/dashboard.css?v=3">
+    <link rel="stylesheet" href="/css/user-dashboard.css?v=17">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="../../index.html"><img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a>
+                <a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a>
             </div>
             <div class="header-search">
                 <form class="search-form" action="../../search.html" method="GET">
@@ -27,7 +41,7 @@
                 </form>
             </div>
             <div class="header-actions">
-                <a href="../../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
                 <button class="btn btn-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
             </div>
         </div>
@@ -39,7 +53,7 @@
             <div class="dashboard-header">
                 <div class="user-profile-card">
                     <div class="user-avatar-large">
-                        <img src="" alt="Profile" id="userAvatar" loading="lazy" decoding="async" style="display:none;">
+                        <img alt="Profile" id="userAvatar" loading="lazy" decoding="async" style="display:none;">
                         <div id="userAvatarFallback" style="width:96px;height:96px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;border:3px solid #0064d2;">U</div>
                         <button class="avatar-edit-btn" title="Change photo"><i class="fas fa-camera"></i></button>
                     </div>
@@ -65,6 +79,16 @@
                         <div class="stat-label">Total Views</div>
                     </div>
                     <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-value" id="dashFollowers">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-user-plus"></i>
+                        <div class="stat-value" id="dashFollowing">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat-card">
                         <i class="fas fa-heart"></i>
                         <div class="stat-value" id="totalFavorites">0</div>
                         <div class="stat-label">Favorites</div>
@@ -77,51 +101,132 @@
                 </div>
             </div>
 
-            <!-- Quick Access Links -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
-                <a href="orders.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(0,100,210,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-shopping-bag" style="color:var(--primary-color);"></i>
-                    </div>
+            <!-- Premium Auction CTA -->
+            <div id="dashAuctionCta" style="background:linear-gradient(135deg,#191919 0%,#2d2d2d 100%);border-radius:14px;padding:1.1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+                <div style="display:flex;align-items:center;gap:0.9rem;flex:1;min-width:220px;">
+                    <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);display:flex;align-items:center;justify-content:center;color:#191919;font-size:1.2rem;flex-shrink:0;box-shadow:0 3px 10px rgba(245,175,2,0.3);"><i class="fas fa-gavel"></i></div>
                     <div>
-                        <div style="font-weight:600;font-size:0.9rem;">My Orders</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">Track purchases</div>
+                        <div style="color:#fff;font-weight:800;font-size:0.95rem;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">Premium Auctions <span style="background:#f5af02;color:#191919;padding:0.15rem 0.45rem;border-radius:999px;font-size:0.62rem;letter-spacing:0.06em;">1–2% FEE</span></div>
+                        <div style="color:rgba(255,255,255,0.7);font-size:0.78rem;margin-top:0.15rem;">Trigger blinking <span style="background:#f59e0b;color:#fff;padding:0.1rem 0.3rem;border-radius:4px;font-weight:700;">amber</span> → <span style="background:#ef4444;color:#fff;padding:0.1rem 0.3rem;border-radius:4px;font-weight:700;">red LIVE</span> alerts for all users. Get max bids!</div>
                     </div>
-                </a>
-                <a href="messages.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,175,2,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-comments" style="color:var(--accent-color);"></i>
-                    </div>
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <a href="/auction.html" style="background:#fff;color:#191919;padding:0.65rem 1rem;border-radius:8px;font-weight:800;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:0.35rem;"><i class="tap-link fas fa-eye"></i> View Auctions</a>
+                    <a href="/pages/user/create-auction.html" id="dashStartAuctionBtn" style="background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;padding:0.65rem 1rem;border-radius:8px;font-weight:800;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:0.35rem;box-shadow:0 3px 10px rgba(245,175,2,0.3);"><i class="tap-link fas fa-bolt"></i> Start Auction</a>
+                </div>
+            </div>
+            <!-- Shop Analytics entry (Silver+ perk; the page itself gates) -->
+            <div style="background:linear-gradient(135deg,#eaf2ff 0%,#f5faff 100%);border:1px solid #c7ddff;border-radius:14px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;">
+                <div style="display:flex;align-items:center;gap:0.9rem;flex:1;min-width:220px;">
+                    <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#0064d2 0%,#0052ad 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.15rem;flex-shrink:0;box-shadow:0 3px 10px rgba(0,100,210,0.25);"><i class="fas fa-chart-line"></i></div>
                     <div>
-                        <div style="font-weight:600;font-size:0.9rem;">Messages <span id="dashMsgBadge" style="background:var(--error-color);color:white;font-size:0.6rem;padding:0.1rem 0.4rem;border-radius:10px;margin-left:0.25rem;display:none;">0</span></div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">Chat with sellers</div>
+                        <div style="color:#0f2f5c;font-weight:800;font-size:0.95rem;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">Shop analytics <span style="background:#0064d2;color:#fff;padding:0.15rem 0.45rem;border-radius:999px;font-size:0.62rem;letter-spacing:0.06em;">SILVER+</span></div>
+                        <div style="color:#45607f;font-size:0.78rem;margin-top:0.15rem;">Views, chats, bargains, orders &amp; revenue — per listing, live.</div>
                     </div>
-                </a>
-                <a href="profile.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(134,184,23,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-user-cog" style="color:var(--success-color);"></i>
-                    </div>
+                </div>
+                <a href="/pages/user/analytics.html" style="background:#0064d2;color:#fff;padding:0.65rem 1.1rem;border-radius:8px;font-weight:800;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:0.35rem;"><i class="fas fa-chart-line"></i> Open analytics</a>
+            </div>
+            <script>
+            (function(){
+                function checkDashPremium(){
+                    if (typeof firebaseDB==='undefined' || typeof firebaseAuth==='undefined'){ setTimeout(checkDashPremium, 900); return; }
+                    firebaseAuth.onAuthStateChanged(function(user){
+                        if (!user) return;
+                        firebaseDB.collection('users').doc(user.uid).get().then(function(doc){
+                            var d = doc.exists ? doc.data() : {};
+                            var isPremium = d.isPremium===true;
+                            if (isPremium && d.premiumExpiry){
+                                var exp = d.premiumExpiry.toDate ? d.premiumExpiry.toDate() : new Date(d.premiumExpiry);
+                                if (exp <= new Date()) isPremium=false;
+                            }
+                            var btn = document.getElementById('dashStartAuctionBtn');
+                            if (!isPremium && btn){
+                                btn.style.opacity='0.7';
+                                btn.title='Premium required — seller commission is shown before starting';
+                                btn.innerHTML='<i class="fas fa-crown"></i> Go Premium to Auction';
+                                btn.href='become-seller.html';
+                            }
+                        });
+                    });
+                }
+                document.addEventListener('DOMContentLoaded', function(){ setTimeout(checkDashPremium, 1200); });
+            })();
+            </script>
+
+            <!-- Sankofa Wallet — highlighted -->
+            <div style="background:linear-gradient(135deg,#0064d2 0%,#004a9f 100%);border-radius:14px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,100,210,0.18);">
+                <div style="display:flex;align-items:center;gap:0.9rem;flex:1;min-width:200px;">
+                    <div style="width:46px;height:46px;border-radius:50%;background:#fff;color:#0064d2;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;"><i class="fas fa-wallet"></i></div>
                     <div>
-                        <div style="font-weight:600;font-size:0.9rem;">Profile</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">Account settings</div>
+                        <div style="color:#fff;font-weight:800;font-size:0.95rem;display:flex;align-items:center;gap:0.4rem;">Sankofa Wallet <span style="background:#f5af02;color:#191919;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.6rem;">0% FEE</span></div>
+                        <div style="color:rgba(255,255,255,0.85);font-size:0.78rem;margin-top:0.1rem;"><span id="dashWalletBalance">GHS 0.00</span> • Top up once, pay 0% inside</div>
                     </div>
-                </a>
-                <a href="../../pages/help.html" style="background:white;padding:1rem;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;transition:transform 0.2s;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(231,76,60,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-question-circle" style="color:var(--error-color);"></i>
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <a href="/pages/user/wallet.html" style="background:#fff;color:#0064d2;padding:0.6rem 1rem;border-radius:8px;font-weight:800;text-decoration:none;font-size:0.82rem;display:inline-flex;align-items:center;gap:0.35rem;"><i class="fas fa-plus"></i> Top Up</a>
+                    <a href="/pages/user/wallet.html" style="background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:0.6rem 1rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.82rem;">View</a>
+                </div>
+            </div>
+            <script>
+            (function(){
+                function loadDashWallet(){
+                    if(typeof firebaseDB==='undefined'||!firebaseDB||typeof firebaseAuth==='undefined'||!firebaseAuth){ setTimeout(loadDashWallet, 900); return; }
+                    firebaseAuth.onAuthStateChanged(function(user){
+                        if(!user) return;
+                        firebaseDB.collection('wallets').doc(user.uid).onSnapshot(function(doc){
+                            const bal = doc.exists ? (doc.data().balance||0) : 0;
+                            const el=document.getElementById('dashWalletBalance');
+                            if(el) el.textContent='GHS '+Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
+                        });
+                    });
+                }
+                document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadDashWallet, 1000); });
+            })();
+            </script>
+
+            <!-- Seller Verification Progress Widget -->
+            <div id="sellerProgressWidget" style="display:none; background:white; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); padding:1.25rem 1.5rem; margin-bottom:1.5rem; border-left:4px solid #f59e0b;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <div style="width:42px;height:42px;border-radius:50%;background:rgba(245,175,2,0.12);display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-store" style="color:#d97706;font-size:1.1rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:1rem;" id="sellerProgressTitle">Unlock Seller Access</div>
+                            <div style="font-size:0.8rem;color:var(--text-secondary);" id="sellerProgressSubtitle">Complete 2 escrow purchases to start selling</div>
+                        </div>
                     </div>
-                    <div>
-                        <div style="font-weight:600;font-size:0.9rem;">Help Center</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">Get support</div>
+                    <a href="/pages/user/become-seller.html" style="padding:0.4rem 1rem;background:#0064d2;color:white;text-decoration:none;border-radius:6px;font-size:0.8rem;font-weight:600;white-space:nowrap;" id="sellerProgressLink">
+                        <i class="fas fa-arrow-right"></i> View Progress
+                    </a>
+                </div>
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <div style="flex:1;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                            <span style="font-size:0.8rem;font-weight:600;" id="sellerProgressLabel">Escrow Purchases</span>
+                            <span style="font-size:0.8rem;color:var(--text-secondary);" id="sellerProgressCount">0 / 2</span>
+                        </div>
+                        <div style="width:100%;height:10px;background:#e5e5e5;border-radius:5px;overflow:hidden;">
+                            <div id="sellerProgressBar" style="height:100%;width:0%;border-radius:5px;background:linear-gradient(90deg,#f59e0b,#d97706);transition:width 0.6s ease;"></div>
+                        </div>
                     </div>
-                </a>
+                    <div id="sellerProgressDots" style="display:flex;gap:0.4rem;align-items:center;">
+                        <div style="width:24px;height:24px;border-radius:50%;border:2px solid #e5e5e5;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#767676;background:white;" id="dashDot1">1</div>
+                        <div style="width:24px;height:24px;border-radius:50%;border:2px solid #e5e5e5;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#767676;background:white;" id="dashDot2">2</div>
+                        <div style="width:24px;height:24px;border-radius:50%;border:2px solid #e5e5e5;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#767676;background:white;" id="dashDotUnlock"><i class="fas fa-lock" style="font-size:0.5rem;"></i></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Dashboard Tabs -->
-            <div class="dashboard-tabs">
+            <!-- Dashboard navigation — in-page tabs + quick links in ONE bar -->
+            <div class="dashboard-tabs dash-nav">
                 <button class="tab-btn active" data-tab="listings">
                     <i class="fas fa-box"></i> My Listings
+                    <span class="tab-badge" id="listingsCount" style="display:none;">0</span>
                 </button>
+                <a class="tab-btn dash-nav-link" href="/pages/user/my-store.html" style="color:#b45309;border:1px solid #fde68a;background:#fffbeb;">
+                    <i class="fas fa-store"></i> My Store 🏪
+                </a>
                 <button class="tab-btn" data-tab="messages">
                     <i class="fas fa-comments"></i> Messages
                     <span class="tab-badge" id="messageCount" style="display:none;">0</span>
@@ -132,6 +237,25 @@
                 <button class="tab-btn" data-tab="settings">
                     <i class="fas fa-cog"></i> Settings
                 </button>
+
+                <span class="dash-nav-sep" aria-hidden="true"></span>
+
+                <a class="tab-btn dash-nav-link" href="/pages/user/wallet.html">
+                    <i class="fas fa-wallet"></i> Wallet
+                </a>
+                <a class="tab-btn dash-nav-link" href="/pages/user/rewards.html" style="position:relative;">
+                    <i class="fas fa-coins"></i> Rewards
+                    <span id="dashPointsDot" title="Today's points are waiting — tap to claim" style="display:none;position:absolute;top:6px;right:8px;width:10px;height:10px;border-radius:50%;background:#f5af02;border:2px solid #fff;box-shadow:0 1px 4px rgba(122,74,0,0.45);"></span>
+                </a>
+                <a class="tab-btn dash-nav-link" href="/pages/user/orders.html">
+                    <i class="fas fa-shopping-bag"></i> My Orders
+                </a>
+                <a class="tab-btn dash-nav-link" href="/pages/user/profile.html">
+                    <i class="fas fa-user-cog"></i> Profile
+                </a>
+                <a class="tab-btn dash-nav-link" href="/pages/help.html">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
             </div>
 
             <!-- Tab Content -->
@@ -141,8 +265,8 @@
                     <div class="panel-header">
                         <h2>My Listings</h2>
                         <div style="display:flex;gap:0.5rem;">
-                            <a href="listings.html" class="btn btn-outline btn-small"><i class="fas fa-th"></i> View All</a>
-                            <a href="../../publish.html" class="btn btn-primary"><i class="fas fa-plus"></i> New Listing</a>
+                            <a href="/pages/user/listings.html" class="tap-link btn btn-outline btn-small"><i class="fas fa-th"></i> View All</a>
+                            <a href="/publish.html" class="btn btn-primary"><i class="fas fa-plus"></i> New Listing</a>
                         </div>
                     </div>
                     
@@ -154,9 +278,9 @@
                     </div>
 
                     <div class="listings-grid" id="listingsGrid">
-                        <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
-                            <i class="fas fa-box-open" style="font-size: 2rem; color: #ccc;"></i>
-                            <p style="color: #767676; margin-top: 0.5rem;">No listings yet. <a href="../../publish.html">Create your first listing!</a></p>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #767676;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.4rem; color: #0064d2;"></i>
+                            <p style="margin-top: 0.5rem;">Loading your listings…</p>
                         </div>
                     </div>
                 </div>
@@ -179,7 +303,7 @@
                 <div class="tab-panel" id="favorites-panel">
                     <div class="panel-header">
                         <h2>My Favorites</h2>
-                        <a href="wishlist.html" class="btn btn-outline btn-small"><i class="fas fa-heart"></i> View Full Wishlist</a>
+                        <a href="/pages/user/wishlist.html" class="btn btn-outline btn-small"><i class="fas fa-heart"></i> View Full Wishlist</a>
                     </div>
                     <div class="products-grid" id="favoritesGrid">
                         <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
@@ -267,7 +391,7 @@
                                 </label>
                                 <label class="toggle-label">
                                     <span>Email notifications for price drops on favorites</span>
-                                    <input type="checkbox" checked><span class="toggle-switch"></span>
+                                    <input type="checkbox" id="notifPriceDrops" checked><span class="toggle-switch"></span>
                                 </label>
                                 <label class="toggle-label">
                                     <span>Weekly newsletter with marketplace deals</span>
@@ -324,9 +448,95 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="../../config/firebase-config.js"></script>
-    <script src="../../js/main.js?v=5"></script>
-    <script src="../../js/dashboard.js?v=5"></script>
-    <script src="../../js/chatbot.js?v=9"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/js/dashboard.js?v=9"></script>
+    <!-- Renders the real listings into the My Listings tab (same code as /listings) -->
+    <script src="/js/user-listings.js?v=7"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+<script>
+// 🪙 Gold-dot nudge: points are claimed BY HAND on the Rewards page now, so
+// this tiny dot is the reminder. Rolling 24h cooldown: the dot lights as soon
+// as 24h have passed since the last claim (or if they've never claimed).
+// ONE extra doc read, only on this dashboard, only when signed in.
+(function () {
+    var dot = document.getElementById('dashPointsDot');
+    if (!dot) return;
+    var COOLDOWN = 864e5;
+    function arm() {
+        if (typeof firebaseAuth === 'undefined' || typeof firebaseDB === 'undefined') { setTimeout(arm, 900); return; }
+        try {
+            firebaseAuth.onAuthStateChanged(function (user) {
+                if (!user) return;
+                firebaseDB.collection('points').doc(user.uid).get().then(function (d) {
+                    var last = 0;
+                    try { var t = d.exists ? d.data().lastClaimAt : null; last = t && t.toMillis ? t.toMillis() : 0; } catch (e2) {}
+                    if (!last || (Date.now() - last) >= COOLDOWN) dot.style.display = 'block';
+                }).catch(function () {});
+            });
+        } catch (e) {}
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arm);
+    else arm();
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

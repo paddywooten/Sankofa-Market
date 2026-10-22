@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-GH">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Sankofa Wallet — 0% Transfers | Sankofa Market</title>
+    <meta name="description" content="Sankofa Wallet — top up once via Paystack, then pay for orders with 0% internal fee. Escrow protected.">
+    <link rel="canonical" href="https://sankofa-market.web.app/pages/user/wallet.html">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/wallet.css?v=5">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+    <style>
+        .hidden{ display:none !important; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo"><a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a></div>
+            <div class="header-search"><form class="search-form" action="../../search.html" method="GET"><input type="text" name="q" placeholder="Search..." class="search-input"><button type="submit" class="search-btn"><i class="fas fa-search"></i></button></form></div>
+            <div class="header-actions">
+                <a href="/pages/user/wallet.html" class="btn btn-primary" style="background:#0064d2;"><i class="fas fa-wallet"></i> Wallet</a>
+                <a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Account</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="wallet-hero">
+        <div class="container">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.2rem;">
+                <div style="flex:1;min-width:260px;">
+                    <h1 style="margin:0;font-size:1.7rem;font-weight:800;display:flex;align-items:center;gap:0.6rem;letter-spacing:-0.02em;line-height:1.1;"><span style="background:#fff;color:#0064d2;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 2px 8px rgba(0,0,0,0.12);flex-shrink:0;"><i class="fas fa-wallet"></i></span> <span style="color:#fff;">Sankofa</span> <span style="color:#f5af02;">Wallet</span></h1>
+                    <p style="margin:0.5rem 0 0;color:#e0f2fe;font-size:0.88rem;line-height:1.6;max-width:520px;">Top up once via Paystack — then pay for <span style="background:#fff;color:#0064d2;padding:0.2rem 0.55rem;border-radius:999px;font-weight:800;font-size:0.82rem;box-shadow:0 1px 6px rgba(0,0,0,0.08);white-space:nowrap;">any order • 0% fee</span> inside Sankofa.</p>
+                    <p style="margin:0.35rem 0 0;color:rgba(255,255,255,0.75);font-size:0.72rem;"><i class="fas fa-lock" style="color:#f5af02;"></i> Escrow protected • Paystack secured • Instant 0% transfers</p>
+                </div>
+                <span style="background:#fff;color:#0064d2;border:2px solid #f5af02;padding:0.4rem 0.75rem;border-radius:999px;font-size:0.7rem;font-weight:800;display:inline-flex;align-items:center;gap:0.35rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);white-space:nowrap;"><i class="fas fa-bolt" style="color:#f59e0b;"></i> Closed-loop • Escrow • 0% internal</span>
+            </div>
+            <div class="balance-card">
+                <div>
+                    <div style="font-size:0.7rem;letter-spacing:0.06em;color:#fff;opacity:0.92;font-weight:700;">AVAILABLE BALANCE</div>
+                    <div class="bal-amount" id="walletBalance" style="color:#fff;">GHS 0.00</div>
+                    <div class="bal-sub" id="walletBalanceSub" style="color:#fff;opacity:0.92;">Loading...</div>
+                    <div style="font-size:0.68rem;color:#fff;opacity:0.88;margin-top:0.3rem;" id="walletUserEmail"></div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:0.7rem;color:#fff;opacity:0.92;">Paystack fee: 1.95% once per top-up</div>
+                    <div style="font-size:0.7rem;color:#fff;opacity:0.92;">Sankofa transfers: <strong style="color:#f5af02;">0%</strong></div>
+                    <a href="/payment.html" style="display:inline-block;margin-top:0.6rem;background:#fff;color:#0064d2;padding:0.45rem 0.8rem;border-radius:8px;font-weight:700;font-size:0.78rem;text-decoration:none;"><i class="fas fa-shopping-bag"></i> Shop</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main style="background:#f8fafc;min-height:60vh;padding:1.4rem 0 2rem;">
+        <div class="container">
+            <div id="walletSignIn" class="hidden" style="text-align:center;padding:2rem;background:#fff;border:1px solid #e5e7eb;border-radius:12px;">
+                <i class="fas fa-lock" style="font-size:2rem;color:#94a3b8;"></i>
+                <h2 style="margin:0.7rem 0 0.3rem;font-size:1.17em;">Sign in to use Wallet</h3>
+                <p style="color:#767676;font-size:0.85rem;">Your wallet is tied to your account.</p>
+                <a href="/pages/auth/login.html?redirect=wallet.html" class="btn btn-primary" style="margin-top:0.8rem;">Sign In</a>
+            </div>
+
+            <div id="walletMain">
+                <div class="wallet-grid">
+                    <!-- Top-up -->
+                    <div class="wallet-card">
+                        <h2 style="margin:0 0 0.3rem;display:flex;align-items:center;gap:0.4rem;font-size:1.17em;"><i class="fas fa-arrow-down" style="color:#22c55e;"></i> Top Up Wallet</h3>
+                        <p style="margin:0;color:#6b7280;font-size:0.82rem;">Pay once via Paystack (card / MoMo). Funds land instantly.</p>
+                        <form id="topupForm" style="margin-top:1rem;">
+                            <div style="display:flex;gap:0.5rem;align-items:center;">
+                                <span style="font-weight:700;color:#374151;">GHS</span>
+                                <input type="number" id="topupAmount" min="5" step="1" placeholder="e.g. 100" required style="flex:1;padding:0.7rem 0.9rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:1rem;font-weight:700;">
+                            </div>
+                            <div class="topup-chips">
+                                <button type="button" class="topup-chip" data-amount="50">GHS 50</button>
+                                <button type="button" class="topup-chip" data-amount="100">GHS 100</button>
+                                <button type="button" class="topup-chip" data-amount="200">GHS 200</button>
+                                <button type="button" class="topup-chip" data-amount="500">GHS 500</button>
+                            </div>
+                            <button type="submit" id="topupBtn" style="width:100%;background:linear-gradient(135deg,#0064d2 0%,#004a9f 100%);color:#fff;border:none;padding:0.85rem;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;"><i class="fas fa-plus"></i> Top Up via Paystack</button>
+                            <div id="topupStatus" style="font-size:0.78rem;min-height:1.2rem;margin-top:0.6rem;"></div>
+                            <p style="font-size:0.68rem;color:#94a3b8;margin:0.5rem 0 0;text-align:center;"><i class="fas fa-lock"></i> Secured by Paystack • Escrow protected • Test card 4084084084084081</p>
+                        </form>
+
+                        <div class="wallet-top-stats">
+                            <div class="wallet-stat"><i class="fas fa-percentage" style="background:#f59e0b;"></i><div><div style="font-weight:800;font-size:0.9rem;">0%</div><div style="font-size:0.68rem;color:#6b7280;">Sankofa transfer</div></div></div>
+                            <div class="wallet-stat"><i class="fas fa-shield-alt" style="background:#0064d2;"></i><div><div style="font-weight:800;font-size:0.9rem;">Escrow</div><div style="font-size:0.68rem;color:#6b7280;">48h protection</div></div></div>
+                            <div class="wallet-stat"><i class="fas fa-bolt" style="background:#22c55e;"></i><div><div style="font-weight:800;font-size:0.9rem;">Instant</div><div style="font-size:0.68rem;color:#6b7280;">Pay in 1 click</div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Info / Withdraw -->
+                    <div style="display:flex;flex-direction:column;gap:1rem;">
+                        <div class="wallet-card" style="background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-color:#fde68a;">
+                            <h2 style="margin:0 0 0.4rem;color:#92400e;display:flex;align-items:center;gap:0.4rem;font-size:1.17em;"><i class="fas fa-info-circle"></i> How it saves you</h3>
+                            <ul style="margin:0 0 0 1.1rem;font-size:0.85rem;line-height:1.7;color:#78350f;">
+                                <li><strong>Top up GHS 500 once</strong> → Paystack `1.95% = GHS 9.75` once</li>
+                                <li>Then buy 10 items at `GHS 50` each inside Sankofa → <strong>GHS 0 fees</strong></li>
+                                <li>Without wallet: `10 × 1.95% = GHS 9.75` extra</li>
+                                <li>Seller earnings → wallet → withdraw to MoMo/bank (payout)</li>
+                            </ul>
+                        </div>
+                        <div class="wallet-card" id="withdrawCard">
+                            <h2 style="margin:0 0 0.5rem;display:flex;align-items:center;gap:0.4rem;font-size:1.17em;"><i class="fas fa-hand-holding-usd" style="color:#0064d2;"></i> Withdraw</h2>
+                            <p style="margin:0 0 0.7rem;color:#5a6572;font-size:0.82rem;">Take your earnings out to Mobile Money or a bank account. The amount is held the moment you ask, and we pay out within 1–2 working days.</p>
+
+                            <div id="payoutForm">
+                                <label style="display:block;font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:0.25rem;">Amount (GHS)</label>
+                                <div style="display:flex;gap:0.4rem;margin-bottom:0.7rem;flex-wrap:wrap;">
+                                    <input type="number" id="payoutAmount" min="20" step="0.01" placeholder="50.00" style="flex:1;min-width:130px;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.9rem;">
+                                    <button type="button" onclick="payoutMax()" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:0.6rem 0.8rem;font-weight:700;font-size:0.78rem;cursor:pointer;">All</button>
+                                    <button type="button" onclick="payoutPreset(50)" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:0.6rem 0.8rem;font-weight:700;font-size:0.78rem;cursor:pointer;">50</button>
+                                    <button type="button" onclick="payoutPreset(100)" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:0.6rem 0.8rem;font-weight:700;font-size:0.78rem;cursor:pointer;">100</button>
+                                </div>
+
+                                <label style="display:block;font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:0.25rem;">Send to</label>
+                                <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem;">
+                                    <label style="flex:1;display:flex;align-items:center;gap:0.4rem;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="radio" name="payoutMethod" value="momo" checked onchange="payoutMethodChanged()"> Mobile Money
+                                    </label>
+                                    <label style="flex:1;display:flex;align-items:center;gap:0.4rem;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.85rem;cursor:pointer;">
+                                        <input type="radio" name="payoutMethod" value="bank" onchange="payoutMethodChanged()"> Bank
+                                    </label>
+                                </div>
+
+                                <div id="payoutMomoFields">
+                                    <select id="payoutProvider" style="width:100%;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.88rem;margin-bottom:0.5rem;">
+                                        <option value="">Choose network…</option>
+                                        <option value="MTN Mobile Money">MTN Mobile Money</option>
+                                        <option value="Telecel Cash">Telecel Cash (Vodafone)</option>
+                                        <option value="AirtelTigo Money">AirtelTigo Money</option>
+                                    </select>
+                                </div>
+                                <div id="payoutBankFields" style="display:none;">
+                                    <input type="text" id="payoutBankName" placeholder="Bank name (e.g. GCB Bank)" style="width:100%;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.88rem;margin-bottom:0.5rem;">
+                                </div>
+
+                                <input type="text" id="payoutNumber" placeholder="Mobile Money number / account number" style="width:100%;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.88rem;margin-bottom:0.5rem;">
+                                <input type="text" id="payoutName" placeholder="Name on the account" style="width:100%;padding:0.6rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.88rem;margin-bottom:0.7rem;">
+
+                                <button type="button" id="payoutSubmitBtn" onclick="submitPayoutRequest()" style="width:100%;background:#0064d2;color:#fff;border:none;border-radius:8px;padding:0.75rem;font-weight:800;font-size:0.9rem;cursor:pointer;">
+                                    <i class="fas fa-paper-plane"></i> Request withdrawal
+                                </button>
+                                <p style="margin:0.6rem 0 0;font-size:0.72rem;color:#5a6572;">Minimum GHS 20. You can cancel any request while it is still pending and the money returns to your wallet immediately.</p>
+                                <div id="payoutStatus" style="font-size:0.82rem;margin-top:0.5rem;"></div>
+                            </div>
+
+                            <div id="payoutList" style="margin-top:1rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions -->
+                <div class="wallet-card" style="margin-top:1.2rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                        <h2 style="margin:0;display:flex;align-items:center;gap:0.4rem;font-size:1.17em;"><i class="fas fa-list" style="color:#0064d2;"></i> Transactions <span style="background:#f3f4f6;border:1px solid #e5e7eb;padding:0.15rem 0.45rem;border-radius:999px;font-size:0.65rem;color:#6b7280;">last 50</span></h3>
+                        <span style="font-size:0.7rem;color:#6b7280;">Top-up • Purchase • Sale</span>
+                    </div>
+                    <div id="walletTxList" style="margin-top:0.8rem;min-height:120px;">
+                        <div style="text-align:center;padding:1.5rem;color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i><p style="margin-top:0.5rem;">Loading transactions...</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2026 Sankofa Market. All rights reserved.</p><p>Made with <i class="fas fa-heart" style="color: var(--accent-color);"></i> in Ghana 🇬🇭</p></div></div></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <!-- Paystack checkout is loaded on demand by js/wallet.js (ensurePaystackSdk) -->
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/js/main.js?v=31"></script>
+    <script src="/js/wallet.js?v=14"></script>
+
+    <nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+      <div class="app-bottom-nav-inner">
+        <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+        <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+        <a href="/auction.html" class="app-nav-item" data-nav="auction"><i class="fas fa-gavel"></i><span>Auctions</span></a>
+        <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+      </div>
+    </nav>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>

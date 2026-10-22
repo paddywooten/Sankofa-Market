@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Refreshing Sankofa Market</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:1.25rem;background:#f3f6fb;color:#1f2937;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}.card{max-width:440px;width:100%;background:#fff;border:1px solid #dce5ef;border-radius:16px;padding:1.5rem;box-shadow:0 12px 36px rgba(15,23,42,.1)}h1{font-size:1.2rem;margin:0 0 .5rem;color:#064a9f}p{margin:.4rem 0;color:#475569}a{display:inline-block;margin-top:1rem;color:#075cc7;font-weight:700}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Refreshing Sankofa Market</h1>
+    <p id="refreshStatus">Clearing old page files so the latest My Listings page can open…</p>
+    <p>This refresh does not delete your account or saved listings.</p>
+    <a id="continueLink" href="/pages/user/listings.html?fresh=manual">Continue to My Listings</a>
+  </main>
+  <script>
+    (function () {
+      var status = document.getElementById('refreshStatus');
+      var started = false;
+      function goToListings() {
+        if (started) return;
+        started = true;
+        var target = '/pages/user/listings.html?fresh=' + Date.now();
+        var link = document.getElementById('continueLink');
+        if (link) link.href = target;
+        window.location.replace(target);
+      }
+      window.setTimeout(goToListings, 8000);
+      (async function () {
+        try {
+          if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+            var registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map(function (registration) { return registration.unregister().catch(function () {}); }));
+          }
+        } catch (e) {}
+        try {
+          if (window.caches && caches.keys) {
+            var keys = await caches.keys();
+            await Promise.all(keys.map(function (key) { return caches.delete(key).catch(function () {}); }));
+          }
+        } catch (e) {}
+        if (status) status.textContent = 'Old page files cleared. Opening the latest My Listings page…';
+        window.setTimeout(goToListings, 350);
+      })();
+    })();
+  </script>
+</body>
+</html>

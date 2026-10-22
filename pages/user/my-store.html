@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Set up your own branded shop on Sankofa Market — name, web address, logo, theme and contact details.">
+    <title>My Store - Sankofa Market</title>
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/user-dashboard.css?v=17">
+    <link rel="stylesheet" href="/css/storefront.css?v=11">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                </a>
+            </div>
+            <div class="header-search">
+                <form class="search-form" action="../../search.html" method="GET">
+                    <input type="text" name="q" placeholder="Search for anything..." class="search-input">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="header-actions">
+                <a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="/pages/user/dashboard.html" class="nav-item">
+                            <i class="fas fa-home"></i> <span>Dashboard</span>
+                        </a>
+                        <a href="/pages/user/profile.html" class="nav-item">
+                            <i class="fas fa-user"></i> <span>My Profile</span>
+                        </a>
+                        <a href="/pages/user/orders.html" class="nav-item">
+                            <i class="fas fa-shopping-bag"></i> <span>My Orders</span>
+                        </a>
+                        <a href="/pages/user/listings.html" class="nav-item">
+                            <i class="fas fa-box"></i> <span>My Listings</span>
+                        </a>
+                        <a href="/pages/user/my-store.html" class="nav-item active">
+                            <i class="fas fa-store"></i> <span>My Store</span>
+                        </a>
+                        <a href="/pages/user/messages.html" class="nav-item">
+                            <i class="fas fa-comments"></i> <span>Messages</span>
+                            <span class="nav-badge" id="unreadMessages" style="display:none;">0</span>
+                        </a>
+                        <a href="/pages/user/notifications" class="nav-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Alerts</span>
+                            <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                        </a>
+                        <a href="/pages/user/wishlist.html" class="nav-item">
+                            <i class="fas fa-heart"></i> <span>Wishlist</span>
+                        </a>
+                        <a href="/pages/auth/login.html" class="nav-item logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="dashboard-content">
+                    <div class="content-header">
+                        <div>
+                            <h1>My Store 🏪</h1>
+                            <p>Your own branded mini-website inside Sankofa Market</p>
+                            <div id="myStoreSignedInAs"></div>
+                        </div>
+                    </div>
+
+                    <!-- Status banner (filled by JS) -->
+                    <div id="myStoreStatus" class="mstore-banner guide">
+                        <i class="fas fa-info-circle" style="margin-top:2px;"></i>
+                        <span>Setting up your shop…</span>
+                    </div>
+
+                    <!-- Share box (shown once the shop exists) -->
+                    <div id="myStoreShare" class="mstore-share-box" style="display:none;">                        <div style="font-size:0.8rem;font-weight:700;color:#191919;">Your shop's web address — share it anywhere:</div>
+                        <div class="mstore-share-url" id="myStoreUrl"></div>
+                        <div class="mstore-share-btns">
+                            <button class="btn btn-outline btn-small" id="copyStoreUrlBtn"><i class="fas fa-copy"></i> Copy link</button>
+                            <a class="btn btn-outline btn-small" id="waShareBtn" target="_blank" rel="noopener" style="color:#128c3f;border-color:#bbf7d0;"><i class="fab fa-whatsapp"></i> Share on WhatsApp</a>
+                            <a class="btn btn-primary btn-small" id="viewStoreBtn" target="_blank"><i class="fas fa-external-link-alt"></i> View my shop</a>
+                        </div>
+                    </div>
+
+                    <!-- "Complete my shop" checklist — full shelves sell more (filled by js/my-store.js) -->
+                    <div class="mstore-checklist" id="myStoreChecklist" style="display:none;">
+                        <h3><i class="fas fa-list-check" style="color:#f5af02;"></i> Make your shop sell 🚀</h3>
+                        <div class="cl-sub">Shops with 5+ items look alive — and alive shops get orders.</div>
+                        <div class="mstore-progress"><div id="checklistBar" style="width:0%;"></div></div>
+                        <div id="checklistRows"></div>
+                        <div id="checklistDone" style="display:none;text-align:center;padding:0.5rem;font-size:0.88rem;font-weight:800;color:#065f46;">🎉 Your shop is fully set up — now share that link everywhere!</div>
+                    </div>
+
+                    <div class="section-card" style="margin-bottom:1.2rem;">
+                        <h2 style="font-size:1rem;margin-bottom:1rem;"><i class="fas fa-id-card" style="color:var(--primary-color);"></i> The basics</h2>
+
+                        <div class="mstore-field">
+                            <label for="storeNameInput">Store name</label>
+                            <input type="text" id="storeNameInput" maxlength="40" placeholder="e.g. Kofi's Phones">
+                            <div class="mstore-hint">2–40 characters. This is what buyers see at the top of your shop.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label for="storeSlugInput">Web address</label>
+                            <input type="text" id="storeSlugInput" maxlength="24" placeholder="e.g. kofis-phones">
+                            <div class="mstore-hint">Small letters, numbers and dashes only — leave it and we'll build it from the name.</div>
+                            <div class="mstore-slug-preview" id="slugPreview"></div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label for="storeBioInput">Your story <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <textarea id="storeBioInput" rows="3" maxlength="240" placeholder="e.g. Original UK-used phones with 6-month warranty. Same-day delivery inside Accra."></textarea>
+                            <div class="mstore-hint"><span id="bioCounter">0</span>/240 — tell buyers why they should trust you.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label for="storeAnnounceInput">Announcement strip <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <input type="text" id="storeAnnounceInput" maxlength="120" placeholder="e.g. 🎉 Free delivery inside Accra this week!">
+                            <div class="mstore-hint">One punchy line shown as a banner on your shop — perfect for promos, holidays, restocks.</div>
+                        </div>
+                    </div>
+
+                    <div class="section-card" style="margin-bottom:1.2rem;">
+                        <h2 style="font-size:1rem;margin-bottom:1rem;"><i class="fas fa-palette" style="color:var(--primary-color);"></i> Branding</h2>
+
+                        <div class="mstore-field">
+                            <label>Shop logo <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <div class="mstore-logo-row">
+                                <div class="mstore-logo-preview" id="logoPreview"><span id="logoLetter">?</span></div>
+                                <div>
+                                    <input type="file" id="logoInput" accept="image/*" style="font-size:0.82rem;">
+                                    <div class="mstore-hint">Square photos look best. We shrink it automatically so shops load fast on any data bundle.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label>Shop banner <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <div class="mstore-banner-preview" id="bannerPreview"><i class="fas fa-image"></i> Banner preview</div>
+                            <input type="file" id="bannerInput" accept="image/*" style="font-size:0.82rem;">
+                            <div class="mstore-hint">A wide photo (like 1200×400) that sits behind your shop name — think of it as your shopfront sign. We shrink it automatically.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label>Theme color</label>
+                            <div class="mstore-theme-row" id="themeRow"></div>
+                            <div class="mstore-hint">Paints your shop's banner and buttons.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label>Live preview</label>
+                            <div class="mstore-preview-card" id="storePreview">
+                                <div class="mstore-preview-hero" id="previewHero">
+                                    <div class="pv-logo" id="previewLogo">?</div>
+                                    <div class="pv-text" id="previewText">
+                                        <h3 id="previewName">Your store name</h3>
+                                        <p id="previewBio">Your story appears here</p>
+                                    </div>
+                                    <div class="mstore-preview-announce" id="previewAnnounce" style="display:none;"><i class="fas fa-bullhorn"></i><span id="previewAnnounceText"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SHOP PLAN (rent) — filled by js/my-store.js -->
+                    <div class="section-card" style="margin-bottom:1.2rem;" id="planCard">
+                        <h2 style="font-size:1rem;margin-bottom:0.6rem;"><i class="fas fa-crown" style="color:#f5af02;"></i> Shop plan</h2>
+                        <div class="mstore-countdown" id="planCountdown" style="display:none;"></div>
+                        <div id="planStatusLine" style="font-size:0.86rem;color:#5a6572;margin-bottom:0.9rem;">Loading plan…</div>
+                        <div id="planTiers" class="mstore-plan-tiers"></div>
+                        <div class="mstore-plan-actions">
+                            <button class="btn btn-primary" id="payPlanWalletBtn"><i class="fas fa-wallet"></i> Pay with Wallet</button>
+                            <button class="btn btn-outline" id="payPlanPaystackBtn"><i class="fas fa-credit-card"></i> Card / MoMo</button>
+                        </div>
+                        <div class="mstore-hint" id="planHint" style="margin-top:0.6rem;"></div>
+                    </div>
+
+                    <!-- Tier 2: shop mini-analytics (owner-only numbers; filled by js/my-store.js) -->
+                    <div class="section-card" style="margin-bottom:1.2rem;" id="statsCard">
+                        <h2 style="font-size:1rem;margin-bottom:0.5rem;"><i class="fas fa-chart-line" style="color:#0064d2;"></i> Your shop this week</h2>
+                        <div id="statsBody" style="font-size:0.88rem;color:#5a6572;">Counting visits…</div>
+                        <div id="statsBars" class="mstore-statbars"></div>
+                        <div class="mstore-hint" style="margin-top:0.6rem;">Only you see these numbers. Share your shop link to grow them! 🚀</div>
+                    </div>
+
+                    <!-- Tier 2: store promo codes (mint + manage; filled by js/my-store.js) -->
+                    <div class="section-card" style="margin-bottom:1.2rem;" id="promoCard">
+                        <h2 style="font-size:1rem;margin-bottom:0.4rem;"><i class="fas fa-ticket-alt" style="color:#f5af02;"></i> Promo codes</h2>
+                        <p style="font-size:0.82rem;color:#5a6572;margin:0 0 0.8rem;">
+                            Mint a code like <strong>KOFI10</strong> — buyers get that % off <em>your</em> items at checkout.
+                            Share it on WhatsApp: every buyer it brings lands on <strong>your</strong> shelves. 🎯
+                        </p>
+                        <div class="mstore-promo-form">
+                            <input type="text" id="promoCodeInput" maxlength="20" placeholder="CODE e.g. KOFI10" style="text-transform:uppercase;">
+                            <select id="promoPctInput" aria-label="Discount percent">
+                                <option value="5">5% off</option>
+                                <option value="10" selected>10% off</option>
+                                <option value="15">15% off</option>
+                                <option value="20">20% off</option>
+                                <option value="25">25% off</option>
+                            </select>
+                            <input type="number" id="promoMinInput" min="0" max="100000" placeholder="Min GHS (optional)" style="width:130px;">
+                            <button class="btn btn-primary btn-small" id="promoCreateBtn"><i class="fas fa-plus"></i> Mint code</button>
+                        </div>
+                        <div id="promoFormMsg" style="font-size:0.8rem;margin-top:0.4rem;"></div>
+                        <div id="promoList" style="margin-top:0.8rem;"></div>
+                    </div>
+
+                    <div class="section-card" style="margin-bottom:1.2rem;">
+                        <h2 style="font-size:1rem;margin-bottom:1rem;"><i class="fas fa-address-book" style="color:var(--primary-color);"></i> How buyers reach you</h2>
+
+                        <div class="mstore-field">
+                            <label for="storePhoneInput">Phone / WhatsApp number</label>
+                            <input type="tel" id="storePhoneInput" maxlength="16" placeholder="e.g. 0273659806">
+                            <div class="mstore-hint">Shown only to signed-in buyers — kept hidden from web scrapers.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label for="storeEmailInput">Contact email <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <input type="text" id="storeEmailInput" maxlength="80" inputmode="email" autocomplete="email" placeholder="e.g. kofi@example.com">
+                            <div class="mstore-hint">Adds an "Email shop" button to your shop page — revealed to signed-in buyers only, same protection as your phone. Leave empty to hide it.</div>
+                        </div>
+
+                        <div class="mstore-field">
+                            <label for="storeLocationInput">Town / area <span style="font-weight:400;color:#767676;">(optional)</span></label>
+                            <input type="text" id="storeLocationInput" maxlength="60" placeholder="e.g. Osu, Accra">
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:0.7rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem;">
+                        <button class="btn btn-primary" id="saveStoreBtn" style="min-width:160px;"><i class="fas fa-save"></i> Save my store</button>
+                        <span id="saveStoreMsg" style="font-size:0.84rem;color:#767676;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sankofa Market. All rights reserved.</p>
+                <p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/js/my-store.js?v=17"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item active" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>

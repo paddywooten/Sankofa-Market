@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Email setup - Admin - Sankofa Market</title>
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/admin.css?v=15">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+    <link rel="stylesheet" href="/css/admin-brand.css?v=2">
+<style>
+body{background:#f4f6fa;font-family:'Inter','Poppins',system-ui,sans-serif;margin:0;}
+.wrap{max-width:820px;margin:0 auto;padding:1.2rem 1rem 3rem;}
+.back{display:inline-flex;align-items:center;gap:0.4rem;text-decoration:none;color:#0064d2;font-weight:700;font-size:0.85rem;margin-bottom:0.9rem;}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1rem;box-shadow:0 1px 2px rgba(16,24,40,0.04);}
+h1{font-size:1.4rem;margin:0 0 0.3rem;color:#0f172a;}
+h2{font-size:1.02rem;margin:1.2rem 0 0.4rem;color:#0f172a;}
+p,li{font-size:0.88rem;color:#374151;line-height:1.7;}
+code{background:#f1f5f9;padding:0.08rem 0.36rem;border-radius:5px;font-size:0.82rem;}
+.step{display:flex;gap:0.7rem;margin:0.7rem 0;align-items:flex-start;}
+.num{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:#0064d2;color:#fff;font-weight:800;font-size:0.8rem;display:flex;align-items:center;justify-content:center;}
+.warn{background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;padding:0.9rem 1rem;font-size:0.86rem;color:#78350f;line-height:1.65;}
+pre{background:#0f172a;color:#e2e8f0;padding:1rem;border-radius:12px;overflow:auto;font-size:0.76rem;line-height:1.6;max-height:420px;}
+.btn{display:inline-flex;align-items:center;gap:0.4rem;border:none;border-radius:10px;padding:0.6rem 1rem;font-size:0.85rem;font-weight:700;cursor:pointer;background:#0064d2;color:#fff;font-family:inherit;}
+.btn.ghost{background:#fff;color:#0f172a;border:1.5px solid #d7dce3;}
+.btn.gold{background:linear-gradient(135deg,#f5af02,#e09e00);color:#191919;}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+td,th{text-align:left;padding:0.45rem 0.5rem;border-bottom:1px solid #eef1f6;color:#374151;}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <a class="back" href="/sm-panel/email"><i class="fas fa-arrow-left"></i> Back to emails</a>
+
+    <div class="card">
+        <h1>Email setup &mdash; five minutes, once</h1>
+        <p>
+            Every email Sankofa Market sends &mdash; receipts, sale alerts, delivery notices, the welcome
+            message &mdash; goes through one free EmailJS account. You only need three values from it, and
+            they are typed into <a href="/sm-panel/email">the Emails page</a>, not here.
+        </p>
+        <div class="warn" style="margin-top:0.8rem;">
+            <strong>Why this page exists:</strong> the key that has been on file
+            (<code>nQCOm9xJnMIZHqmIW</code>, service <code>service_ud6z4l6</code>) is rejected by EmailJS
+            with &ldquo;Account not found&rdquo;, so no email has actually been delivered yet. It needs to be
+            replaced with the key from your own EmailJS account. Nothing else is broken.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Step by step</h2>
+
+        <div class="step"><div class="num">1</div><div>
+            Sign in at <a href="https://dashboard.emailjs.com" target="_blank" rel="noopener">dashboard.emailjs.com</a>.
+            If you have never used it, create the free account with <strong>sankofamarketgh@gmail.com</strong>.
+        </div></div>
+
+        <div class="step"><div class="num">2</div><div>
+            <strong>Email Services</strong> &rarr; connect Gmail (sankofamarketgh@gmail.com). Copy the
+            <strong>Service ID</strong> &mdash; it looks like <code>service_ud6z4l6</code>.
+        </div></div>
+
+        <div class="step"><div class="num">3</div><div>
+            <strong>Email Templates</strong> &rarr; <strong>New Template</strong>. Name it <code>sankofa_receipt</code>.
+        </div></div>
+
+        <div class="step"><div class="num">4</div><div>
+            Set the <strong>Subject</strong> to exactly <code>{{subject}}</code>.
+            Set <strong>To Email</strong> to <code>{{to_email}}</code> and <strong>From name</strong> to <code>{{site_name}}</code>.
+        </div></div>
+
+        <div class="step"><div class="num">5</div><div>
+            Switch the body to <strong>Code view</strong> and paste the block at the bottom of this page
+            (there is a copy button). Save.
+        </div></div>
+
+        <div class="step"><div class="num">6</div><div>
+            Copy the <strong>Template ID</strong> from the template list &mdash; it looks like
+            <code>template_xxxxxxx</code>.
+        </div></div>
+
+        <div class="step"><div class="num">7</div><div>
+            <strong>Account &rarr; General</strong> &rarr; copy the <strong>Public Key</strong> &mdash; one word of
+            about 18 letters and numbers.
+        </div></div>
+
+        <div class="step"><div class="num">8</div><div>
+            Open <a href="/sm-panel/email">the Emails page</a>, paste the three values, press
+            <strong>Save</strong>, then press <strong>Send test email</strong>. If anything is still wrong the
+            provider's exact answer appears on that page.
+        </div></div>
+    </div>
+
+    <div class="card">
+        <h2>The template body &mdash; copy this into EmailJS (Code view)</h2>
+        <p>This one template shapes every email: the heading, the message and the blue button all change per email, so you never build another one.</p>
+        <div style="margin:0.6rem 0;">
+            <button class="btn" id="copyBtn" onclick="copyTemplate()"><i class="fas fa-copy"></i> Copy the template</button>
+            <span id="copyMsg" style="font-size:0.82rem;color:#15803d;font-weight:700;margin-left:0.5rem;"></span>
+        </div>
+        <pre id="tplMarkup">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;meta name=&quot;color-scheme&quot; content=&quot;light&quot;&gt;
+&lt;meta name=&quot;supported-color-schemes&quot; content=&quot;light&quot;&gt;
+&lt;title&gt;{{subject}}&lt;/title&gt;
+&lt;style&gt;
+@media only screen and (max-width: 620px) {
+  .sm-outer { padding: 12px 8px !important; }
+  .sm-card { border-radius: 12px !important; }
+  .sm-pad { padding-left: 18px !important; padding-right: 18px !important; }
+  .sm-h1 { font-size: 22px !important; }
+  .sm-btn, .sm-btn td { width: 100% !important; }
+  .sm-btn a { display: block !important; }
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body style=&quot;margin:0;padding:0;background:#eef3fa;&quot;&gt;
+&lt;div style=&quot;display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;&quot;&gt;{{heading}}&lt;/div&gt;
+&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background:#eef3fa;&quot;&gt;
+&lt;tr&gt;
+&lt;td class=&quot;sm-outer&quot; align=&quot;center&quot; style=&quot;padding:28px 12px;font-family:&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;&quot;&gt;
+&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; class=&quot;sm-card&quot; style=&quot;max-width:600px;background:#ffffff;border-radius:16px;border:1px solid #dfe7f2;overflow:hidden;&quot;&gt;
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;background-color:#0064d2;background-image:linear-gradient(135deg,#0064d2 0%,#004a9e 100%);padding:22px 28px;&quot;&gt;
+&lt;div style=&quot;font-size:22px;line-height:1.2;font-weight:800;color:#ffffff;letter-spacing:-0.01em;&quot;&gt;Sankofa &lt;span style=&quot;color:#f5af02;&quot;&gt;Market&lt;/span&gt;&lt;/div&gt;
+&lt;div style=&quot;font-size:12px;line-height:1.5;color:#d6e6ff;margin-top:4px;&quot;&gt;Culture. Nourishment. Community.&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&quot;padding:0;font-size:0;line-height:0;&quot;&gt;
+&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
+&lt;tr&gt;
+&lt;td width=&quot;50%&quot; style=&quot;height:4px;font-size:0;line-height:0;background:#f5af02;&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;30%&quot; style=&quot;height:4px;font-size:0;line-height:0;background:#0064d2;&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;20%&quot; style=&quot;height:4px;font-size:0;line-height:0;background:#131f47;&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;padding:28px 28px 8px 28px;&quot;&gt;
+&lt;h1 class=&quot;sm-h1&quot; style=&quot;margin:0 0 14px 0;font-size:24px;line-height:1.25;font-weight:800;color:#131f47;&quot;&gt;{{heading}}&lt;/h1&gt;
+&lt;div style=&quot;font-size:15px;line-height:1.75;color:#374151;white-space:pre-line;&quot;&gt;{{body}}&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+{{#order_ref}}
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;padding:0 28px 8px 28px;font-size:13px;line-height:1.6;color:#6b7280;&quot;&gt;Order reference: &lt;strong style=&quot;color:#374151;&quot;&gt;#{{order_ref}}&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+{{/order_ref}}
+{{#cta_text}}
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;padding:16px 28px 8px 28px;&quot;&gt;
+&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; class=&quot;sm-btn&quot; style=&quot;border-radius:12px;background-color:#0064d2;&quot;&gt;
+&lt;tr&gt;
+&lt;td align=&quot;center&quot; style=&quot;border-radius:12px;background-color:#0064d2;padding:14px 30px;&quot;&gt;
+&lt;a href=&quot;{{cta_url}}&quot; style=&quot;display:inline-block;font-size:16px;line-height:1.2;font-weight:800;color:#ffffff;text-decoration:none;&quot;&gt;{{cta_text}} &amp;rarr;&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;padding:0 28px 24px 28px;font-size:12px;line-height:1.6;color:#8a94a3;&quot;&gt;
+Button not working? Copy this link into your browser:&lt;br&gt;
+&lt;a href=&quot;{{cta_url}}&quot; style=&quot;color:#0064d2;word-break:break-all;&quot;&gt;{{cta_url}}&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+{{/cta_text}}
+&lt;tr&gt;
+&lt;td class=&quot;sm-pad&quot; style=&quot;background-color:#f8fafc;border-top:1px solid #e6edf6;padding:18px 28px;font-size:12px;line-height:1.7;color:#5b6676;&quot;&gt;
+&lt;div style=&quot;margin-bottom:8px;&quot;&gt;Your money is protected by Sankofa escrow. The seller is paid when you confirm delivery, or automatically within 48 hours of delivery if no dispute is open.&lt;/div&gt;
+&lt;div&gt;Questions? &lt;a href=&quot;mailto:{{support_email}}&quot; style=&quot;color:#0064d2;text-decoration:none;&quot;&gt;{{support_email}}&lt;/a&gt; or {{support_phone}}&lt;/div&gt;
+&lt;div style=&quot;margin-top:10px;color:#8a94a3;&quot;&gt;{{site_name}} · Ghana · You are getting this email because you have a Sankofa Market account.&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+    </div>
+
+    <div class="card">
+        <h2>What each email contains</h2>
+        <table>
+            <tr><th>Email</th><th>Goes to</th><th>Sent when</th></tr>
+            <tr><td>Welcome</td><td>new member</td><td>an account is created</td></tr>
+            <tr><td>Payment receipt</td><td>buyer</td><td>a card or wallet payment is confirmed</td></tr>
+            <tr><td>You have a sale</td><td>seller</td><td>an item sells</td></tr>
+            <tr><td>On its way</td><td>buyer</td><td>the seller marks it shipped</td></tr>
+            <tr><td>Did it arrive?</td><td>buyer</td><td>the seller marks it delivered</td></tr>
+            <tr><td>Refund issued</td><td>buyer</td><td>a refund or a buyer-side dispute</td></tr>
+            <tr><td>Withdrawal sent</td><td>seller</td><td>a withdrawal is marked paid</td></tr>
+            <tr><td>Auction won / sold</td><td>winner and seller</td><td>an auction closes with a bid</td></tr>
+            <tr><td>Dispute closed</td><td>seller</td><td>a dispute goes the seller's way</td></tr>
+        </table>
+        <p style="margin-top:0.8rem;">
+            The free EmailJS plan allows 200 emails a month. If the marketplace outgrows that, the sender
+            is a single function, so moving to another provider is a small change &mdash; ask and it can be done.
+        </p>
+        <p>
+            <strong>Email never blocks money.</strong> If sending fails, the payment, refund or withdrawal
+            still completes; the failure is only logged and shown on the Emails page.
+        </p>
+    </div>
+
+    <p style="font-size:0.8rem;color:#6b7280;">
+        Admin pages are hidden from search engines and require an admin sign-in.
+    </p>
+</div>
+
+<script>
+var TEMPLATE_MARKUP = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<meta name=\"color-scheme\" content=\"light\">\n<meta name=\"supported-color-schemes\" content=\"light\">\n<title>{{subject}}</title>\n<style>\n@media only screen and (max-width: 620px) {\n  .sm-outer { padding: 12px 8px !important; }\n  .sm-card { border-radius: 12px !important; }\n  .sm-pad { padding-left: 18px !important; padding-right: 18px !important; }\n  .sm-h1 { font-size: 22px !important; }\n  .sm-btn, .sm-btn td { width: 100% !important; }\n  .sm-btn a { display: block !important; }\n}\n</style>\n</head>\n<body style=\"margin:0;padding:0;background:#eef3fa;\">\n<div style=\"display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;\">{{heading}}</div>\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#eef3fa;\">\n<tr>\n<td class=\"sm-outer\" align=\"center\" style=\"padding:28px 12px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"sm-card\" style=\"max-width:600px;background:#ffffff;border-radius:16px;border:1px solid #dfe7f2;overflow:hidden;\">\n<tr>\n<td class=\"sm-pad\" style=\"background-color:#0064d2;background-image:linear-gradient(135deg,#0064d2 0%,#004a9e 100%);padding:22px 28px;\">\n<div style=\"font-size:22px;line-height:1.2;font-weight:800;color:#ffffff;letter-spacing:-0.01em;\">Sankofa <span style=\"color:#f5af02;\">Market</span></div>\n<div style=\"font-size:12px;line-height:1.5;color:#d6e6ff;margin-top:4px;\">Culture. Nourishment. Community.</div>\n</td>\n</tr>\n<tr>\n<td style=\"padding:0;font-size:0;line-height:0;\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n<tr>\n<td width=\"50%\" style=\"height:4px;font-size:0;line-height:0;background:#f5af02;\">&nbsp;</td>\n<td width=\"30%\" style=\"height:4px;font-size:0;line-height:0;background:#0064d2;\">&nbsp;</td>\n<td width=\"20%\" style=\"height:4px;font-size:0;line-height:0;background:#131f47;\">&nbsp;</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class=\"sm-pad\" style=\"padding:28px 28px 8px 28px;\">\n<h1 class=\"sm-h1\" style=\"margin:0 0 14px 0;font-size:24px;line-height:1.25;font-weight:800;color:#131f47;\">{{heading}}</h1>\n<div style=\"font-size:15px;line-height:1.75;color:#374151;white-space:pre-line;\">{{body}}</div>\n</td>\n</tr>\n{{#order_ref}}\n<tr>\n<td class=\"sm-pad\" style=\"padding:0 28px 8px 28px;font-size:13px;line-height:1.6;color:#6b7280;\">Order reference: <strong style=\"color:#374151;\">#{{order_ref}}</strong></td>\n</tr>\n{{/order_ref}}\n{{#cta_text}}\n<tr>\n<td class=\"sm-pad\" style=\"padding:16px 28px 8px 28px;\">\n<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"sm-btn\" style=\"border-radius:12px;background-color:#0064d2;\">\n<tr>\n<td align=\"center\" style=\"border-radius:12px;background-color:#0064d2;padding:14px 30px;\">\n<a href=\"{{cta_url}}\" style=\"display:inline-block;font-size:16px;line-height:1.2;font-weight:800;color:#ffffff;text-decoration:none;\">{{cta_text}} &rarr;</a>\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class=\"sm-pad\" style=\"padding:0 28px 24px 28px;font-size:12px;line-height:1.6;color:#8a94a3;\">\nButton not working? Copy this link into your browser:<br>\n<a href=\"{{cta_url}}\" style=\"color:#0064d2;word-break:break-all;\">{{cta_url}}</a>\n</td>\n</tr>\n{{/cta_text}}\n<tr>\n<td class=\"sm-pad\" style=\"background-color:#f8fafc;border-top:1px solid #e6edf6;padding:18px 28px;font-size:12px;line-height:1.7;color:#5b6676;\">\n<div style=\"margin-bottom:8px;\">Your money is protected by Sankofa escrow. The seller is paid when you confirm delivery, or automatically within 48 hours of delivery if no dispute is open.</div>\n<div>Questions? <a href=\"mailto:{{support_email}}\" style=\"color:#0064d2;text-decoration:none;\">{{support_email}}</a> or {{support_phone}}</div>\n<div style=\"margin-top:10px;color:#8a94a3;\">{{site_name}} \u00b7 Ghana \u00b7 You are getting this email because you have a Sankofa Market account.</div>\n</td>\n</tr>\n</table>\n</td>\n</tr>\n</table>\n</body>\n</html>\n";
+function copyTemplate() {
+    var done = function () {
+        var m = document.getElementById('copyMsg');
+        m.textContent = 'Copied';
+        setTimeout(function () { m.textContent = ''; }, 2500);
+    };
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(TEMPLATE_MARKUP).then(done, function () { fallbackCopy(done); });
+        } else { fallbackCopy(done); }
+    } catch (e) { fallbackCopy(done); }
+}
+function fallbackCopy(done) {
+    try {
+        var ta = document.createElement('textarea');
+        ta.value = TEMPLATE_MARKUP;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+    } catch (e) {
+        var pre = document.getElementById('tplMarkup');
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        var m = document.getElementById('copyMsg');
+        m.textContent = 'Select and press Ctrl+C';
+    }
+}
+</script>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>

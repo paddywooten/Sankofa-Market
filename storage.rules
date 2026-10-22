@@ -2,39 +2,158 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // Product images: authenticated users can upload to their own folder
+
+    // ---------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin via custom claim, or via the role on their users document
+    // (matches the Firestore rules, so admins without a claim still work).
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // The Firestore lookups below require the Storage service agent to have
+    // roles/firebaserules.firestoreServiceAgent. Firebase CLI can provision this
+    // least-privilege role when this ruleset is deployed.
+    function isActivePremiumVideoSeller(userId) {
+      let publicRef = /databases/(default)/documents/sellerPublic/$(userId);
+      return isSignedIn()
+        && request.auth.uid == userId
+        && firestore.exists(publicRef)
+        && firestore.get(publicRef).data.get('tier', '').lower() in ['bronze','silver','gold','diamond']
+        && firestore.get(publicRef).data.get('premiumExpiry', request.time) > request.time;
+    }
+
+    function productBelongsToVideoSeller(userId, productId) {
+      return firestore.get(/databases/(default)/documents/products/$(productId)).data.get('sellerId', '') == userId;
+    }
+
+    // One 480p listing video object per product. The app always writes this fixed path,
+    // so replacing the clip does not leave a second video behind.
+    match /products/{userId}/videos/{productId}/listing-video {
+      allow read: if true;
+      allow create, update: if isActivePremiumVideoSeller(userId)
+        && productBelongsToVideoSeller(userId, productId)
+        && request.resource.size <= 8 * 1024 * 1024
+        && request.resource.contentType.matches('video/(webm|mp4)(;.*)?');
+      // A seller can remove an old clip even after Premium expires; admins can moderate it.
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ---------------------------------------------------------------------
+    // Product photos: the seller's own folder, images only, max 10MB each
+    // (without the size cap anyone could upload huge files on your bill)
+    // ---------------------------------------------------------------------
     match /products/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size < 10 * 1024 * 1024
+        && isImage();
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
     }
-    
-    // Store profile pictures: admins can upload
+
+    // ---------------------------------------------------------------------
+    // Vendor storefront logos ("My Store"): the seller's own folder,
+    // images only, max 5MB each — public read so the shop page can show them
+    // ---------------------------------------------------------------------
+    match /store-logos/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024
+        && isImage();
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ---------------------------------------------------------------------
+    // Sankofa Store branding: admins only, images only, max 5MB
+    // ---------------------------------------------------------------------
     match /store-profiles/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && isImage();
+      allow delete: if isAdmin();
     }
-    
-    // Store logos: admins can upload
+
+    // ---------------------------------------------------------------------
+    // Homepage carousel images (admin-managed promo slides): admins only,
+    // images only, max 5MB — public read so the homepage can show them
+    // ---------------------------------------------------------------------
+    match /carousel/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && isImage();
+      allow delete: if isAdmin();
+    }
+
     match /store-logos/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && isImage();
+      allow delete: if isAdmin();
     }
-    
-    // User avatars: users can upload to their own folder
+
+    // ---------------------------------------------------------------------
+    // User avatars: own folder only, images only, max 5MB
+    // ---------------------------------------------------------------------
     match /avatars/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024
+        && isImage();
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
     }
-    
-    // Chat attachments: authenticated users can read/write
-    match /chat/{allPaths=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+
+    // ---------------------------------------------------------------------
+    // Chat attachments
+    //
+    // Storage rules cannot look up Firestore (tested: firestore.get() denies), so
+    // membership can't be checked here. Instead the uploader's own uid is part of the
+    // path: chat/{conversationId}/{uid}/file — a user can only ever write into their
+    // own folder, never into somebody else's conversation.
+    // ---------------------------------------------------------------------
+    // ── Chat attachments ─────────────────────────────────────────────────────
+    // Storage rules cannot read Firestore, so they cannot ask "is this person a member of
+    // this conversation?". Before, the best they could do was "is signed in" — which meant
+    // any member who knew a file's path or its download URL could open someone else's chat
+    // photos or voice notes.
+    //
+    // So clients can no longer READ chat files at all. Attachments are served by the
+    // `chatAttachment` Cloud Function, and links are only issued by
+    // `authoriseChatAttachment`, which checks membership on the server (Firestore). Uploads
+    // still go straight to Storage, and only ever into the uploader's own folder.
+    match /chat/{conversationId}/{allPaths=**} {
+      // legacy flat path: no reads, no writes
+      allow read: if false;
+      allow write: if false;
     }
-    
+
+    match /chat/{conversationId}/{uid}/{allPaths=**} {
+      allow read: if false;                       // ← served through the Cloud Function
+      allow create, update: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches(
+             'image/.*|audio/.*|video/.*|application/pdf|text/plain|application/msword|application/vnd.*');
+      allow delete: if isSignedIn() && request.auth.uid == uid;
+    }
+
     // Deny everything else
     match /{allPaths=**} {
       allow read, write: if false;

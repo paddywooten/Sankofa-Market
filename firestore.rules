@@ -24,11 +24,21 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Check if user is an admin
+    // Check if user is an admin — supports Custom Claims (0 reads) + fallback to users doc (2 reads)
+    // Set via Cloud Function: admin.auth().setCustomUserClaims(uid, {admin:true})
+    // Then request.auth.token.admin == true (no extra reads)
     function isAdmin() {
-      return isAuthenticated() && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isAuthenticated() && (
+        (request.auth.token.admin == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+    // Rate-limit helper — createdAt must be within 60s of server time (prevents replay spam)
+    function isRecent() {
+      return request.resource.data.createdAt == request.time ||
+             request.resource.data.createdAt == null ||
+             (request.resource.data.createdAt is timestamp && request.resource.data.createdAt > request.time - duration.value(60, 's'));
     }
     
     // Check if user is a participant in conversation
@@ -36,20 +46,44 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid in conversationData.participants;
     }
     
+
     // ========================================================================
     // USERS COLLECTION
     // ========================================================================
     
     match /users/{userId} {
-      // Anyone authenticated can read user profiles
-      allow read: if isAuthenticated();
-      
-      // Users can create their own profile
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      
-      // Users can update their own profile, admins can update any
-      allow update: if isOwner(userId) || isAdmin();
-      
+      // Owner can get own profile, admin can get/list all — prevents PII enumeration
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+
+      // Self-service signup may only create a NORMAL user that is not pre-approved.
+      // (Without this, anyone could register themselves as an admin or as approved
+      //  and skip the whole approval flow.)
+      allow create: if isAdmin() || (
+        isAuthenticated() && request.auth.uid == userId &&
+        (!('role' in request.resource.data) || request.resource.data.role == 'user') &&
+        (!('isAdmin' in request.resource.data) || request.resource.data.isAdmin != true) &&
+        (!('status' in request.resource.data) || request.resource.data.status != 'approved')
+      );
+
+      // The owner may edit PROFILE fields only. Privilege and money fields
+      // (role, adminRole, adminCode, permissions, isPremium, premiumTier, premiumExpiry,
+      //  isVerified, verified, balance...) are admin-only — otherwise any user could make
+      // themselves an admin, or give themselves free Premium (unlimited listings, 1% fee).
+      allow update: if isAdmin() || (
+        isOwner(userId) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'firstName', 'lastName', 'displayName', 'phone', 'phoneNumber', 'whatsapp',
+          'bio', 'city', 'region', 'address', 'deliveryAddress', 'photoURL',
+          'sellerTier', 'status', 'deactivatedAt', 'updatedAt', 'lastLoginAt', 'lastLogin',
+              'freeStarterActivatedAt',
+          'preferences', 'notifications', 'emailNotifications', 'marketingOptIn'
+        ]) &&
+        // a user may pause their own account, never approve or block it
+        (!('status' in request.resource.data) ||
+          request.resource.data.status in ['pending', 'deactivated'])
+      );
+
       // Users can delete their own profile, admins can delete any
       allow delete: if isOwner(userId) || isAdmin();
     }
@@ -59,47 +93,304 @@ service cloud.firestore {
     // ========================================================================
     
     match /products/{productId} {
-      // Anyone can read products (public marketplace)
-      allow read: if true;
-      
+      // Anyone can read a single product. Listing is public (the shop front needs it) but the
+      // size of any single query is capped so the catalogue cannot be vacuumed in one go.
+      // ⚠️ Keep this number >= the largest limit the app asks for: search.js requests 100,
+      // and Firestore rejects the WHOLE query when the limit in the request is bigger than
+      // the rule allows — which is what made the search page say "No products found" while
+      // the catalogue had items in it.
+      allow get: if true;
+      allow list: if true && (request.query.limit == null || request.query.limit <= 100);
+
+      // Boost / featured placement is a PAID premium benefit. The publish page sets these
+      // from the seller's own tier, but nothing stopped anyone writing isFeatured:true by
+      // hand and getting a free boost. Rules now check the (write-protected) tier fields.
+      function wantsBoost() {
+        return request.resource.data.get('isFeatured', false) == true
+            || request.resource.data.get('isBoosted', false) == true
+            || request.resource.data.get('boostLevel', 0) > 0;
+      }
+      function sellerIsPremium() {
+        return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isPremium', false) == true
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('premiumExpiry', request.time) > request.time;
+      }
+      function boostOk() {
+        return !wantsBoost() || isAdmin() || sellerIsPremium();
+      }
+      // Use the server-written Premium mirror for video access. It is the same source
+      // used for the public seller badge and avoids a stale private-profile read blocking
+      // a legitimate Premium seller. Clients cannot write sellerPublic documents.
+      function sellerHasActivePublicPremium() {
+        let publicRef = /databases/$(database)/documents/sellerPublic/$(request.auth.uid);
+        return isAuthenticated()
+          && exists(publicRef)
+          && get(publicRef).data.get('tier', '').lower() in ['bronze','silver','gold','diamond']
+          && get(publicRef).data.get('premiumExpiry', request.time) > request.time;
+      }
+      function expectedProductVideoPath() {
+        return 'products/' + request.auth.uid + '/videos/' + productId + '/listing-video';
+      }
+      function productVideoCreateOk() {
+        let path = request.resource.data.get('videoStoragePath', '');
+        return path == '' || (sellerHasActivePublicPremium() && path == expectedProductVideoPath());
+      }
+      function productVideoUpdateOk() {
+        let newPath = request.resource.data.get('videoStoragePath', '');
+        let oldPath = resource.data.get('videoStoragePath', '');
+        return newPath == oldPath || newPath == ''
+          || (sellerHasActivePublicPremium() && newPath == expectedProductVideoPath());
+      }
+
+      // Flash sales are a GOLD/DIAMOND perk. SETTING flashSale needs the tier;
+      // the map must carry a sane percent (1–90) and an end at most 48h out —
+      // "flash" means flash. Removing flashSale needs no tier (one tap to end).
+      function wantsFlashSale() {
+        return request.resource.data.get('flashSale', null) != null;
+      }
+      function sellerIsGoldPlus() {
+        return sellerIsPremium() && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('premiumTier', '').lower() in ['gold','diamond'] ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('sellerTier', '').lower()  in ['gold','diamond']);
+      }
+      function flashSaleShapeOk() {
+        let f = request.resource.data.flashSale;
+        return f is map
+          && f.keys().hasOnly(['percent','startedAt','endsAt','startedBy'])
+          && f.get('percent', 0) is number && f.percent >= 1 && f.percent <= 90
+          && f.get('endsAt', request.time) is timestamp
+          && f.endsAt > request.time
+          && f.endsAt <= request.time + duration.value(48, 'h');
+      }
+      function flashSaleOk() {
+        return !wantsFlashSale()
+          || isAdmin()
+          || (sellerIsGoldPlus() && flashSaleShapeOk());
+      }
+
       // Authenticated users can create products (must be the seller)
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.sellerId;
-      
-      // Sellers can update their own products, admins can update any
-      allow update: if isAuthenticated() && 
-        (request.auth.uid == resource.data.sellerId || isAdmin());
-      
+      allow create: if isAuthenticated() &&
+        request.auth.uid == request.resource.data.sellerId &&
+        boostOk() &&
+        flashSaleOk() &&
+        productVideoCreateOk();
+
+      // Sellers can update their own products, admins can update any.
+      // A seller may not move the product to another owner, may not re-boost after
+      // their premium ran out, and may not start a flash sale below Gold.
+      allow update: if isAuthenticated() &&
+        (isAdmin() ||
+         (request.auth.uid == resource.data.sellerId
+          && request.resource.data.sellerId == resource.data.sellerId
+          && boostOk()
+          && flashSaleOk()
+          && productVideoUpdateOk()));
+
       // Sellers can delete their own products, admins can delete any
-      allow delete: if isAuthenticated() && 
+      allow delete: if isAuthenticated() &&
         (request.auth.uid == resource.data.sellerId || isAdmin());
     }
-    
+
     // ========================================================================
     // ORDERS COLLECTION
     // ========================================================================
     
     match /orders/{orderId} {
+
+      // ----------------------------------------------------------------------
+      // HELPERS
+      // ----------------------------------------------------------------------
+
+      // The buyer of an order. Some older pages write `userId` instead of `buyerId`,
+      // so both count as "mine".
+      function callerIsBuyer() {
+        return isAuthenticated() && (
+          resource.data.buyerId == request.auth.uid ||
+          resource.data.userId == request.auth.uid
+        );
+      }
+
+      function callerIsSeller() {
+        return isAuthenticated() && resource.data.sellerId == request.auth.uid;
+      }
+
+      function changedKeys() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      // 🔒 FIELDS THAT DECIDE HOW MUCH MONEY MOVES.
+      // Once an order exists, only the SERVER may change these (the Admin SDK ignores these
+      // rules). Before this lockdown a seller could rewrite `total` and `sellerId` on their own
+      // order and then call the escrow-release function, which credited THEIR wallet with a
+      // payout calculated from the number they had just typed. That was free money.
+      function moneyLockedKeys() {
+        return [
+          'buyerId','userId','buyerName','sellerId','sellerName','sellerEmail',
+          'productId','productTitle','title','auctionId','offerId','isAuctionOrder',
+          'total','amount','bidAmount','subtotal','deliveryFee','serviceFee',
+          'commission','commissionAmount','sellerPayout','items','currency',
+          'createdAt',
+          // pre-order facts are copied from the product at order time — set-and-forget
+          'isPreOrder','preOrderDate','preOrderNote',
+          // server-only payment + escrow markers
+          'paidViaServer','escrowHeldByServer','escrowHeldAt','walletPaid','paidAmount',
+          'paystackReference','paidAt','escrowStatus','escrowReleased','escrowReleasedAt',
+          'escrowReleasedBy','autoReleased','refundedAt','refundAmount','payoutTxId'
+        ];
+      }
+
+      // What a BUYER may still change on their own order. There is deliberately no way to set
+      // status 'paid' / 'completed' here: those are written by the payment Cloud Functions.
+      function buyerEditableKeys() {
+        return [
+          'status','paymentStatus','paymentMethod','paymentData',
+          'contactPhone','deliveryMethod','deliveryAddress','deliveryNotes','buyerNotes','notes',
+          'confirmedAt','confirmedBy','receivedAt','deliveryConfirmed',
+          'disputeId','disputeStatus','disputedAt','disputeReason','disputeEvidence',
+          'cancelledAt','cancelReason','cancelledBy',
+          'rating','reviewedAt','review','updatedAt'
+        ];
+      }
+
+      // What a SELLER may still change on an order for their item.
+      function sellerEditableKeys() {
+        return [
+          'status','trackingNumber','shippedAt','deliveredAt','deliveryNotes','sellerNotes','notes',
+          'fulfilmentStatus','confirmedAt','disputeId','disputeStatus','disputeResponse','updatedAt'
+        ];
+      }
+
+      function adminEditableKeys() {
+        return [
+          'status','paymentStatus','paymentMethod','paymentData','notes','adminNotes',
+          'trackingNumber','shippedAt','deliveredAt','confirmedAt','confirmedBy',
+          'disputeId','disputeStatus','disputedAt','resolution','resolvedAt','resolutionNotes',
+          'cancelledAt','cancelReason','cancelledBy','refundedAt','refundAmount','refundReference',
+          'escrowReleased','escrowReleasedAt','escrowStatus','escrowHeldAt','escrowReleasedBy',
+          'buyerId','userId','sellerId','sellerName','sellerEmail','total','amount','sellerPayout',
+          'commissionAmount','productTitle','deliveryAddress','deliveryMethod','updatedAt'
+        ];
+      }
+
+      // A non-admin may move the status around, but may never claim the order is PAID or
+      // COMPLETED. Those two values only ever come from a Cloud Function:
+      //   paid      <- confirmPaystackPayment / payWithWallet
+      //   completed <- releaseEscrowToWallet (escrow released to the seller)
+      function clientSafeStatusChange() {
+        return (
+          (!changedKeys().hasAny(['status'])        ||
+            request.resource.data.get('status', 'pending') in
+              ['pending','processing','shipped','delivered','cancelled','disputed','refund_requested'])
+          &&
+          (!changedKeys().hasAny(['paymentStatus']) ||
+            request.resource.data.get('paymentStatus', 'pending') in ['pending','unpaid'])
+        );
+      }
+
+      // A brand-new order must not arrive pre-paid or pre-released.
+      function validNewOrder() {
+        return request.resource.data.get('paidViaServer', false) != true
+          && request.resource.data.get('escrowHeldByServer', false) != true
+          && request.resource.data.get('walletPaid', false) != true
+          && request.resource.data.get('escrowReleased', false) != true
+          && request.resource.data.get('paystackReference', null) == null
+          && request.resource.data.get('paidAmount', 0) == 0
+          && request.resource.data.get('escrowStatus', 'pending') in ['pending','unpaid','awaiting_payment']
+          && request.resource.data.get('status', 'pending') in ['pending','processing','awaiting_payment']
+          && request.resource.data.get('paymentStatus', 'pending') in ['pending','unpaid','awaiting_payment'];
+      }
+
+      // ----------------------------------------------------------------------
+      // RULES
+      // ----------------------------------------------------------------------
+
       // Buyers and sellers can read their own orders, admins can read all
-      allow read: if isAuthenticated() && 
-        (request.auth.uid == resource.data.buyerId || 
-         request.auth.uid == resource.data.sellerId || 
+      allow get: if isAuthenticated() &&
+        (request.auth.uid == resource.data.buyerId ||
+         request.auth.uid == resource.data.userId ||
+         request.auth.uid == resource.data.sellerId ||
          isAdmin());
-      
-      // Only buyers can create orders
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.buyerId;
-      
-      // Buyers and sellers can update orders, admins can update any
-      allow update: if isAuthenticated() && 
-        (request.auth.uid == resource.data.buyerId || 
-         request.auth.uid == resource.data.sellerId || 
-         isAdmin());
-      
+
+      // List: only your own orders (as buyer or seller), or admins.
+      // ⚠️ Keep the shape the same as /conversations: an OR of provable conditions plus an
+      // isAdmin() branch. A ternary/derived condition here makes Firestore deny EVERY list.
+      allow list: if isAuthenticated() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.userId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid ||
+        (isAdmin() && (request.query.limit == null || request.query.limit <= 100))
+      );
+
+      // An order that came out of an auction must match what the auction actually did:
+      // same seller, the real winner, and the price the hammer fell at. (Before, the browser
+      // could write any numbers it liked into an "auction order".)
+      function auctionOrderMatches() {
+        return request.resource.data.get('auctionId', null) == null
+          || (exists(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId))
+              && get(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId)).data.get('sellerId', '')
+                   == request.resource.data.get('sellerId', '')
+              && get(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId)).data.get('currentBidderId', null)
+                   == request.resource.data.get('buyerId', '')
+              && get(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId)).data.get('currentBid', null)
+                   == request.resource.data.get('total', null));
+      }
+
+      // An order created from a CHAT BARGAIN must match that bargain exactly — right
+      // seller, that specific buyer, the agreed price — and the bargain still has to
+      // be alive (status 'pending', inside its 24-hour life). Without this the browser
+      // could invent any "agreed price" it liked and Paystack would match the fake total.
+      function offerOrderMatches() {
+        return request.resource.data.get('offerId', null) == null
+          || (exists(/databases/$(database)/documents/offers/$(request.resource.data.offerId))
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('sellerId', '')
+                   == request.resource.data.get('sellerId', '')
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('buyerId', '')
+                   == request.resource.data.get('buyerId', '')
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('productId', '')
+                   == request.resource.data.get('productId', '')
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('offerPrice', null)
+                   == request.resource.data.get('total', null)
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('status', '')
+                   == 'pending'
+              && get(/databases/$(database)/documents/offers/$(request.resource.data.offerId)).data.get('expiresAt', request.time)
+                   > request.time);
+      }
+
+      // Buyers create their own orders; a seller may create the winner's order for an auction
+      // they own. Neither may create an order that is already paid or released.
+      allow create: if isAuthenticated() && validNewOrder() && (
+        request.auth.uid == request.resource.data.get('buyerId', request.resource.data.get('userId', '')) ||
+        (request.resource.data.get('auctionId', null) != null
+         && request.auth.uid == request.resource.data.sellerId
+         && exists(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId))
+         && get(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId)).data.sellerId == request.auth.uid)
+      ) && auctionOrderMatches() && offerOrderMatches();
+
+      // Buyers and sellers may keep their order up to date, but only on the fields listed
+      // above, and they may never touch the money/identity fields or mark an order paid.
+      // Admins may write any of the operational fields.
+      allow update: if isAuthenticated() && (
+        (isAdmin() && changedKeys().hasOnly(adminEditableKeys()))
+        ||
+        (
+          clientSafeStatusChange()
+          &&
+          (
+            (callerIsBuyer()
+              && changedKeys().hasOnly(buyerEditableKeys())
+              && !changedKeys().hasAny(moneyLockedKeys()))
+            ||
+            (callerIsSeller()
+              && changedKeys().hasOnly(sellerEditableKeys())
+              && !changedKeys().hasAny(moneyLockedKeys()))
+          )
+        )
+      );
+
       // Only admins can delete orders
       allow delete: if isAdmin();
     }
-    
+
     // ========================================================================
     // MESSAGES COLLECTION
     // ========================================================================
@@ -130,12 +421,24 @@ service cloud.firestore {
     // ========================================================================
     
     match /conversations/{conversationId} {
-      // Participants can read conversations, admins can read all
-      allow read: if isAuthenticated() && 
+      // Participants can read single conv, admin can read any
+      allow get: if isAuthenticated() && 
         (request.auth.uid in resource.data.participants || isAdmin());
+      // List: a user only ever sees conversations they take part in.
+      // Admins may list up to 100 (admin messages panel).
+      //
+      // ⚠️ Written with OR — NOT with `isAdmin() ? A : B`.
+      // Firestore's list-query analyser cannot resolve a ternary that depends on
+      // isAdmin() (which itself does exists()/get()), and silently denies EVERY
+      // list request — that is what broke the Messages page ("Missing or
+      // insufficient permissions"). Do not rewrite this as a ternary.
+      allow list: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants ||
+        (isAdmin() && (request.query.limit == null || request.query.limit <= 100))
+      );
       
       // Participants can create conversations
-      allow create: if isAuthenticated() && 
+      allow create: if isAuthenticated() &&
         request.auth.uid in request.resource.data.participants;
       
       // Participants can update conversations, admins can update any
@@ -145,7 +448,50 @@ service cloud.firestore {
       // Only admins can delete conversations
       allow delete: if isAdmin();
     }
-    
+
+    // Messages subcollection — participants + admins only (rules don't cascade)
+    // Ticks: sent → delivered → read — the recipient must be able to update status
+    match /conversations/{conversationId}/messages/{messageId} {
+      function convParticipants() {
+        return get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+      }
+
+      // Read: participants of the conversation (or admins).
+      //
+      // ⚠️ IMPORTANT — every message query in the app MUST include
+      //    .where('participants', 'array-contains', myUid)
+      // Firestore has to PROVE a list rule from the query itself. A condition built
+      // only on get() (the old version) can never be proven for a query, so EVERY
+      // chat read was denied with "Missing or insufficient permissions".
+      // That is why each message stores the participants array.
+      allow read: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants ||
+        isAdmin()
+      );
+
+      // Send: you must really be in the conversation, you can only send as yourself,
+      // and the message must carry the participants list so both sides can read it.
+      allow create: if isAuthenticated() && (
+        (request.auth.uid == request.resource.data.senderId &&
+         request.auth.uid in convParticipants() &&
+         request.auth.uid in request.resource.data.participants &&
+         request.resource.data.participants.hasOnly(convParticipants())) ||
+        (isAdmin() &&
+         request.auth.uid == request.resource.data.senderId &&
+         request.auth.uid in request.resource.data.participants)
+      );
+
+      // Read receipts: participants + admins may update a message.
+      // The participants list may never be widened by an update.
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        (request.auth.uid in convParticipants() &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['participants']))
+      );
+
+      allow delete: if isAdmin();
+    }
+
     // ========================================================================
     // REVIEWS COLLECTION
     // ========================================================================
@@ -153,19 +499,314 @@ service cloud.firestore {
     match /reviews/{reviewId} {
       // Anyone can read reviews (public)
       allow read: if true;
-      
-      // Only authenticated users can create reviews (must be the reviewer)
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.userId;
-      
-      // Users can update their own reviews, admins can update any
-      allow update: if isAuthenticated() && 
-        (request.auth.uid == resource.data.userId || isAdmin());
-      
+
+      // A review must be about a real, completed order and written by that buyer.
+      // Before: any signed-in user could post any rating for anything, so a seller could
+      // give themselves 5 stars (or bomb a rival) and the rating trigger believed it.
+      function reviewFields() {
+        return ['orderId','productId','sellerId','userId','userName','rating','comment',
+                'title','text','images','createdAt','updatedAt','isVerifiedPurchase'];
+      }
+      function ratingOk() {
+        return request.resource.data.get('rating', 0) is number
+            && request.resource.data.get('rating', 0) >= 1
+            && request.resource.data.get('rating', 0) <= 5;
+      }
+
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.get('userId', null)
+        && request.resource.data.get('sellerId', null) != request.auth.uid     // no self-reviews
+        && request.resource.data.get('orderId', null) != null
+        && exists(/databases/$(database)/documents/orders/$(request.resource.data.orderId))
+        && (get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('buyerId', '')
+              == request.auth.uid
+            || get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('userId', '')
+              == request.auth.uid)
+        && ratingOk();
+
+      // The author may fix their wording, never the target of the review or the score's owner.
+      allow update: if isAuthenticated() &&
+        (isAdmin() ||
+         (request.auth.uid == resource.data.userId
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['comment','title','text','images','rating','updatedAt'])
+          && ratingOk()));
+
       // Only admins can delete reviews
       allow delete: if isAdmin();
     }
-    
+
+    // ========================================================================
+    // SELLER RATINGS — public mirror of a seller's average score
+    // =====================================================================
+    // users/{id} docs are owner/admin reads only, but any shopper must be able to
+    // see "this seller averages 4.8★ over 21 sales". Written ONLY by the
+    // updateProductRating cloud function; never from a browser.
+    // ========================================================================
+    // FOLLOWS — Instagram-style seller following
+    // =====================================================================
+    // Doc id is followerId + '_' + sellerId so following is naturally idempotent.
+    // Anyone can follow any seller (premium sellers simply get the spotlight).
+    match /follows/{followId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.followerId == request.auth.uid
+        && request.resource.data.sellerId is string
+        && request.resource.data.sellerId.size() > 0
+        && request.resource.data.sellerId != request.auth.uid     // cannot follow yourself
+        && request.resource.data.keys().hasOnly(['followerId','followerName','sellerId','sellerName','createdAt']);
+      allow update: if false;                                     // a follow either exists or it doesn't
+      allow delete: if isAuthenticated() && resource.data.followerId == request.auth.uid;
+    }
+
+    // Follower counts per seller, maintained ONLY by the updateFollowStats cloud
+    // function — a browser can never inflate a following.
+    match /sellerFollowStats/{sellerId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /sellerRatings/{sellerId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // One-per-month record of follower broadcasts, written ONLY by the
+    // sendBroadcast cloud function. A seller may read their own so the chat
+    // page can show "broadcast used — next one on the 1st"; nobody can write.
+    match /broadcasts/{broadcastId} {
+      allow read: if isAuthenticated() &&
+        (broadcastId.matches('^' + request.auth.uid + '_.*') || isAdmin());
+      allow write: if false;
+    }
+
+    // Per-seller chat preferences (quick replies + away mode). Strictly
+    // private: only the owner (or an admin) may read or write it.
+    // quickReplies: up to 10 canned messages, 200 chars each.
+    // autoAway: {enabled: bool, message (<= 300 chars)} — the tier gate itself
+    // is enforced server-side by the autoAwayReply function.
+    match /sellerPrefs/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == uid || isAdmin())
+        && request.resource.data.keys().hasOnly(['quickReplies', 'autoAway', 'updatedAt'])
+        && (!request.resource.data.keys().hasAny(['quickReplies'])
+            || (request.resource.data.quickReplies is list
+                && request.resource.data.quickReplies.size() <= 10))
+        && (!request.resource.data.keys().hasAny(['autoAway'])
+            || request.resource.data.autoAway is map);
+    }
+
+    // Public premium-badge mirror: the pricing page promises paid tiers a
+    // verified badge "on your name & listings", but users/{id} docs are
+    // owner/admin-read only — so a browser could never see a stranger's tier.
+    // Written ONLY by syncSellerPublicBadge; any shopper may read it.
+    // premiumExpiry is stored (not pre-computed to a boolean) so a lapsed
+    // plan stops showing the badge the moment it ends — no scheduler needed.
+    match /sellerPublic/{sellerId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ========================================================================
+    // STORES — vendor storefronts ("My Store": name, slug, logo, theme, contact)
+    // ========================================================================
+    // The pretty shop page is PUBLIC, but only ACTIVE stores: a pending/paused
+    // store is invisible to everyone except its owner and admins.
+    // Sellers create/edit ONLY through the saveMyStore Cloud Function (it
+    // validates the fields and claims the web address atomically). Admins
+    // moderate directly from the admin panel (activate / deactivate).
+    match /stores/{storeId} {
+      allow get: if resource.data.isActive == true
+        || (isAuthenticated() && (isOwner(storeId) || isAdmin()));
+      allow list: if resource.data.isActive == true
+        || (isAuthenticated() && (isOwner(resource.data.ownerId) || isAdmin()));
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Claimed store web addresses — written ONLY by saveMyStore (Admin SDK
+    // bypasses rules). Kept for the reserve/audit trail; nothing here is
+    // sensitive (slug -> owner uid), but only admins need to read it.
+    match /storeSlugs/{slug} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    // ========================================================================
+    // HOMEPAGE CAROUSEL — admin-managed promo slides (offers, announcements)
+    // ========================================================================
+    // The homepage reads published slides (public), admins manage all of them
+    // from the admin panel. Only admins can write; nothing here is sensitive.
+    match /carousel/{slideId} {
+      allow get: if resource.data.isActive == true || (isAuthenticated() && isAdmin());
+      allow list: if resource.data.isActive == true || (isAuthenticated() && isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Shop plan payment ledger — receipts for every plan purchase (rent).
+    // Written ONLY by Cloud Functions (payStorePlanWithWallet /
+    // verifyStorePlanPayment); owners read their own receipts, admin lists all.
+    match /storePlanPayments/{paymentId} {
+      allow get: if isAuthenticated() && (isOwner(resource.data.ownerId) || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    // Store promo codes (Tier 2): minted/validated/spent ONLY by Cloud Functions,
+    // so a browser can't forge a discount or steal another shop's code list.
+    match /storePromos/{code} {
+      allow get, list, create, update, delete: if false;
+    }
+
+    // Stock feeds (Tier 3): admin-managed via Cloud Functions only.
+    match /importFeeds/{feedId} {
+      allow get, list, create, update, delete: if false;
+    }
+
+    // Shop mini-analytics: AGGREGATE totals are public (social proof on the shop
+    // page — Tier 3); daily detail stays owner/admin-only. Writes: functions only.
+    match /shopStats/{uid} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+      match /daily/{dayId} {
+        allow get, list: if isAuthenticated() && (isOwner(uid) || isAdmin());
+        allow create, update, delete: if false;
+      }
+    }
+
+    // ========================================================================
+    // PRODUCT COMMENTS — public Q&A thread under each listing
+    // =====================================================================
+    // Anyone may read; only signed-in members may post. ONE level of replies
+    // (a reply cannot itself be replied to — keeps phone threads readable).
+    // The stored sellerId must match the REAL product document, so nobody can
+    // pin a fake seller onto a comment to grant themselves delete rights.
+    // reportCount/reported are written ONLY by cloud functions (update:false
+    // below does not apply to the admin SDK).
+    match /comments/{commentId} {
+      allow read: if true;
+
+      function commentKeysOk() {
+        return request.resource.data.keys()
+          .hasOnly(['productId','productTitle','sellerId','userId','userName','text','parentId','createdAt']);
+      }
+      function commentTextOk() {
+        return request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 500;
+      }
+      function parentIsTopLevel() {
+        return !('parentId' in request.resource.data)
+          || (request.resource.data.parentId is string
+              && exists(/databases/$(database)/documents/comments/$(request.resource.data.parentId))
+              && !('parentId' in get(/databases/$(database)/documents/comments/$(request.resource.data.parentId)).data)
+              && get(/databases/$(database)/documents/comments/$(request.resource.data.parentId)).data.productId
+                 == request.resource.data.productId);
+      }
+
+      allow create: if isAuthenticated()
+        && commentKeysOk()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.productId is string
+        && request.resource.data.productId.size() > 0
+        && request.resource.data.sellerId is string
+        && request.resource.data.sellerId.size() > 0
+        && request.resource.data.get('userName', '') is string
+        && commentTextOk()
+        && exists(/databases/$(database)/documents/products/$(request.resource.data.productId))
+        && get(/databases/$(database)/documents/products/$(request.resource.data.productId)).data.sellerId
+             == request.resource.data.sellerId
+        && parentIsTopLevel();
+
+      // No edits — delete and repost instead. Moderation fields stay functions-only.
+      allow update: if false;
+
+      // The author, the seller whose listing it is, or an admin.
+      allow delete: if isAuthenticated() && (
+            isAdmin()
+         || resource.data.userId == request.auth.uid
+         || resource.data.sellerId == request.auth.uid);
+    }
+
+    // ========================================================================
+    // OFFERS — the seller's 24-hour special price for one buyer, set in chat
+    // =====================================================================
+    // Doc id = conversationId_productId → at most one offer per item per chat.
+    // The seller proposes, re-prices or cancels; the buyer can only ever READ
+    // (paying spawns a normal order — the orders rules demand an exact match,
+    // so a cheaper "agreed price" can never be invented from the browser).
+    // expiresAt must equal createdAt + exactly 24h, and on creation createdAt
+    // must be ≈now (5-minute clock-skew window) so nobody can backdate the clock.
+    match /offers/{offerId} {
+      // Reading a doc that DOESN'T exist yet: allowed for any signed-in member.
+      // (resource.data is not accessible for a missing doc — without this branch the
+      // very first read/listener on a fresh chat was always denied, so the buyer's
+      // live offer card only appeared after a page refresh.)
+      allow get: if isAuthenticated() &&
+        !exists(/databases/$(database)/documents/offers/$(offerId));
+
+      // Reading an existing offer: only the two parties (or an admin).
+      allow get: if isAuthenticated() &&
+        (request.auth.uid == resource.data.sellerId
+         || request.auth.uid == resource.data.buyerId
+         || isAdmin());
+
+      allow list: if isAuthenticated() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid ||
+        (isAdmin() && (request.query.limit == null || request.query.limit <= 100))
+      );
+
+      // Everything that must hold for the offer's data, create and update alike.
+      function offerCoreOk() {
+        return request.resource.data.keys().hasOnly(
+                 ['conversationId','productId','productTitle','sellerId','sellerName',
+                  'buyerId','buyerName','originalPrice','offerPrice','status','createdAt','expiresAt'])
+          && request.resource.data.conversationId is string
+          && request.resource.data.conversationId.size() > 0
+          && request.resource.data.productId is string
+          && request.resource.data.sellerId == request.auth.uid
+          && request.resource.data.buyerId is string
+          && request.resource.data.buyerId != request.auth.uid
+          && request.resource.data.originalPrice is number
+          && request.resource.data.originalPrice > 0
+          && request.resource.data.offerPrice is number
+          && request.resource.data.offerPrice > 0
+          && request.resource.data.offerPrice < request.resource.data.originalPrice   // a bargain, not a markup
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.expiresAt == request.resource.data.createdAt + duration.value(24, 'h')
+          // the product really belongs to whoever is proposing the price
+          && exists(/databases/$(database)/documents/products/$(request.resource.data.productId))
+          && get(/databases/$(database)/documents/products/$(request.resource.data.productId)).data.sellerId
+               == request.auth.uid
+          // and both sides really sit in that conversation
+          && exists(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId))
+          && request.auth.uid in
+               get(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)).data.participants
+          && request.resource.data.buyerId in
+               get(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)).data.participants;
+      }
+
+      allow create: if isAuthenticated()
+        && offerCoreOk()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt >= request.time - duration.value(5, 'm')
+        && request.resource.data.createdAt <= request.time + duration.value(5, 'm');
+
+      // Re-pricing = a fresh 24-hour clock on the same doc. The parties, the item
+      // and the chat are immutable; a PAID offer is frozen forever.
+      allow update: if isAuthenticated()
+        && resource.data.sellerId == request.auth.uid
+        && resource.data.status in ['pending','cancelled']
+        && request.resource.data.status in ['pending','cancelled']
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['originalPrice','offerPrice','status','createdAt','expiresAt'])
+        && offerCoreOk();
+
+      allow delete: if isAdmin();
+    }
+
     // ========================================================================
     // CATEGORIES COLLECTION
     // ========================================================================
@@ -183,60 +824,121 @@ service cloud.firestore {
     // ========================================================================
     
     match /reports/{reportId} {
-      // Only admins can read reports
-      allow read: if isAdmin();
-      
-      // Any authenticated user can create reports
-      allow create: if isAuthenticated();
-      
-      // Only admins can update reports
+      // The person who filed a report can see it; admins can see all.
+      // (Before: only admins could read, so a reporter had no way to check the outcome.)
+      allow get: if isAuthenticated() &&
+        (request.auth.uid == resource.data.reporterId || isAdmin());
+      allow list: if isAdmin();
+
+      // Anyone signed in can report — but only as themselves, only as an open report,
+      // and never about themselves. Stops forged/harassing reports against other users.
+      allow create: if isAuthenticated()
+        && request.resource.data.get('reporterId', null) == request.auth.uid
+        && request.resource.data.get('reportedUserId', null) != request.auth.uid
+        && request.resource.data.get('reason', '') is string
+        && request.resource.data.get('reason', '').size() > 0
+        && request.resource.data.get('reason', '').size() <= 2000
+        && request.resource.data.get('status', 'open') == 'open';
+
       allow update: if isAdmin();
-      
-      // Only admins can delete reports
       allow delete: if isAdmin();
     }
-    
+
     // ========================================================================
     // DISPUTES COLLECTION
     // ========================================================================
     
     match /disputes/{disputeId} {
       // Buyers and sellers can read their own disputes, admins can read all
-      allow read: if isAuthenticated() && 
-        (request.auth.uid == resource.data.buyerId || 
-         request.auth.uid == resource.data.sellerId || 
+      allow read: if isAuthenticated() &&
+        (request.auth.uid == resource.data.buyerId ||
+         request.auth.uid == resource.data.sellerId ||
          isAdmin());
-      
-      // Any authenticated user can create disputes
-      allow create: if isAuthenticated();
-      
+
+      // A dispute must be raised by one of the two parties on a REAL order, and it must be
+      // about that order's amount. Before: anyone could file a dispute naming any buyer and
+      // seller they liked.
+      allow create: if isAuthenticated()
+        && (request.auth.uid == request.resource.data.get('buyerId', null)
+            || request.auth.uid == request.resource.data.get('sellerId', null))
+        && request.resource.data.get('orderId', null) != null
+        && exists(/databases/$(database)/documents/orders/$(request.resource.data.orderId))
+        && (get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('buyerId', '')
+              == request.auth.uid
+            || get(/databases/$(database)/documents/orders/$(request.resource.data.orderId)).data.get('sellerId', '')
+              == request.auth.uid)
+        && request.resource.data.get('status', 'open') == 'open';
+
       // Only admins can update disputes
       allow update: if isAdmin();
-      
+
       // Only admins can delete disputes
       allow delete: if isAdmin();
     }
-    
+
     // ========================================================================
     // NOTIFICATIONS COLLECTION
     // ========================================================================
     
+    match /wishlist/{wishId} {
+      // Your saved items live in Firestore (so the server can alert you about price drops,
+      // and so your list follows you across phones). Docs are named {uid}_{productId} and
+      // you may only ever see/write your OWN.
+      allow read: if isAuthenticated() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','productId','title','price','image','seller','isSankofaStore','addedAt'])
+        && wishId == request.auth.uid + '_' + request.resource.data.productId;
+      allow delete: if isAuthenticated() && resource.data.uid == request.auth.uid;
+      // Re-saves are idempotent: allowed only under EXACTLY the create constraints
+      // (own uid, the same 8 keys, id still {uid}_{productId}) — so a wishlist refresh
+      // can never change WHO saved it or WHAT is saved, only refresh the snapshot.
+      allow update: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','productId','title','price','image','seller','isSankofaStore','addedAt'])
+        && wishId == request.auth.uid + '_' + request.resource.data.productId;
+    }
+
+    match /priceAlertLog/{logId} {
+      allow read, write: if false;   // server bookkeeping only (72h anti-spam throttle)
+    }
+
     match /notifications/{notificationId} {
       // Users can read their own notifications, admins can read all
-      allow read: if isAuthenticated() && 
+      allow read: if isAuthenticated() &&
         (request.auth.uid == resource.data.userId || isAdmin());
-      
-      // System can create notifications (via Cloud Functions)
-      allow create: if isAuthenticated();
-      
-      // Users can update their own notifications (mark as read)
-      allow update: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
-      
-      // Only admins can delete notifications
-      allow delete: if isAdmin();
+
+      // WHO MAY CREATE A NOTIFICATION FOR SOMEBODY ELSE?
+      // Before, ANY signed-in user could write into ANY user's notification list — an open
+      // door for spam and for fake "your payment failed, click here" phishing inside the app.
+      // Now only three things are allowed:
+      //   1. your own inbox (browser-side acknowledgements),
+      //   2. a message addressed to an admin (users reporting auctions / asking for help),
+      //   3. a notice about an auction you are the seller of (the apology letters sent to
+      //      the waitlist when an auction is cancelled).
+      allow create: if isAuthenticated()
+        && request.resource.data.get('userId', null) != null
+        && request.resource.data.get('userId', '') is string
+        && (
+          request.resource.data.userId == request.auth.uid
+          || get(/databases/$(database)/documents/users/$(request.resource.data.userId)).data.get('role', '') == 'admin'
+          || (request.resource.data.get('auctionId', null) != null
+              && exists(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId))
+              && get(/databases/$(database)/documents/auctions/$(request.resource.data.auctionId)).data.get('sellerId', '') == request.auth.uid)
+        );
+
+      // Users can mark their own notifications read — and change nothing else.
+      allow update: if isAuthenticated() &&
+        (isAdmin() ||
+         (request.auth.uid == resource.data.userId
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['isRead','read','readAt','updatedAt'])));
+
+      // You may remove your own alerts (the inbox has a delete button); admins may remove any
+      allow delete: if isAuthenticated() &&
+        (request.auth.uid == resource.data.userId || isAdmin());
     }
-    
+
     // ========================================================================
     // ANALYTICS COLLECTION (Admin Only)
     // ========================================================================
@@ -257,23 +959,291 @@ service cloud.firestore {
     // ========================================================================
     
     match /settings/{document=**} {
-      // Anyone can read settings (public config)
-      allow read: if true;
-      
+      // Public config (Paystack PUBLIC key, premium tiers, store profile) is readable by the
+      // site before anyone signs in — but a secret must never leak through here. If a settings
+      // document ever gains a field that looks like a credential, clients can no longer read it.
+      // `emailjsKey` is the EmailJS public key used by the server to send receipts. Its name is
+      // on this list on purpose: that is what makes settings/email unreadable by a browser, so
+      // the key can never be lifted from the page. (settings/paystack keeps its `publicKey`,
+      // which is genuinely public and used by the checkout popup, so that name stays allowed.)
+      allow get: if !exists(/databases/$(database)/documents/settings/$(document))
+               || !resource.data.keys().hasAny(['secretKey','secret','privateKey','serviceAccount',
+               'apiSecret','paystackSecret','webhookSecret','smtpPassword','emailjsKey','sk','token']) || isAdmin();
+      // No client lists the settings collection (only doc() reads), so keep listing admin-only.
+      allow list: if isAdmin();
+
       // Only admins can write settings
       allow write: if isAdmin();
     }
-  }
-    
-    // STORES COLLECTION
-    match /stores/{storeId} {
-      allow read: if true;
-      allow write: if isAdmin();
+
+
+
+    // ========================================================================
+    // CHAT ATTACHMENT TOKENS (private links to chat files)
+    // ========================================================================
+    // Written and read only by the chatAttachment / authoriseChatAttachment Cloud Functions.
+    // A client must never be able to read one (that would hand out other people's links).
+
+    match /chatAttachments/{token} {
+      allow read, write: if false;      // Cloud Functions only (Admin SDK bypasses rules)
     }
 
-    // SETTINGS COLLECTION
-    match /settings/{settingId} {
-      allow read: if true;
-      allow write: if isAdmin();
+    // ========================================================================
+    // PAYSTACK WEBHOOK LOG (functions only)
+    // ========================================================================
+    // One row per event Paystack posts, written by the paystackWebhook function and read by the
+    // admin-only getWebhookEvents function. Both use the Admin SDK, which bypasses these rules,
+    // so a browser must never be able to read this — it holds payment references and amounts.
+
+    match /webhookEvents/{reference} {
+      allow read, write: if false;      // Cloud Functions only (Admin SDK bypasses rules)
     }
+
+    // ========================================================================
+    // PAYOUT REQUESTS (seller withdrawals)
+    // ========================================================================
+    // Created only by the requestPayout Cloud Function (it holds the money in the wallet at
+    // the same moment), so clients may read their own requests but never write one.
+
+    match /payoutRequests/{payoutId} {
+      allow get: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid ||
+         (isAdmin() && (request.query.limit == null || request.query.limit <= 100)));
+      allow create, update, delete: if false;      // Cloud Functions only
+    }
+
+    // ========================================================================
+    // AUCTIONS COLLECTION — Premium auctions (blinking header + live bidding)
+    // ========================================================================
+    
+    match /auctions/{auctionId} {
+      // Anyone can read auctions (public marketplace — header alert needs public read)
+      allow read: if true;
+
+      function changed() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      // The seller's own fields. Schedule/pricing fields may only be edited while nobody has
+      // bid yet — otherwise a seller could move the finish line mid-auction.
+      function sellerKeys() {
+        return ['status','updatedAt','cancelledAt','cancelledBy','endedAt','endedBy',
+                'winnerOrderId','winnerOrderCreatedAt','views',
+                'title','description','category','location','images','imagesThumb','productImage',
+                'endAt','startAt','startAtMs','endAtMs','startingPrice','currentBid',
+                'bidIncrement','reservePrice','buyNowPrice','waitingMinutes','waitingMs','durationMinutes'];
+      }
+      function sellerScheduleKeys() {
+        return ['endAt','startAt','startAtMs','endAtMs','startingPrice','currentBid',
+                'bidIncrement','reservePrice','buyNowPrice','waitingMinutes','waitingMs','durationMinutes'];
+      }
+
+      // The browser may snapshot an admin-set seller commission when an auction is
+      // created, but it cannot choose or change that percentage itself.
+      function auctionCommissionSnapshotOk() {
+        return !exists(/databases/$(database)/documents/settings/auctionCommission)
+          ? !request.resource.data.keys().hasAny(['auctionCommissionPercent'])
+          : get(/databases/$(database)/documents/settings/auctionCommission).data.get('sellerCommissionPercent', null) == null
+            ? !request.resource.data.keys().hasAny(['auctionCommissionPercent'])
+            : request.resource.data.get('auctionCommissionPercent', -1) is number
+              && request.resource.data.get('auctionCommissionPercent', -1) >= 0
+              && request.resource.data.get('auctionCommissionPercent', -1) <= 100
+              && request.resource.data.get('auctionCommissionPercent', -1)
+                   == get(/databases/$(database)/documents/settings/auctionCommission).data.get('sellerCommissionPercent', -2);
+      }
+
+      // Premium-only auction tools: the caller must have an active paid plan (or be admin).
+      // (Checked live from their user document — a lapsed plan stops qualifying instantly.)
+      function callerIsPremium() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isPremium', false) == true
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('premiumExpiry', request.time) > request.time;
+      }
+      // reserve price & Buy-It-Now are optional but must be sane numbers that make sense
+      // against the starting price (0 / absent = not used)
+      function auctionToolsShapeOk() {
+        return request.resource.data.get('reservePrice', 0) is number
+            && request.resource.data.get('buyNowPrice', 0) is number
+            && request.resource.data.get('reservePrice', 0) >= 0
+            && request.resource.data.get('buyNowPrice', 0) >= 0
+            && (request.resource.data.get('reservePrice', 0) == 0
+                || request.resource.data.get('reservePrice', 0) >= request.resource.data.get('startingPrice', 0))
+            && (request.resource.data.get('buyNowPrice', 0) == 0
+                || request.resource.data.get('buyNowPrice', 0) > request.resource.data.get('startingPrice', 0));
+      }
+
+      // Premium sellers + admins can create. Seller must be the creator. Reserve price and
+      // Buy-It-Now price are the paid tools, so only a live-premium caller may set them.
+      allow create: if isAuthenticated()
+        && request.auth.uid == request.resource.data.sellerId
+        && (isAdmin() || callerIsPremium())
+        && request.resource.data.get('status', 'scheduled') in ['scheduled','live']
+        && request.resource.data.get('startingPrice', 0) > 0
+        && auctionToolsShapeOk()
+        && auctionCommissionSnapshotOk()
+        && request.resource.data.get('bidCount', 0) == 0
+        && request.resource.data.get('currentBidderId', null) == null;
+
+      allow update: if isAuthenticated() && (
+        isAdmin()
+        ||
+        // ---- the seller: manage their own auction, not the bidding ----
+        (request.auth.uid == resource.data.sellerId
+         && changed().hasOnly(sellerKeys())
+         && (!changed().hasAny(sellerScheduleKeys()) || resource.data.get('bidCount', 0) == 0)
+         && (!changed().hasAny(['reservePrice','buyNowPrice']) || isAdmin() || callerIsPremium())
+         && auctionToolsShapeOk()
+         && request.resource.data.get('sellerId', '') == request.auth.uid
+         && !(resource.data.get('status', '') == 'ended' && request.resource.data.get('status', '') == 'live'))
+        ||
+        // ---- a bidder: may only raise the price, to themselves, one step at a time ----
+        (request.auth.uid != resource.data.sellerId
+         && request.resource.data.get('currentBidderId', null) == request.auth.uid
+         && changed().hasOnly(['currentBid','currentBidderId','currentBidderName','bidCount','lastBidAt','updatedAt'])
+         && request.resource.data.get('currentBid', 0) >= resource.data.get('currentBid', 0)
+         && request.resource.data.get('bidCount', 0) == resource.data.get('bidCount', 0) + 1
+         && (resource.data.get('bidCount', 0) == 0
+             ? request.resource.data.get('currentBid', 0) >= resource.data.get('startingPrice', 0)
+             : request.resource.data.get('currentBid', 0)
+                  >= resource.data.get('currentBid', 0) + resource.data.get('bidIncrement', 0))
+         && resource.data.get('status', 'live') in ['live','scheduled'])
+        ||
+        (changed().hasOnly(['winnerOrderId','winnerOrderCreatedAt','updatedAt'])
+         && request.resource.data.get('winnerOrderId', null) != null
+         && resource.data.get('currentBidderId', null) == request.auth.uid)
+        ||
+        // ---- anybody may close an auction once its end time has actually passed ----
+        (changed().hasOnly(['status','endedAt','updatedAt'])
+         && request.resource.data.get('status', '') == 'ended'
+         && resource.data.get('status', '') in ['live','scheduled']
+         && resource.data.get('endedAt', null) == null
+         && resource.data.get('endAt', request.time) <= request.time)
+      );
+
+      // Seller can delete own auction, admin can delete any
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.sellerId || isAdmin());
+
+      match /bids/{bidId} {
+        // Anyone can read bids (public)
+        allow read: if true;
+        // A bid must be placed by the bidder themselves, never by the seller, must be a
+        // positive number, and must at least match the price already on the auction.
+        allow create: if isAuthenticated()
+          && request.auth.uid == request.resource.data.bidderId
+          && request.auth.uid != get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId
+          && request.resource.data.get('amount', 0) is number
+          && request.resource.data.get('amount', 0) > 0
+          && request.resource.data.get('amount', 0)
+               >= get(/databases/$(database)/documents/auctions/$(auctionId)).data.get('currentBid', 0);
+        allow update: if isAdmin();
+        // The auction's seller must be able to clear bids when they remove the auction
+        allow delete: if isAdmin() ||
+          (isAuthenticated() && request.auth.uid == get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId);
+      }
+
+      // Waitlist subcollection — users waiting for scheduled auction
+      match /waitlist/{userId} {
+        // Anyone can read waitlist count (public) — seller needs to see number
+        allow read: if true;
+        // Any authenticated non-seller can join; must match userId
+        allow create: if isAuthenticated() && request.auth.uid == userId && request.auth.uid != get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId;
+        // User can leave their own waitlist entry; the seller can clear the list when
+        // removing their auction
+        allow delete: if isAuthenticated() && (
+          request.auth.uid == userId ||
+          request.auth.uid == get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId ||
+          isAdmin());
+        allow update: if false;
+      }
+
+      // Chat subcollection — group chat for wait room → live (seller + waitlist + bidders)
+      match /chat/{messageId} {
+        // Anyone can read chat history (public to encourage joining)
+        allow read: if true;
+        // Any signed-in user can send (seller + waitlist + bidders); must match senderId and valid text
+        allow create: if isAuthenticated()
+          && request.auth.uid == request.resource.data.senderId
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() < 500;
+        // Only admin can edit; the auction's seller can clear chat when removing the auction
+        allow update: if isAdmin();
+        allow delete: if isAdmin() ||
+          (isAuthenticated() && request.auth.uid == get(/databases/$(database)/documents/auctions/$(auctionId)).data.sellerId);
+      }
+    }
+
+    // ========================================================================
+    // WALLETS COLLECTION — Sankofa Wallet (closed-loop, 0% internal transfers)
+    // ========================================================================
+    
+    match /wallets/{userId} {
+      // Owner can read own wallet, admin can read all. Listing is admin-only (balances are private).
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+
+      // A wallet can be created by its owner, but ONLY starting at zero.
+      // (The Cloud Function creates wallets with the Admin SDK, which bypasses these rules.)
+      allow create: if isAdmin() || (
+        isOwner(userId) &&
+        (!('balance' in request.resource.data) || request.resource.data.balance == 0) &&
+        (!('totalTopups' in request.resource.data) || request.resource.data.totalTopups == 0) &&
+        (!('totalEarnings' in request.resource.data) || request.resource.data.totalEarnings == 0)
+      );
+
+      // ⚠️ MONEY: the balance may only be changed by Cloud Functions (Admin SDK).
+      // Previously the owner could update their own wallet document, which meant anyone
+      // could set their own balance to any amount and then pay with the wallet.
+      allow update: if isAdmin() || (
+        isOwner(userId) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['currency', 'displayName', 'updatedAt'])
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // 🪙 LOYALTY POINTS (daily check-in rewards).
+    // Points buy real perks (listing boosts), so they are economy-critical:
+    // the owner may LOOK at their balance and history, but NO browser may ever
+    // move points — every claim and redemption goes through a Cloud Function
+    // (Admin SDK bypasses these rules), the same defence the wallet uses.
+    match /points/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow write: if false;
+
+      match /ledger/{entryId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow write: if false;
+      }
+    }
+
+    // 🎁 REFERRALS (who invited whom, and whether the active-friend bonus
+    // settled). Same economy defence as points: the owner may LOOK, but only
+    // Cloud Functions (Admin SDK) may create or settle referral records —
+    // otherwise a browser could invent friends it never brought.
+    match /referrals/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow write: if false;
+
+      match /made/{entryId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+        allow write: if false;
+      }
+    }
+
+    match /walletTransactions/{txId} {
+      // Owner can read own history, admin can read all.
+      // (list used to be open to any signed-in user — it exposed every user's transactions.)
+      allow get: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow list: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      // Wallet history is written by Cloud Functions (Admin SDK) or an admin adjustment —
+      // a user must not be able to invent transactions on their own record.
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+  }
 }

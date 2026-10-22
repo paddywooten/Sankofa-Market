@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /sm-panel/
+Disallow: /pages/admin/
+Sitemap: https://sankofa-market.web.app/sitemap.xml

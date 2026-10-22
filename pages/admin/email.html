@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Emails - Admin - Sankofa Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/admin.css?v=15">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+    <link rel="stylesheet" href="/css/admin-brand.css?v=3">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+
+/* --- this page --- */
+.mail-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:1rem;box-shadow:0 1px 2px rgba(16,24,40,0.04);}
+.mail-card h2{margin:0 0 0.2rem;font-size:1.05rem;color:#0f172a;}
+.mail-card p.lead{margin:0 0 0.9rem;font-size:0.85rem;color:#5a6572;line-height:1.55;}
+.mail-label{display:block;font-size:0.78rem;font-weight:700;color:#334155;margin:0.7rem 0 0.25rem;}
+.mail-input{width:100%;padding:0.6rem 0.7rem;border:1.5px solid #d7dce3;border-radius:9px;font-size:0.9rem;font-family:inherit;}
+.mail-input:focus{outline:none;border-color:#0064d2;box-shadow:0 0 0 3px rgba(0,100,210,0.12);}
+.mail-hint{font-size:0.75rem;color:#6b7280;margin-top:0.25rem;line-height:1.5;}
+.mail-btn{display:inline-flex;align-items:center;gap:0.4rem;border:none;border-radius:10px;padding:0.65rem 1.1rem;font-size:0.88rem;font-weight:700;font-family:inherit;cursor:pointer;}
+.mail-btn.primary{background:#0064d2;color:#fff;}
+.mail-btn.gold{background:linear-gradient(135deg,#f5af02,#e09e00);color:#191919;}
+.mail-btn.ghost{background:#fff;color:#0f172a;border:1.5px solid #d7dce3;}
+.mail-btn:disabled{opacity:0.6;cursor:progress;}
+.mail-status{display:flex;gap:0.9rem;align-items:flex-start;border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem;border:1.5px solid;}
+.mail-status.on{background:#f0fdf4;border-color:#bbf7d0;}
+.mail-status.off{background:#fff7ed;border-color:#fed7aa;}
+.mail-status .dot{width:12px;height:12px;border-radius:50%;margin-top:0.35rem;flex:0 0 auto;}
+.mail-status.on .dot{background:#16a34a;}
+.mail-status.off .dot{background:#ea580c;}
+.mail-status .t{font-weight:800;font-size:0.95rem;color:#0f172a;}
+.mail-status .s{font-size:0.82rem;color:#475569;margin-top:0.2rem;line-height:1.55;}
+.mail-status code{background:rgba(15,23,42,0.06);padding:0.05rem 0.34rem;border-radius:5px;font-size:0.8rem;}
+.mail-result{border-radius:10px;padding:0.75rem 0.85rem;font-size:0.84rem;line-height:1.6;margin-top:0.8rem;white-space:pre-wrap;word-break:break-word;}
+.mail-result.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;}
+.mail-result.bad{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d;}
+.mail-result.info{background:#f8fafc;border:1px solid #e2e8f0;color:#334155;}
+.mail-preview{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-top:0.6rem;}
+.mail-preview .hd{background:linear-gradient(135deg,#0064d2,#004a9e);color:#fff;padding:0.7rem 0.9rem;font-weight:800;}
+.mail-preview .hd span{color:#f5af02;}
+.mail-preview .bd{padding:0.9rem;}
+.mail-preview .subj{font-weight:700;color:#0f172a;font-size:0.9rem;margin-bottom:0.5rem;}
+.mail-preview .body{white-space:pre-line;font-size:0.85rem;color:#374151;line-height:1.6;}
+.mail-preview .cta{display:inline-block;margin-top:0.8rem;background:#0064d2;color:#fff;padding:0.55rem 1rem;border-radius:9px;font-weight:700;font-size:0.82rem;}
+.switch{display:inline-flex;align-items:center;gap:0.55rem;font-size:0.86rem;font-weight:600;color:#334155;cursor:pointer;}
+.switch input{width:auto;margin:0;transform:scale(1.25);}
+.mail-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+@media(max-width:640px){.mail-row{grid-template-columns:1fr;}}
+.steps{margin:0.4rem 0 0;padding-left:1.15rem;font-size:0.85rem;color:#374151;line-height:1.75;}
+.steps code{background:#f1f5f9;padding:0.05rem 0.34rem;border-radius:5px;font-size:0.8rem;}
+</style>
+
+<style id="adminGateHide">
+/* The whole admin shell stays hidden until the access check passes.
+   js/admin-auth.js reveals these on success and shows the access-denied screen otherwise. */
+.admin-sidebar,
+.admin-topbar,
+main.admin-main,
+.admin-main { display: none !important; }
+</style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+                <span class="sidebar-badge">Admin</span>
+                <button class="sidebar-close" id="sidebarClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/sm-panel/dashboard" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/sm-panel/dashboard#section-orders" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="/sm-panel/dashboard#section-products" class="nav-item">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="/sm-panel/dashboard#section-users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/sm-panel/dashboard#section-orders" class="nav-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="/sm-panel/disputes" class="nav-item">
+                    <i class="fas fa-gavel"></i>
+                    <span>Disputes</span>
+                    <span class="nav-badge" id="disputeCount" style="display:none;">0</span>
+                </a>
+                <a href="/sm-panel/payouts" class="nav-item">
+                    <i class="fas fa-money-bill-transfer"></i>
+                    <span>Withdrawals</span>
+                    <span class="nav-badge" id="payoutCount" style="display:none;">0</span>
+                </a>
+                <a href="/sm-panel/email" class="nav-item active">
+                    <i class="fas fa-envelope"></i>
+                    <span>Emails</span>
+                </a>
+                <a href="/sm-panel/dashboard#section-settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/index.html" class="nav-item">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Site</span>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-content">
+                    <h1>Emails</h1>
+                    <p style="margin:0.2rem 0 0;color:#5a6572;font-size:0.85rem;">
+                        Receipts, sale alerts, shipping updates and the welcome email all go out from here.
+                        Set up the details once and use the test button to prove it works.
+                    </p>
+                </div>
+                <div class="header-actions">
+                    <button class="mail-btn ghost" onclick="loadEmailStatus()"><i class="fas fa-rotate"></i> Refresh</button>
+                </div>
+            </header>
+
+            <!-- Where we are now -->
+            <div id="emailStatus" class="mail-status off" aria-live="polite">
+                <span class="dot"></span>
+                <div>
+                    <div class="t"><i class="fas fa-spinner fa-spin"></i> Checking how email is set up…</div>
+                    <div class="s">One moment.</div>
+                </div>
+            </div>
+
+            <!-- 1. The settings -->
+            <section class="mail-card">
+                <h2>1. Your EmailJS details</h2>
+                <p class="lead">
+                    These three values come from your own free EmailJS account. The key is stored on the
+                    server and is never sent to a browser &mdash; only its last few letters are shown below.
+                </p>
+
+                <div class="mail-row">
+                    <div>
+                        <label class="mail-label" for="svcId">Service ID</label>
+                        <input class="mail-input" id="svcId" type="text" autocomplete="off" placeholder="service_xxxxxxx">
+                        <div class="mail-hint">EmailJS &rarr; Email Services. The service must be connected to your Gmail.</div>
+                    </div>
+                    <div>
+                        <label class="mail-label" for="tplId">Template ID</label>
+                        <input class="mail-input" id="tplId" type="text" autocomplete="off" placeholder="template_xxxxxxx">
+                        <div class="mail-hint">EmailJS &rarr; Email Templates. This is the one template that shapes every email.</div>
+                    </div>
+                </div>
+
+                <label class="mail-label" for="pubKey">Public Key</label>
+                <input class="mail-input" id="pubKey" type="text" autocomplete="off" placeholder="Leave blank to keep the key already saved">
+                <div class="mail-hint">
+                    EmailJS &rarr; Account &rarr; General &rarr; Public Key. It is one word of about 18 letters and numbers.
+                    Leave this box empty if you only want to change the other boxes.
+                </div>
+
+                <label class="mail-label">Sending</label>
+                <label class="switch"><input type="checkbox" id="mailEnabled" checked> Send emails (untick to pause everything without losing the settings)</label>
+
+                <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <button class="mail-btn primary" id="saveBtn" onclick="saveEmailSettings()"><i class="fas fa-check"></i> Save these details</button>
+                    <a class="mail-btn ghost" href="/sm-panel/email-setup" style="text-decoration:none;"><i class="fas fa-book"></i> Step-by-step guide</a>
+                </div>
+                <div id="saveResult"></div>
+            </section>
+
+            <!-- 2. Proof it works -->
+            <section class="mail-card">
+                <h2>2. Send yourself a test</h2>
+                <p class="lead">
+                    This really sends an email, so you can see exactly what your customers will get.
+                    If anything is wrong, the provider's own answer is shown here word for word.
+                </p>
+
+                <div class="mail-row">
+                    <div>
+                        <label class="mail-label" for="testTo">Send to</label>
+                        <input class="mail-input" id="testTo" type="email" autocomplete="off" placeholder="sankofamarketgh@gmail.com">
+                    </div>
+                    <div>
+                        <label class="mail-label" for="testKind">Which email</label>
+                        <select class="mail-input" id="testKind" onchange="renderPreview()"></select>
+                    </div>
+                </div>
+
+                <div style="margin-top:1rem;">
+                    <button class="mail-btn gold" id="testBtn" onclick="sendTestEmail()"><i class="fas fa-paper-plane"></i> Send test email</button>
+                </div>
+                <div id="testResult"></div>
+            </section>
+
+            <!-- 3. What it will look like -->
+            <section class="mail-card">
+                <h2>3. A preview of the email</h2>
+                <p class="lead">
+                    The colours and wording come from our own template. The blue button links the customer
+                    straight to the right page on Sankofa Market.
+                </p>
+                <div id="previewBox"><div class="mail-result info">Choose an email above to preview it.</div></div>
+            </section>
+
+            <!-- 4. What goes out, and when -->
+            <section class="mail-card">
+                <h2>4. What goes out, and when</h2>
+                <p class="lead">Nothing here needs setting up &mdash; it is just so you know what customers receive.</p>
+                <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                    <thead>
+                        <tr style="text-align:left;color:#5a6572;">
+                            <th style="padding:0.45rem 0.5rem;border-bottom:1px solid #e5e7eb;">Email</th>
+                            <th style="padding:0.45rem 0.5rem;border-bottom:1px solid #e5e7eb;">Goes to</th>
+                            <th style="padding:0.45rem 0.5rem;border-bottom:1px solid #e5e7eb;">Sent when</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Welcome</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">new member</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">the moment an account is created</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Payment receipt</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">buyer</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">a card or wallet payment is confirmed</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">You have a sale</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">seller</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">an item sells</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">On its way</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">buyer</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">the seller taps &ldquo;Mark as shipped&rdquo;</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Did it arrive?</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">buyer</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">the seller taps &ldquo;Mark as delivered&rdquo;</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Refund issued</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">buyer</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">you refund, or a dispute goes the buyer's way</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Withdrawal sent</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">seller</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">you mark a withdrawal paid</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">Auction results</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">winner + seller</td><td style="padding:0.45rem 0.5rem;border-bottom:1px solid #f1f5f9;">an auction closes with a bid</td></tr>
+                        <tr><td style="padding:0.45rem 0.5rem;">Dispute closed</td><td style="padding:0.45rem 0.5rem;">seller</td><td style="padding:0.45rem 0.5rem;">a dispute is decided in the seller's favour</td></tr>
+                    </tbody>
+                </table>
+                </div>
+                <p class="mail-hint" style="margin-top:0.8rem;">
+                    Email never blocks a payment. If sending fails, the money still moves &mdash; the failure is
+                    only logged and shown to you on this page.
+                </p>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/dist/admin-4PKE5BUI.js"></script>
+    <script src="/js/admin-email.js?v=3"></script>
+    <script src="/js/admin-auth.js?v=4"></script>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>

@@ -321,7 +321,7 @@
 }
 
 .safety-tips h4 {
-    color: #f57f17;
+    color: #b45309;
     margin-bottom: 0.75rem;
     font-size: 0.95rem;
 }
@@ -483,7 +483,7 @@
 }
 
 .product-loading-spinner {
-    color: var(--text-secondary, #767676);
+    color: var(--text-secondary, #5a6572);
 }
 
 .product-loading-spinner i {
@@ -496,4 +496,117 @@
 .product-loading-spinner p {
     font-size: 0.95rem;
     margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   MOBILE WIDTH GUARDS
+   Product text/specs can be seller-written and may contain long unbroken words.
+   Keep grid children shrinkable and wrap that content instead of widening the page.
+--------------------------------------------------------------------------- */
+.product-detail-main,
+.product-detail-main .container,
+#productContent,
+.product-detail-grid,
+.product-detail-grid > *,
+.product-gallery,
+.product-info,
+.product-description-section,
+.product-specs-section,
+.similar-products-section,
+.seller-card,
+.seller-info {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.product-detail-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+#productContent {
+    overflow-wrap: anywhere;
+}
+
+.product-info .product-title {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.product-price-section {
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+}
+
+.product-info .product-price,
+.product-condition,
+.product-meta-info,
+.meta-item,
+.meta-item span,
+.description-content,
+.description-content p,
+.description-content li,
+.seller-name,
+.specs-table th,
+.specs-table td,
+#productReviewsList,
+#productCommentsList,
+#deliveryInfoBox {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.specs-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+@media (max-width: 1024px) {
+    .product-detail-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    /* The loading skeleton has inline two-column styles, so override them here. */
+    #productLoading .container > div {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 1rem !important;
+    }
+
+    .product-detail-grid,
+    .product-detail-grid > * {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .product-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        width: 100%;
+        min-width: 0;
+    }
+
+    .product-actions > *,
+    .product-actions .btn,
+    .product-actions .add-to-cart-btn,
+    .product-actions .wishlist-btn {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .product-actions .btn-primary,
+    .product-actions .btn-outline,
+    .product-actions .add-to-cart-btn,
+    .product-actions .wishlist-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
 }

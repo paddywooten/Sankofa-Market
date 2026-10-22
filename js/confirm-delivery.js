@@ -9,25 +9,39 @@ let uploadedFiles = [];
 let countdownInterval = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
-    if (!isLoggedIn()) {
-        window.location.href = 'pages/auth/login.html?redirect=' + encodeURIComponent(window.location.href);
-        return;
-    }
-    
     // Get order ID from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('order');
-    
+    const orderId = urlParams.get('order') || urlParams.get('orderId');
+    const loginUrl = '/pages/auth/login.html?redirect=' + encodeURIComponent(window.location.href);
+
     if (!orderId) {
         showFlashMessage('Invalid order ID', 'error');
         setTimeout(() => window.location.href = 'pages/user/dashboard.html', 2000);
         return;
     }
-    
-    loadOrderDetails(orderId);
-    initFileUpload();
-    initCharCounter();
+
+    // ⚠️ Firebase restores the session ASYNCHRONOUSLY. Checking "am I signed in?" the instant
+    // the page loads sent signed-in buyers to the login screen every single time — which meant
+    // nobody could confirm delivery, so sellers were never paid (except by the 48h auto-release).
+    const start = function () { loadOrderDetails(orderId); initFileUpload(); initCharCounter(); };
+    let settled = false;
+    const go = function (user) {
+        if (settled) return;
+        settled = true;
+        if (!user) { window.location.href = loginUrl; return; }
+        start();
+    };
+    try {
+        firebase.auth().onAuthStateChanged(go);
+    } catch (e) {
+        go(firebase.auth().currentUser);
+    }
+    // Safety net: never leave the buyer staring at a blank page.
+    setTimeout(function () {
+        if (settled) return;
+        const u = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
+        go(u);
+    }, 6000);
 });
 
 // ============================================================================
@@ -60,26 +74,63 @@ async function loadOrderDetails(orderId) {
             return;
         }
         
-        // Load transaction
-        const txnSnapshot = await firebaseDB.collection('transactions')
-            .where('orderId', '==', orderId)
-            .get();
-        
-        if (!txnSnapshot.empty) {
-            currentTransaction = { id: txnSnapshot.docs[0].id, ...txnSnapshot.docs[0].data() };
+        // NOTE: a `transactions` collection used to be read here. Nothing ever created one and
+        // there is no rule allowing reads of it, so the request always failed — the code was
+        // removed rather than left failing quietly on every visit. Escrow lives on the order.
+
+        // Load product details (cart orders have no productId — use the first item)
+        let product = {};
+        try {
+            const firstItem = (currentOrder.items && currentOrder.items[0]) || {};
+            const pid = currentOrder.productId || firstItem.productId || firstItem.id;
+            if (pid && String(pid).indexOf('local-') !== 0) {
+                const productDoc = await firebaseDB.collection('products').doc(pid).get();
+                product = productDoc.exists ? productDoc.data() : {};
+            }
+        } catch (e) {
+            console.warn('product details unavailable', e && e.message);
         }
-        
-        // Load product details
-        const productDoc = await firebaseDB.collection('products').doc(currentOrder.productId).get();
-        const product = productDoc.exists ? productDoc.data() : {};
-        
+
         // Render order info
         renderOrderInfo(currentOrder, product);
-        
-        // Start countdown timer
-        if (currentTransaction?.paidAt) {
-            startCountdown(currentTransaction.paidAt.toDate());
+
+        // Start the countdown from when the money went into escrow
+        // The clock runs from DELIVERY (matching the escrow function), not from
+        // payment — otherwise the timer counted down before the item had even been sent.
+        /* ---- escrow window: how long the money sits after delivery ----
+         * ◆ Diamond sellers are paid out after 24h instead of 48 (premium money perk).
+         * The counter reads the PUBLIC seller mirror (sellerPublic) — the money still
+         * moves only when the server decides; the mirror just makes the countdown the
+         * buyer sees match the server's window. */
+        var windowHours = 48;
+        try {
+            const mirrorDoc = await firebaseDB.collection('sellerPublic').doc(currentOrder.sellerId).get();
+            if (mirrorDoc.exists) {
+                const m = mirrorDoc.data() || {};
+                const tier = String(m.tier || '').toLowerCase();
+                const exp = m.premiumExpiry && m.premiumExpiry.toDate ? m.premiumExpiry.toDate()
+                          : (m.premiumExpiry ? new Date(m.premiumExpiry) : null);
+                if (tier === 'diamond' && exp && exp.getTime() > Date.now()) windowHours = 24;
+            }
+        } catch (e) { /* unreadable mirror → show the standard 48h window */ }
+        if (windowHours === 24) {
+            const countdownEl = document.getElementById('countdown');
+            if (countdownEl && !document.getElementById('smDiamondNote')) {
+                const note = document.createElement('div');
+                note.id = 'smDiamondNote';
+                note.style.cssText = 'margin-top:0.5rem;font-size:0.72rem;font-weight:700;color:#5b21b6;';
+                note.innerHTML = '<i class="fas fa-gem"></i> Diamond seller — escrow auto-releases after 24 hours instead of 48.';
+                countdownEl.parentNode.appendChild(note);
+            }
         }
+
+        const heldAt = currentOrder.deliveredAt || currentOrder.deliveryConfirmedAt
+                     || currentOrder.escrowHeldAt || currentOrder.paidAt
+                     || (currentTransaction && currentTransaction.paidAt);
+        try {
+            if (heldAt && heldAt.toDate) startCountdown(heldAt.toDate(), windowHours);
+            else if (heldAt) startCountdown(new Date(heldAt), windowHours);
+        } catch (e) { console.warn('countdown skipped', e); }
         
     } catch (error) {
         console.error('Error loading order:', error);
@@ -98,11 +149,11 @@ function renderOrderInfo(order, product) {
             </div>
             <div class="order-item">
                 <span class="order-label">Product:</span>
-                <span class="order-value">${product.title || order.productTitle || 'N/A'}</span>
+                <span class="order-value">${product.title || order.productTitle || (order.items && order.items[0] && order.items[0].title) || 'Your item'}</span>
             </div>
             <div class="order-item">
                 <span class="order-label">Amount:</span>
-                <span class="order-value">GHS ${order.amount?.toLocaleString() || '0'}</span>
+                <span class="order-value">GHS ${(order.total ?? order.amount ?? order.bidAmount ?? 0).toLocaleString()}</span>
             </div>
             <div class="order-item">
                 <span class="order-label">Seller:</span>
@@ -153,8 +204,8 @@ function renderOrderInfo(order, product) {
 // COUNTDOWN TIMER
 // ============================================================================
 
-function startCountdown(paidAt) {
-    const autoReleaseHours = 48;
+function startCountdown(paidAt, autoReleaseHours) {
+    autoReleaseHours = Number(autoReleaseHours) > 0 ? Number(autoReleaseHours) : 48;   // ◆ Diamond = 24, everyone else 48
     const releaseTime = new Date(paidAt.getTime() + (autoReleaseHours * 60 * 60 * 1000));
     
     countdownInterval = setInterval(() => {
@@ -275,7 +326,7 @@ function removeImage(index) {
 // ============================================================================
 
 async function confirmDelivery() {
-    if (!currentOrder || !currentTransaction) {
+    if (!currentOrder) {
         showFlashMessage('Order data not loaded', 'error');
         return;
     }
@@ -288,23 +339,25 @@ async function confirmDelivery() {
         const confirmBtn = document.getElementById('confirmBtn');
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        
-        // Update order status
-        await firebaseDB.collection('orders').doc(currentOrder.id).update({
-            status: 'completed',
-            confirmedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            confirmedBy: firebase.auth().currentUser.uid
-        });
-        
-        // Release escrow
-        await releaseEscrow(currentTransaction.id, firebase.auth().currentUser.uid);
+
+        // Releasing the money is a SERVER job: the Cloud Function re-checks who is asking,
+        // that a real payment is being held, and that the seller has not been paid already.
+        // (This page used to call a browser function called releaseEscrow that does not exist
+        // anywhere, so the button always failed with "Failed to confirm delivery" and the
+        // seller was never paid.)
+        if (typeof firebase === 'undefined' || !firebase.functions) {
+            throw new Error('Firebase Functions not ready — please refresh the page');
+        }
+        const releaseFn = firebase.functions().httpsCallable('releaseEscrowToWallet');
+        const res = await releaseFn({ orderId: currentOrder.id });
+        const payout = res.data && res.data.payout;
         
         // Stop countdown
         if (countdownInterval) {
             clearInterval(countdownInterval);
         }
         
-        showFlashMessage('Delivery confirmed! Payment released to seller.', 'success');
+        showFlashMessage('Delivery confirmed!' + (payout ? ' GHS ' + Number(payout).toLocaleString() + ' released to the seller\u2019s wallet.' : ' Payment released to seller.'), 'success');
         
         setTimeout(() => {
             window.location.href = 'pages/user/dashboard.html';
@@ -356,7 +409,7 @@ function closeDisputeModal() {
 async function submitDispute(event) {
     event.preventDefault();
     
-    if (!currentOrder || !currentTransaction) {
+    if (!currentOrder) {
         showFlashMessage('Order data not loaded', 'error');
         return;
     }
@@ -379,7 +432,7 @@ async function submitDispute(event) {
         // Create dispute
         const disputeData = {
             orderId: currentOrder.id,
-            transactionId: currentTransaction.id,
+            transactionId: currentTransaction ? currentTransaction.id : null,
             buyerId: currentOrder.buyerId,
             sellerId: currentOrder.sellerId,
             amount: currentOrder.amount,
@@ -395,11 +448,8 @@ async function submitDispute(event) {
         
         const disputeRef = await firebaseDB.collection('disputes').add(disputeData);
         
-        // Update transaction
-        await firebaseDB.collection('transactions').doc(currentTransaction.id).update({
-            disputeId: disputeRef.id,
-            disputedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        // (The old code also tried to link the dispute on a `transactions` document. That
+        //  collection has no rule, so the write always failed — removed.)
         
         // Update order status
         await firebaseDB.collection('orders').doc(currentOrder.id).update({

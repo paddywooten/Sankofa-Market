@@ -3,26 +3,47 @@
     "public": ".",
     "ignore": [
       "firebase.json",
-      "**/.*",
       "**/node_modules/**",
+      ".git/**",
+      ".gitignore",
+      "**/*.map",
+      "**/*.md",
+      "docs/**",
       "functions/**",
-      "FIREBASE_SETUP.md",
+      "**/.DS_Store",
+      "EMAIL_TEMPLATES.html",
       "FIREBASE_SETUP_GUIDE.html",
       "LEGAL_DOCUMENTS_COMPILATION.html",
-      "PROJECT_URLS.*",
-      "README.md",
-      ".git/**",
-      ".gitignore"
+      "PROJECT_URLS.txt",
+      "Sankofa_Market_Legal_Documents.zip"
     ],
     "cleanUrls": true,
     "trailingSlash": false,
     "headers": [
+      {
+        "source": "/manifest.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      },
       {
         "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=604800, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/models/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=2592000, immutable"
           }
         ]
       },
@@ -36,17 +57,48 @@
         ]
       },
       {
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(html)",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "public, max-age=3600"
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/dist/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/dist/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
           }
         ]
       },
       {
         "source": "**",
         "headers": [
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
           {
             "key": "X-Content-Type-Options",
             "value": "nosniff"
@@ -58,15 +110,44 @@
           {
             "key": "X-XSS-Protection",
             "value": "1; mode=block"
+          }
+        ]
+      },
+      {
+        "source": "/assetlinks.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
           },
           {
-            "key": "Referrer-Policy",
-            "value": "strict-origin-when-cross-origin"
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      {
+        "source": "/.well-known/assetlinks.json",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
         ]
       }
     ],
     "rewrites": [
+      {
+        "source": "/imgProxy",
+        "function": {
+          "functionId": "imgProxy",
+          "region": "us-central1"
+        }
+      },
       {
         "source": "/help",
         "destination": "/pages/help.html"
@@ -180,12 +261,48 @@
         "destination": "/pages/admin/user-approvals.html"
       },
       {
-        "source": "/sm-panel/chatbot-faqs",
-        "destination": "/pages/admin/chatbot-faqs.html"
+        "source": "/sm-panel/pages/user/messages.html",
+        "destination": "/pages/user/messages.html"
       },
       {
-        "source": "**",
-        "destination": "/pages/404.html"
+        "source": "/wallet",
+        "destination": "/pages/user/wallet.html"
+      },
+      {
+        "source": "/sm-panel/wallet",
+        "destination": "/pages/user/wallet.html"
+      },
+      {
+        "source": "/sm-panel/payouts",
+        "destination": "/pages/admin/payouts.html"
+      },
+      {
+        "source": "/pages/user/notifications",
+        "destination": "/pages/user/notifications.html"
+      },
+      {
+        "source": "/sm-panel/email",
+        "destination": "/pages/admin/email.html"
+      },
+      {
+        "source": "/sm-panel/email-setup",
+        "destination": "/pages/admin/email-setup.html"
+      },
+      {
+        "source": "/my-store",
+        "destination": "/pages/user/my-store.html"
+      },
+      {
+        "source": "/store/**",
+        "destination": "/store.html"
+      },
+      {
+        "source": "/shops",
+        "destination": "/shops.html"
+      },
+      {
+        "source": "/founding",
+        "destination": "/founding.html"
       }
     ]
   },

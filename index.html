@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GH">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -20,31 +20,69 @@
     <meta property="twitter:image" content="images/logos/sankofa-market-logo-full-color.png">
     
     <title>Sankofa Market - Ghana's #1 Online Marketplace</title>
+    <link rel="canonical" href="https://sankofa-market.web.app/">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0064d2">
+    <link rel="preload" as="image" href="/images/promo/electronics-thumb.jpg" fetchpriority="high">
     
-    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
-    <link rel="apple-touch-icon" href="images/logos/sankofa-market-app-icon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
+    <link rel="apple-touch-icon" href="/images/logos/sankofa-market-app-icon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/main.css?v=4">
-    <link rel="stylesheet" href="css/image-search.css">
-    <link rel="stylesheet" href="css/chatbot.css?v=3">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/image-search.css?v=4">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color: #5a6572;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Sankofa Market",
+      "url": "https://sankofa-market.web.app/",
+      "logo": "https://sankofa-market.web.app/images/logos/sankofa-market-logo-full-color.png",
+      "description": "Ghana's #1 Online Marketplace — buy and sell with escrow protection.",
+      "address": {"@type": "PostalAddress", "addressCountry": "GH", "addressLocality": "Accra"},
+      "sameAs": ["https://www.facebook.com/sankofamarket", "https://twitter.com/sankofamarket"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Sankofa Market",
+      "url": "https://sankofa-market.web.app/",
+      "potentialAction": {"@type": "SearchAction", "target": "https://sankofa-market.web.app/search.html?q={search_term_string}", "query-input": "required name=search_term_string"}
+    }
+    </script>
 </head>
 <body>
+    <h1 class="sr-only">Sankofa Market — buy and sell in Ghana</h1>
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="index.html">
-                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
                 </a>
             </div>
             
             <div class="header-search">
                 <form class="search-form" action="search.html" method="GET">
-                    <input type="text" name="q" id="searchInput" placeholder="Search for anything..." class="search-input" value="">
+                    <input type="text" name="q" id="searchInput" aria-label="Search products" placeholder="Search for anything..." class="search-input" value="">
                     <button type="submit" class="search-btn">
                         <i class="fas fa-search"></i>
                     </button>
@@ -52,69 +90,91 @@
             </div>
             
             <div class="header-actions">
-                <a href="publish.html" class="btn btn-secondary">
+                <a href="/pages/user/messages.html" id="headerMessagesBtn" aria-label="Messages, 0 unread" class="header-messages-btn" title="Messages" style="display:none;">
+                    <i class="fas fa-comments"></i>
+                    <span class="header-msg-label">Messages</span>
+                    <span class="header-msg-badge" id="headerMsgBadge" style="display:none;">0</span>
+                </a>
+                <a href="/pages/user/become-seller.html" id="headerPremiumBtn" class="header-premium-btn" title="Go Premium — more listings + lower fees"><i class="fas fa-crown"></i><span class="header-premium-label">Premium</span></a>
+                <a href="/publish.html" class="btn btn-secondary" aria-label="Sell an item">
                     <i class="fas fa-plus"></i> Sell
                 </a>
-                <a href="pages/auth/login.html" class="btn btn-outline" id="loginBtn">
+                <a href="/pages/auth/login.html" class="btn btn-outline" id="loginBtn">
                     <i class="fas fa-user"></i> Sign in
                 </a>
-                <a href="pages/user/dashboard.html" class="btn btn-primary" id="dashboardBtn" style="display: none;">
+                <a href="/pages/user/dashboard.html" class="btn btn-primary" id="dashboardBtn" style="display: none;">
                     <i class="fas fa-user"></i> <span id="userName">My Account</span>
                 </a>
             </div>
         </div>
     </header>
-
-    <nav class="category-nav">
-        <div class="container">
-            <div class="category-scroll">
-                <a href="search.html?category=electronics" class="category-link">
-                    <i class="fas fa-mobile-alt"></i> Electronics
-                </a>
-                <a href="search.html?category=fashion" class="category-link">
-                    <i class="fas fa-tshirt"></i> Fashion
-                </a>
-                <a href="search.html?category=home-garden" class="category-link">
-                    <i class="fas fa-home"></i> Home & Garden
-                </a>
-                <a href="search.html?category=vehicles" class="category-link">
-                    <i class="fas fa-car"></i> Vehicles
-                </a>
-                <a href="search.html?category=services" class="category-link">
-                    <i class="fas fa-concierge-bell"></i> Services
-                </a>
-                <a href="search.html?category=sports" class="category-link">
-                    <i class="fas fa-futbol"></i> Sports
-                </a>
-                <a href="search.html?category=books-media" class="category-link">
-                    <i class="fas fa-book"></i> Books & Media
-                </a>
-                <a href="search.html?category=baby-kids" class="category-link">
-                    <i class="fas fa-baby"></i> Baby & Kids
-                </a>
-                <a href="search.html?category=beauty-health" class="category-link">
-                    <i class="fas fa-spa"></i> Beauty & Health
-                </a>
-                <a href="search.html?category=food-groceries" class="category-link">
-                    <i class="fas fa-utensils"></i> Food
-                </a>
-                <a href="search.html?category=pets" class="category-link">
-                    <i class="fas fa-paw"></i> Pets
-                </a>
-                <a href="search.html?category=jobs-skills" class="category-link">
-                    <i class="fas fa-briefcase"></i> Jobs
-                </a>
-                <a href="search.html?category=real-estate" class="category-link">
-                    <i class="fas fa-building"></i> Real Estate
-                </a>
-                <a href="search.html?category=sankofa-store" class="category-link" style="color: #f5af02; font-weight: 600;">
-                    <i class="fas fa-store"></i> Sankofa Store
-                </a>
+    <!-- Wallet balance bar — shows on homepage for logged-in users -->
+    <style>
+        #homeWalletBar .home-wallet-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem;}
+        #homeWalletBar .home-wallet-left{display:flex;align-items:center;gap:0.6rem;font-weight:700;font-size:0.9rem;flex-wrap:wrap;flex:1;min-width:200px;}
+        #homeWalletBar .home-wallet-right{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;flex-shrink:0;}
+        #homeWalletBar .home-wallet-balance{font-size:0.95rem;}
+        @media(max-width:768px){
+            #homeWalletBar{padding:0;}
+            #homeWalletBar .home-wallet-inner{
+                display:flex;flex-direction:column;align-items:stretch;gap:0;
+                background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);
+                border-radius:14px;padding:0.9rem 1rem;margin:0.7rem 0.75rem;
+                box-shadow:0 2px 10px rgba(0,0,0,0.08);
+            }
+            #homeWalletBar .home-wallet-left{width:100%;flex-direction:column;align-items:flex-start;gap:0.4rem;padding-bottom:0.6rem;border-bottom:1px solid rgba(255,255,255,0.14);font-size:0.9rem;}
+            #homeWalletBar .home-wallet-left .wallet-balance-line{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;width:100%;}
+            #homeWalletBar .home-wallet-right{width:100%;display:flex;flex-direction:column;gap:0.55rem;align-items:stretch;}
+            #homeWalletBar #homeWalletSub{width:100%;font-size:0.72rem;line-height:1.4;background:rgba(0,0,0,0.14);padding:0.45rem 0.7rem;border-radius:8px;text-align:center;display:block !important;}
+            #homeWalletBar .home-wallet-right a{flex:1;justify-content:center;padding:0.7rem 0.8rem;font-size:0.85rem;width:100%;}
+            #homeWalletBar .home-wallet-actions{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;width:100%;}
+        }
+    </style>
+    <div id="homeWalletBar" style="display:none;background:linear-gradient(135deg,#0064d2 0%,#004a9f 100%);color:#fff;padding:0.6rem 0;">
+        <div class="container home-wallet-inner">
+            <div class="home-wallet-left">
+                <div class="wallet-balance-line"><i class="fas fa-wallet" style="color:#f5af02;font-size:1.05rem;"></i> <span>Wallet:</span> <span id="homeWalletBalance" class="home-wallet-balance" style="color:#fff;font-weight:800;">GHS 0.00</span> <span style="background:#fff;color:#0064d2;padding:0.18rem 0.5rem;border-radius:999px;font-size:0.65rem;font-weight:800;letter-spacing:0.02em;">0% fee inside</span></div>
+            </div>
+            <div class="home-wallet-right">
+                <span id="homeWalletSub" style="font-size:0.72rem;color:#fff;opacity:0.92;display:none;background:rgba(255,255,255,0.10);padding:0.2rem 0.5rem;border-radius:999px;"></span>
+                <div class="home-wallet-actions" style="display:flex;gap:0.5rem;">
+                    <a href="/wallet" style="background:#fff;color:#0064d2;padding:0.5rem 0.9rem;border-radius:8px;font-weight:800;font-size:0.82rem;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:0.35rem;box-shadow:0 2px 8px rgba(0,0,0,0.10);flex:1;"><i class="fas fa-plus"></i> Top Up</a>
+                    <a href="/wallet" style="background:rgba(255,255,255,0.14);border:1.5px solid rgba(255,255,255,0.32);color:#fff;padding:0.5rem 0.9rem;border-radius:8px;font-weight:700;font-size:0.82rem;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:0.3rem;flex:1;">View Wallet</a>
+                </div>
             </div>
         </div>
-    </nav>
-
-    <section class="hero-carousel">
+    </div>
+    <script>
+    (function(){
+        function initHomeWallet(){
+            if(typeof firebaseDB==='undefined' || !firebaseDB || typeof firebaseAuth==='undefined' || !firebaseAuth){ setTimeout(initHomeWallet,800); return; }
+            firebaseAuth.onAuthStateChanged(function(user){
+                const bar=document.getElementById('homeWalletBar');
+                if(!user){ if(bar) bar.style.display='none'; return; }
+                if(bar) bar.style.display='block';
+                // Live balance
+                firebaseDB.collection('wallets').doc(user.uid).onSnapshot(function(doc){
+                    const bal = doc.exists ? (doc.data().balance||0) : 0;
+                    const el=document.getElementById('homeWalletBalance');
+                    if(el) el.textContent='GHS '+Number(bal).toLocaleString(undefined,{minimumFractionDigits:2});
+                    const sub=document.getElementById('homeWalletSub');
+                    if(sub && doc.exists){
+                        const d=doc.data();
+                        sub.textContent=`Earned GHS ${(d.totalEarnings||0).toLocaleString()} • Spent GHS ${(d.totalSpent||0).toLocaleString()}`;
+                        sub.style.display='';
+                    }
+                }, function(err){
+                    // If no wallet yet, try create via getWallet function
+                    if(err && err.code==='permission-denied' && typeof firebase!=='undefined' && firebase.functions){
+                        try{ firebase.functions().httpsCallable('getWallet')({}).catch(()=>{}); }catch(e){}
+                    }
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function(){ setTimeout(initHomeWallet,1000); });
+    })();
+    </script>
+<section class="hero-carousel">
         <div class="carousel-wrapper">
             <div class="carousel-track" id="carouselTrack">
                 <!-- Slide 1: Electronics Mega Sale -->
@@ -124,12 +184,12 @@
                             <span class="carousel-tag">🔥 Mega Sale</span>
                             <h2>Electronics Blowout<br><span style="color: #f5af02;">Up to 40% Off</span></h2>
                             <p>Discover incredible deals on phones, laptops, TVs, and more from verified sellers across Ghana.</p>
-                            <a href="search.html?category=electronics" class="btn btn-secondary btn-large">
+                            <a href="/search.html?category=electronics" class="btn btn-secondary btn-large">
                                 <i class="fas fa-bolt"></i> Shop Electronics
                             </a>
                         </div>
                         <div class="carousel-image">
-                            <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=500&h=350&fit=crop&q=75&auto=format"  alt="Electronics Sale">
+                             <img width="500" height="350" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='/images/placeholders/product.svg';" src="/images/promo/electronics-thumb.jpg" data-full="/images/promo/electronics.jpg"  alt="Electronics Sale">
                         </div>
                     </div>
                 </div>
@@ -141,12 +201,12 @@
                             <span class="carousel-tag">👗 New Arrivals</span>
                             <h2>Fashion Week<br><span style="color: #ffc107;">Trending Styles</span></h2>
                             <p>Explore the latest fashion trends. From African prints to modern streetwear — find your style.</p>
-                            <a href="search.html?category=fashion" class="btn btn-secondary btn-large">
+                            <a href="/search.html?category=fashion" class="btn btn-secondary btn-large">
                                 <i class="fas fa-tshirt"></i> Explore Fashion
                             </a>
                         </div>
                         <div class="carousel-image">
-                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&h=350&fit=crop&q=75&auto=format" loading="lazy" decoding="async" alt="Fashion Collection">
+                             <img width="500" height="350" onerror="this.onerror=null;this.src='/images/placeholders/product.svg';" src="/images/promo/fashion-thumb.jpg" data-full="/images/promo/fashion.jpg" loading="lazy" decoding="async" alt="Fashion Collection">
                         </div>
                     </div>
                 </div>
@@ -156,14 +216,14 @@
                     <div class="carousel-inner">
                         <div class="carousel-text">
                             <span class="carousel-tag" style="background: rgba(0,0,0,0.2); color: white;">⭐ Official Store</span>
-                            <h2 style="color: #191919;">Sankofa Store<br><span style="color: #004a9f;">100% Verified</span></h2>
-                            <p style="color: rgba(0,0,0,0.7);">Shop from our official in-house store. Quality guaranteed, fast delivery, and hassle-free returns.</p>
-                            <a href="search.html?category=sankofa-store" class="btn btn-primary btn-large">
+                            <h2 style="color: #191919;">Sankofa Store<br><span style="color:#004a9f;font-size:0.85em;">100% Verified</span></h2>
+                            <p style="color:#3f4a58;">Shop from our official in-house store. Quality guaranteed, fast delivery, and hassle-free returns.</p>
+                            <a href="/search.html?category=sankofa-store" class="btn btn-primary btn-large">
                                 <i class="fas fa-store"></i> Visit Sankofa Store
                             </a>
                         </div>
                         <div class="carousel-image">
-                            <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=500&h=350&fit=crop&q=75&auto=format" loading="lazy" decoding="async" alt="Sankofa Store">
+                             <img width="500" height="350" onerror="this.onerror=null;this.src='/images/placeholders/product.svg';" src="/images/promo/sankofa-store-thumb.jpg" data-full="/images/promo/sankofa-store.jpg" loading="lazy" decoding="async" alt="Sankofa Store">
                         </div>
                     </div>
                 </div>
@@ -175,12 +235,12 @@
                             <span class="carousel-tag">💰 Free Listing</span>
                             <h2>Start Selling<br><span style="color: #ffc107;">Today — It's Free!</span></h2>
                             <p>Turn your unused items into cash. List in minutes, reach thousands of buyers across Ghana.</p>
-                            <a href="publish.html" class="btn btn-secondary btn-large">
+                            <a href="/publish.html" class="btn btn-secondary btn-large">
                                 <i class="fas fa-rocket"></i> Sell Now
                             </a>
                         </div>
                         <div class="carousel-image">
-                            <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c42a?w=500&h=350&fit=crop&q=75&auto=format" loading="lazy" decoding="async" alt="Start Selling">
+                             <img width="500" height="350" onerror="this.onerror=null;this.src='/images/placeholders/product.svg';" src="/images/promo/sell-thumb.jpg" data-full="/images/promo/sell.jpg" loading="lazy" decoding="async" alt="Start Selling">
                         </div>
                     </div>
                 </div>
@@ -192,12 +252,12 @@
                             <span class="carousel-tag">🏠 Home Deals</span>
                             <h2>Transform Your<br><span style="color: #f5af02;">Living Space</span></h2>
                             <p>Furniture, decor, kitchen essentials and more. Create the home of your dreams at unbeatable prices.</p>
-                            <a href="search.html?category=home-garden" class="btn btn-secondary btn-large">
+                            <a href="/search.html?category=home-garden" class="btn btn-secondary btn-large">
                                 <i class="fas fa-couch"></i> Shop Home & Garden
                             </a>
                         </div>
                         <div class="carousel-image">
-                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&h=350&fit=crop&q=75&auto=format" loading="lazy" decoding="async" alt="Home & Garden">
+                             <img width="500" height="350" onerror="this.onerror=null;this.src='/images/placeholders/product.svg';" src="/images/promo/home-garden-thumb.jpg" data-full="/images/promo/home-garden.jpg" loading="lazy" decoding="async" alt="Home & Garden">
                         </div>
                     </div>
                 </div>
@@ -227,13 +287,71 @@
         </div>
     </section>
 
+    <!-- Auctions — moved from header to below carousel -->
+    <div style="background:#fff; border-bottom:1px solid #e5e7eb; padding:0.75rem 0;">
+        <div class="container" style="display:flex; align-items:center; justify-content:center; gap:0.7rem; flex-wrap:wrap;">
+            <span style="display:inline-flex; align-items:center; gap:0.35rem; font-weight:800; font-size:0.88rem; color:#191919;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;animation:auctionDotLive 1s infinite;"></span> Live Auctions</span>
+            <a href="/auction.html" style="background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%); color:#fff; padding:0.6rem 1.15rem; border-radius:8px; font-weight:800; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.35rem; box-shadow:0 3px 10px rgba(239,68,68,0.25);"><i class="tap-link fas fa-gavel"></i> View Auctions</a>
+            <a href="/pages/user/create-auction.html" style="background:#fff; border:1.5px solid #e5e7eb; color:#374151; padding:0.6rem 1.15rem; border-radius:8px; font-weight:700; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;"><i class="tap-link fas fa-plus"></i> Start Auction</a>
+        </div>
+    </div>
+
+    <!-- Flash Deals — every live flash sale, ending soonest first (filled by js/home.js;
+         stays completely hidden when nothing is on flash right now) -->
+    <section class="section" id="flashSection" style="display:none; padding-top:1.2rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt" style="color: #dc2626;"></i> Flash Deals
+                    <span style="font-size:0.68rem;font-weight:800;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;padding:0.22rem 0.6rem;border-radius:999px;margin-left:0.55rem;vertical-align:middle;letter-spacing:0.3px;">ENDING SOON</span>
+                </h2>
+                <a href="/search.html?flash=true" class="tap-link view-all">
+                    View All <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div id="flashRail" style="display:flex;gap:0.9rem;overflow-x:auto;padding-bottom:0.6rem;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;"></div>
+        </div>
+    </section>
+
+    <!-- New from sellers you follow (signed-in users with follows; filled by home.js) -->
+    <section class="section" id="followingSection" style="display:none; padding-top:1.2rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-heart" style="color: #e74c3c;"></i> New from sellers you follow
+                </h2>
+                <a href="/search.html" class="tap-link view-all">
+                    Browse all <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div id="followingRail" style="display:flex;gap:0.9rem;overflow-x:auto;padding-bottom:0.6rem;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;"></div>
+        </div>
+    </section>
+
+    <!-- Picked for you — personalised rail (filled by js/for-you.js; stays hidden
+         until the shopper has searched, browsed or tapped a few things) -->
+    <section class="section" id="forYouSection" style="display:none; padding-top:1.2rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bullseye" style="color: #f5af02;"></i> Picked for you
+                    <span id="forYouReason" style="font-size:0.78rem;font-weight:600;color:#5a6572;margin-left:0.4rem;"></span>
+                </h2>
+                <a href="/search.html" class="tap-link view-all">
+                    Browse all <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div id="forYouRail" style="display:flex;gap:0.9rem;overflow-x:auto;padding-bottom:0.6rem;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;"></div>
+        </div>
+    </section>
+
     <section class="section featured-section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
                     <i class="fas fa-fire" style="color: var(--accent-color);"></i> Featured Deals
                 </h2>
-                <a href="search.html?featured=true" class="view-all">
+                <a href="/search.html?featured=true" class="tap-link view-all">
                     View All <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -256,79 +374,79 @@
             </div>
             
             <div class="categories-grid" id="categoriesGrid">
-                <a href="search.html?category=electronics" class="category-card">
+                <a href="/search.html?category=electronics" class="category-card">
                     <div class="category-icon" style="background: #0064d2;">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
                     <div class="category-name">Electronics</div>
                 </a>
-                <a href="search.html?category=fashion" class="category-card">
+                <a href="/search.html?category=fashion" class="category-card">
                     <div class="category-icon" style="background: #e74c3c;">
                         <i class="fas fa-tshirt"></i>
                     </div>
                     <div class="category-name">Fashion</div>
                 </a>
-                <a href="search.html?category=home-garden" class="category-card">
+                <a href="/search.html?category=home-garden" class="category-card">
                     <div class="category-icon" style="background: #86b817;">
                         <i class="fas fa-home"></i>
                     </div>
                     <div class="category-name">Home & Garden</div>
                 </a>
-                <a href="search.html?category=vehicles" class="category-card">
+                <a href="/search.html?category=vehicles" class="category-card">
                     <div class="category-icon" style="background: #f5af02;">
                         <i class="fas fa-car"></i>
                     </div>
                     <div class="category-name">Vehicles</div>
                 </a>
-                <a href="search.html?category=services" class="category-card">
+                <a href="/search.html?category=services" class="category-card">
                     <div class="category-icon" style="background: #9b59b6;">
                         <i class="fas fa-concierge-bell"></i>
                     </div>
                     <div class="category-name">Services</div>
                 </a>
-                <a href="search.html?category=sports" class="category-card">
+                <a href="/search.html?category=sports" class="category-card">
                     <div class="category-icon" style="background: #3498db;">
                         <i class="fas fa-futbol"></i>
                     </div>
                     <div class="category-name">Sports</div>
                 </a>
-                <a href="search.html?category=books-media" class="category-card">
+                <a href="/search.html?category=books-media" class="category-card">
                     <div class="category-icon" style="background: #795548;">
                         <i class="fas fa-book"></i>
                     </div>
                     <div class="category-name">Books & Media</div>
                 </a>
-                <a href="search.html?category=baby-kids" class="category-card">
+                <a href="/search.html?category=baby-kids" class="category-card">
                     <div class="category-icon" style="background: #e91e63;">
                         <i class="fas fa-baby"></i>
                     </div>
                     <div class="category-name">Baby & Kids</div>
                 </a>
-                <a href="search.html?category=beauty-health" class="category-card">
+                <a href="/search.html?category=beauty-health" class="category-card">
                     <div class="category-icon" style="background: #ff69b4;">
                         <i class="fas fa-spa"></i>
                     </div>
                     <div class="category-name">Beauty & Health</div>
                 </a>
-                <a href="search.html?category=food-groceries" class="category-card">
+                <a href="/search.html?category=food-groceries" class="category-card">
                     <div class="category-icon" style="background: #ff5722;">
                         <i class="fas fa-utensils"></i>
                     </div>
                     <div class="category-name">Food & Groceries</div>
                 </a>
-                <a href="search.html?category=pets" class="category-card">
+                <a href="/search.html?category=pets" class="category-card">
                     <div class="category-icon" style="background: #8bc34a;">
                         <i class="fas fa-paw"></i>
                     </div>
                     <div class="category-name">Pets</div>
                 </a>
-                <a href="search.html?category=jobs-skills" class="category-card">
+                <a href="/search.html?category=jobs-skills" class="category-card">
                     <div class="category-icon" style="background: #3f51b5;">
                         <i class="fas fa-briefcase"></i>
                     </div>
                     <div class="category-name">Jobs & Skills</div>
                 </a>
-                <a href="search.html?category=real-estate" class="category-card">
+                <a href="/search.html?category=real-estate" class="category-card">
                     <div class="category-icon" style="background: #607d8b;">
                         <i class="fas fa-building"></i>
                     </div>
@@ -338,13 +456,128 @@
         </div>
     </section>
 
+    <section class="premium-home-banner" style="background: linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%); border:1px solid #fde68a; padding:1.1rem 1.3rem; margin:1.2rem auto; max-width:1100px; border-radius:14px; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:0.9rem; flex:1; min-width:220px;">
+            <div style="width:46px; height:46px; background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#191919; font-size:1.25rem; flex-shrink:0; box-shadow:0 2px 8px rgba(245,175,2,0.25);"><i class="fas fa-crown"></i></div>
+            <div>
+                <h3 style="margin:0; font-size:1rem; font-weight:800; color:#92400e;">Premium Plans — From GHS 45/mo</h3>
+                <p style="margin:0.15rem 0 0; font-size:0.82rem; color:#78350f;">Bronze 2× • Silver 4× • Gold 6× • Diamond 10× reach — 1, 3 or 6 months</p>
+            </div>
+        </div>
+        <a href="/pages/user/become-seller.html" id="homePremiumBannerBtn" style="background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%); color:#191919; padding:0.75rem 1.4rem; border-radius:10px; font-weight:800; font-size:0.9rem; text-decoration:none; white-space:nowrap; box-shadow:0 4px 12px rgba(245,175,2,0.3); display:inline-flex; align-items:center; gap:0.4rem;"><i class="fas fa-star"></i> View Premium Plans</a>
+    </section>
+
+    <section class="section premium-tiers-home" style="background:#f8fafc; padding:1.5rem 0;">
+        <div class="container">
+            <div class="section-header" style="margin-bottom:1rem;">
+                <h2 class="section-title" style="font-size:1.4rem;"><i class="fas fa-crown" style="color:#f59e0b;"></i> Choose Your Boost</h2>
+                <a href="/pages/user/become-seller.html" class="tap-link view-all" style="font-size:0.85rem;">Compare all <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.9rem;">
+                <a href="/pages/user/become-seller.html" style="text-decoration:none; background:white; border:1px solid #fed7aa; border-radius:12px; padding:1rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.3rem; color:inherit;">
+                    <div style="width:38px; height:38px; border-radius:50%; background:#fff7ed; border:1px solid #fed7aa; display:flex; align-items:center; justify-content:center; color:#9a3412;"><i class="fas fa-medal"></i></div>
+                    <strong style="font-size:0.9rem; color:#9a3412;">Bronze</strong>
+                    <span style="font-size:1.1rem; font-weight:800;">GHS 45<small style="font-weight:600; color:#64748b; font-size:0.7rem;">/mo</small></span>
+                    <span style="font-size:0.7rem; background:#fef3c7; color:#92400e; padding:0.15rem 0.45rem; border-radius:999px; font-weight:700;">2× Reach</span>
+                    <span style="font-size:0.7rem; color:#64748b;">Unlimited • <strong style="color:#16a34a;">2% fee</strong></span>
+                </a>
+                <a href="/pages/user/become-seller.html" style="text-decoration:none; background:white; border:1px solid #cbd5e1; border-radius:12px; padding:1rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.3rem; color:inherit;">
+                    <div style="width:38px; height:38px; border-radius:50%; background:#f1f5f9; border:1px solid #cbd5e1; display:flex; align-items:center; justify-content:center; color:#475569;"><i class="fas fa-medal"></i></div>
+                    <strong style="font-size:0.9rem;">Silver</strong>
+                    <span style="font-size:1.1rem; font-weight:800;">GHS 79<small style="font-weight:600; color:#64748b; font-size:0.7rem;">/mo</small></span>
+                    <span style="font-size:0.7rem; background:#dbeafe; color:#1e40af; padding:0.15rem 0.45rem; border-radius:999px; font-weight:700;">4× Reach</span>
+                    <span style="font-size:0.7rem; color:#64748b;">Unlimited • <strong style="color:#16a34a;">1.5% fee</strong></span>
+                </a>
+                <a href="/pages/user/become-seller.html" style="text-decoration:none; background:white; border:2px solid #f59e0b; border-radius:12px; padding:1rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.3rem; color:inherit; position:relative; box-shadow:0 4px 12px rgba(245,175,2,0.12);">
+                    <span style="position:absolute; top:-8px; left:50%; transform:translateX(-50%); background:#f59e0b; color:#191919; font-size:0.6rem; font-weight:800; padding:0.15rem 0.5rem; border-radius:999px; white-space:nowrap;">MOST POPULAR</span>
+                    <div style="width:38px; height:38px; border-radius:50%; background:#fefce8; border:1px solid #fde68a; display:flex; align-items:center; justify-content:center; color:#854d0e;"><i class="fas fa-trophy"></i></div>
+                    <strong style="font-size:0.9rem; color:#854d0e;">Gold</strong>
+                    <span style="font-size:1.1rem; font-weight:800;">GHS 129<small style="font-weight:600; color:#64748b; font-size:0.7rem;">/mo</small></span>
+                    <span style="font-size:0.7rem; background:#fce7f3; color:#9d174d; padding:0.15rem 0.45rem; border-radius:999px; font-weight:700;">6× Reach</span>
+                    <span style="font-size:0.7rem; color:#64748b;">Unlimited • <strong style="color:#16a34a;">1.2% fee</strong></span>
+                </a>
+                <a href="/pages/user/become-seller.html" style="text-decoration:none; background:linear-gradient(135deg,#faf5ff 0%,#f5f3ff 100%); border:2px solid #c4b5fd; border-radius:12px; padding:1rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.3rem; color:inherit;">
+                    <div style="width:38px; height:38px; border-radius:50%; background:#ede9fe; border:1px solid #c4b5fd; display:flex; align-items:center; justify-content:center; color:#5b21b6;"><i class="fas fa-gem"></i></div>
+                    <strong style="font-size:0.9rem; color:#5b21b6;">Diamond</strong>
+                    <span style="font-size:1.1rem; font-weight:800;">GHS 199<small style="font-weight:600; color:#64748b; font-size:0.7rem;">/mo</small></span>
+                    <span style="font-size:0.7rem; background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd; padding:0.15rem 0.45rem; border-radius:999px; font-weight:700;">10× Reach</span>
+                    <span style="font-size:0.7rem; color:#64748b;">Unlimited • <strong style="color:#16a34a;">1% fee</strong></span>
+                </a>
+            </div>
+            <p style="text-align:center; font-size:0.75rem; color:#5f6b7a; margin:0.9rem 0 0;">1 / 3 / 6 months available — longer saves 10–15%. Tap any tier to choose duration & pay.</p>
+        </div>
+    </section>
+
+    <section class="auction-teaser" style="background:#fff; padding:1.2rem 0; border-top:1px solid #e5e7eb; border-bottom:1px solid #e5e7eb;">
+        <div class="container" style="text-align:center;">
+            <h2 style="margin:0; font-size:1.15rem; font-weight:800; color:#191919;"><i class="fas fa-gavel" style="color:#ef4444;"></i> Live Auctions</h2>
+            <p style="margin:0.2rem 0 0; color:#64748b; font-size:0.82rem;">Premium sellers • Open to all bidders</p>
+            <div id="homeAuctionPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.9rem;margin-top:1rem; text-align:left;"></div>
+            <a href="/auction.html" style="display:inline-block; margin-top:1rem; color:#0064d2; font-weight:700; font-size:0.85rem; text-decoration:none;">View all auctions <i class="tap-link fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+    <script>
+    (function(){
+        function initHomeAuctions(){
+            if (typeof firebaseDB==='undefined' || !firebaseDB){ setTimeout(initHomeAuctions, 800); return; }
+            firebaseDB.collection('auctions').where('status','in',['scheduled','live']).limit(8).onSnapshot(function(snap){
+                var preview = document.getElementById('homeAuctionPreview');
+                if (!preview) return;
+                var now=Date.now();
+                var list=[];
+                snap.forEach(function(doc){ var a=doc.data(); a._id=doc.id; var end=a.endAt?(a.endAt.toMillis?a.endAt.toMillis():new Date(a.endAt).getTime()):0; if(end && end<now) return; list.push(a); });
+                if (list.length===0){
+                    preview.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.4rem;background:rgba(255,255,255,0.06);border:1px dashed rgba(255,255,255,0.15);border-radius:12px;color:rgba(255,255,255,0.7);"><p style="margin:0;font-weight:600;">No live auctions yet — be first to trigger the blinking alert!</p><p style="margin:0.3rem 0 0;font-size:0.8rem;">Premium sellers: <a class="tap-link" href="/pages/user/create-auction.html" style="color:#0064d2;font-weight:800;text-decoration:underline;">Start Auction →</a> All users will see amber → red blinking in header.</p></div>';
+                    return;
+                }
+                // Sort live first
+                list.sort(function(a,b){
+                    var al = a.status==='live'?0:1; var bl=b.status==='live'?0:1;
+                    if(al!==bl) return al-bl;
+                    var ae=a.endAt?(a.endAt.toMillis?a.endAt.toMillis():new Date(a.endAt).getTime()):0;
+                    var be=b.endAt?(b.endAt.toMillis?b.endAt.toMillis():new Date(b.endAt).getTime()):0;
+                    return ae-be;
+                });
+                var html='';
+                list.slice(0,4).forEach(function(a){
+                    var img=(a.images&&a.images[0])||a.productImage||'/images/placeholders/avatar.svg';
+                    var isLive = a.status==='live' || (a.startAt && Date.now() >= (a.startAt.toMillis?a.startAt.toMillis():new Date(a.startAt).getTime()) );
+                    var price = a.currentBid || a.startingPrice || 0;
+                    var endMs = a.endAt?(a.endAt.toMillis?a.endAt.toMillis():new Date(a.endAt).getTime()):Date.now()+600000;
+                    var nowMs=Date.now();
+                    var startMs=a.startAt?(a.startAt.toMillis?a.startAt.toMillis():new Date(a.startAt).getTime()):nowMs;
+                    var txt = isLive ? Math.max(0,Math.floor((endMs-nowMs)/1000)) : Math.max(0,Math.floor((startMs-nowMs)/1000));
+                    var mm=String(Math.floor(txt/60)).padStart(2,'0'), ss=String(txt%60).padStart(2,'0');
+                    html += '<a href="/auction-detail.html?id='+a._id+'" style="text-decoration:none;background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border:'+(isLive?'2px solid #fecaca':'1.5px solid #fde68a')+';position:relative;">'
+                        + '<div style="position:absolute;top:8px;left:8px;background:'+(isLive?'#ef4444':'#f59e0b')+';color:#fff;padding:0.2rem 0.5rem;border-radius:999px;font-size:0.62rem;font-weight:800;display:flex;align-items:center;gap:0.25rem;z-index:2;"><span style="width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block;animation:auctionDotLive 1s infinite;"></span>'+(isLive?'LIVE':'SOON')+'</div>'
+                        + '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;padding:0.25rem 0.5rem;border-radius:999px;font-size:0.68rem;font-weight:700;z-index:2;">'+mm+':'+ss+(isLive?' left':' to start')+'</div>'
+                        + '<img src="'+img+'" style="width:100%;height:150px;object-fit:cover;" loading="lazy">'
+                        + '<div style="padding:0.7rem 0.85rem;">'
+                        + '<div style="font-weight:700;font-size:0.85rem;color:#191919;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+a.title+'</div>'
+                        + '<div style="font-size:0.72rem;color: #5a6572;margin-top:0.15rem;">by '+(a.sellerName||'Premium')+' • '+(a.bidCount||0)+' bids</div>'
+                        + '<div style="margin-top:0.45rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:800;color:'+(isLive?'#dc2626':'#d97706')+';">GHS '+price.toLocaleString()+'</span><span style="background:'+(isLive?'#ef4444':'#f59e0b')+';color:#fff;padding:0.3rem 0.6rem;border-radius:8px;font-size:0.68rem;font-weight:800;">'+(isLive?'Bid Now':'View')+'</span></div>'
+                        + '</div></a>';
+                });
+                preview.innerHTML = html;
+                // tick countdown
+                setInterval(function(){
+                    document.querySelectorAll('#homeAuctionPreview a').forEach(function(card, idx){
+                        // simple reload every 60s instead of precise tick for home
+                    });
+                }, 60000);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function(){ setTimeout(initHomeAuctions, 1100); });
+    })();
+    </script>
+
     <section class="section recent-section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">
                     <i class="fas fa-clock" style="color: var(--primary-color);"></i> Recently Listed
                 </h2>
-                <a href="search.html?sort=latest" class="view-all">
+                <a href="/search.html?sort=latest" class="tap-link view-all">
                     View All <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -401,7 +634,7 @@
             <div class="cta-content">
                 <h2>Ready to Start Selling?</h2>
                 <p>Join thousands of Ghanaians buying and selling on Sankofa Market</p>
-                <a href="publish.html" class="btn btn-secondary btn-large">
+                <a href="/publish.html" class="btn btn-secondary btn-large">
                     <i class="fas fa-rocket"></i> Start Selling Now
                 </a>
             </div>
@@ -412,7 +645,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <img src="images/logos/sankofa-market-logo-monochrome-light.png" alt="Sankofa Market" class="footer-logo">
+                    <img src="/images/logos/sankofa-market-logo-monochrome-light.png" alt="Sankofa Market" class="footer-logo">
                     <p><strong>Ghana's #1 Online Marketplace</strong></p>
                     <p>Buy and sell electronics, fashion, home & garden, vehicles, and more with confidence.</p>
                     <div class="social-links">
@@ -424,21 +657,11 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Marketplace</h4>
+                    <h3>Sell</h3>
                     <ul>
-                        <li><a href="search.html">Browse Items</a></li>
-                        <li><a href="search.html?category=electronics">Electronics</a></li>
-                        <li><a href="search.html?category=fashion">Fashion</a></li>
-                        <li><a href="search.html?category=vehicles">Vehicles</a></li>
-                        <li><a href="search.html?category=services">Services</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Sell</h4>
-                    <ul>
-                        <li><a href="publish.html">Start Selling</a></li>
+                        <li><a href="/publish.html">Start Selling</a></li>
                         <li><a href="seller-guide">Seller Guide</a></li>
+                        <li><a href="/founding" style="color:#f5af02;font-weight:700;">🏆 Founding Sellers — 0% forever</a></li>
                         <li><a href="seller-guide#pricing">Pricing & Commission</a></li>
                         <li><a href="buyer-guide#safety">Safety Tips</a></li>
                         <li><a href="about">About Us</a></li>
@@ -446,7 +669,7 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Support</h4>
+                    <h3>Support</h3>
                     <ul>
                         <li><a href="help">Help Center</a></li>
                         <li><a href="contact">Contact Us</a></li>
@@ -457,7 +680,7 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Company</h4>
+                    <h3>Company</h3>
                     <ul>
                         <li><a href="about">About Us</a></li>
                         <li><a href="contact">Careers</a></li>
@@ -484,11 +707,73 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
-    <script src="config/firebase-config.js?v=2"></script>
-    <script src="js/main.js?v=5"></script>
-    <script src="js/carousel.js?v=2"></script>
-    <script src="js/home.js?v=4"></script>
-    <script src="js/image-search.js?v=6"></script>
-    <script src="js/chatbot.js?v=9"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/js/variants.js?v=1"></script>
+    <script src="/js/cart-prices.js?v=2"></script>
+    <script src="/js/cart.js?v=7"></script>
+    <script src="/js/carousel.js?v=4"></script>
+    <script src="/js/home.js?v=16"></script>
+    <script src="/js/for-you.js?v=2"></script>
+    <script src="/js/ios-a2hs.js?v=1"></script>
+    <script src="/js/image-search.js?v=18"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

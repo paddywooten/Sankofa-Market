@@ -507,9 +507,29 @@
 .product-meta {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
     font-size: 0.75rem;
     color: var(--text-light);
     margin-bottom: 0.5rem;
+}
+
+.product-meta span {
+    white-space: nowrap;
+}
+
+/* Location shrinks with an ellipsis instead of fusing with the date */
+.product-meta span:first-child {
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-meta span + span,
+.product-meta .premSlot {
+    flex: 0 0 auto;
 }
 
 .product-meta i {
@@ -663,22 +683,32 @@
 }
 
 @media (max-width: 768px) {
+    .search-hero {
+        padding: 0.9rem 0;
+    }
     .search-hero h1 {
-        font-size: 1.35rem;
+        font-size: 1.15rem;
+        margin-bottom: 0.15rem;
     }
-    
+    .search-hero p {
+        display: none;
+    }
     .search-hero-form {
-        flex-direction: column;
-        gap: 0.5rem;
+        flex-direction: row;
+        gap: 0;
+        margin-top: 0.6rem;
     }
-    
     .search-hero-input {
-        border-radius: 8px;
+        border-radius: 8px 0 0 8px;
+        padding: 0.65rem 0.9rem;
+        font-size: 0.9rem;
     }
-    
     .search-hero-btn {
-        border-radius: 8px;
+        border-radius: 0 8px 8px 0;
         justify-content: center;
+        padding: 0.65rem 1rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
     }
     
     /* Mobile Filters */
@@ -698,14 +728,26 @@
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 1000;
+        height: 100vh;      /* beat the desktop "height: fit-content" — with top/bottom AND */
+        height: 100dvh;     /* a fit-content height the drawer grew taller than the phone and */
+        z-index: 1000;      /* its own scroll, pushing "Show Results" out of reach for good */
         border-radius: 0;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         border: none;
     }
     
     .filters-sidebar.mobile-open {
         display: block;
+    }
+
+    /* action buttons ride the bottom of the drawer — no scrolling to find them */
+    .filters-footer {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     }
     
     .filter-overlay {
@@ -794,11 +836,10 @@
 
 @media (max-width: 480px) {
     .search-hero {
-        padding: 1.25rem 0;
+        padding: 0.7rem 0;
     }
-    
     .search-hero h1 {
-        font-size: 1.15rem;
+        font-size: 1rem;
     }
     
     .products-grid {

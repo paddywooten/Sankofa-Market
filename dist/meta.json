@@ -1,0 +1,116 @@
+{
+  "inputs": {
+    "js/admin.js": {
+      "bytes": 427179,
+      "imports": [],
+      "format": "esm"
+    },
+    "js/main.js": {
+      "bytes": 83267,
+      "imports": [],
+      "format": "esm"
+    },
+    "js/search.js": {
+      "bytes": 50937,
+      "imports": [],
+      "format": "esm"
+    },
+    "js/product-detail.js": {
+      "bytes": 114828,
+      "imports": [],
+      "format": "esm"
+    },
+    "js/auction.js": {
+      "bytes": 177712,
+      "imports": [],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "dist/admin-4PKE5BUI.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 606133
+    },
+    "dist/admin-4PKE5BUI.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "js/admin.js",
+      "inputs": {
+        "js/admin.js": {
+          "bytesInOutput": 309675
+        }
+      },
+      "bytes": 309719
+    },
+    "dist/main-TOATJ45B.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 119401
+    },
+    "dist/main-TOATJ45B.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "js/main.js",
+      "inputs": {
+        "js/main.js": {
+          "bytesInOutput": 47068
+        }
+      },
+      "bytes": 47111
+    },
+    "dist/search-DBWEJB6Q.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 73699
+    },
+    "dist/search-DBWEJB6Q.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "js/search.js",
+      "inputs": {
+        "js/search.js": {
+          "bytesInOutput": 35452
+        }
+      },
+      "bytes": 35497
+    },
+    "dist/product-detail-WLAJBHVO.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 164973
+    },
+    "dist/product-detail-WLAJBHVO.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "js/product-detail.js",
+      "inputs": {
+        "js/product-detail.js": {
+          "bytesInOutput": 80160
+        }
+      },
+      "bytes": 80213
+    },
+    "dist/auction-DCI4T7KA.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 245765
+    },
+    "dist/auction-DCI4T7KA.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "js/auction.js",
+      "inputs": {
+        "js/auction.js": {
+          "bytesInOutput": 131485
+        }
+      },
+      "bytes": 131531
+    }
+  }
+}

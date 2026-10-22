@@ -43,6 +43,42 @@
 }
 
 /* Payment Layout */
+/* Banner text must be white — main.css sets dark colours on h1/h2/h3 and p,
+   which override the banner's inherited colour and made the text unreadable. */
+.security-warning-banner h1,
+.security-warning-banner h2,
+.security-warning-banner h3,
+.security-warning-banner .warning-content h1,
+.security-warning-banner .warning-content h2,
+.security-warning-banner .warning-content h3 {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.security-warning-banner h1 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+}
+
+.security-warning-banner p,
+.security-warning-banner .warning-content p {
+    color: rgba(255, 255, 255, 0.94);
+    opacity: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.security-warning-banner .warning-icon,
+.security-warning-banner .warning-icon i {
+    color: #ffffff;
+    opacity: 1;
+}
+
 .payment-layout {
     display: grid;
     grid-template-columns: 1fr 400px;
@@ -275,6 +311,34 @@
     border-color: #0064d2;
     background: #f0f7ff;
     box-shadow: 0 4px 12px rgba(0, 100, 210, 0.15);
+    position: relative;
+}
+
+/* A clear tick on the selected card so the choice is never ambiguous */
+.payment-method-option input[type="radio"]:checked + .payment-method-card::before {
+    content: '\f058'; /* fa-circle-check */
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 0.45rem;
+    left: 0.45rem;
+    color: #0064d2;
+    font-size: 0.95rem;
+    line-height: 1;
+    background: #fff;
+    border-radius: 50%;
+}
+
+.payment-method-card {
+    position: relative;
+}
+
+@media (max-width: 480px) {
+    .payment-method-option input[type="radio"]:checked + .payment-method-card::before {
+        font-size: 0.8rem;
+        top: 0.4rem;
+        left: 0.4rem;
+    }
 }
 
 .payment-method-card:hover {
@@ -306,7 +370,7 @@
 .payment-method-info p {
     margin: 0;
     font-size: 0.85rem;
-    color: #767676;
+    color: #5a6572;
 }
 
 .payment-method-badge {
@@ -369,7 +433,7 @@
     display: block;
     margin-top: 0.375rem;
     font-size: 0.85rem;
-    color: #767676;
+    color: #5a6572;
 }
 
 .form-row {
@@ -466,13 +530,29 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #767676;
+    color: #5a6572;
     font-size: 0.85rem;
 }
 
 .security-badge i {
     color: #28a745;
     font-size: 1.1rem;
+}
+
+/* Info panels below the two columns (escrow + next steps) */
+.payment-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.payment-info-grid > * {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin: 0;
 }
 
 /* Order Summary Section */
@@ -542,7 +622,7 @@
 .item-info p {
     margin: 0;
     font-size: 0.85rem;
-    color: #767676;
+    color: #5a6572;
 }
 
 .item-price {
@@ -667,7 +747,7 @@
 .help-section p {
     margin: 0 0 1rem 0;
     font-size: 0.9rem;
-    color: #767676;
+    color: #5a6572;
 }
 
 .help-link {
@@ -691,11 +771,21 @@
 /* Responsive */
 @media (max-width: 1024px) {
     .payment-layout {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        grid-template-columns: none;
     }
 
+    /* Show the order summary FIRST so buyers see what they are paying for
+       before they reach the payment form and the pay button. */
     .order-summary-section {
         position: static;
+        order: -1;
+    }
+
+    .payment-info-grid {
+        grid-template-columns: 1fr;
+        margin-top: 1.5rem;
     }
 }
 
@@ -743,5 +833,39 @@
 
     .payment-method-badge {
         align-self: center;
+    }
+}
+
+/* ============================================================================
+   Payment page — small-screen comfort
+   ============================================================================ */
+@media (max-width: 768px) {
+    /* the permanent bottom nav is fixed; leave room so it never covers content */
+    .payment-page {
+        padding-bottom: 84px;
+    }
+
+    .payment-method-section,
+    .payment-details,
+    .order-summary-card,
+    .payment-protection,
+    .security-warning-banner {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+
+    .order-summary-card h3,
+    .payment-method-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .order-totals .total-row.total {
+        font-size: 1.05rem;
+    }
+
+    .pay-button {
+        width: 100%;
+        font-size: 0.95rem;
     }
 }

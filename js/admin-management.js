@@ -89,6 +89,24 @@ document.addEventListener('DOMContentLoaded', function() {
     initAdminManagement();
 });
 
+/**
+ * Escape text before it is placed into innerHTML (flash messages, admin tables,
+ * cart rows...). User-supplied values — listing titles, names, error messages —
+ * must never be able to inject markup.
+ *
+ * NOTE: this helper is called from main.js, admin.js and admin-management.js; keep
+ * the definition present in every file that uses it (the bundler treats each file
+ * as its own scope).
+ */
+function escapeFlashText(v) {
+    return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function initAdminManagement() {
     loadMyAdminInfo();
     loadAllAdmins();
@@ -166,7 +184,7 @@ async function loadMyAdminInfo() {
 
     } catch (error) {
         console.error('Error loading admin info:', error);
-        infoEl.innerHTML = `<p style="color: #e74c3c;">Error: ${error.message}</p>`;
+        infoEl.innerHTML = `<p style="color: #e74c3c;">Error: ${escapeFlashText(error.message)}</p>`;
     }
 }
 
@@ -189,7 +207,7 @@ async function loadAllAdmins() {
             .get();
 
         if (snapshot.empty) {
-            tbody.innerHTML = '<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #767676;">No admins found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #5a6572;">No admins found</td></tr>';
             return;
         }
 
@@ -211,13 +229,13 @@ async function loadAllAdmins() {
                             </div>
                             <div>
                                 <div style="font-weight: 600; font-size: 0.9rem;">${data.name || 'Unknown'}${isMe ? ' <span style="color: #0064d2; font-size: 0.75rem;">(You)</span>' : ''}</div>
-                                <div style="font-size: 0.75rem; color: #767676;">Code: ${data.adminCode || 'N/A'}</div>
+                                <div style="font-size: 0.75rem; color: #5a6572;">Code: ${data.adminCode || 'N/A'}</div>
                             </div>
                         </div>
                     </td>
                     <td style="padding: 0.85rem 1rem;">
                         <div style="font-size: 0.9rem;">${data.email || 'N/A'}</div>
-                        <div style="font-size: 0.75rem; color: #767676;">${data.phone || ''}</div>
+                        <div style="font-size: 0.75rem; color: #5a6572;">${data.phone || ''}</div>
                     </td>
                     <td style="padding: 0.85rem 1rem;">
                         <span style="background: ${roleInfo.color}15; color: ${roleInfo.color}; padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
@@ -230,7 +248,7 @@ async function loadAllAdmins() {
                         </span>
                     </td>
                     <td style="padding: 0.85rem 1rem; text-align: right;">
-                        ${isMe ? '<span style="color: #767676; font-size: 0.8rem;">Current user</span>' : `
+                        ${isMe ? '<span style="color: #5a6572; font-size: 0.8rem;">Current user</span>' : `
                             <button class="btn btn-outline" onclick="resetOtherAdminCode('${doc.id}', '${data.name}')" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; margin-right: 0.25rem;">
                                 <i class="fas fa-sync-alt"></i> Reset Code
                             </button>
@@ -247,7 +265,7 @@ async function loadAllAdmins() {
 
     } catch (error) {
         console.error('Error loading admins:', error);
-        tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #e74c3c;">Error: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="padding: 2rem; text-align: center; color: #e74c3c;">Error: ${escapeFlashText(error.message)}</td></tr>`;
     }
 }
 
@@ -301,55 +319,45 @@ async function createNewAdmin() {
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
-    const adminCode = String(Math.floor(100000 + Math.random() * 900000));
-
     try {
-        const currentUser = firebase.auth().currentUser;
+        // Admins are created by a Cloud Function: the security rules deliberately stop an
+        // account from granting itself an admin role, and the function runs with the Admin SDK.
+        if (!firebase.functions) throw new Error('Cloud Functions not available on this page');
 
-        // Create new user via secondary app
-        const secondaryApp = firebase.initializeApp(firebase.app().options, 'Secondary');
-        const secondaryAuth = secondaryApp.auth();
-
-        const cred = await secondaryAuth.createUserWithEmailAndPassword(email, password);
-        await cred.user.updateProfile({ displayName: name });
-
-        // Create admin document with role
-        await firebase.firestore().collection('users').doc(cred.user.uid).set({
-            name: name,
+        const res = await firebase.functions().httpsCallable('adminCreateAdmin')({
             email: email,
+            password: password,
+            name: name,
             phone: phone,
-            role: 'admin',
-            adminRole: selectedRole,
-            status: 'approved',
-            adminCode: adminCode,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            createdBy: currentUser.uid,
-            permissions: roleInfo.permissions
+            adminRole: selectedRole
         });
-
-        await secondaryAuth.signOut();
-        await secondaryApp.delete();
+        const adminCode = (res.data && res.data.adminCode) || 'see panel';
 
         // Show success
         document.getElementById('addAdminForm').style.display = 'none';
         document.getElementById('adminCreatedMsg').style.display = 'block';
         document.getElementById('newAdminCredentials').innerHTML =
-            `Email: ${email}<br>Password: ${password}<br>Admin Code: <strong>${adminCode}</strong><br>Role: <strong>${roleInfo.label}</strong>`;
+            'Email: ' + escapeFlashText(email) + '<br>Password: ' + escapeFlashText(password) +
+            '<br>Admin Code: <strong>' + escapeFlashText(adminCode) + '</strong>' +
+            '<br>Role: <strong>' + escapeFlashText(roleInfo.label) + '</strong>';
 
         // Clear form
         document.getElementById('newAdminName').value = '';
         document.getElementById('newAdminEmail').value = '';
         document.getElementById('newAdminPassword').value = '';
         document.getElementById('newAdminPhone').value = '';
-        document.getElementById('newAdminRole').selectedIndex = 1; // Reset to Manager
+        document.getElementById('newAdminRole').selectedIndex = 1;
 
         loadAllAdmins();
 
     } catch (error) {
         console.error('Error creating admin:', error);
-        let msg = error.message;
-        if (error.code === 'auth/email-already-in-use') msg = 'This email is already registered.';
-        if (error.code === 'auth/weak-password') msg = 'Password is too weak (min 6 characters).';
+        let msg = error.message || String(error);
+        if (/already-(exists|in-use)/.test(error.code || msg)) {
+            msg = 'That email already has an account — use the "Make an existing member an admin" box above instead.';
+        }
+        if (/weak-password/.test(error.code || msg)) msg = 'Password is too weak (minimum 8 characters).';
+        if (/not available/.test(msg)) msg = 'Cloud Functions are not loaded on this page — reload the admin panel and try again.';
         alert('Error: ' + msg);
     } finally {
         btn.disabled = false;
@@ -441,6 +449,76 @@ async function resetOtherAdminCode(uid, name) {
    REMOVE ADMIN
    ============================ */
 
+/**
+ * Promote an EXISTING account to admin — for members who already have an account
+ * (the panel could only create brand-new admin accounts before).
+ * Sets role = admin, optionally sets the custom claim so admin checks need no reads.
+ */
+async function promoteUserToAdmin() {
+    const input = document.getElementById('promoteAdminEmail');
+    const email = (input && input.value || '').trim().toLowerCase();
+    const roleSel = document.getElementById('promoteAdminRole');
+    const adminRole = (roleSel && roleSel.value) || 'manager';
+
+    if (!email) { alert('Enter the email address of the account you want to make an admin.'); return; }
+
+    const btn = document.getElementById('promoteAdminBtn');
+    const original = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Promoting...'; }
+
+    try {
+        const db = firebase.firestore();
+
+        // 1) find the account by email
+        const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+        if (snap.empty) {
+            alert('No account found with that email.\n\nThey must register first, then you can promote them.');
+            return;
+        }
+        const doc = snap.docs[0];
+        const data = doc.data() || {};
+        if (data.role === 'admin') { alert((data.name || email) + ' is already an admin.'); loadAllAdmins(); return; }
+
+        const label = data.name || email;
+        if (!confirm('Make ' + label + ' (' + email + ') an admin?' + (data.role ? '\n\nTheir current role is "' + data.role + '".' : ''))) return;
+
+        // 2) set the role in Firestore (this is what the security rules check)
+        const adminCode = String(Math.floor(100000 + Math.random() * 900000));
+        await db.collection('users').doc(doc.id).update({
+            role: 'admin',
+            adminRole: adminRole,
+            previousRole: data.role || 'user',
+            status: 'approved',
+            adminCode: adminCode,
+            permissions: (typeof ADMIN_ROLES !== 'undefined' && ADMIN_ROLES[adminRole] && ADMIN_ROLES[adminRole].permissions) || null,
+            promotedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            promotedBy: firebase.auth().currentUser ? firebase.auth().currentUser.uid : null
+        });
+
+        // 3) also set the custom claim (optional: makes admin checks instant, no reads).
+        //    If the function is unavailable the role above already grants access.
+        let claimNote = 'Custom claim not set (the Firestore role is enough).';
+        try {
+            if (firebase.functions) {
+                await firebase.functions().httpsCallable('setAdminClaim')({ uid: doc.id });
+                claimNote = 'Custom claim set.';
+            }
+        } catch (claimErr) {
+            console.warn('setAdminClaim skipped:', claimErr && claimErr.message);
+        }
+
+        alert('✅ ' + label + ' is now an admin (' + adminRole + ').\n\n' + claimNote +
+              '\n\nThey should sign out and back in for the new permissions to load, and they will need this admin code to open the panel: ' + adminCode);
+        if (input) input.value = '';
+        loadAllAdmins();
+    } catch (err) {
+        console.error('promote failed:', err);
+        alert('Could not promote: ' + (err.message || err));
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = original || '<i class="fas fa-user-shield"></i> Make Admin'; }
+    }
+}
+
 async function removeAdmin(uid, name) {
     if (!confirm(`Remove admin privileges from ${name}?\n\nThis will:\n• Change their role from "admin" to "user"\n• Remove all admin permissions\n• They will lose access to the admin panel\n\nThis does NOT delete their account.`)) return;
 
@@ -454,6 +532,11 @@ async function removeAdmin(uid, name) {
             adminRemovedBy: firebase.auth().currentUser.uid
         });
 
+        // also drop the custom claim so admin checks stop passing for them
+        try {
+            if (firebase.functions) await firebase.functions().httpsCallable('setAdminClaim')({ uid: uid, admin: false });
+        } catch (e) { console.warn('could not clear admin claim:', e && e.message); }
+
         alert(`✅ ${name} has been removed as admin.\n\nThey are now a regular user.`);
         loadAllAdmins();
     } catch (error) {
@@ -461,3 +544,22 @@ async function removeAdmin(uid, name) {
         alert('Error: ' + error.message);
     }
 }
+
+/* ===== GLOBAL BRIDGE (auto-generated) — DO NOT DELETE ===== */
+/* This file is served as a bundled “classic” <script>, so every top-level
+   function must stay reachable on window. Without this, the bundler deletes
+   functions that are only called from HTML like onclick="callSeller()", and
+   short minified names can overwrite each other between bundles. */
+window.escapeFlashText = escapeFlashText;
+window.initAdminManagement = initAdminManagement;
+window.updateRolePreview = updateRolePreview;
+window.loadMyAdminInfo = loadMyAdminInfo;
+window.loadAllAdmins = loadAllAdmins;
+window.bindAdminButtons = bindAdminButtons;
+window.createNewAdmin = createNewAdmin;
+window.changeMyPassword = changeMyPassword;
+window.resetMyAdminCode = resetMyAdminCode;
+window.resetOtherAdminCode = resetOtherAdminCode;
+window.promoteUserToAdmin = promoteUserToAdmin;
+window.removeAdmin = removeAdmin;
+

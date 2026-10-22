@@ -75,6 +75,27 @@ async function loadUserProfile(user) {
                 avatar.src = data.photoURL;
             }
 
+            // Profile card avatar — use the Sankofa placeholder instead of a broken-image
+            // icon when the member has no photo.
+            var cardAvatar = document.getElementById('profileAvatar');
+            if (cardAvatar) {
+                if (data.photoURL) {
+                    cardAvatar.src = data.photoURL;
+                    cardAvatar.onerror = function () { this.onerror = null; this.src = '/images/placeholders/avatar.svg'; };
+                } else {
+                    cardAvatar.src = '/images/placeholders/avatar.svg';
+                }
+            }
+
+            // The "Full Name" row was never filled in (it showed an empty value)
+            var profileName = document.getElementById('profileName');
+            if (profileName) {
+                var fullName = data.name ||
+                    [data.firstName, data.lastName].filter(Boolean).join(' ') ||
+                    user.displayName || 'Not set';
+                profileName.textContent = fullName;
+            }
+
             // Update profile display elements
             var profileEmail = document.getElementById('profileEmail');
             if (profileEmail) profileEmail.textContent = data.email || user.email || '';
@@ -86,7 +107,11 @@ async function loadUserProfile(user) {
             if (profileLocation) {
                 var loc = '';
                 if (data.city) loc += data.city;
-                if (data.region) loc += (loc ? ', ' : '') + data.region.replace(/-/g, ' ').replace(/\w/g, function(c) { return c.toUpperCase(); });
+                if (data.region) {
+                    var readableRegion = String(data.region).replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+                    readableRegion = readableRegion.replace(/\w\S*/g, function (w) { return w.charAt(0).toUpperCase() + w.slice(1); });
+                    loc += (loc ? ', ' : '') + readableRegion;
+                }
                 profileLocation.textContent = loc || 'Not set';
             }
             
@@ -262,10 +287,11 @@ function initNotificationPreferences() {
         };
 
         try {
-            await firebase.firestore().collection('users').doc(window.currentUserId).update({
-                notifications,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            // Dotted paths: only these four switches change, so other switches on the same
+            // map (for example the price-drop emails on the dashboard) are kept.
+            const changes = { updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+            Object.keys(notifications).forEach(function (k) { changes['notifications.' + k] = notifications[k]; });
+            await firebase.firestore().collection('users').doc(window.currentUserId).update(changes);
             showProfileNotification('Notification preferences saved!', 'success');
         } catch (error) {
             showProfileNotification('Error saving preferences: ' + error.message, 'error');
@@ -338,62 +364,64 @@ function initDangerZone() {
    ============================ */
 
 function initAvatarUpload() {
-    const avatarBtn = document.querySelector('.avatar-edit-btn');
+    // The profile page's camera button is #changeAvatarBtn (older pages used .avatar-edit-btn).
+    // 2026-10-08 fix: this used to look only for .avatar-edit-btn, so the camera was never wired up.
+    const avatarBtn = document.getElementById('changeAvatarBtn') || document.querySelector('.avatar-edit-btn');
     if (!avatarBtn) return;
+    // Bind once: a second call must never add a second picker to the same tap.
+    if (avatarBtn.dataset.avatarBound === '1') return;
+    avatarBtn.dataset.avatarBound = '1';
 
-    avatarBtn.addEventListener('click', function() {
+    avatarBtn.addEventListener('click', function () {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-        input.onchange = async function(e) {
-            const file = e.target.files[0];
+        input.onchange = async function (e) {
+            const file = e.target.files && e.target.files[0];
             if (!file) return;
 
+            if (file.type && file.type.indexOf('image/') !== 0) {
+                showProfileNotification('Please choose a photo (JPG, PNG or similar)', 'error');
+                return;
+            }
             if (file.size > 5 * 1024 * 1024) {
                 showProfileNotification('Image must be less than 5MB', 'error');
                 return;
             }
-
             if (!window.currentUserId) {
                 showProfileNotification('Please log in to upload a photo', 'error');
                 return;
             }
 
             showProfileNotification('Uploading photo...', 'info');
-
             try {
-                // Upload to Firebase Storage
-                const storageRef = firebase.storage().ref();
-                const fileRef = storageRef.child(`avatars/${window.currentUserId}/${Date.now()}_${file.name}`);
+                const fileRef = firebase.storage().ref().child('avatars/' + window.currentUserId + '/' + Date.now() + '_' + file.name);
                 await fileRef.put(file);
-
-                // Get download URL
                 const downloadURL = await fileRef.getDownloadURL();
 
-                // Update Firestore
                 await firebase.firestore().collection('users').doc(window.currentUserId).update({
                     photoURL: downloadURL,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Update UI
-                const avatar = document.getElementById('userAvatar');
-                if (avatar) avatar.src = downloadURL;
-
+                setAvatarImages(downloadURL);
                 showProfileNotification('Profile photo updated!', 'success');
             } catch (error) {
-                console.error('Upload error:', error);
-                // Fallback: use local preview
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    const avatar = document.getElementById('userAvatar');
-                    if (avatar) avatar.src = ev.target.result;
-                    showProfileNotification('Photo set locally (cloud upload failed)', 'warning');
-                };
-                reader.readAsDataURL(file);
+                // Honest failure: the photo was NOT saved, so it is never shown as if it were.
+                console.error('Avatar upload failed:', error);
+                const why = (error && (error.code || error.message)) || 'unknown error';
+                showProfileNotification('Could not save your photo (' + why + '). Please try again.', 'error');
             }
         };
         input.click();
+    });
+}
+
+/** Show the saved photo everywhere the profile displays it (the profile card, and the header if present). */
+function setAvatarImages(url) {
+    ['profileAvatar', 'userAvatar'].forEach(function (id) {
+        const img = document.getElementById(id);
+        if (img) img.src = url;
     });
 }
 
@@ -410,7 +438,7 @@ function showProfileNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = 'profile-notification';
     notification.style.cssText = `position:fixed;top:1rem;right:1rem;z-index:10000;background:white;padding:1rem 1.5rem;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:flex;align-items:center;gap:0.75rem;border-left:4px solid ${colors[type]};max-width:400px;`;
-    notification.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]};font-size:1.25rem;"></i><span style="font-size:0.9rem;">${message}</span>`;
+    notification.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]};font-size:1.25rem;"></i><span style="font-size:0.9rem;">${escapeFlashText(message)}</span>`;
 
     document.body.appendChild(notification);
     setTimeout(() => {
@@ -419,3 +447,35 @@ function showProfileNotification(message, type) {
         setTimeout(() => notification.remove(), 300);
     }, 3500);
 }
+
+
+/* Escape text before putting it into an innerHTML string.
+   Product titles, names and emails are user-supplied — injecting them raw allowed a
+   stored XSS (a product titled <img src=x onerror=...> ran script in the buyer's
+   browser when the "added to cart" message was shown). */
+function escapeFlashText(v) {
+    return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/* ===== GLOBAL BRIDGE (auto-generated) — DO NOT DELETE ===== */
+/* This file is served as a bundled “classic” <script>, so every top-level
+   function must stay reachable on window. Without this, the bundler deletes
+   functions that are only called from HTML like onclick="callSeller()", and
+   short minified names can overwrite each other between bundles. */
+window.initProfilePage = initProfilePage;
+window.initProfileUI = initProfileUI;
+window.loadUserProfile = loadUserProfile;
+window.setInputValue = setInputValue;
+window.initProfileForm = initProfileForm;
+window.initEditToggle = initEditToggle;
+window.initNotificationPreferences = initNotificationPreferences;
+window.initDangerZone = initDangerZone;
+window.initAvatarUpload = initAvatarUpload;
+window.showProfileNotification = showProfileNotification;
+window.escapeFlashText = escapeFlashText;
+

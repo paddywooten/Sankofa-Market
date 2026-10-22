@@ -90,6 +90,22 @@
     object-fit: cover;
 }
 
+/* Avatar circle for conversation list (initial letter) */
+.avatar.conv-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0064d2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
 .online-indicator {
     position: absolute;
     bottom: 2px;
@@ -491,4 +507,106 @@
         width: 32px;
         height: 32px;
     }
+}
+
+/* === Admin chat bubbles — buyer/seller/admin clearly identified === */
+.chat-panel {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.chat-panel .chat-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); }
+.chat-panel .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    background: #f8fafc;
+}
+.admin-msg-row {
+    display: flex;
+    gap: 0.6rem;
+    max-width: 78%;
+    width: fit-content;
+    align-items: flex-end;
+    margin: 0.15rem 0;
+}
+.admin-msg-row.buyer { align-self: flex-start; flex-direction: row; margin-right: auto; }
+.admin-msg-row.seller { align-self: flex-end; flex-direction: row-reverse; margin-left: auto; }
+.admin-msg-row.admin { align-self: center; max-width: 88%; width: fit-content; flex-direction: row; margin-left: auto; margin-right: auto; }
+.admin-msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+}
+.admin-msg-bubble {
+    padding: 0.7rem 0.9rem;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    max-width: 100%;
+}
+.admin-msg-bubble.buyer {
+    background: white;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+}
+.admin-msg-bubble.seller {
+    background: #0064d2;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.admin-msg-bubble.admin {
+    background: #fff8e1;
+    color: #7a4a00;
+    border: 1px solid #ffe69c;
+    text-align: left;
+}
+.admin-msg-sender {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 0.2rem;
+}
+.admin-msg-bubble.seller .admin-msg-sender { color: rgba(255,255,255,0.85); }
+.admin-msg-bubble.admin .admin-msg-sender { color: #b7791f; }
+.admin-msg-text { word-break: break-word; }
+.admin-msg-time {
+    font-size: 0.62rem;
+    margin-top: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    opacity: 0.75;
+}
+.admin-msg-bubble.buyer .admin-msg-time { color: #64748b; justify-content: flex-end; }
+.admin-msg-bubble.seller .admin-msg-time { color: rgba(255,255,255,0.85); }
+.admin-msg-bubble.admin .admin-msg-time { color: #a0792a; }
+
+/* Date separator in admin chat — groups messages by day */
+.admin-date-separator {
+    text-align: center;
+    margin: 0.7rem 0 0.3rem;
+    display: flex;
+    justify-content: center;
+}
+.admin-date-separator span {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    letter-spacing: 0.02em;
 }

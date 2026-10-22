@@ -548,11 +548,14 @@
     gap: 0.5rem;
 }
 
-/* Messages / Chat */
+/* Messages / Chat — desktop: fixed viewport height, internal scroll only (no page scroll) */
 .messages-layout {
     display: grid;
     grid-template-columns: 320px 1fr;
-    height: 600px;
+    height: calc(100vh - 180px);
+    height: calc(100dvh - 180px);
+    max-height: 720px;
+    min-height: 520px;
     background: white;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
@@ -561,7 +564,16 @@
 
 .conversations-list {
     border-right: 1px solid var(--border-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.conversations-list #conversationsList {
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .conversations-header {
@@ -670,10 +682,13 @@
     margin-left: auto;
 }
 
-/* Chat Window */
+/* Chat Window — takes full height, messages scroll inside, input sticks */
 .chat-window {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    min-height: 0;
 }
 
 .chat-header {
@@ -704,10 +719,14 @@
 .chat-messages {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
 }
 
 .message {
@@ -773,6 +792,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .chat-input-area input {
@@ -862,13 +882,29 @@
     box-shadow: var(--shadow-md);
 }
 
+/* Header row of the wishlist page — wraps under the title on a narrow phone
+   instead of squeezing the "Clear All" button off the screen. */
+.wishlist-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* The photo keeps a fixed card height — a phone photo can be 1,400px tall, and
+   without this cap one saved item filled three phone screens. The link IS the
+   image frame, so it must be a block. */
 .wishlist-card-image {
-    height: 180px;
+    display: block;
+    height: 190px;
     overflow: hidden;
     position: relative;
+    background: #f3f4f6;
 }
 
 .wishlist-card-image img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -879,54 +915,39 @@
     transform: scale(1.05);
 }
 
-.wishlist-remove-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: white;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--error-color);
-    box-shadow: var(--shadow-sm);
-    transition: background 0.2s;
-    z-index: 2;
-}
-
-.wishlist-remove-btn:hover {
-    background: var(--error-color);
-    color: white;
-}
-
 .wishlist-card-body {
     padding: 0.85rem;
 }
 
+/* Titles clamp to two tidy lines, then an ellipsis. A single nowrap line made
+   long titles vanish on a 2-column phone grid. */
 .wishlist-card-body h3 {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.3;
+    min-height: 2.6em;
+    word-break: break-word;
 }
 
 .wishlist-card-body .wishlist-price {
     font-size: 1rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
 }
 
 .wishlist-card-body .wishlist-seller {
     font-size: 0.8rem;
     color: var(--text-secondary);
     margin-bottom: 0.65rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .wishlist-card-actions {
@@ -939,6 +960,18 @@
     text-align: center;
     padding: 0.45rem 0.5rem;
     font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+/* The remove button is only an icon — keep it square instead of flex-stretching
+   it into a second full-width button. */
+.wishlist-card-actions .btn-outline {
+    flex: 0 0 40px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* Notification Options */
@@ -1306,6 +1339,55 @@
 
     .wishlist-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+
+    /* Two small cards per row: everything shrinks proportionally so a card
+       still reads photo / title / price / buttons without spilling. */
+    .wishlist-card-image {
+        height: 150px;
+    }
+
+    .wishlist-card-body {
+        padding: 0.6rem;
+    }
+
+    .wishlist-card-body h3 {
+        font-size: 0.8rem;
+        min-height: 2.5em;
+        margin-bottom: 0.2rem;
+    }
+
+    .wishlist-card-body .wishlist-price {
+        font-size: 0.92rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .wishlist-card-body .wishlist-seller {
+        font-size: 0.72rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .wishlist-card-actions {
+        gap: 0.35rem;
+    }
+
+    .wishlist-card-actions .btn {
+        font-size: 0.72rem;
+        padding: 0.42rem 0.25rem;
+        min-height: 36px;
+    }
+
+    .wishlist-card-actions .btn-outline {
+        flex-basis: 34px;
+    }
+
+    .wishlist-page-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .wishlist-page-header p {
+        font-size: 0.85rem;
     }
 
     .danger-item {
@@ -1315,5 +1397,423 @@
 
     .filter-tabs {
         border-radius: var(--radius-md);
+    }
+}
+
+/* Conversation list items (Firebase-powered messages) */
+.conversation-item .conv-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0064d2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.conv-product-line {
+    font-size: 0.75rem;
+    color: #0064d2;
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conv-product-line i {
+    margin-right: 0.2rem;
+}
+
+.chat-product-card {
+    cursor: pointer;
+}
+
+/* Message ticks — WhatsApp-style — highly visible on phone */
+.msg-tick { margin-left: 6px; font-size: 0.72rem; vertical-align: middle; }
+.msg-tick-sent { color: rgba(255,255,255,0.9); }
+.message.received .msg-tick { display: none; }
+.msg-tick-delivered { color: #fff; }
+.msg-tick-read { color: #7ec8ff; text-shadow: 0 0 4px rgba(126,200,255,0.6); }
+.msg-tick-label { margin-left: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+.msg-tick-label-read { color: #7ec8ff; }
+.message.sent .msg-tick-label { color: rgba(255,255,255,0.9); }
+.message.sent .msg-tick-label-read { color: #7ec8ff; }
+.message.received .msg-tick-label { display:none; }
+.message.received .msg-tick-read, .message.received .msg-tick-delivered, .message.received .msg-tick-sent { display:none; }
+/* For sent bubble, ensure time + ticks are subtle and aligned */
+.message .msg-text { word-break: break-word; }
+.message .message-time { display:flex; align-items:center; justify-content:flex-end; gap:3px; font-size:0.65rem; margin-top:0.4rem; flex-wrap:wrap; }
+.message.received .message-time { justify-content:flex-start; color:#5a6572; opacity:1; }
+.message.sent .message-time { color: rgba(255,255,255,0.92); }
+/* Live indicator in chat header */
+.live-dot { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; margin-right:4px; box-shadow:0 0 6px rgba(34,197,94,0.6); animation: livePulse 1.6s infinite; }
+@keyframes livePulse { 0%,100%{transform:scale(1); opacity:1} 50%{transform:scale(1.25); opacity:0.7} }
+
+/* Back button — hidden on desktop, shown on mobile when chat open */
+.chat-back-btn { display:none; }
+@media (max-width:768px){
+  .chat-back-btn { width:36px; height:36px; border:none; background:#f0f0f0; border-radius:50%; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; color:#333; }
+}
+
+/* === MESSAGES PAGE — Smartphone full-screen fix (footer + search were eating space) === */
+@media (max-width: 768px){
+  /* Hide the big search bar in header on messages page only */
+  .messages-page .header .header-search { display:none !important; }
+  /* Compact header */
+  .messages-page .header { padding: 0.5rem 0 !important; }
+  .messages-page .header .container { flex-direction: row !important; gap: 0.5rem !important; padding: 0 0.75rem !important; align-items:center !important; }
+  .messages-page .header-logo img { height: 36px !important; }
+  .messages-page .header-actions { gap: 0.4rem !important; }
+  .messages-page .header-actions .btn { padding: 0.35rem 0.6rem !important; font-size: 0.78rem !important; }
+
+  /* Remove dashboard baggage — sidebar, title, padding, footer */
+  .messages-page .user-dashboard { padding: 0 !important; background: #fff !important; min-height: 0 !important; }
+  .messages-page .dashboard-layout { display:block !important; gap:0 !important; }
+  .messages-page .dashboard-sidebar { display:none !important; }
+  .messages-page .content-header { display:none !important; }
+  .messages-page .dashboard-content { padding:0 !important; }
+  .messages-page .user-dashboard .container { padding:0 !important; max-width:100% !important; }
+  .messages-page .footer { display:none !important; }
+
+  /* Full viewport chat. vh is only the FALLBACK for old browsers — it must come
+     FIRST, because 100vh on mobile means "viewport with the URL bar hidden",
+     so if it wins it pushes the chat input beneath the bottom of the screen.
+     100dvh (listed after, so it wins where supported) tracks the real visible
+     height. When a chat is open, js/user-messages.js also sets an exact pixel
+     height from visualViewport (keeps the input above the on-screen keyboard). */
+  .messages-page .messages-layout {
+    height: calc(100vh - 56px) !important;
+    height: calc(100dvh - 56px) !important;
+    min-height: calc(100vh - 56px) !important;
+    min-height: calc(100dvh - 56px) !important;
+    max-height: calc(100vh - 56px) !important;
+    max-height: calc(100dvh - 56px) !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    border-top: 1px solid var(--border-color);
+    grid-template-columns: 1fr !important;
+    overflow:hidden;
+  }
+  .messages-page .conversations-list {
+    display:flex !important;
+    flex-direction:column !important;
+    max-height:none !important;
+    height:100% !important;
+    border-right:none !important;
+    overflow:hidden;
+  }
+  .messages-page .conversations-list #conversationsList {
+    flex:1; overflow-y:auto; -webkit-overflow-scrolling: touch;
+  }
+  .messages-page .chat-window {
+    display:none !important;
+    height:100% !important;
+    min-height:0 !important;
+    flex-direction:column !important;
+  }
+  /* When a chat is open on mobile — show only the chat */
+  .messages-page.mobile-chat-open .conversations-list { display:none !important; }
+  .messages-page.mobile-chat-open .chat-window { display:flex !important; }
+  .messages-page.mobile-chat-open .chat-back-btn { display:flex !important; }
+
+  /* Tighter chat UI for small screens */
+  .messages-page .chat-header { padding: 0.6rem 0.75rem !important; gap:0.6rem !important; }
+  .messages-page .conversations-header { padding: 0.7rem 0.9rem !important; }
+  .messages-page .conversation-search { padding: 0.6rem 0.75rem !important; }
+  .messages-page .chat-messages { padding: 0.75rem !important; gap:0.6rem !important; }
+  .messages-page .message { max-width: 84% !important; font-size:0.88rem !important; padding:0.6rem 0.85rem !important; }
+  .messages-page .chat-input-area {
+    padding: 0.6rem 0.75rem !important;
+    padding-bottom: calc(0.6rem + env(safe-area-inset-bottom,0px)) !important;
+    gap:0.5rem !important;
+    background:#fff;
+    position: sticky; bottom:0;
+  }
+  .messages-page .chat-input-area input { font-size: 16px !important; } /* prevents iOS zoom */
+  .messages-page .chat-product-card { margin: 0.5rem 0.75rem 0 !important; }
+}
+@media (max-width: 380px){
+  .messages-page .header-actions .btn span { display:none; }
+  #awayModeBtn .away-label { display:none; }
+  .messages-page .message { max-width: 88% !important; }
+}
+
+/* The offer / broadcast / quick-reply bars are direct children of the COLUMN
+   flex .chat-window — but they were written with flex-basis:100%, a size meant
+   for the wrapped ROW inside .chat-input-area. In a column, flex-basis acts on
+   HEIGHT: every visible bar claimed 100% of the window's height and pushed the
+   chat input beneath the bottom of the screen (clipped by overflow:hidden) —
+   this is what made the Pay button "eat" the input on phones. Natural height. */
+.chat-window > #offerArea,
+.chat-window > #broadcastToggleWrap,
+.chat-window > #quickReplyBar { flex: 0 0 auto !important; width: 100%; box-sizing: border-box; }
+
+/* Date separator in user chat — groups messages by day */
+.msg-date-separator {
+    text-align: center;
+    margin: 0.7rem 0 0.3rem;
+    display: flex;
+    justify-content: center;
+}
+.msg-date-separator span {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    letter-spacing: 0.02em;
+}
+
+/* Voice note button and recording UI */
+.voice-btn { transition: all 0.2s ease; }
+.voice-btn:hover { background:#e0e7ff !important; color:#004a9f !important; }
+.voice-btn.recording { background:#ef4444 !important; color:white !important; animation: voiceBtnPulse 1.2s infinite; }
+@keyframes voiceBtnPulse { 0%,100%{ box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{ box-shadow:0 0 0 8px rgba(239,68,68,0);} }
+@keyframes voicePulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:0.5; transform:scale(1.3);} }
+
+/* Voice recording — keep text visible, just tighten a bit on very small screens */
+@media (max-width: 400px) {
+  #voiceRecordingUI { gap: 0.35rem !important; padding: 0.35rem 0.5rem !important; }
+  #voiceRecordingUI button { padding: 0.32rem 0.65rem !important; }
+  #recordingTime { font-size: 0.8rem !important; }
+}
+@media (max-width: 360px) {
+  #voiceRecordingUI { gap: 0.25rem !important; }
+}
+
+/* Admin message in user chat — centered amber bubble */
+.message.admin {
+    align-self: center !important;
+    background: #fff8e1 !important;
+    color: #7a4a00 !important;
+    border: 1px solid #f5af02 !important;
+    max-width: 82% !important;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.message.admin .msg-text { color: #7a4a00; }
+.message.admin .message-time { color: #a0792a !important; justify-content: center !important; }
+
+/* File preview and voice recording should not push send button outside viewport on mobile */
+@media (max-width: 768px) {
+  .chat-input-area { gap: 0.5rem; }
+  #filePreview, #voiceRecordingUI { flex: 0 0 100% !important; width: 100% !important; max-width: 100% !important; }
+  #messageInput { min-width: 0; flex: 1 1 auto !important; }
+  .chat-input-area .attach-btn, .chat-input-area .voice-btn, .chat-input-area .send-btn { flex-shrink: 0; }
+}
+
+/* Prevent chat distortion when image attached — mobile */
+@media (max-width: 768px) {
+  .messages-page, .chat-window, .chat-input-area { max-width: 100vw; overflow-x: hidden; box-sizing: border-box; }
+  #filePreview, #voiceRecordingUI { max-width: calc(100vw - 1.5rem) !important; box-sizing: border-box; overflow: hidden; }
+  #filePreviewName { max-width: 140px; }
+  .chat-messages img { max-width: 100% !important; height: auto !important; }
+}
+
+/* Mobile: hide download icon + filename overlay on image preview per request */
+@media (max-width: 768px) {
+  .mobile-hide-preview-overlay,
+  .mobile-hide-preview-bar { display: none !important; }
+}
+
+/* ============================================================================
+   PROFILE INFORMATION CARD (pages/user/profile.html)
+   These classes had no styling at all, so the card rendered as a plain list with
+   a broken image where the avatar should be.
+   ============================================================================ */
+.profile-section {
+    background: #fff;
+    border-radius: var(--radius-lg, 14px);
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.05));
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-section .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+.profile-section .section-header h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* Avatar beside the details */
+.profile-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.75rem;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 112px;
+    height: 112px;
+    flex: 0 0 112px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0064d2 0%, #004a9f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    box-shadow: 0 6px 18px rgba(0, 100, 210, 0.18);
+}
+
+.profile-avatar img {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 4px solid #fff;
+    background: #e8eef7;
+    box-sizing: border-box;
+}
+
+.change-avatar-btn {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #0064d2;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+    transition: transform 0.15s ease;
+}
+
+.change-avatar-btn:hover {
+    transform: scale(1.06);
+}
+
+/* Label / value rows */
+.profile-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #5a6572);
+    font-weight: 500;
+    flex: 0 0 auto;
+}
+
+.detail-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary, #191919);
+    text-align: right;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Status pill inside the row */
+.detail-value .status-badge {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    display: inline-block;
+}
+
+.detail-value .status-badge.pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.detail-value .status-badge.failed,
+.detail-value .status-badge.blocked {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+@media (max-width: 700px) {
+    .profile-section {
+        padding: 1.25rem;
+    }
+
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.25rem;
+    }
+
+    .profile-details {
+        width: 100%;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+}
+
+/* Very small phones (iPhone SE 1st gen and friends, <=340px): at two cards per
+   row a card is only ~140px wide — the remove button no longer fits beside
+   "Contact seller". Float it over the photo's top-right corner instead, and
+   give the main button the whole row. (360px phones have just enough room for
+   both buttons in the row, so keep the normal look there.) */
+@media (max-width: 340px) {
+    .wishlist-card-actions .btn-outline {
+        position: absolute;
+        top: 0.45rem;
+        right: 0.45rem;
+        flex: none;
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        z-index: 2;
     }
 }

@@ -17,8 +17,8 @@ Thumbs.db
 firebase-debug.log
 firestore-debug.log
 
-# Build
-dist/
+# Build output is committed on purpose: Firebase serves dist/ directly,
+# so a clone can deploy without running the bundler.
 build/
 *.log
 
@@ -30,3 +30,6 @@ build/
 # Cache
 .cache/
 .parcel-cache/
+
+# esbuild sourcemaps (regenerated on build, never deployed)
+**/*.map

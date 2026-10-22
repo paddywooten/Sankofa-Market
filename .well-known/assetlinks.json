@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.sankofamarket.app",
+      "sha256_cert_fingerprints": [
+        "DC:CA:6B:C9:03:4A:64:B6:6A:5F:A4:36:0F:86:7D:4B:67:60:26:73:38:39:95:82:9D:E6:9C:DC:55:22:D4:26"
+      ]
+    }
+  }
+]

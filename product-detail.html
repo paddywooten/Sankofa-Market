@@ -1,25 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GH">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Product Details - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    <link rel="canonical" href="https://sankofa-market.web.app/product-detail.html">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0064d2">
+    <link rel="preload" as="image" href="/images/placeholders/product.svg">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/main.css?v=4">
-    <link rel="stylesheet" href="css/chatbot.css?v=3">
-    <link rel="stylesheet" href="css/product-detail.css">
-    <link rel="stylesheet" href="css/payment-warnings.css">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/product-detail.css?v=2">
+    <link rel="stylesheet" href="/css/payment-warnings.css">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color: #5a6572;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Sankofa Market Product",
+      "image": "/images/placeholders/product.svg",
+      "description": "Buy and sell on Ghana's #1 marketplace — fast, secure, escrow protected.",
+      "brand": {"@type": "Brand", "name": "Sankofa Market"},
+      "offers": {"@type": "Offer", "priceCurrency": "GHS", "availability": "https://schema.org/InStock", "seller": {"@type": "Organization", "name": "Sankofa Market"}}
+    }
+    </script>
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="index.html">
-                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
                 </a>
             </div>
             <div class="header-search">
@@ -29,28 +56,52 @@
                 </form>
             </div>
             <div class="header-actions">
-                <a href="publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
-                <a href="pages/auth/login.html" class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Sign in</a>
+                <a href="/pages/user/messages.html" id="headerMessagesBtn" aria-label="Messages, 0 unread" class="header-messages-btn" title="Messages" style="display:none;">
+                    <i class="fas fa-comments"></i>
+                    <span class="header-msg-label">Messages</span>
+                    <span class="header-msg-badge" id="headerMsgBadge" style="display:none;">0</span>
+                </a>
+                <a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="/pages/auth/login.html" class="btn btn-outline" id="loginBtn"><i class="fas fa-user"></i> Sign in</a>
+                <a href="/pages/user/dashboard.html" class="btn btn-primary" id="dashboardBtn" style="display: none;"><i class="fas fa-user"></i> <span id="userName">My Account</span></a>
             </div>
         </div>
     </header>
 
     <nav class="breadcrumb-nav">
         <div class="container">
-            <a href="index.html">Home</a>
+            <a href="/index.html">Home</a>
             <i class="fas fa-chevron-right"></i>
-            <a href="search.html?category=electronics" id="breadcrumbCategory">Electronics</a>
+            <a href="/search.html?category=electronics" id="breadcrumbCategory">Electronics</a>
             <i class="fas fa-chevron-right"></i>
             <span id="breadcrumbTitle">Product Name</span>
         </div>
     </nav>
 
     <main class="product-detail-main">
-        <!-- Loading State -->
-        <div class="product-loading" id="productLoading">
-            <div class="product-loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Loading product details...</p>
+        <!-- Loading State — skeleton -->
+        <div class="product-loading" id="productLoading" style="padding:2rem 0;">
+            <div class="container">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1100px;margin:0 auto;">
+                    <div>
+                        <div style="height:420px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:12px;"></div>
+                        <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+                            <div style="width:80px;height:80px;background:#e5e7eb;border-radius:8px;animation:shimmer 1.5s infinite;"></div>
+                            <div style="width:80px;height:80px;background:#e5e7eb;border-radius:8px;animation:shimmer 1.5s infinite;"></div>
+                            <div style="width:80px;height:80px;background:#e5e7eb;border-radius:8px;animation:shimmer 1.5s infinite;"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:1rem;">
+                        <div style="height:28px;background:#e5e7eb;border-radius:6px;width:70%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:20px;background:#e5e7eb;border-radius:6px;width:40%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:36px;background:#e5e7eb;border-radius:8px;width:30%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:14px;background:#f3f4f6;border-radius:6px;width:100%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:14px;background:#f3f4f6;border-radius:6px;width:90%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:14px;background:#f3f4f6;border-radius:6px;width:95%;animation:shimmer 1.5s infinite;"></div>
+                        <div style="height:44px;background:#0064d2;border-radius:8px;width:100%;opacity:0.3;"></div>
+                    </div>
+                </div>
+                <style>@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
             </div>
         </div>
 
@@ -59,65 +110,57 @@
                 <!-- Image Gallery -->
                 <div class="product-gallery">
                     <div class="gallery-main">
-                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=800&h=600&fit=crop&q=80&auto=format" 
+                        <img src="/images/placeholders/product.svg" 
                              alt="Product Image" 
                              id="mainImage"
                              loading="eager">
-                        <button class="gallery-nav gallery-prev" id="prevImage"><i class="fas fa-chevron-left"></i></button>
-                        <button class="gallery-nav gallery-next" id="nextImage"><i class="fas fa-chevron-right"></i></button>
+                        <button class="gallery-nav gallery-prev" id="prevImage" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-nav gallery-next" id="nextImage" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     <div class="gallery-thumbs" id="galleryThumbs">
-                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=150&h=150&fit=crop&q=75&auto=format" 
-                             alt="Thumbnail 1" 
-                             class="thumb active"
-                             loading="lazy"
-                             decoding="async">
-                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&q=75&auto=format" 
-                             alt="Thumbnail 2" 
-                             class="thumb"
-                             loading="lazy"
-                             decoding="async">
-                        <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=150&h=150&fit=crop&q=75&auto=format" 
-                             alt="Thumbnail 3" 
-                             class="thumb"
-                             loading="lazy"
-                             decoding="async">
-                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&q=75&auto=format" 
-                             alt="Thumbnail 4" 
-                             class="thumb"
-                             loading="lazy"
-                             decoding="async">
+                        <!-- Thumbnails populated dynamically from product images -->
                     </div>
+                    <div id="productVideoContainer" style="display:none;margin-top:0.75rem;"></div>
                 </div>
 
                 <!-- Product Info -->
                 <div class="product-info">
                     <div class="product-badges">
-                        <span class="badge badge-featured"><i class="fas fa-star"></i> Featured</span>
-                        <span class="badge badge-official" id="officialBadge"><i class="fas fa-store"></i> Official Store</span>
+                        <span class="badge badge-featured" id="featuredBadge" style="display:none;"><i class="fas fa-star"></i> Featured</span>
+                        <span class="badge badge-official" id="officialBadge" style="display:none;"><i class="fas fa-store"></i> Official Store</span>
                     </div>
 
-                    <h1 class="product-title" id="productTitle">Product Details</h1>
+                    <h1 class="product-title" id="productTitle" style="min-height:1.2em"></h1>
                     
+                    <!-- Flash-sale banner (Gold+ perk): countdown + savings, filled by JS -->
+                    <div id="flashSaleBanner" class="sm-flash-banner" style="display:none;"></div>
+
                     <div class="product-price-section">
-                        <span class="product-price" id="productPrice">GHS 8,500</span>
-                        <span class="product-condition" id="productCondition">Excellent</span>
+                        <span class="product-price" id="productPrice" style="min-width:100px;display:inline-block;min-height:1.2em"></span>
+                        <s id="flashWasPrice" style="display:none;color:#9aa5b1;font-size:1rem;margin-left:0.45rem;font-weight:500;"></s>
+                        <span class="product-condition" id="productCondition"></span>
                     </div>
+
+                    <!-- Buyer rating summary (filled by JS when the product has reviews) -->
+                    <a href="#reviewsSection" id="productRatingSummary" style="display:none;margin-top:0.3rem;font-size:0.88rem;color:#5a6572;text-decoration:none;"></a>
 
                     <div class="product-meta-info">
                         <div class="meta-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span id="productLocation">Accra, Greater Accra</span>
+                            <span id="productLocation" style="min-width:60px;display:inline-block;min-height:1em"></span>
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-clock"></i>
-                            <span id="productTime">Listed 2 hours ago</span>
+                            <span id="productTime" style="min-width:60px;display:inline-block;min-height:1em"></span>
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-eye"></i>
-                            <span id="productViews">234 views</span>
+                            <span id="productViews" style="min-width:50px;display:inline-block;min-height:1em"></span>
                         </div>
                     </div>
+
+                    <!-- Delivery / Pickup Info (populated by JS) -->
+                    <div class="delivery-info-box" id="deliveryInfoBox" style="display:none;"></div>
 
                     <div class="product-actions" id="productActions">
                         <!-- Buttons will be dynamically inserted based on seller type -->
@@ -135,51 +178,44 @@
                         </button>
                     </div>
 
+                    <!-- Tier 2 order bump: "You may also need" (filled by product-detail.js; hidden unless real matches exist) -->
+                    <div class="order-bump-box" id="orderBumpBox" style="display:none;margin-top:0.9rem;border:1.5px solid #fde68a;background:#fffdf5;border-radius:14px;padding:0.75rem 0.85rem;">
+                        <div style="font-size:0.92rem;font-weight:800;color:#131f47;"><i class="fas fa-basket-shopping" style="color:#f5af02;"></i> You may also need</div>
+                        <div id="orderBumpNote" style="font-size:0.74rem;color:#8a6d1d;margin:2px 0 8px;">fresh picks from this category</div>
+                        <div id="orderBumpRows" style="display:grid;gap:8px;"></div>
+                    </div>
+
                     <!-- Seller Info -->
                     <div class="seller-card">
                         <div class="seller-header">
-                            <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=80&h=80&fit=crop&crop=face&q=75&auto=format" 
-                                 alt="Seller" 
-                                 class="seller-avatar"
-                                 loading="lazy"
-                                 decoding="async">
+                            <div class="seller-avatar" id="sellerAvatar" style="width:60px;height:60px;border-radius:50%;background:#0064d2;color:white;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0;">S</div>
                             <div class="seller-info">
-                                <h3 class="seller-name" id="sellerName">Sankofa Store</h3>
-                                <div class="seller-rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span>(127 reviews)</span>
-                                </div>
-                                <span class="seller-verified" id="sellerVerified">
+                                <h2 class="seller-name" id="sellerName">Seller</h2>
+                                <span id="sellerPremiumBadge" style="display:none;vertical-align:middle;"></span>
+                                <span id="sellerRating" style="display:none;font-size:0.88rem;font-weight:700;color:#191919;"></span>
+                                <span class="seller-verified" id="sellerVerified" style="display:none;">
                                     <i class="fas fa-check-circle"></i> Verified Seller
                                 </span>
+                                <span class="seller-member-since" id="sellerMemberSince" style="display:none;font-size:0.8rem;color: #5a6572;"></span>
                             </div>
                         </div>
-                        <div class="seller-stats">
-                            <div class="stat">
-                                <strong>98%</strong>
-                                <span>Response Rate</span>
-                            </div>
-                            <div class="stat">
-                                <strong>&lt; 1 hour</strong>
-                                <span>Response Time</span>
-                            </div>
-                            <div class="stat">
-                                <strong>2019</strong>
-                                <span>Member Since</span>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-outline btn-full" id="viewProfileBtn">
+                        <a href="#" class="btn btn-outline btn-full" id="viewProfileBtn" style="display:none;">
                             <i class="fas fa-user"></i> View Profile
                         </a>
+                        <!-- Follow button (filled by JS — hidden for the seller themselves) -->
+                        <button class="btn btn-outline btn-full" id="followSellerBtn" style="display:none;margin-top:0.5rem;">
+                            <i class="fas fa-user-plus"></i> Follow
+                        </button>
+                        <!-- Storefront link (shown by product-detail.js when the seller has a live shop) -->
+                        <a href="#" id="visitShopBtn" class="btn btn-full" style="display:none;margin-top:0.5rem;background:linear-gradient(135deg,#f5af02,#e09e00);color:#191919;font-weight:800;border:none;text-decoration:none;text-align:center;">
+                            <i class="fas fa-store"></i> <span id="visitShopLabel">Visit their shop</span>
+                        </a>
+                        <div id="sellerFollowers" style="display:none;font-size:0.8rem;color:#5a6572;margin-top:0.45rem;text-align:center;"></div>
                     </div>
 
                     <!-- Safety Tips -->
                     <div class="safety-tips">
-                        <h4><i class="fas fa-shield-alt"></i> Safety Tips</h4>
+                        <h3><i class="fas fa-shield-alt"></i> Safety Tips</h3>
                         <ul>
                             <li>Meet in a public place for transactions</li>
                             <li>Inspect the item before paying</li>
@@ -194,50 +230,29 @@
             <div class="product-description-section">
                 <h2>Description</h2>
                 <div class="description-content" id="productDescription">
-                    <p>Product description will load from the database.</p>
-                    <p><strong>Features:</strong></p>
-                    <ul>
-                        <li>6.7-inch Super Retina XDR display with ProMotion</li>
-                        <li>A16 Bionic chip - fastest chip in a smartphone</li>
-                        <li>Pro camera system with 48MP Main camera</li>
-                        <li>All-day battery life</li>
-                        <li>5G capable</li>
-                    </ul>
-                    <p><strong>Condition:</strong> Excellent - no scratches, always used with case and screen protector</p>
-                    <p><strong>Includes:</strong> Original box, charger, cable, unused earphones, extra case</p>
-                    <p><strong>Reason for selling:</strong> Upgraded to newer model</p>
+                    <p>Loading description...</p>
                 </div>
             </div>
 
             <!-- Product Specifications -->
-            <div class="product-specs-section">
+            <div class="product-specs-section" id="specsSection" style="display:none;">
                 <h2>Specifications</h2>
-                <table class="specs-table">
-                    <tr>
-                        <th>Brand</th>
-                        <td>Apple</td>
-                    </tr>
-                    <tr>
-                        <th>Model</th>
-                        <td>—</td>
-                    </tr>
-                    <tr>
-                        <th>Storage</th>
-                        <td>256GB</td>
-                    </tr>
-                    <tr>
-                        <th>Color</th>
-                        <td>Deep Purple</td>
-                    </tr>
-                    <tr>
-                        <th>Condition</th>
-                        <td>Excellent</td>
-                    </tr>
-                    <tr>
-                        <th>Warranty</th>
-                        <td>3 months remaining</td>
-                    </tr>
+                <table class="specs-table" id="specsTable">
                 </table>
+            </div>
+
+            <!-- Buyer Reviews (shown by JS when the product has reviews) -->
+            <div class="product-description-section" id="reviewsSection" style="display:none;">
+                <h2><i class="fas fa-star" style="color:#f5af02;"></i> Buyer Reviews <span id="reviewsCountInline" style="font-size:0.85rem;color:#5a6572;font-weight:500;"></span></h2>
+                <div id="productReviewsList"></div>
+            </div>
+
+            <!-- Public Q&A thread — always visible; content filled by JS -->
+            <div class="product-description-section" id="commentsSection">
+                <h2><i class="fas fa-comments" style="color:#0064d2;"></i> Questions &amp; Comments <span id="commentsCountInline" style="font-size:0.85rem;color:#5a6572;font-weight:500;"></span></h2>
+                <p style="font-size:0.84rem;color:#5a6572;margin:-0.25rem 0 0.85rem;">Ask about this item or help a neighbour — everyone can read and reply. Keep it polite: comments are public.</p>
+                <div id="commentComposer"></div>
+                <div id="productCommentsList"></div>
             </div>
 
             <!-- Payment Safety Information -->
@@ -261,7 +276,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <img src="images/logos/sankofa-market-logo-monochrome-light.png" alt="Sankofa Market" class="footer-logo">
+                    <img src="/images/logos/sankofa-market-logo-monochrome-light.png" alt="Sankofa Market" class="footer-logo">
                     <p><strong>Ghana's #1 Online Marketplace</strong></p>
                     <p>Buy and sell electronics, fashion, home & garden, vehicles, and more with confidence.</p>
                     <div class="social-links">
@@ -273,50 +288,39 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Marketplace</h4>
+                    <h3>Sell</h3>
                     <ul>
-                        <li><a href="search.html">Browse Items</a></li>
-                        <li><a href="search.html?category=electronics">Electronics</a></li>
-                        <li><a href="search.html?category=fashion">Fashion</a></li>
-                        <li><a href="search.html?category=vehicles">Vehicles</a></li>
-                        <li><a href="search.html?category=services">Services</a></li>
+                        <li><a href="/publish.html">Start Selling</a></li>
+                        <li><a href="/pages/seller-guide.html">Seller Guide</a></li>
+                        <li><a href="/pages/seller-guide.html#pricing">Pricing & Commission</a></li>
+                        <li><a href="/pages/buyer-guide.html#safety">Safety Tips</a></li>
+                        <li><a href="/pages/about.html">About Us</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Sell</h4>
+                    <h3>Support</h3>
                     <ul>
-                        <li><a href="publish.html">Start Selling</a></li>
-                        <li><a href="pages/seller-guide.html">Seller Guide</a></li>
-                        <li><a href="pages/seller-guide.html#pricing">Pricing & Commission</a></li>
-                        <li><a href="pages/buyer-guide.html#safety">Safety Tips</a></li>
-                        <li><a href="pages/about.html">About Us</a></li>
+                        <li><a href="/pages/help.html">Help Center</a></li>
+                        <li><a href="/pages/contact.html">Contact Us</a></li>
+                        <li><a href="/pages/buyer-guide.html">Buyer Guide</a></li>
+                        <li><a href="/pages/acceptable-use.html">Community Guidelines</a></li>
+                        <li><a href="/pages/contact.html">Report an Issue</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h4>Support</h4>
+                    <h3>Company</h3>
                     <ul>
-                        <li><a href="pages/help.html">Help Center</a></li>
-                        <li><a href="pages/contact.html">Contact Us</a></li>
-                        <li><a href="pages/buyer-guide.html">Buyer Guide</a></li>
-                        <li><a href="pages/acceptable-use.html">Community Guidelines</a></li>
-                        <li><a href="pages/contact.html">Report an Issue</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="pages/about.html">About Us</a></li>
-                        <li><a href="pages/contact.html">Careers</a></li>
-                        <li><a href="pages/contact.html">Press</a></li>
-                        <li><a href="pages/privacy.html">Privacy Policy</a></li>
-                        <li><a href="pages/terms.html">Terms of Service</a></li>
-                        <li><a href="pages/cookie-policy.html">Cookie Policy</a></li>
-                        <li><a href="pages/refund-policy.html">Refund Policy</a></li>
-                        <li><a href="pages/acceptable-use.html">Acceptable Use</a></li>
-                        <li><a href="pages/prohibited-items.html">Prohibited Items</a></li>
+                        <li><a href="/pages/about.html">About Us</a></li>
+                        <li><a href="/pages/contact.html">Careers</a></li>
+                        <li><a href="/pages/contact.html">Press</a></li>
+                        <li><a href="/pages/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/pages/terms.html">Terms of Service</a></li>
+                        <li><a href="/pages/cookie-policy.html">Cookie Policy</a></li>
+                        <li><a href="/pages/refund-policy.html">Refund Policy</a></li>
+                        <li><a href="/pages/acceptable-use.html">Acceptable Use</a></li>
+                        <li><a href="/pages/prohibited-items.html">Prohibited Items</a></li>
                     </ul>
                 </div>
             </div>
@@ -332,12 +336,114 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="config/firebase-config.js"></script>
-    <script src="js/main.js?v=5"></script>
-    <script src="js/product-detail.js?v=4"></script>
-    <script src="js/payment-warnings.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/wishlist.js"></script>
-    <script src="js/chatbot.js?v=9"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/dist/product-detail-WLAJBHVO.js"></script>
+    <script>
+// Header auth sync for the product page.
+// Keeps the header (Checking... -> Sign in / My Account) correct even if the
+// cached main.js is an older version. Silent — no console noise.
+(function(){
+  function syncHeader(u){
+    var lb = document.getElementById('loginBtn');
+    var db = document.getElementById('dashboardBtn');
+    var loader = document.getElementById('authLoader');
+    if (loader) loader.style.display = 'none';
+    if (u) {
+      if (lb) lb.style.display = 'none';
+      if (db) {
+        db.style.display = 'inline-flex';
+        var un = document.getElementById('userName');
+        if (un && (un.textContent.trim() === '' || un.textContent.trim() === 'My Account')) {
+          var name = u.displayName || (u.email ? u.email.split('@')[0] : 'My Account');
+          un.textContent = name;
+        }
+      }
+      var hb = document.getElementById('headerMessagesBtn');
+      if (hb) hb.style.display = 'inline-flex';
+    } else {
+      if (lb) lb.style.display = 'inline-flex';
+      if (db) db.style.display = 'none';
+    }
+  }
+  function run(){
+    try{
+      var auth = (typeof firebaseAuth !== 'undefined' && firebaseAuth) ? firebaseAuth
+               : (typeof firebase !== 'undefined' && firebase.auth ? firebase.auth() : null);
+      if (!auth) return;
+      syncHeader(auth.currentUser);                 // instant (persisted session)
+      auth.onAuthStateChanged(function(u){ syncHeader(u); });  // and after restore
+    }catch(e){}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+    </script>
+    <script src="/js/payment-warnings.js"></script>
+    <script src="/js/variants.js?v=1"></script>
+    <script src="/js/cart-prices.js?v=2"></script>
+    <script src="/js/cart.js?v=7"></script>
+    <script src="/js/wishlist-cloud.js?v=1"></script>
+    <script src="/js/wishlist.js?v=5"></script>
+    <script src="/js/for-you.js?v=2"></script>
+    <script src="/js/ios-a2hs.js?v=1"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

@@ -1,0 +1,245 @@
+/* ============================================================================
+   Sankofa Market — accessibility & touch-target layer  (Section 6)
+   Loaded by EVERY page, after main.css, so it also covers the pages that use
+   their own stylesheet (auth, admin, wallet…).
+
+   Two jobs:
+     1. Give small controls a finger-friendly hit area (WCAG 2.5.5 asks for 44px).
+        The visible design is unchanged — only the tappable box grows.
+     2. Fix the handful of text colours that failed WCAG AA contrast, without
+        changing the brand palette.
+   ========================================================================== */
+
+/* ---------- 1. hit areas ------------------------------------------------- */
+
+/* icon-only buttons: cart, wishlist, search toggle, password eye, carousel arrows, close X */
+.cart-icon-btn, .wishlist-icon-btn, .toggle-password,
+.carousel-btn, .cart-close, .wishlist-close, .mobile-filters-close,
+.filters-close, .modal-close, .drawer-close {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* header / hero buttons */
+.btn, .btn-secondary, .btn-outline, .search-hero-btn, .mobile-filter-toggle,
+.sort-select, .header-premium-btn, .tab-btn, .duration-btn, .payment-method-option {
+    min-height: 40px;
+}
+.search-hero-btn, .mobile-filter-toggle, .sort-select { min-height: 44px; }
+.header-premium-btn { padding: 7px 10px; }
+
+/* links: keep the text the same size, grow the touch box */
+footer a, .footer a, .footer-col a, .footer-bottom a, .footer-links a,
+.footer-column a, .social-links a, .view-all, .tap-link,
+.auth-card a, .auth-links a, .form-links a, .login-footer a, .signup-link a {
+    display: inline-block;
+    padding: 8px 2px;
+}
+.social-links a {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.category-link, .category-nav a, .app-nav-item { min-height: 44px; }
+.carousel-dots { gap: 2px; }
+.carousel-dot {
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    position: relative;
+}
+.carousel-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+.carousel-dot.active::before { background: #fff; border-color: #fff; transform: scale(1.2); }
+.carousel-dot:hover::before { background: rgba(255, 255, 255, 0.5); border-color: #fff; }
+
+/* ---------- 2. contrast ------------------------------------------------- */
+
+:root {
+    --a11y-muted: #5f6b7a;      /* 5.6:1 on white — body/secondary text */
+    --a11y-warn: #b45309;        /* 4.9:1 on white — safety/hint text */
+}
+
+/* small grey text on white: the old #999/#767676 sat at 2.8–4.2:1 */
+.product-condition, .product-meta, .listing-meta, .view-count, .time-ago,
+.muted-text, .helper-text, .sub-text, .empty-state p, .small-note {
+    color: var(--a11y-muted);
+}
+
+/* safety tips used orange #f57f17 (2.5:1) */
+.safety-tips, .safety-tips h4, .safety-tips li, .safety-note, .safety-card p {
+    color: var(--a11y-warn);
+}
+
+/* the footer sits on a DARK panel, so its text must be light, not darkish grey */
+.footer, .site-footer { color: #fff; }
+.footer p, .footer-bottom, .footer-bottom p, .footer-bottom span,
+.footer .footer-note, .site-footer .copyright {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+.footer a, .site-footer a { color: rgba(255, 255, 255, 0.85); }
+.footer a:hover, .site-footer a:hover { color: #f5af02; }
+
+/* keep the small "TEST"/badge texts readable */
+.badge, .chip, .pill { font-weight: 700; }
+
+/* ---------- 3. focus visibility (keyboard users) ----------------------- */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid #0064d2;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+/* ---------- 4. white text on the gold "Sell" buttons ---------------------
+   White on #f5af02 is only 1.9:1 — the eBay-gold buttons now use near-black
+   text (8.9:1), which is also how eBay itself styles them. */
+.btn-secondary, .btn-secondary:hover,
+.btn.btn-secondary, .btn.btn-outline:hover {
+    color: #191919;
+}
+.btn-secondary i, .btn.btn-secondary i { color: #191919; }
+
+/* ---------- 5. extras found by the sweep -------------------------------- */
+
+/* footer links & small inline links: 44px touch box */
+footer a, .footer a, .footer-col a, .footer-bottom a, .footer-links a,
+.footer-column a, .view-all, .tap-link {
+    min-height: 44px;
+    align-items: center;
+}
+.footer-col a, .footer a { display: inline-flex; }
+
+/* the search hero title is styled text, not a heading */
+.search-hero-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 0.35rem;
+    line-height: 1.2;
+}
+@media (max-width: 480px) { .search-hero-title { font-size: 1.3rem; } }
+
+/* gold badges with white text (2:1) get dark text instead */
+.product-badge, .sankofa-store-badge, .badge-featured, .boost-badge,
+.product-card .badge, .listing-badge {
+    color: #191919 !important;
+    font-weight: 800;
+}
+.product-badge i, .sankofa-store-badge i { color: #191919 !important; }
+
+/* header "Go Premium" chip: keep it to one line and finger-sized */
+.header-premium-btn {
+    max-width: 108px;
+    min-width: 44px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---------- 6. auth pages -------------------------------------------------
+   These use .login-card / .form-options / .login-footer (not .auth-card), and
+   the background is a dark photo — so the secondary text needs to be LIGHT. */
+.login-card a, .form-options a, .login-footer a, .login-card .signup-link a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 2px;
+}
+.form-options { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.form-options a { color: #a9ccff; font-weight: 600; }
+.app-bottom-nav .app-nav-item { min-height: 48px; }
+
+/* ---------- 7. account pages: tabs and sidebar links --------------------- */
+.filter-tab, .tab-btn, .order-filter, .status-tab, .chip-btn {
+    min-height: 44px;
+    padding: 0.6rem 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar .nav-item, .account-sidebar .nav-item, .dashboard-sidebar .nav-item,
+.nav-item, .logout-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+.link-btn, .text-btn, .btn-link { min-height: 44px; display: inline-flex; align-items: center; }
+
+
+/* ---------- 8. last few small links --------------------------------------- */
+/* "Sign in to list something!", breadcrumbs, auth legal links, register links */
+.breadcrumb a, .breadcrumbs a, .product-breadcrumb a { min-height: 40px; display: inline-flex; align-items: center; }
+.form-check a, .terms-line a, .legal-links a, .signup-line a, .auth-links a,
+.login-footer a, .signup-link a, .card-footer a, .empty-state a { min-height: 44px; display: inline-flex; align-items: center; }
+p a, li a { padding: 10px 2px; display: inline; }
+p a.btn, li a.btn { display: inline-flex; }
+.auth-links a, .login-footer a { min-height: 44px; }
+.wallet-quick-link, .quick-link { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ---------- 9. final few (breadcrumbs, legal links, inline CTAs) ---------- */
+.breadcrumb-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+}
+/* links inside a sentence must NOT become flex blocks (that breaks the line) —
+   grow the box with padding instead, which keeps the text flowing naturally */
+.terms-line a, .agree-terms a, form span a, .p-inline a,
+.register-card span a, .login-card span a {
+    display: inline;
+    padding: 12px 3px;
+    line-height: 1;
+}
+/* the bottom app-nav "Shop/Home/Sell..." items */
+.app-nav-item, .app-bottom-nav a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* inline call-to-action links inside paragraphs (empty states) */
+p a.btn-inline, .empty-state p a, p a.cta-inline {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
+}
+
+/* register / login page footers use their own class names */
+.register-card a, .signin-link a, .register-footer a, .terms-group a,
+.login-card a, .login-footer a, .forgot-link, #forgotPasswordLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 3px;
+}
+
+/* wallet cards: the "Shop" / "Top up" buttons live in inline-styled anchors */
+.balance-card a, .wallet-card a, .wallet-hero a, .topup-card a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

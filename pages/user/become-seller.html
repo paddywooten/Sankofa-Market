@@ -3,440 +3,374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Become a Seller - Sankofa Market</title>
-    <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="../../css/user-dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Sell on Sankofa Market — plans, fees and Premium tiers.">
+    <title>Go Premium — Sankofa Market</title>
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/user-dashboard.css?v=17">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
     <style>
-        .verification-container {
-            max-width: 700px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .verification-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .verification-header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .verification-header p {
-            color: var(--text-secondary);
-        }
-        
-        .verification-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 8px;
-        }
-        
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .step-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        
-        .step-label {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 1rem;
-        }
-        
-        .upload-area:hover {
-            border-color: var(--primary-color);
-            background: #f9f9f9;
-        }
-        
-        .upload-area.has-file {
-            border-color: var(--success-color);
-            background: #f0fdf4;
-        }
-        
-        .upload-area i {
-            font-size: 2rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .upload-area.has-file i {
-            color: var(--success-color);
-        }
-        
-        .upload-preview {
-            max-width: 200px;
-            max-height: 200px;
-            margin: 1rem auto;
-            border-radius: 8px;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        
-        .info-box {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-        
-        .info-box h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .info-box ul {
-            margin: 0.5rem 0 0 1.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .info-box li {
-            margin-bottom: 0.3rem;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .submit-btn:hover {
-            background: var(--primary-dark);
-        }
-        
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .already-verified {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: #f0fdf4;
-            border-radius: 12px;
-            border: 2px solid var(--success-color);
-        }
-        
-        .already-verified i {
-            font-size: 3rem;
-            color: var(--success-color);
-            margin-bottom: 1rem;
-        }
-        
-        .already-verified h2 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .already-verified p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
+        .premium-container { max-width: 1100px; margin: 0 auto; }
+        .premium-header { text-align:center; margin-bottom:1.2rem; }
+        .premium-header h1 { font-size:1.9rem; margin-bottom:0.3rem; }
+        .premium-header p { color:#64748b; max-width:620px; margin:0 auto; font-size:0.92rem; }
+        .duration-switch { display:flex; justify-content:center; gap:0.5rem; margin:1.2rem 0 1.6rem; flex-wrap:wrap; }
+        .duration-btn { padding:0.55rem 1.1rem; border-radius:999px; border:1.5px solid #e2e8f0; background:white; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.15s; }
+        .duration-btn.active { background:#0064d2; color:white; border-color:#0064d2; box-shadow:0 2px 8px rgba(0,100,210,0.2); }
+        .duration-btn .save { font-size:0.65rem; background:#22c55e; color:white; padding:0.1rem 0.35rem; border-radius:999px; margin-left:0.3rem; }
+        .tier-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+        .tier-card { background:white; border-radius:14px; padding:1.4rem; border:2px solid #e5e7eb; display:flex; flex-direction:column; position:relative; transition:transform 0.15s, box-shadow 0.15s; }
+        .tier-card:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.06); }
+        .tier-card.free { border-style:dashed; }
+        .tier-card.popular { border-color:#f5af02; box-shadow:0 6px 20px rgba(245,175,2,0.12); }
+        .tier-card.popular::before { content:"MOST POPULAR"; position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:#f5af02; color:#191919; font-size:0.62rem; font-weight:800; letter-spacing:0.06em; padding:0.18rem 0.6rem; border-radius:999px; }
+        .tier-card.diamond { border-color:#7c3aed; background:linear-gradient(135deg,#faf5ff 0%,#f5f3ff 100%); }
+        .tier-top { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.6rem; }
+        .tier-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0; }
+        .tier-name { font-weight:800; font-size:1rem; line-height:1.1; }
+        .tier-name small { display:block; font-weight:600; font-size:0.72rem; color:#64748b; margin-top:0.1rem; }
+        .tier-price { font-size:1.55rem; font-weight:800; margin:0.5rem 0 0.15rem; }
+        .tier-price small { font-size:0.75rem; font-weight:500; color:#64748b; }
+        .tier-price .per { font-size:0.72rem; color:#64748b; font-weight:600; }
+        .tier-boost { display:inline-flex; align-items:center; gap:0.3rem; font-size:0.7rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:999px; margin-top:0.3rem; }
+        .boost-1 { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
+        .boost-2 { background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; }
+        .boost-3 { background:#fce7f3; color:#9d174d; border:1px solid #fbcfe8; }
+        .boost-4 { background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%); color:#5b21b6; border:1px solid #c4b5fd; }
+        .tier-features { list-style:none; padding:0; margin:0.9rem 0 1rem; flex:1; }
+        .tier-features li { display:flex; gap:0.45rem; font-size:0.82rem; margin-bottom:0.45rem; color:#334155; line-height:1.3; }
+        .tier-features li i { color:#16a34a; font-size:0.75rem; margin-top:0.18rem; flex-shrink:0; }
+        .tier-features li.muted { color:#9ca3af; }
+        .tier-features li.muted i { color:#cbd5e1; }
+        .tier-btn { width:100%; padding:0.75rem; border-radius:10px; font-weight:800; font-size:0.88rem; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.4rem; margin-top:auto; }
+        .tier-btn.free { background:#f1f5f9; color:#334155; border:1.5px solid #e2e8f0; }
+        .tier-btn.free:hover { background:#e2e8f0; }
+        .tier-btn.bronze { background:#92400e; color:white; }
+        .tier-btn.silver { background:#64748b; color:white; }
+        .tier-btn.gold { background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%); color:white; }
+        .tier-btn.diamond { background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%); color:white; box-shadow:0 4px 14px rgba(124,58,237,0.25); }
+        .tier-btn:disabled { opacity:0.6; cursor:not-allowed; }
+        .already-premium { text-align:center; padding:2.2rem 1.5rem; background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%); border:2px solid #f5af02; border-radius:14px; }
+        .already-premium i { font-size:2.6rem; color:#f59e0b; margin-bottom:0.8rem; }
+        .info-strip { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:0.9rem 1rem; display:flex; gap:0.7rem; font-size:0.82rem; color:#475569; margin-bottom:1.2rem; }
+        .info-strip i { color:#0064d2; margin-top:0.15rem; }
+        @media(max-width:640px){ .tier-grid{grid-template-columns:1fr;} .duration-switch{gap:0.35rem;} .duration-btn{padding:0.5rem 0.85rem; font-size:0.8rem;} }
     </style>
 </head>
 <body>
-    <div class="user-dashboard">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <a href="../../index.html">
-                    <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
-                </a>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-item">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a href="orders.html" class="nav-item">
-                    <i class="fas fa-shopping-bag"></i> My Orders
-                </a>
-                <a href="listings.html" class="nav-item">
-                    <i class="fas fa-box"></i> My Listings
-                </a>
-                <a href="messages.html" class="nav-item">
-                    <i class="fas fa-comments"></i> Messages
-                </a>
-                <a href="wishlist.html" class="nav-item">
-                    <i class="fas fa-heart"></i> Wishlist
-                </a>
-                <a href="become-seller.html" class="nav-item active">
-                    <i class="fas fa-store"></i> Become a Seller
-                </a>
-                <a href="profile.html" class="nav-item">
-                    <i class="fas fa-user"></i> Profile
-                </a>
-                <a href="../../index.html" class="nav-item">
-                    <i class="fas fa-home"></i> Back to Market
-                </a>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <div class="verification-container" id="verificationContainer">
-                <div class="verification-header">
-                    <h1><i class="fas fa-store"></i> Become a Verified Seller</h1>
-                    <p>Submit your documents to start selling on Sankofa Market</p>
-                </div>
-
-                <div class="verification-steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-label">Upload Documents</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-label">Submit for Review</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-label">Start Selling</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3><i class="fas fa-info-circle"></i> Requirements</h3>
-                    <ul>
-                        <li>Valid Ghana Card (front side)</li>
-                        <li>Clear passport-style photo of yourself</li>
-                        <li>Ghana Card number (format: GHA-XXXXXXXXX-X)</li>
-                    </ul>
-                </div>
-
-                <form id="verificationForm">
-                    <div class="form-group">
-                        <label>Ghana Card (Front Side) *</label>
-                        <div class="upload-area" id="ghanaCardUpload">
-                            <i class="fas fa-id-card"></i>
-                            <p>Click to upload Ghana Card (front side)</p>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary);">JPG, PNG (max 5MB)</p>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo"><a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a></div>
+            <div class="header-search"><form class="search-form" action="../../search.html" method="GET"><input type="text" name="q" placeholder="Search..." class="search-input"><button type="submit" class="search-btn"><i class="fas fa-search"></i></button></form></div>
+            <div class="header-actions"><a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a><a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a></div>
+        </div>
+    </header>
+    <main class="user-dashboard">
+        <div class="container">
+            <div class="dashboard-layout">
+                <aside class="dashboard-sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="/pages/user/dashboard.html" class="nav-item"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+                        <a href="/pages/user/profile.html" class="nav-item"><i class="fas fa-user"></i> <span>My Profile</span></a>
+                        <a href="/pages/user/orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i> <span>My Orders</span></a>
+                        <a href="/pages/user/listings.html" class="nav-item"><i class="fas fa-box"></i> <span>My Listings</span></a>
+                        
+                        <a href="/pages/user/my-store.html" class="nav-item">
+                            <i class="fas fa-store"></i> <span>My Store</span>
+                        </a>
+                        <a href="/pages/user/messages.html" class="nav-item"><i class="fas fa-comments"></i> <span>Messages</span></a>
+                        <a href="/pages/user/notifications" class="nav-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Alerts</span>
+                            <span class="nav-badge" id="navNotifBadge" style="display:none;">0</span>
+                        </a>
+                        <a href="/pages/user/wishlist.html" class="nav-item"><i class="fas fa-heart"></i> <span>Wishlist</span></a>
+                        <a href="/pages/user/become-seller.html" class="nav-item active"><i class="fas fa-crown"></i> <span>Premium</span></a>
+                        <a href="/index.html" class="nav-item"><i class="fas fa-arrow-left"></i> <span>Back to Market</span></a>
+                    </nav>
+                </aside>
+                <div class="dashboard-content">
+                    <div class="premium-container" id="premiumContainer">
+                        <div class="premium-header">
+                            <h1><i class="fas fa-crown" style="color:#f59e0b;"></i> Choose Your Premium Plan</h1>
+                            <p>Free Starter: <strong>10 listings</strong> at 5% commission. Premium: <strong>30 to unlimited listings</strong> at only 0–2% + boosted ads — more pay = more reach, more sales.</p>
                         </div>
-                        <input type="file" id="ghanaCardFile" accept="image/*" style="display: none;">
-                    </div>
 
-                    <div class="form-group">
-                        <label for="ghanaCardNumber">Ghana Card Number *</label>
-                        <input type="text" id="ghanaCardNumber" placeholder="GHA-XXXXXXXXX-X" pattern="GHA-[0-9]{9}-[0-9]" title="Format: GHA-123456789-0" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Passport Photo *</label>
-                        <div class="upload-area" id="passportUpload">
-                            <i class="fas fa-user"></i>
-                            <p>Click to upload passport-style photo</p>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary);">Clear photo of your face (JPG, PNG, max 5MB)</p>
+                        <div class="info-strip">
+                            <i class="fas fa-info-circle"></i>
+                            <div><strong>How boosting works:</strong> Bronze 2× reach, Silver 4×, Gold 6×, Diamond 10×. Your listings appear first in search, homepage and categories. Longer duration = bigger discount.</div>
                         </div>
-                        <input type="file" id="passportFile" accept="image/*" style="display: none;">
-                    </div>
 
-                    <div class="info-box" style="background: #fef3c7; border-color: #f59e0b;">
-                        <h3><i class="fas fa-shield-alt"></i> Important Notes</h3>
-                        <ul>
-                            <li>Documents will be reviewed within 24-48 hours</li>
-                            <li>Your Ghana Card information is encrypted and secure</li>
-                            <li>Only approved sellers can list products</li>
-                            <li>False information will result in account suspension</li>
-                        </ul>
-                    </div>
+                        <div class="duration-switch" id="durationSwitch">
+                            <button class="duration-btn active" data-months="1" onclick="setDuration(1)">1 Month</button>
+                            <button class="duration-btn" data-months="3" onclick="setDuration(3)">3 Months <span class="save">Save 10%</span></button>
+                            <button class="duration-btn" data-months="6" onclick="setDuration(6)">6 Months <span class="save">Save 15%</span></button>
+                        </div>
 
-                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                        <i class="fas fa-paper-plane"></i> Submit for Verification
-                    </button>
-                </form>
+                        <div class="tier-grid">
+                            <!-- FREE -->
+                            <div class="tier-card free">
+                                <div class="tier-top">
+                                    <div class="tier-icon" style="background:#f1f5f9; color:#64748b;"><i class="fas fa-store"></i></div>
+                                    <div><div class="tier-name">Starter<small>Free forever</small></div></div>
+                                </div>
+                                <div class="tier-price">GHS 0 <small>/ forever</small></div>
+                                <div class="tier-boost" style="background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;">No boost</div>
+                                <ul class="tier-features">
+                                    <li><i class="fas fa-check"></i> Up to <strong>2 active</strong> listings</li>
+                                    <li><i class="fas fa-check"></i> Chat with buyers</li>
+                                    <li class="muted"><i class="fas fa-minus"></i> No verified badge</li>
+                                    <li class="muted"><i class="fas fa-minus"></i> 5% commission</li>
+                                    <li class="muted"><i class="fas fa-minus"></i> No boost</li>
+                                    <li><i class="fas fa-check"></i> 📧 Price-drop emails on saved items</li>
+                                    <li class="muted"><i class="fas fa-minus"></i> No 🔔 bell price-drop alerts</li>
+                                </ul>
+                                <button class="tier-btn free" onclick="activateFree()"><i class="fas fa-check"></i> Continue Free</button>
+                            </div>
+
+                            <!-- BRONZE -->
+                            <div class="tier-card" id="card-bronze">
+                                <div class="tier-top">
+                                    <div class="tier-icon" style="background:#fff7ed; color:#9a3412; border:1px solid #fed7aa;"><i class="fas fa-medal" style="color:#ea580c;"></i></div>
+                                    <div><div class="tier-name" style="color:#9a3412;">Bronze<small>Starter boost</small></div></div>
+                                </div>
+                                <div class="tier-price" data-base1="45" data-base3="120" data-base6="220">GHS 45 <small class="per">/ 1 mo</small></div>
+                                <div class="tier-boost boost-1"><i class="fas fa-rocket"></i> 2× Reach</div>
+                                <ul class="tier-features">
+                                    <li><i class="fas fa-check"></i> <strong>Unlimited</strong> listings</li>
+                                    <li><i class="fas fa-check"></i> Verified badge</li>
+                                    <li><i class="fas fa-check"></i> <strong>2×</strong> more buyers see you</li>
+                                    <li><i class="fas fa-check"></i> <strong>2% commission</strong> — lowest fee!</li>
+                                    <li><i class="fas fa-check"></i> 🔨 Auction tools: reserve price + Buy-It-Now</li>
+                                    <li><i class="fas fa-check"></i> Appears above Free</li>
+                                    <li><i class="fas fa-check"></i> 🔔 Price-drop alerts on your wishlist items</li>
+                                </ul>
+                                <button class="tier-btn bronze" onclick="buyTier('bronze')"><i class="fas fa-crown"></i> Go Bronze</button>
+                            </div>
+
+                            <!-- SILVER -->
+                            <div class="tier-card" id="card-silver">
+                                <div class="tier-top">
+                                    <div class="tier-icon" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1;"><i class="fas fa-medal" style="color:#94a3b8;"></i></div>
+                                    <div><div class="tier-name">Silver<small>Most chosen</small></div></div>
+                                </div>
+                                <div class="tier-price" data-base1="79" data-base3="210" data-base6="390">GHS 79 <small class="per">/ 1 mo</small></div>
+                                <div class="tier-boost boost-2"><i class="fas fa-rocket"></i> 4× Reach</div>
+                                <ul class="tier-features">
+                                    <li><i class="fas fa-check"></i> <strong>Unlimited</strong> listings</li>
+                                    <li><i class="fas fa-check"></i> Verified badge + priority</li>
+                                    <li><i class="fas fa-check"></i> <strong>4×</strong> more buyers</li>
+                                    <li><i class="fas fa-check"></i> <strong>1.5% commission</strong></li>
+                                    <li><i class="fas fa-check"></i> 🔨 Auction tools: reserve price + Buy-It-Now</li>
+                                    <li><i class="fas fa-check"></i> Featured 2×/week</li>
+                                    <li><i class="fas fa-check"></i> 📣 Monthly follower broadcast</li>
+                                    <li><i class="fas fa-check"></i> ⚡ Quick replies + 🌙 auto-away</li>
+                                    <li><i class="fas fa-check"></i> 📊 Shop analytics page</li>
+                                    <li><i class="fas fa-check"></i> 🔔 Price-drop alerts on your wishlist items</li>
+                                </ul>
+                                <button class="tier-btn silver" onclick="buyTier('silver')"><i class="fas fa-crown"></i> Go Silver</button>
+                            </div>
+
+                            <!-- GOLD -->
+                            <div class="tier-card popular" id="card-gold">
+                                <div class="tier-top">
+                                    <div class="tier-icon" style="background:#fefce8; color:#854d0e; border:1px solid #fde68a;"><i class="fas fa-trophy" style="color:#eab308;"></i></div>
+                                    <div><div class="tier-name" style="color:#854d0e;">Gold<small>Best value</small></div></div>
+                                </div>
+                                <div class="tier-price" data-base1="129" data-base3="350" data-base6="650">GHS 129 <small class="per">/ 1 mo</small></div>
+                                <div class="tier-boost boost-3"><i class="fas fa-rocket"></i> 6× Reach</div>
+                                <ul class="tier-features">
+                                    <li><i class="fas fa-check"></i> <strong>Unlimited</strong> listings</li>
+                                    <li><i class="fas fa-check"></i> Verified badge + top rank</li>
+                                    <li><i class="fas fa-check"></i> <strong>6×</strong> more buyers</li>
+                                    <li><i class="fas fa-check"></i> <strong>1.2% commission</strong></li>
+                                    <li><i class="fas fa-check"></i> 🔨 Auction tools: reserve price + Buy-It-Now</li>
+                                    <li><i class="fas fa-check"></i> Daily featured + homepage</li>
+                                    <li><i class="fas fa-check"></i> All Silver tools (broadcast, quick replies, auto-away, analytics)</li>
+                                    <li><i class="fas fa-check"></i> ⚡ Flash sales with countdown ribbon + homepage <strong>Flash Deals</strong> rail</li>
+                                    <li><i class="fas fa-check"></i> 🔔 Price-drop alerts on your wishlist items</li>
+                                </ul>
+                                <button class="tier-btn gold" onclick="buyTier('gold')"><i class="fas fa-crown"></i> Go Gold</button>
+                            </div>
+
+                            <!-- DIAMOND -->
+                            <div class="tier-card diamond" id="card-diamond">
+                                <div class="tier-top">
+                                    <div class="tier-icon" style="background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd;"><i class="fas fa-gem" style="color:#7c3aed;"></i></div>
+                                    <div><div class="tier-name" style="color:#5b21b6;">Diamond<small>Maximum sales</small></div></div>
+                                </div>
+                                <div class="tier-price" data-base1="199" data-base3="540" data-base6="990">GHS 199 <small class="per">/ 1 mo</small></div>
+                                <div class="tier-boost boost-4"><i class="fas fa-rocket"></i> 10× Reach</div>
+                                <ul class="tier-features">
+                                    <li><i class="fas fa-check"></i> <strong>Unlimited</strong> listings</li>
+                                    <li><i class="fas fa-check"></i> Diamond badge + #1 rank</li>
+                                    <li><i class="fas fa-check"></i> <strong>10×</strong> more buyers</li>
+                                    <li><i class="fas fa-check"></i> <strong>0% commission</strong> — keep every cedi!</li>
+                                    <li><i class="fas fa-check"></i> 🔨 Auction tools: reserve price + Buy-It-Now</li>
+                                    <li><i class="fas fa-check"></i> 💰 Paid in <strong>24h</strong> (escrow 2× faster)</li>
+                                    <li><i class="fas fa-check"></i> Homepage hero + top everywhere</li>
+                                    <li><i class="fas fa-check"></i> All Silver tools (broadcast, quick replies, auto-away, analytics)</li>
+                                    <li><i class="fas fa-check"></i> ⚡ Flash sales with countdown ribbon + homepage <strong>Flash Deals</strong> rail</li>
+                                    <li><i class="fas fa-check"></i> 🔔 Price-drop alerts on your wishlist items</li>
+                                </ul>
+                                <button class="tier-btn diamond" onclick="buyTier('diamond')"><i class="fas fa-gem"></i> Go Diamond</button>
+                            </div>
+                        </div>
+                        <p style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:0.5rem;">All Premium plans auto-renew. Cancel anytime from Dashboard. Pay with Mobile Money or Card via Paystack.</p>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
-
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2026 Sankofa Market. All rights reserved.</p><p>Made with <i class="fas fa-heart"></i> in Ghana 🇬🇭</p></div></div></footer>
+    <!-- Paystack checkout is loaded on demand by js/wallet.js (ensurePaystackSdk) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="../../config/firebase-config.js"></script>
-    <script src="../../js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+    <script src="/js/watchdog.js?v=2"></script>
     <script>
-        // Check if user is logged in
-        firebase.auth().onAuthStateChanged(async function(user) {
-            if (!user) {
-                window.location.href = '../auth/login.html';
-                return;
-            }
+        var DURATION = 1;
+        var PRICES = {
+            bronze: {1:45, 3:120, 6:220},
+            silver: {1:79, 3:210, 6:390},
+            gold: {1:129, 3:350, 6:650},
+            diamond: {1:199, 3:540, 6:990}
+        };
+        var BOOST = {bronze:2, silver:4, gold:6, diamond:10};
+        var COMMISSION = {bronze:2, silver:1.5, gold:1.2, diamond:0};
+        var PAYSTACK_PUBLIC_KEY = '';
 
-            // Check if user is already verified
-            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-            if (userDoc.exists && userDoc.data().verified === true) {
-                document.getElementById('verificationContainer').innerHTML = `
-                    <div class="already-verified">
+        function setDuration(m){
+            DURATION = m;
+            document.querySelectorAll('.duration-btn').forEach(function(b){ b.classList.toggle('active', parseInt(b.dataset.months)===m); });
+            ['bronze','silver','gold','diamond'].forEach(function(tier){
+                var card = document.getElementById('card-'+tier);
+                var priceEl = card.querySelector('.tier-price');
+                var price = PRICES[tier][m];
+                priceEl.innerHTML = 'GHS ' + price + ' <small class="per">/ ' + m + ' mo' + (m>1?'s':'') + '</small>';
+            });
+        }
+
+        firebase.auth().onAuthStateChanged(async function(user){
+            if (!user) { window.location.href='../auth/login.html'; return; }
+            // Load Paystack key
+            try {
+                var d = await firebase.firestore().collection('settings').doc('premium').get();
+                if(d.exists && d.data().paystackPublicKey) PAYSTACK_PUBLIC_KEY = d.data().paystackPublicKey;
+                // Allow overriding prices from Firestore
+                if(d.exists && d.data().prices) PRICES = d.data().prices;
+                // Refresh displayed prices
+                setDuration(DURATION);
+            } catch(e){}
+            try {
+                var ps = await firebase.firestore().collection('settings').doc('paystack').get();
+                if(!PAYSTACK_PUBLIC_KEY && ps.exists && (ps.data().publicKey || ps.data().paystackPublicKey)) PAYSTACK_PUBLIC_KEY = ps.data().publicKey || ps.data().paystackPublicKey;
+            } catch(e){}
+            var doc = await firebase.firestore().collection('users').doc(user.uid).get();
+            var data = doc.exists ? doc.data() : {};
+            var expiry = data.premiumExpiry ? (data.premiumExpiry.toDate ? data.premiumExpiry.toDate() : new Date(data.premiumExpiry)) : null;
+            var isPremium = data.isPremium && expiry && expiry > new Date();
+            if (isPremium) {
+                var tierName = (data.premiumTier||'premium').toUpperCase();
+                document.getElementById('premiumContainer').innerHTML = `
+                    <div class="already-premium">
+                        <div style="display:inline-flex; align-items:center; gap:0.4rem; background:${tierColor(data.premiumTier)}; color:white; padding:0.3rem 0.8rem; border-radius:999px; font-size:0.75rem; font-weight:800; margin-bottom:0.8rem;"><i class="fas fa-crown"></i> ${tierName} Active</div>
                         <i class="fas fa-check-circle"></i>
-                        <h2>You're Already a Verified Seller!</h2>
-                        <p>You can now list products and start selling on Sankofa Market.</p>
-                        <a href="../../publish.html" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 2rem; background: var(--primary-color); color: white; text-decoration: none; border-radius: 8px;">
-                            <i class="fas fa-plus"></i> List a Product
-                        </a>
-                    </div>
-                `;
+                        <h2>You're Premium — ${tierName}!</h2>
+                        <p>Boost ${BOOST[data.premiumTier]||''}×, ${COMMISSION[data.premiumTier] != null ? COMMISSION[data.premiumTier] : 5}% commission — Premium 0-2% rate${(data.premiumTier||'').toLowerCase() === 'diamond' ? ' • Escrow releases in 24h (2× faster)' : ''}. Valid until ${expiry.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}.</p>
+                        <a href="/publish.html" style="display:inline-block; padding:0.85rem 1.6rem; background:#f5af02; color:#191919; text-decoration:none; border-radius:10px; font-weight:800; margin-right:0.5rem;"><i class="fas fa-plus"></i> List a Product</a>
+                        <a href="/pages/user/dashboard.html" style="display:inline-block; padding:0.85rem 1.6rem; background:white; border:1.5px solid #e2e8f0; color:#334155; text-decoration:none; border-radius:10px; font-weight:700;">Dashboard</a>
+                    </div>`;
+            }
+        });
+
+        function tierColor(t){ var c={bronze:'#92400e',silver:'#64748b',gold:'#b45309',diamond:'#7c3aed'}; return c[t]||'#f5af02'; }
+
+        function activateFree(){
+            var btn = document.querySelector('.tier-card.free .tier-btn');
+            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Activating...'; btn.disabled=true;
+            var user = firebase.auth().currentUser;
+            if(!user) return window.location.href='../auth/login.html';
+            firebase.firestore().collection('users').doc(user.uid).set({sellerTier:'starter', freeStarterActivatedAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true}).then(function(){
+                btn.innerHTML='<i class="fas fa-check"></i> Activated — Go Sell!'; setTimeout(function(){ window.location.href='../../publish.html'; },900);
+            }).catch(function(err){ alert('Could not activate: '+err.message); btn.innerHTML='<i class="fas fa-check"></i> Continue Free'; btn.disabled=false; });
+        }
+
+        function ensurePaystackSdk(timeoutMs){
+            return new Promise(function(resolve){
+                if(typeof PaystackPop!=='undefined') return resolve(true);
+                if(window.__paystackLoading){ window.__paystackLoading.push(resolve); return; }
+                window.__paystackLoading=[resolve];
+                var finish=function(ok){ var w=window.__paystackLoading||[]; window.__paystackLoading=null; w.forEach(function(f){try{f(ok);}catch(e){}}); };
+                var tag=document.createElement('script');
+                tag.src='https://js.paystack.co/v1/inline.js'; tag.async=true;
+                tag.onload=function(){ finish(typeof PaystackPop!=='undefined'); };
+                tag.onerror=function(){ finish(false); };
+                document.head.appendChild(tag);
+                setTimeout(function(){ finish(typeof PaystackPop!=='undefined'); }, timeoutMs||10000);
+            });
+        }
+
+        async function buyTier(tier){
+            var user = firebase.auth().currentUser;
+            if(!user) return window.location.href='../auth/login.html';
+            var price = PRICES[tier][DURATION];
+            var btn = document.querySelector('#card-'+tier+' .tier-btn');
+            var email = user.email;
+            var orig = btn ? btn.innerHTML : '';
+
+            // No demo mode any more: a tier may only be activated by a real, verified payment.
+            if(!PAYSTACK_PUBLIC_KEY){
+                alert('Card payments are unavailable right now (the payment gateway is not configured). Please try again later or email sankofamarketgh@gmail.com.');
                 return;
             }
+            if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Loading secure checkout...'; }
+            var sdkOk = await ensurePaystackSdk();
+            if(btn){ btn.disabled=false; btn.innerHTML=orig; }
+            if(!sdkOk){ alert('Could not open the secure checkout — please check your connection and try again. Nothing was charged.'); return; }
 
-            // Set up file uploads
-            const ghanaCardUpload = document.getElementById('ghanaCardUpload');
-            const ghanaCardFile = document.getElementById('ghanaCardFile');
-            const passportUpload = document.getElementById('passportUpload');
-            const passportFile = document.getElementById('passportFile');
-            const submitBtn = document.getElementById('submitBtn');
-
-            let ghanaCardData = null;
-            let passportData = null;
-
-            ghanaCardUpload.addEventListener('click', () => ghanaCardFile.click());
-            passportUpload.addEventListener('click', () => passportFile.click());
-
-            ghanaCardFile.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('File size must be less than 5MB');
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        ghanaCardData = e.target.result;
-                        ghanaCardUpload.classList.add('has-file');
-                        ghanaCardUpload.innerHTML = `
-                            <img src="${e.target.result}" class="upload-preview" alt="Ghana Card">
-                            <p style="color: var(--success-color); font-weight: 600;">✓ Ghana Card uploaded</p>
-                        `;
-                        checkFormValidity();
-                    };
-                    reader.readAsDataURL(file);
-                }
+            var handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: email,
+                amount: Math.round(price*100),
+                currency: 'GHS',
+                ref: 'SANKOFA-'+tier.toUpperCase()+'-'+user.uid.slice(0,6)+'-'+Date.now(),
+                metadata:{ userId: user.uid, purpose: 'premium_upgrade',
+                           custom_fields:[{display_name:'Sankofa '+tier, variable_name:'tier', value:tier+'_'+DURATION+'m'}]},
+                callback: function(r){ activatePremiumOnServer(tier, r.reference, btn); },
+                onClose: function(){ if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-crown"></i> Go '+tier.charAt(0).toUpperCase()+tier.slice(1); } }
             });
+            if(btn){ btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Opening Paystack...'; btn.disabled=true; }
+            handler.openIframe();
+        }
 
-            passportFile.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('File size must be less than 5MB');
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        passportData = e.target.result;
-                        passportUpload.classList.add('has-file');
-                        passportUpload.innerHTML = `
-                            <img src="${e.target.result}" class="upload-preview" alt="Passport Photo">
-                            <p style="color: var(--success-color); font-weight: 600;">✓ Passport photo uploaded</p>
-                        `;
-                        checkFormValidity();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            function checkFormValidity() {
-                const ghanaCardNumber = document.getElementById('ghanaCardNumber').value.trim();
-                const isValid = ghanaCardData && passportData && ghanaCardNumber && /^GHA-[0-9]{9}-[0-9]$/.test(ghanaCardNumber);
-                submitBtn.disabled = !isValid;
+        /** The server verifies the charge and is the ONLY thing allowed to grant the tier. */
+        function activatePremiumOnServer(tier, reference, btn){
+            if(btn) btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Activating...';
+            if(typeof firebase.functions!=='function'){
+                alert('Your payment reference is '+reference+'. We could not reach the activation service — please refresh the page (Ctrl+Shift+R) and tap your plan again, or email sankofamarketgh@gmail.com with this reference. You have NOT been charged twice.');
+                if(btn) btn.disabled=false;
+                return;
             }
+            var fn = firebase.functions().httpsCallable('activatePremium');
+            fn({ tier: tier, months: DURATION, reference: reference })
+              .then(function(res){
+                  var d = res.data || {};
+                  alert(tier.toUpperCase()+' activated! Boost ' + d.boost + '×, ' + d.commission + '% commission, until ' + new Date(d.expiry).toLocaleDateString('en-GB') + '.');
+                  window.location.reload();
+              })
+              .catch(function(err){
+                  var msg = (err && (err.message || err.details && err.details.message)) || String(err);
+                  alert('Payment done, but activation failed: ' + msg + '\n\nYour reference is ' + reference + ' — email sankofamarketgh@gmail.com and it will be fixed. You have NOT been charged twice.');
+                  if(btn){ btn.disabled=false; }
+              });
+        }
 
-            document.getElementById('ghanaCardNumber').addEventListener('input', checkFormValidity);
-
-            // Submit form
-            document.getElementById('verificationForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const ghanaCardNumber = document.getElementById('ghanaCardNumber').value.trim();
-                
-                if (!ghanaCardData || !passportData || !ghanaCardNumber) {
-                    alert('Please complete all fields');
-                    return;
-                }
-
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-
-                try {
-                    // Upload images to Firebase Storage
-                    const ghanaCardRef = firebase.storage().ref(`verification/${user.uid}/ghana-card-${Date.now()}`);
-                    const passportRef = firebase.storage().ref(`verification/${user.uid}/passport-${Date.now()}`);
-
-                    const ghanaCardSnapshot = await ghanaCardRef.putString(ghanaCardData, 'data_url');
-                    const passportSnapshot = await passportRef.putString(passportData, 'data_url');
-
-                    const ghanaCardURL = await ghanaCardSnapshot.ref.getDownloadURL();
-                    const passportURL = await passportSnapshot.ref.getDownloadURL();
-
-                    // Update user document
-                    await firebase.firestore().collection('users').doc(user.uid).update({
-                        ghanaCard: {
-                            number: ghanaCardNumber,
-                            photoURL: ghanaCardURL,
-                            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        },
-                        passportPhoto: passportURL,
-                        verificationStatus: 'pending',
-                        verificationSubmittedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    alert('Verification documents submitted successfully! We will review your documents within 24-48 hours.');
-                    window.location.href = 'dashboard.html';
-                } catch (error) {
-                    console.error('Error submitting verification:', error);
-                    alert('Error submitting verification. Please try again.');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit for Verification';
-                }
-            });
-        });
     </script>
 </body>
 </html>

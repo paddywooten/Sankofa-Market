@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Help Center - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="../images/logos/sankofa-market-favicon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/main.css?v=4">
-    <link rel="stylesheet" href="../css/user-dashboard.css">
-    <link rel="stylesheet" href="../css/chatbot.css?v=3">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/user-dashboard.css?v=17">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="../index.html">
-                    <img src="../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
                 </a>
             </div>
             <div class="header-search">
@@ -29,8 +41,8 @@
                 </form>
             </div>
             <div class="header-actions">
-                <a href="../publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
-                <a href="user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
+                <a href="/publish.html" class="btn btn-secondary"><i class="fas fa-plus"></i> Sell</a>
+                <a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
             </div>
         </div>
     </header>
@@ -49,22 +61,22 @@
 
             <!-- Quick Links -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2.5rem;">
-                <a href="seller-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                <a href="/pages/seller-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
                     <i class="fas fa-store" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
                     <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Seller Guide</h3>
                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Learn how to sell on Sankofa Market</p>
                 </a>
-                <a href="buyer-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                <a href="/pages/buyer-guide.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
                     <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 0.5rem;"></i>
                     <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Buyer Guide</h3>
                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Tips for safe online shopping</p>
                 </a>
-                <a href="contact.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                <a href="/pages/contact.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
                     <i class="fas fa-headset" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
                     <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Contact Support</h3>
                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Get in touch with our team</p>
                 </a>
-                <a href="about.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
+                <a href="/pages/about.html" class="section-card" style="text-decoration: none; color: inherit; text-align: center; transition: transform 0.2s;">
                     <i class="fas fa-info-circle" style="font-size: 2rem; color: var(--error-color); margin-bottom: 0.5rem;"></i>
                     <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">About Us</h3>
                     <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Learn about Sankofa Market</p>
@@ -113,7 +125,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            <p>Yes, listing products on Sankofa Market is completely free! We charge a small commission only when you make a successful sale. The commission rate varies by category (typically 3-8% of the sale price). There are no hidden fees, and you can list as many items as you want without any upfront costs.</p>
+                            <p>Yes, listing products on Sankofa Market is completely free! We charge a small commission only when you make a successful sale. <strong>Free Starter:</strong> 5% commission on every sale. <strong>Premium:</strong> only 1–2% — Bronze 2%, Silver 1.5%, Gold 1.2%, Diamond 1%. Premium also gives you more listings (30 up to unlimited) + up to 10× reach. There are no hidden fees — <a href="/pages/user/become-seller.html" style="color:#0064d2;font-weight:600;">see Premium plans</a>.</p>
                         </div>
                     </div>
                 </div>
@@ -174,7 +186,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            <p>You can request a refund within 7 days of delivery if the item is damaged, not as described, or not received. Refunds are processed to your original payment method within 5-10 business days. Please see our <a href="refund-policy.html">Refund Policy</a> for complete details.</p>
+                            <p>You can request a refund within 7 days of delivery if the item is damaged, not as described, or not received. Refunds are processed to your original payment method within 5-10 business days. Please see our <a href="/pages/refund-policy.html">Refund Policy</a> for complete details.</p>
                         </div>
                     </div>
                 </div>
@@ -199,16 +211,15 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            <p>Our commission rates are competitive and vary by category:</p>
+                            <p><strong>Free Starter — 5%</strong> on every successful sale (max 2 active listings).</p>
+                            <p><strong>Premium — only 1–2%:</strong></p>
                             <ul>
-                                <li><strong>Electronics:</strong> 5%</li>
-                                <li><strong>Fashion & Clothing:</strong> 8%</li>
-                                <li><strong>Handicrafts & Art:</strong> 6%</li>
-                                <li><strong>Home & Garden:</strong> 5%</li>
-                                <li><strong>Vehicles:</strong> 3%</li>
-                                <li><strong>All other categories:</strong> 5%</li>
+                                <li><strong>🥉 Bronze (2× Reach):</strong> 2% — GHS 45/mo</li>
+                                <li><strong>🥈 Silver (4× Reach):</strong> 1.5% — GHS 79/mo</li>
+                                <li><strong>🥇 Gold (6× Reach):</strong> 1.2% — GHS 129/mo</li>
+                                <li><strong>💎 Diamond (10× Reach):</strong> 1% — GHS 199/mo</li>
                             </ul>
-                            <p>Commission is deducted from the sale price before funds are released to your wallet.</p>
+                            <p>Commission is deducted from the sale price before payout. Listing is always free — you only pay when you sell, and Premium keeps your fees at 1–2%! <a href="/pages/user/become-seller.html" style="color:#0064d2;font-weight:600;">Compare Premium plans</a></p>
                         </div>
                     </div>
 
@@ -228,7 +239,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="faq-answer">
-                            <p>Prohibited items include illegal substances, weapons, counterfeit goods, stolen property, live animals, prescription medications without a license, and any items that violate Ghanaian law. Please see our <a href="prohibited-items.html">Prohibited Items Policy</a> for the complete list. Violations may result in account suspension or permanent ban.</p>
+                            <p>Prohibited items include illegal substances, weapons, counterfeit goods, stolen property, live animals, prescription medications without a license, and any items that violate Ghanaian law. Please see our <a href="/pages/prohibited-items.html">Prohibited Items Policy</a> for the complete list. Violations may result in account suspension or permanent ban.</p>
                         </div>
                     </div>
                 </div>
@@ -306,7 +317,7 @@
                 <h2 style="margin-bottom: 0.5rem;">Still need help?</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Our support team is available Monday to Saturday, 8am to 8pm GMT</p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Support</a>
+                    <a href="/pages/contact.html" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Support</a>
                     <a href="tel:+233302000000" class="btn btn-outline"><i class="fas fa-phone"></i> Call: +233 30 200 0000</a>
                     <a href="https://wa.me/233200000000" class="btn btn-outline" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 </div>
@@ -367,6 +378,62 @@
             });
         }
     </script>
-    <script src="../js/chatbot.js?v=9"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

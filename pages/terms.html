@@ -5,25 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Sankofa Market Terms of Service - Read our terms and conditions for using our marketplace platform">
     <title>Terms of Service - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="../images/logos/sankofa-market-favicon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../css/main.css?v=4">
-    <link rel="stylesheet" href="../css/legal.css">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/legal.css">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="../index.html">
-                    <img src="../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
                 </a>
             </div>
             <div class="header-actions">
-                <a href="../index.html" class="btn btn-outline">
+                <a href="/index.html" class="btn btn-outline">
                     <i class="fas fa-home"></i> Home
                 </a>
             </div>
@@ -115,7 +128,7 @@
                     <p>Payments made directly to sellers via Mobile Money, bank transfer, cash, or any other method outside our Platform are at your own risk and are NOT covered by our buyer protection or dispute resolution services.</p>
 
                     <h3>5.3 Fees and Commissions</h3>
-                    <p>Sellers agree to pay a 5% commission on successful sales. Fees are automatically deducted from the sale amount before payment to the seller.</p>
+                    <p><strong>Free Starter:</strong> 5% commission on successful sales. <strong>Premium:</strong> only 1–2% — Bronze 2%, Silver 1.5%, Gold 1.2%, Diamond 1%. Fees are automatically deducted from the sale amount before payout to the seller. See <a href="/pages/user/become-seller.html" style="color:#0064d2;font-weight:600;">Premium page</a> for current pricing, boost levels (2× to 10×) and durations (1 / 3 / 6 months). Listing is always free — you only pay when you sell.</p>
 
                     <h3>5.4 Payment Processing</h3>
                     <p>We use third-party payment processors (Paystack, Mobile Money providers) to handle transactions. By using our Platform, you agree to their terms of service.</p>
@@ -182,7 +195,7 @@
 
                 <div class="legal-section">
                     <h2>9. Privacy and Data Protection</h2>
-                    <p>Your use of the Platform is also governed by our <a href="privacy.html">Privacy Policy</a>. By using the Platform, you consent to our collection and use of your data as described in the Privacy Policy.</p>
+                    <p>Your use of the Platform is also governed by our <a href="/pages/privacy.html">Privacy Policy</a>. By using the Platform, you consent to our collection and use of your data as described in the Privacy Policy.</p>
                 </div>
 
                 <div class="legal-section">
@@ -301,6 +314,63 @@
         </div>
     </footer>
 
-    <script src="../js/main.js?v=5"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

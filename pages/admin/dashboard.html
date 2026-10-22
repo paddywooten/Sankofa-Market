@@ -4,13 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Admin Dashboard - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="../../images/logos/sankofa-market-favicon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/main.css?v=4">
-    <link rel="stylesheet" href="../../css/admin.css?v=11">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/admin.css?v=15">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+    <link rel="stylesheet" href="/css/admin-brand.css?v=3">
+    <style>/* Hide user-facing blinking auction bar on admin — keeps layout clean */ #auctionAlertBar{display:none !important;} header.auction-active{border-top-color:transparent !important;animation:none !important;}</style>
+    <style id="admin-nav-fix">/* Admin: show only admin bottom-nav, hide user app-bottom-nav */ #appBottomNav{display:none !important;} body{padding-bottom:0 !important;} @media(max-width:768px){#appBottomNav{display:none !important;} body{padding-bottom:72px !important;} .bottom-nav{display:flex !important;}}</style>
+    <style id="pagination-skeleton">.skeleton{ background: linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%); background-size:200% 100%; animation: shimmer 1.5s infinite; border-radius:6px; height:14px; } @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}} .pagination-btns .page-btn{width:32px;height:32px;border:1px solid #e5e7eb;border-radius:6px;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.15s;} .pagination-btns .page-btn.active{background:#0064d2;color:white;border-color:#0064d2;} .pagination-btns .page-btn:disabled{opacity:0.4;cursor:not-allowed;} .table-pagination{padding:0.75rem 0;}</style>
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color:#767676;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
+<style id="adminGateHide">
+/* The whole admin shell stays hidden until the access check passes.
+   js/admin-auth.js reveals these on success and shows the access-denied screen otherwise. */
+.admin-sidebar,
+.admin-topbar,
+main.admin-main,
+.admin-main { display: none !important; }
+</style>
 </head>
 <body>
     <!-- Admin Sidebar -->
@@ -20,7 +45,7 @@
     <!-- Admin Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
-            <img src="../../images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
+            <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market" class="sidebar-logo">
             <span class="sidebar-badge">Admin</span>
             <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
                 <i class="fas fa-times"></i>
@@ -39,17 +64,28 @@
                 <i class="fas fa-users"></i> <span>Users</span>
                 <span class="nav-count" id="countUsers">0</span>
             </a>
+            <a href="#" class="nav-item" data-section="wallets">
+                <i class="fas fa-wallet"></i> <span>Wallets</span>
+                <span class="nav-count" id="countWallets">0</span>
+            </a>
             <a href="#" class="nav-item" data-section="orders">
                 <i class="fas fa-shopping-cart"></i> <span>Orders</span>
                 <span class="nav-count" id="countOrders">0</span>
             </a>
-            <a href="/sm-panel/messages" class="nav-item">
+            <a href="#" class="nav-item" data-section="messages">
                 <i class="fas fa-comments"></i> <span>Messages</span>
                 <span class="nav-count" id="countMessages">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="auctions">
+                <i class="fas fa-gavel"></i> <span>Auctions</span>
+                <span class="nav-count" id="countAuctions" style="background:#ef4444;color:#fff;display:none;">0</span>
             </a>
             <a href="#" class="nav-item" data-section="categories">
                 <i class="fas fa-th-large"></i> <span>Categories</span>
                 <span class="nav-count" id="countCategories">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="carousel">
+                <i class="fas fa-images"></i> <span>Carousel</span>
             </a>
             <a href="#" class="nav-item" data-section="reports">
                 <i class="fas fa-flag"></i> <span>Reports</span>
@@ -58,12 +94,22 @@
             <a href="#" class="nav-item" data-section="analytics">
                 <i class="fas fa-chart-line"></i> <span>Analytics</span>
             </a>
+            <a href="/sm-panel/email" class="nav-item">
+                <i class="fas fa-envelope"></i> <span>Emails</span>
+            </a>
             <a href="#" class="nav-item" data-section="settings">
                 <i class="fas fa-cog"></i> <span>Settings</span>
             </a>
             <a href="#" class="nav-item" data-section="stores">
                 <i class="fas fa-store"></i> <span>Stores</span>
                 <span class="nav-count" id="countStores">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="shops">
+                <i class="fas fa-store-alt"></i> <span>Vendor Shops</span>
+                <span class="nav-count" id="countShops">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="growth">
+                <i class="fas fa-rocket"></i> <span>Growth & Recruitment</span>
             </a>
             <a href="#" class="nav-item" data-section="admins">
                 <i class="fas fa-user-shield"></i> <span>Admin Management</span>
@@ -77,7 +123,7 @@
             <button class="nav-item sidebar-collapse-btn" id="sidebarCollapseBtn" title="Hide sidebar">
                 <i class="fas fa-chevron-left"></i> <span>Hide Panel</span>
             </button>
-            <a href="../../index.html" class="nav-item">
+            <a href="/index.html" class="nav-item">
                 <i class="fas fa-globe"></i> <span>View Site</span>
             </a>
             <a href="#" class="nav-item" id="logoutBtn">
@@ -100,7 +146,7 @@
             </button>
             <div class="topbar-search">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search products, users, orders..." id="globalSearch">
+                <input type="text" placeholder="Search products..." id="globalSearch">
             </div>
             <div class="topbar-actions">
                 <button class="topbar-btn" title="Notifications">
@@ -130,6 +176,20 @@
                     </div>
                 </div>
 
+                <!-- Live Auctions Banner — only shows when ongoing auction (appropriate arrangement) -->
+                <div id="adminLiveAuctionBanner" style="display:none;background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border:1.5px solid #fecaca;border-radius:12px;padding:0.9rem 1.1rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:0.7rem;">
+                        <div style="width:42px;height:42px;border-radius:50%;background:#ef4444;color:#fff;display:flex;align-items:center;justify-content:center;animation: auctionBlinkRed 0.8s infinite alternate;"><i class="fas fa-gavel"></i></div>
+                        <div>
+                            <div style="font-weight:800;color:#991b1b;font-size:0.92rem;"><span id="adminBannerLiveCount">0</span> Live Auction<span id="adminBannerS">s</span> — requires attention</div>
+                            <div style="font-size:0.75rem;color:#7f1d1d;">Premium seller started — header would blink red for users (hidden on admin to keep layout clean)</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <span id="adminBannerScheduled" style="background:#fffbeb;color:#92400e;padding:0.3rem 0.6rem;border-radius:999px;font-weight:700;font-size:0.72rem;border:1px solid #fde68a;display:none;"></span>
+                        <a href="#" onclick="document.querySelector('[data-section=\'auctions\']').click(); return false;" style="background:#ef4444;color:#fff;padding:0.55rem 0.9rem;border-radius:8px;font-weight:800;font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.35rem;"><i class="fas fa-eye"></i> Monitor</a>
+                    </div>
+                </div>
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -137,9 +197,9 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>GHS 0</h3>
+                            <h3 id="overviewRevenue">GHS 0</h3>
                             <p>Total Revenue</p>
-                            <span class="stat-change">—</span>
+                            <span class="stat-change" id="overviewRevenueChange">—</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -147,9 +207,9 @@
                             <i class="fas fa-shopping-bag"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>0</h3>
+                            <h3 id="overviewTotalOrders">0</h3>
                             <p>Total Orders</p>
-                            <span class="stat-change">—</span>
+                            <span class="stat-change" id="overviewOrdersChange">—</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -157,9 +217,9 @@
                             <i class="fas fa-box"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>0</h3>
+                            <h3 id="overviewActiveListings">0</h3>
                             <p>Active Listings</p>
-                            <span class="stat-change">—</span>
+                            <span class="stat-change" id="overviewListingsChange">—</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -171,6 +231,22 @@
                             <p>Registered Users</p>
                             <span class="stat-change" id="overviewUsersChange">—</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Your Commissions: fees kept from completed sales (full width, gold = money kept) -->
+                <div class="stat-card commissions-card" id="commissionsCard" style="margin-bottom: 2rem;">
+                    <div class="stat-icon" style="background: #fff8e1; color: #f5af02;">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-info" style="flex: 1;">
+                        <p style="margin-bottom: 0.6rem;">Your Commissions <span class="comm-hint">fees kept from completed sales</span></p>
+                        <div class="comm-grid">
+                            <div><h3 id="commToday">GHS 0.00</h3><span>Today</span></div>
+                            <div><h3 id="commMonth">GHS 0.00</h3><span>This month</span></div>
+                            <div><h3 id="commAllTime">GHS 0.00</h3><span>All time</span></div>
+                        </div>
+                        <span class="stat-change" id="commSub">Waiting for the first completed sale…</span>
                     </div>
                 </div>
 
@@ -266,6 +342,11 @@
                     </div>
                 </div>
 
+                <div id="productsLiveAuctionAlert" style="display:none;background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border:1.5px solid #fecaca;border-radius:10px;padding:0.8rem 1rem;margin-bottom:1rem;align-items:center;gap:0.7rem;flex-wrap:wrap;">
+                    <div style="width:36px;height:36px;border-radius:50%;background:#ef4444;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-gavel"></i></div>
+                    <div style="flex:1;min-width:180px;"><div style="font-weight:800;color:#991b1b;font-size:0.85rem;"><span id="productsLiveCount">0</span> Live Auction(s) — products on live bid</div><div style="font-size:0.72rem;color:#7f1d1d;">These items are in active auctions. View in Auctions tab or click product.</div></div>
+                    <a class="tap-link" href="#" onclick="document.querySelector('[data-section=\'auctions\']').click(); window.location.hash='auctions'; return false;" style="background:#ef4444;color:#fff;padding:0.45rem 0.8rem;border-radius:8px;font-weight:700;font-size:0.78rem;text-decoration:none;white-space:nowrap;">View Auctions</a>
+                </div>
                 <!-- Store Tabs -->
                 <div class="store-tabs" id="storeTabs">
                     <button class="store-tab active" data-store="all" onclick="selectStoreTab(this)">
@@ -299,6 +380,8 @@
                         <option value="pets">Pets</option>
                         <option value="jobs-skills">Jobs & Skills</option>
                         <option value="real-estate">Real Estate</option>
+                        <option value="musical-instruments">Musical Instruments</option>
+                        <option value="others">Others</option>
                     </select>
                     <select class="filter-select" id="productStatusFilter">
                         <option value="">All Status</option>
@@ -308,6 +391,7 @@
                         <option value="sold">Sold</option>
                     </select>
                     <input type="text" class="filter-search" placeholder="Search products..." id="productSearch">
+                    <button type="button" class="btn btn-outline btn-small" id="bulkEditOpenBtn" onclick="openBulkEditProducts()" title="Change prices and featured flags in one table"><i class="fas fa-pen"></i> Bulk edit</button>
                 </div>
 
                 <div class="admin-table-wrapper">
@@ -316,6 +400,7 @@
                             <tr>
                                 <th>Product</th>
                                 <th>Store</th>
+                                <th>Listed by</th>
                                 <th>Category</th>
                                 <th>Price</th>
                                 <th>Status</th>
@@ -333,74 +418,290 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="table-pagination" id="productsPagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;flex-wrap:wrap;gap:0.5rem;"><span id="productsPaginationInfo" style="font-size:0.82rem;color:#6b7280;"></span><div class="pagination-btns" id="productsPaginationBtns" style="display:flex;gap:0.25rem;"></div></div>
             </section>
 
             <!-- Users Section -->
             <section class="admin-section" id="section-users">
                 <div class="section-header">
                     <h1><i class="fas fa-users" style="color: var(--primary-color);"></i> User Management</h1>
-                    <div class="header-actions">
-                        <input type="text" class="filter-search" placeholder="Search users..." id="userSearch" style="max-width: 250px;">
+                    <div class="header-actions" style="gap:0.5rem;flex-wrap:wrap;">
+                        <select id="userPremiumFilter" style="padding:0.5rem 0.7rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.82rem;background:#fff;font-weight:600;">
+                            <option value="">All Tiers</option>
+                            <option value="starter">🆕 Starter (Free)</option>
+                            <option value="bronze">🥉 Bronze (2%)</option>
+                            <option value="silver">🥈 Silver (1.5%)</option>
+                            <option value="gold">🥇 Gold (1.2%)</option>
+                            <option value="diamond">💎 Diamond (1%)</option>
+                            <option value="premium">⭐ All Premium</option>
+                        </select>
+                        <input type="text" class="filter-search" placeholder="Search users, email, phone..." id="userSearch" style="max-width: 250px;">
                     </div>
                 </div>
 
-                <!-- User Stats -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700;" id="userStatTotal">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Total Users</div>
+                <!-- User Stats — Row 1: Approval -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+                    <div class="stat-card" style="padding: 0.9rem;">
+                        <div style="font-size: 1.4rem; font-weight: 700;" id="userStatTotal">0</div>
+                        <div style="font-size: 0.75rem; color: #767676;">Total Users</div>
                     </div>
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #22c55e;" id="userStatApproved">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Approved</div>
+                    <div class="stat-card" style="padding: 0.9rem;">
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #22c55e;" id="userStatApproved">0</div>
+                        <div style="font-size: 0.75rem; color: #767676;">Approved</div>
                     </div>
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;" id="userStatPending">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Pending</div>
+                    <div class="stat-card" style="padding: 0.9rem;">
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #f59e0b;" id="userStatPending">0</div>
+                        <div style="font-size: 0.75rem; color: #767676;">Pending</div>
                     </div>
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #e74c3c;" id="userStatBlocked">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Blocked</div>
+                    <div class="stat-card" style="padding: 0.9rem;">
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #e74c3c;" id="userStatBlocked">0</div>
+                        <div style="font-size: 0.75rem; color: #767676;">Blocked</div>
                     </div>
                 </div>
 
-                <!-- Users Table -->
-                <!-- User Stats -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6;" id="userStatPendingVerification">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Pending Verification</div>
+                <!-- Premium Tiers — Row 2: 1–2% commission tiers -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1.2rem;">
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #e5e7eb;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #6b7280;" id="userStatStarter">0</div>
+                        <div style="font-size: 0.7rem; color: #767676; line-height:1.2;">🆕 Starter<br><span style="font-size:0.65rem;color:#9ca3af;">Free • 5% • 10 listings</span></div>
                     </div>
-                    <div class="stat-card" style="padding: 1rem;">
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #22c55e;" id="userStatVerified">0</div>
-                        <div style="font-size: 0.8rem; color: #767676;">Verified Sellers</div>
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #92400e;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #92400e;" id="userStatBronze">0</div>
+                        <div style="font-size: 0.7rem; color: #767676; line-height:1.2;">🥉 Bronze<br><span style="font-size:0.65rem;color:#9ca3af;">2% • 2× • GHS 45</span></div>
+                    </div>
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #64748b;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #475569;" id="userStatSilver">0</div>
+                        <div style="font-size: 0.7rem; color: #767676; line-height:1.2;">🥈 Silver<br><span style="font-size:0.65rem;color:#9ca3af;">1.5% • 4× • GHS 79</span></div>
+                    </div>
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #f59e0b;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #b45309;" id="userStatGold">0</div>
+                        <div style="font-size: 0.7rem; color: #767676; line-height:1.2;">🥇 Gold<br><span style="font-size:0.65rem;color:#9ca3af;">1.2% • 6× • GHS 129</span></div>
+                    </div>
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #7c3aed;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #7c3aed;" id="userStatDiamond">0</div>
+                        <div style="font-size: 0.7rem; color: #767676; line-height:1.2;">💎 Diamond<br><span style="font-size:0.65rem;color:#9ca3af;">1% • 10× • GHS 199</span></div>
+                    </div>
+                    <div class="stat-card" style="padding: 0.9rem; border-left: 3px solid #22c55e; background: linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #15803d;" id="userStatPremium">0</div>
+                        <div style="font-size: 0.7rem; color: #15803d; font-weight:700; line-height:1.2;">⭐ Premium Total<br><span style="font-size:0.65rem;color:#16a34a;font-weight:500;">1–2% • unlimited</span></div>
                     </div>
                 </div>
+                <p style="font-size:0.72rem;color:#94a3b8;margin:-0.8rem 0 1rem 0.2rem;"><i class="fas fa-info-circle"></i> Premium = 1–2% commission only. Starter = 5% + 10 listings. Boost: Bronze 2×, Silver 4×, Gold 6×, Diamond 10×. Durations: 1/3/6 months.</p>
 
                 <div class="admin-table-wrapper">
                     <table class="admin-table" id="usersTable">
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Ghana Card</th>
-                                <th>Sign-up</th>
+                                <th>Contact</th>
+                                <th>Premium Tier <span style="font-weight:400;font-size:0.65rem;color:#9ca3af;">(1–2%)</span></th>
+                                <th>Boost & Fee</th>
+                                <th>Expiry</th>
                                 <th>Status</th>
-                                <th>Verified</th>
                                 <th>Joined</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
                             <tr>
-                                <td colspan="9" style="text-align: center; padding: 2rem; color: #767676;">
+                                <td colspan="8" style="text-align: center; padding: 2rem; color: #767676;">
                                     <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #ccc;"></i>
                                     <p>Loading users...</p>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="table-pagination" id="usersPagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;flex-wrap:wrap;gap:0.5rem;"><span id="usersPaginationInfo" style="font-size:0.82rem;color:#6b7280;"></span><div class="pagination-btns" id="usersPaginationBtns" style="display:flex;gap:0.25rem;"></div></div>
+            </section>
+
+            <!-- Wallets Section — Admin sees all users wallet balances -->
+            <section class="admin-section" id="section-wallets">
+                <div class="section-header">
+                    <h1><i class="fas fa-wallet" style="color: var(--primary-color);"></i> Wallets — All Users Balances</h1>
+                    <div class="header-actions" style="gap:0.5rem;flex-wrap:wrap;">
+                        <input type="text" class="filter-search" placeholder="Search wallet by name/email..." id="walletSearch" style="max-width:260px;">
+                        <button class="btn btn-outline btn-small" onclick="loadAdminWallets(true)"><i class="fas fa-sync"></i> Refresh</button>
+                        <button class="btn btn-outline btn-small" id="exportWalletsBtn"><i class="fas fa-download"></i> Export CSV</button>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.8rem;margin-bottom:1rem;">
+                    <div class="stat-card" style="padding:0.9rem;"><div style="font-size:1.3rem;font-weight:800;" id="walletStatTotal">GHS 0.00</div><div style="font-size:0.72rem;color:#6b7280;">Total in Wallets</div></div>
+                    <div class="stat-card" style="padding:0.9rem;"><div style="font-size:1.3rem;font-weight:800;color:#0064d2;" id="walletStatAvg">GHS 0.00</div><div style="font-size:0.72rem;color:#6b7280;">Avg Balance</div></div>
+                    <div class="stat-card" style="padding:0.9rem;"><div style="font-size:1.3rem;font-weight:800;color:#16a34a;" id="walletStatTopups">GHS 0</div><div style="font-size:0.72rem;color:#6b7280;">Total Top-ups</div></div>
+                    <div class="stat-card" style="padding:0.9rem;"><div style="font-size:1.3rem;font-weight:800;color:#92400e;" id="walletStatHolders">0</div><div style="font-size:0.72rem;color:#6b7280;">Holders</div></div>
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="admin-table" id="walletsTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th style="text-align:right;">Balance</th>
+                                <th style="text-align:right;">Top-ups</th>
+                                <th style="text-align:right;">Spent</th>
+                                <th style="text-align:right;">Earned</th>
+                                <th>Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="walletsTableBody">
+                            <tr><td colspan="8" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-spinner fa-spin"></i> Loading wallets...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-pagination" id="walletsPagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;flex-wrap:wrap;gap:0.5rem;"><span id="walletsPaginationInfo" style="font-size:0.82rem;color:#6b7280;"></span><div class="pagination-btns" id="walletsPaginationBtns" style="display:flex;gap:0.25rem;"></div></div>
+
+                <!-- Wallet Transactions Modal -->
+                
+                <!-- Order Detail Modal -->
+                
+            </section>
+
+            <!-- Orders Section -->
+            <section class="admin-section" id="section-orders">
+                <div class="section-header">
+                    <h1><i class="fas fa-shopping-cart" style="color: var(--primary-color);"></i> Order Management</h1>
+                    <div class="header-actions">
+                        <input type="text" class="filter-search" placeholder="Search orders..." id="orderSearch" style="max-width: 250px;">
+                    </div>
+                </div>
+
+                <!-- Order Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700;" id="orderStatTotal">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Total Orders</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;" id="orderStatPending">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Pending</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #0064d2;" id="orderStatPaid">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Paid</div>
+                    </div>
+                    <div class="stat-card" style="padding: 1rem;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #22c55e;" id="orderStatCompleted">0</div>
+                        <div style="font-size: 0.8rem; color: #767676;">Completed</div>
+                    </div>
+                </div>
+
+                <!-- Orders Filters — date grouping & range -->
+                <div id="ordersFilterBar" style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:0.7rem 0.9rem;margin-bottom:1rem;">
+                    <i class="fas fa-filter" style="color:#6b7280;"></i>
+                    <select id="orderDateFilter" style="padding:0.45rem 0.7rem;border:1px solid #e5e7eb;border-radius:8px;font-size:0.82rem;background:white;min-width:140px;">
+                        <option value="">All dates</option>
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="custom">Custom range</option>
+                    </select>
+                    <input type="date" id="orderDateFrom" style="display:none;padding:0.45rem;border:1px solid #e5e7eb;border-radius:8px;font-size:0.82rem;background:white;">
+                    <span id="orderDateDash" style="display:none;color:#6b7280;">—</span>
+                    <input type="date" id="orderDateTo" style="display:none;padding:0.45rem;border:1px solid #e5e7eb;border-radius:8px;font-size:0.82rem;background:white;">
+                    <button id="orderDateClear" style="display:none;background:white;border:1px solid #e5e7eb;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.78rem;cursor:pointer;"><i class="fas fa-times"></i> Clear</button>
+                    <span style="flex:1;"></span>
+                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:#374151;font-weight:600;cursor:pointer;user-select:none;"><input type="checkbox" id="orderGroupByDate" checked style="accent-color:#0064d2;width:16px;height:16px;"> <i class="fas fa-layer-group" style="color:#0064d2;"></i> Group by date</label>
+                    <button id="orderToggleGroupsBtn" title="Collapse/Expand all groups" onclick="toggleAllOrderGroups()" style="background:white;border:1px solid #e5e7eb;padding:0.4rem 0.6rem;border-radius:6px;font-size:0.78rem;cursor:pointer;color:#374151;"><i class="fas fa-compress-alt"></i> Collapse all</button>
+                    <span id="orderDateInfo" style="font-size:0.78rem;color:#6b7280;white-space:nowrap;"></span>
+                </div>
+                <!-- Orders Bulk Actions -->
+                <div id="ordersBulkBar" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#991b1b;"><span id="ordersSelectedCount">0</span> selected</span>
+                    <div style="display:flex;gap:0.5rem;">
+                        <button onclick="deleteSelectedOrders()" style="background:#ef4444;color:white;border:none;padding:0.5rem 0.9rem;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.82rem;"><i class="fas fa-trash"></i> Delete Selected</button>
+                        <button onclick="clearOrderSelection()" style="background:white;border:1px solid #e5e7eb;color:#374151;padding:0.5rem 0.9rem;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.82rem;">Clear</button>
+                    </div>
+                </div>
+                <!-- Orders Table -->
+                <div class="admin-table-wrapper">
+                    <table class="admin-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th style="width:36px;text-align:center;"><input type="checkbox" id="selectAllOrders" onchange="toggleSelectAllOrders(this.checked)" title="Select all on page"></th>
+                                <th>Order ID</th>
+                                <th>Buyer</th>
+                                <th>Seller</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 2rem; color: #767676;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: #ccc;"></i>
+                                    <p>Loading orders...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-pagination" id="ordersPagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;flex-wrap:wrap;gap:0.5rem;"><span id="ordersPaginationInfo" style="font-size:0.82rem;color:#6b7280;"></span><div class="pagination-btns" id="ordersPaginationBtns" style="display:flex;gap:0.25rem;"></div></div>
+            </section>
+
+            <!-- Auctions Section (Admin must be aware when any user starts) -->
+            <section class="admin-section" id="section-auctions">
+                <div class="section-header" style="flex-wrap:wrap;gap:0.8rem;">
+                    <h1 style="flex:1;min-width:200px;"><i class="fas fa-gavel" style="color:#ef4444;"></i> Live Auctions — Admin Monitor</h1>
+                    <div class="header-actions" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+                        <span id="adminAuctionLiveCount" style="background:#fee2e2;color:#991b1b;padding:0.3rem 0.6rem;border-radius:999px;font-weight:800;font-size:0.75rem;border:1px solid #fecaca;white-space:nowrap;">0 live</span>
+                        <span id="adminAuctionScheduledCount" style="background:#fef3c7;color:#92400e;padding:0.3rem 0.6rem;border-radius:999px;font-weight:700;font-size:0.75rem;border:1px solid #fde68a;white-space:nowrap;">0 scheduled</span>
+                        <a href="/auction.html" target="_blank" class="btn btn-outline btn-small" style="white-space:nowrap;"><i class="fas fa-external-link-alt"></i> View as User</a>
+                        <button onclick="location.reload()" class="btn btn-outline btn-small" style="white-space:nowrap;"><i class="fas fa-sync"></i> Refresh</button>
+                    </div>
+                </div>
+                <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:0.9rem;margin-bottom:1rem;display:flex;gap:0.7rem;align-items:center;">
+                    <div style="width:38px;height:38px;border-radius:50%;background:#f59e0b;color:#fff;display:flex;align-items:center;justify-content:center;"><i class="fas fa-bell"></i></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;color:#92400e;font-size:0.9rem;">You are notified instantly when any Premium user starts an auction</div>
+                        <div style="font-size:0.78rem;color:#a16207;">Notification saved to <code>notifications</code> (type: auction_started) for admin + live table below. Bell 🔔 shows unread.</div>
+                    </div>
+                    <span id="adminAuctionNotifBadge" style="display:none;background:#ef4444;color:#fff;padding:0.35rem 0.6rem;border-radius:999px;font-weight:800;font-size:0.72rem;">0 new</span>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-table" id="adminAuctionsTable">
+                        <thead>
+                            <tr>
+                                <th>Auction</th>
+                                <th>Seller</th>
+                                <th>Start / End</th>
+                                <th>Current Bid</th>
+                                <th>Status</th>
+                                <th>Waitlist</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAuctionsBody">
+                            <tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-spinner fa-spin"></i> Loading auctions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top:1rem;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                    <span style="font-size:0.78rem;color:#6b7280;">Recent auction notifications (unread)</span>
+                    <span id="adminAuctionNotifCount" style="font-size:0.75rem;background:#fee2e2;color:#991b1b;padding:0.2rem 0.5rem;border-radius:999px;border:1px solid #fecaca;display:none;">0</span>
+                </div>
+                <div id="adminAuctionNotifs" style="margin-top:0.6rem;display:flex;flex-direction:column;gap:0.5rem;"></div>
+            </section>
+
+            <!-- Messages Section (embedded - redirects to dedicated page but keeps tabs organised) -->
+            <section class="admin-section" id="section-messages">
+                <div class="section-header">
+                    <h1><i class="fas fa-comments" style="color:#0064d2;"></i> Messages</h1>
+                    <a href="/sm-panel/messages" class="btn btn-primary btn-small"><i class="fas fa-external-link-alt"></i> Open Messages Page</a>
+                </div>
+                <div style="background:white;border:1px solid #e5e7eb;border-radius:12px;padding:2rem;text-align:center;">
+                    <i class="fas fa-comments" style="font-size:2.5rem;color:#0064d2;margin-bottom:0.8rem;"></i>
+                    <h3>Messages Management</h3>
+                    <p style="color:#767676;max-width:480px;margin:0.5rem auto 1rem;">All buyer-seller conversations are monitored on the dedicated Messages page. Click below to open it.</p>
+                    <a href="/sm-panel/messages" class="btn btn-primary"><i class="fas fa-comments"></i> Go to Messages</a>
+                    <p style="font-size:0.75rem;color:#94a3b8;margin-top:0.8rem;">You will be redirected to <code>/sm-panel/messages</code> where you can view, reply, and delete conversations.</p>
                 </div>
             </section>
 
@@ -601,6 +902,7 @@
             <section class="admin-section" id="section-reports">
                 <div class="section-header">
                     <h1>Reports & Flags</h1>
+                    <button class="btn btn-outline btn-small" id="refreshReportsBtn"><i class="fas fa-sync"></i> Refresh</button>
                 </div>
 
                 <div class="reports-list">
@@ -624,7 +926,7 @@
                 </div>
 
                 <div class="analytics-grid">
-                    <div class="analytics-card wide">
+                    <div class="analytics-card wide" id="analyticsDAU">
                         <h3>Daily Active Users</h3>
                         <div class="mini-chart">
                             <div class="chart-bars" style="height: 150px;">
@@ -640,24 +942,24 @@
                     </div>
                     <div class="analytics-card">
                         <h3>Conversion Rate</h3>
-                        <div class="big-number">0%</div>
+                        <div class="big-number" id="analyticsConversion">0%</div>
                         <span class="stat-change">—</span>
                     </div>
                     <div class="analytics-card">
                         <h3>Average Order Value</h3>
-                        <div class="big-number">GHS 0</div>
+                        <div class="big-number" id="analyticsAOV">GHS 0</div>
                         <span class="stat-change">—</span>
                     </div>
                     <div class="analytics-card">
                         <h3>Top Locations</h3>
-                        <div class="location-list">
+                        <div class="location-list" id="analyticsLocations">
                             <p style="color: #767676; text-align: center; padding: 1rem; font-size: 0.85rem;">No location data yet</p>
                         </div>
                     </div>
                     </div>
                     <div class="analytics-card">
                         <h3>Device Breakdown</h3>
-                        <div class="device-list">
+                        <div class="device-list" id="analyticsDevices">
                             <div class="device-item">
                                 <i class="fas fa-mobile-alt"></i>
                                 <div class="device-info">
@@ -738,15 +1040,31 @@
                         </div>
                         <div class="setting-item">
                             <label>Default Currency</label>
-                            <select class="setting-input">
-                                <option selected>GHS - Ghana Cedi</option>
-                                <option>USD - US Dollar</option>
+                            <select class="setting-input" disabled title="Sankofa Market operates in Ghana Cedis only">
+                                <option selected>GHS - Ghana Cedi (GHS)</option>
                             </select>
+                            <small style="color:#6b7280;font-size:0.68rem;">All prices, wallets, Paystack and escrow are in GHS — Ghana Cedis only</small>
                         </div>
                         <div class="setting-item">
                             <label>Max Listing Photos</label>
                             <input type="number" value="4" class="setting-input">
                         </div>
+                    </div>
+
+                    <div class="settings-card" style="grid-column:1 / -1;border-left:4px solid #f5af02;">
+                        <h3><i class="fas fa-tools"></i> Website Maintenance Mode</h3>
+                        <p style="font-size:0.82rem;color:#767676;margin-bottom:0.8rem;">When enabled, visitors are sent to a maintenance page. Admins can still browse and maintain the site. Sign-in pages remain available so an admin can get back in.</p>
+                        <div class="setting-item toggle-setting">
+                            <div>
+                                <strong>Turn maintenance mode on</strong>
+                                <p id="maintenanceModeStatus" style="margin:0.2rem 0 0;">Checking current setting…</p>
+                            </div>
+                            <label class="toggle" aria-label="Toggle website maintenance mode">
+                                <input type="checkbox" id="maintenanceModeToggle" disabled>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div id="maintenanceModeFeedback" style="font-size:0.82rem;margin-top:0.5rem;"></div>
                     </div>
 
                     <div class="settings-card" style="grid-column: 1 / -1;">
@@ -759,6 +1077,24 @@
                             <button class="btn btn-primary btn-small" id="saveCommissionBtn"><i class="fas fa-save"></i> Save Commission Rates</button>
                         </div>
                         <div id="commissionStatus" style="font-size: 0.82rem; margin-top: 0.5rem;"></div>
+                    </div>
+
+                    <div class="settings-card" style="grid-column: 1 / -1;">
+                        <h3><i class="fas fa-gavel"></i> Auction Seller Commission</h3>
+                        <p style="font-size:0.82rem;color:#767676;margin-bottom:1rem;">Set one percentage deducted from sellers' auction proceeds. Winning buyers continue to pay only their bid. The rate applies to auctions created after you save it; existing auctions are not changed.</p>
+                        <div class="setting-item">
+                            <label for="auctionCommissionPercent">Seller commission</label>
+                            <div style="display:flex;align-items:center;gap:0.5rem;max-width:240px;">
+                                <input type="number" id="auctionCommissionPercent" min="0" max="100" step="0.01" placeholder="No global rate set" class="setting-input" style="max-width:150px;">
+                                <span style="font-weight:700;color:#5a6572;">%</span>
+                            </div>
+                            <small id="auctionCommissionHelp" style="color:#6b7280;font-size:0.7rem;">If no global rate is saved, the current seller-plan commission rates continue to apply. 0% means no commission; 100% means the seller receives none.</small>
+                        </div>
+                        <div style="margin-top:1rem;display:flex;gap:0.6rem;justify-content:flex-end;flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-small" id="resetAuctionCommissionBtn" disabled><i class="fas fa-undo"></i> Use seller plan rates</button>
+                            <button class="btn btn-primary btn-small" id="saveAuctionCommissionBtn"><i class="fas fa-save"></i> Save Auction Commission</button>
+                        </div>
+                        <div id="auctionCommissionStatus" style="font-size:0.82rem;margin-top:0.5rem;"></div>
                     </div>
 
                     <div class="settings-card">
@@ -857,6 +1193,138 @@
                 </div>
             </section>
 
+            <!-- Vendor Shops Section (branded storefronts — approve/switch off here) -->
+            <section class="admin-section" id="section-shops">
+                <div class="section-header">
+                    <h1><i class="fas fa-store-alt" style="color: var(--primary-color);"></i> Vendor Shops</h1>
+                    <button class="btn btn-outline btn-small" id="refreshShopsBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <p style="font-size:0.85rem;color:#5a6572;margin-bottom:1rem;">
+                    Sellers design their own branded shop (logo, theme, web address) from
+                    <strong>Dashboard → My Store</strong>. A shop is only public once you switch it ON here
+                    (or when the seller has a paid plan).
+                </p>
+
+                <!-- Shop plan pricing + billing master switch -->
+                <style>
+                /* Big, unmistakable rent switch (easy to find + tap on a phone) */
+                .sm-rent-switch{position:relative;display:inline-block;width:64px;height:34px;flex-shrink:0;cursor:pointer;}
+                .sm-rent-switch input{opacity:0;width:0;height:0;position:absolute;}
+                .sm-rent-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:background .2s;}
+                .sm-rent-slider:before{content:'';position:absolute;width:26px;height:26px;left:4px;top:4px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+                .sm-rent-switch input:checked + .sm-rent-slider{background:#16a34a;}
+                .sm-rent-switch input:checked + .sm-rent-slider:before{transform:translateX(30px);}
+                .sm-rent-switch input:focus-visible + .sm-rent-slider{box-shadow:0 0 0 3px rgba(0,100,210,.35);}
+                </style>
+                <div class="section-card" style="margin-bottom:1rem;padding:1rem;">
+                    <h3 style="font-size:0.95rem;margin:0 0 0.6rem;"><i class="fas fa-crown" style="color:#f5af02;"></i> Shop plan pricing (rent)</h3>
+
+                    <!-- THE master switch — always visible, flip any time -->
+                    <div id="rentToggleBox" style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;border:2px solid #fde68a;border-radius:12px;padding:0.8rem 0.95rem;background:#fffbeb;margin-bottom:0.9rem;">
+                        <div style="flex:1;min-width:210px;">
+                            <div style="font-size:0.92rem;font-weight:800;color:#191919;">💰 Charge rent on shops</div>
+                            <div id="rentToggleLine" style="font-size:0.78rem;color:#5a6572;margin-top:0.25rem;line-height:1.45;">Loading…</div>
+                        </div>
+                        <label class="sm-rent-switch" title="Switch rent charging on or off">
+                            <input type="checkbox" id="rentToggle" role="switch" aria-label="Charge rent on shops">
+                            <span class="sm-rent-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Second switch: do admin-approved shops (no purchased plan) pay too, after a free trial? -->
+                    <div id="autoChargeBox" style="display:flex;align-items:center;justify-content:space-between;gap:0.8rem;flex-wrap:wrap;border:2px solid #e5e7eb;border-radius:12px;padding:0.8rem 0.95rem;background:#f8fafc;margin-bottom:0.9rem;">
+                        <div style="flex:1;min-width:210px;">
+                            <div style="font-size:0.92rem;font-weight:800;color:#191919;">🎁 Charge approved shops (after a free trial)</div>
+                            <div id="autoChargeLine" style="font-size:0.78rem;color:#5a6572;margin-top:0.25rem;line-height:1.45;">Loading…</div>
+                            <div style="margin-top:0.5rem;font-size:0.78rem;color:#5a6572;display:flex;align-items:center;gap:0.4rem;">
+                                Free trial length: <input type="number" id="trialDaysInput" min="0" max="365" step="1" style="width:70px;padding:0.35rem;border:1.5px solid #e5e7eb;border-radius:8px;"> days
+                                <span style="color:#9aa5b1;">(shops you approve by hand get this long on the house before plans apply)</span>
+                            </div>
+                        </div>
+                        <label class="sm-rent-switch" title="Charge approved shops after their free trial">
+                            <input type="checkbox" id="autoChargeToggle" role="switch" aria-label="Charge approved shops after a free trial">
+                            <span class="sm-rent-slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="billingConfigBox" style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:flex-end;">
+                        <label style="font-size:0.78rem;color:#5a6572;">Monthly<br><input type="number" min="1" step="1" id="billMonthly" style="width:90px;padding:0.4rem;border:1.5px solid #e5e7eb;border-radius:8px;"></label>
+                        <label style="font-size:0.78rem;color:#5a6572;">Quarterly<br><input type="number" min="1" step="1" id="billQuarterly" style="width:90px;padding:0.4rem;border:1.5px solid #e5e7eb;border-radius:8px;"></label>
+                        <label style="font-size:0.78rem;color:#5a6572;">Yearly<br><input type="number" min="1" step="1" id="billYearly" style="width:90px;padding:0.4rem;border:1.5px solid #e5e7eb;border-radius:8px;"></label>
+                        <label style="font-size:0.78rem;color:#5a6572;">Grace days<br><input type="number" min="0" max="30" step="1" id="billGrace" style="width:70px;padding:0.4rem;border:1.5px solid #e5e7eb;border-radius:8px;"></label>
+                        <button class="btn btn-primary btn-small" id="saveBillingBtn"><i class="fas fa-save"></i> Save prices</button>
+                        <span id="billMsg" style="font-size:0.78rem;color:#767676;align-self:center;"></span>
+                    </div>
+                    <div style="font-size:0.75rem;color:#767676;margin-top:0.5rem;">The switch saves by itself — flip it and confirm. It only ever pauses shops whose <b>paid plan has ended</b>; shops you approved for free (no plan) are never paused by it. The prices above are what sellers pay when they choose a plan.</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table" id="shopsTable">
+                        <thead>
+                            <tr>
+                                <th>Shop</th>
+                                <th>Web address</th>
+                                <th>Owner</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shopsTableBody">
+                            <tr><td colspan="7" class="loading">Loading shops...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- Carousel Section — homepage promo slides (admin-managed) -->
+            <section class="admin-section" id="section-carousel">
+                <div class="section-header">
+                    <h1><i class="fas fa-images" style="color: var(--primary-color);"></i> Homepage Carousel</h1>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                        <button class="btn btn-outline btn-small" id="carouselImportBtn" title="Copy the 5 slides the homepage already shows into this editor so you can edit them"><i class="fas fa-download"></i> Import the existing slides</button>
+                        <button class="btn btn-primary btn-small" id="carouselNewBtn"><i class="fas fa-plus"></i> New slide</button>
+                    </div>
+                </div>
+                <p style="font-size:0.85rem;color:#5a6572;margin-bottom:1rem;">
+                    These are the big slides at the top of the homepage. Put up an offer or announcement here —
+                    text, colours, font sizes and an optional photo are all yours to set. Changes appear on the
+                    homepage <strong>on the next visit</strong> (no app update needed). The homepage starts with
+                    <strong>5 built-in slides</strong>; tap <strong>Import the existing slides</strong> to bring
+                    them in and edit them like any other. Importing again never duplicates them and never
+                    overwrites your edits.
+                </p>
+                <!-- One-line money picture so the admin never has to add up rows -->
+                <div id="shopsSummary" style="font-size:0.82rem;color:#5a6572;margin-bottom:0.7rem;">Loading summary…</div>
+
+                <!-- Payments readiness — can charging actually collect money right now? -->
+                <div class="section-card" style="margin-bottom:1rem;padding:1rem;" id="readinessCard">
+                    <h3 style="font-size:0.95rem;margin:0 0 0.6rem;"><i class="fas fa-heartbeat" style="color:#0e7490;"></i> Payments readiness
+                        <button class="btn btn-outline btn-small" id="refreshReadinessBtn" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.72rem;"><i class="fas fa-sync-alt"></i> Re-check</button>
+                    </h3>
+                    <div id="readinessBody" style="font-size:0.82rem;color:#5a6572;">Checking…</div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Slide</th>
+                                <th>Order</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carouselTableBody">
+                            <tr><td colspan="5" class="loading">Loading slides...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
             <!-- Admin Management Section -->
             <section class="admin-section" id="section-admins">
                 <div class="section-header">
@@ -886,6 +1354,21 @@
                         <div id="myPermissions" style="font-size: 0.85rem; color: #767676;">
                             <p><i class="fas fa-spinner fa-spin"></i> Loading...</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Promote an existing member to admin -->
+                <div style="background: white; border-radius: 12px; padding: 1.25rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem; border-left: 4px solid #0064d2;">
+                    <h3 style="margin: 0 0 0.35rem; font-size: 1rem;"><i class="fas fa-user-shield" style="color:#0064d2;"></i> Make an existing member an admin</h3>
+                    <p style="margin: 0 0 0.85rem; font-size: 0.82rem; color: #767676;">Enter the email of an account that already exists on Sankofa Market — its role will change to admin.</p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                        <input type="email" id="promoteAdminEmail" placeholder="member@example.com" style="flex: 1; min-width: 220px; padding: 0.6rem 0.75rem; border: 1.5px solid #e5e5e5; border-radius: 8px; font-size: 0.9rem;">
+                        <select id="promoteAdminRole" style="padding: 0.6rem 0.75rem; border: 1.5px solid #e5e5e5; border-radius: 8px; font-size: 0.9rem;">
+                            <option value="manager">Manager</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="super_admin">Super Admin</option>
+                        </select>
+                        <button class="btn btn-primary" id="promoteAdminBtn" onclick="promoteUserToAdmin()" style="padding: 0.6rem 1.1rem; font-weight: 700;"><i class="fas fa-user-shield"></i> Make Admin</button>
                     </div>
                 </div>
 
@@ -978,6 +1461,10 @@
                         <i class="fas fa-users"></i>
                         <span>Users</span>
                     </div>
+                    <div class="more-menu-item" data-goto="wallets">
+                        <i class="fas fa-wallet"></i>
+                        <span>Wallets</span>
+                    </div>
                     <div class="more-menu-item" data-goto="categories">
                         <i class="fas fa-th-large"></i>
                         <span>Categories</span>
@@ -1002,10 +1489,150 @@
                         <i class="fas fa-user-shield"></i>
                         <span>Admins</span>
                     </div>
+                    <div class="more-menu-item" data-goto="growth">
+                        <i class="fas fa-rocket"></i>
+                        <span>Growth</span>
+                    </div>
                     <div class="more-menu-item" data-goto="legal">
                         <i class="fas fa-gavel"></i>
                         <span>Legal</span>
                     </div>
+                </div>
+            </section>
+
+            <!-- Growth & Recruitment Section -->
+            <section class="admin-section" id="section-growth">
+                <div class="section-header">
+                    <h1><i class="fas fa-rocket" style="color: var(--primary-color);"></i> Growth & Seller Recruitment</h1>
+                </div>
+
+                <!-- Premium Tier System — 1–2% only -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                    <h2 style="margin:0 0 1rem;font-size:1.15rem;"><i class="fas fa-layer-group" style="color:#0064d2;"></i> Premium Tier System — <span style="background:#22c55e;color:#fff;padding:0.15rem 0.45rem;border-radius:999px;font-size:0.7rem;">1–2% ONLY</span></h2>
+                    <div class="admin-table-wrapper" style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr><th>Tier</th><th>Price / Duration</th><th>Listings</th><th>Commission</th><th>Boost</th><th>Perks</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="status-badge" style="background:#6b7280;color:white;">🆕 Starter</span></td>
+                                    <td><strong>GHS 0</strong> <span style="font-size:0.7rem;color:#9ca3af;">free forever</span></td>
+                                    <td><strong>2 active</strong></td>
+                                    <td><span style="background:#f3f4f6;color:#374151;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.75rem;font-weight:700;">5%</span></td>
+                                    <td>—</td>
+                                    <td>Start selling same day</td>
+                                </tr>
+                                <tr style="background:#fff7ed;">
+                                    <td><span class="status-badge" style="background:#92400e;color:white;">🥉 Bronze</span></td>
+                                    <td><strong>GHS 45</strong> <span style="font-size:0.65rem;color:#9ca3af;">/mo<br>120/3mo 220/6mo</span></td>
+                                    <td><strong>Unlimited</strong></td>
+                                    <td><span style="background:#fef3c7;color:#92400e;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.75rem;font-weight:800;border:1px solid #fde68a;">2%</span></td>
+                                    <td><span style="background:#fef3c7;color:#92400e;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.7rem;font-weight:700;">2×</span></td>
+                                    <td>Appears above Free • Verified badge</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="status-badge" style="background:#64748b;color:white;">🥈 Silver</span></td>
+                                    <td><strong>GHS 79</strong> <span style="font-size:0.65rem;color:#9ca3af;">/mo<br>210/3mo 390/6mo</span></td>
+                                    <td><strong>Unlimited</strong></td>
+                                    <td><span style="background:#f1f5f9;color:#475569;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.75rem;font-weight:800;border:1px solid #cbd5e1;">1.5%</span></td>
+                                    <td><span style="background:#dbeafe;color:#1e40af;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.7rem;font-weight:700;">4×</span></td>
+                                    <td>Priority • Featured 2×/week</td>
+                                </tr>
+                                <tr style="background:#fffbeb;">
+                                    <td><span class="status-badge" style="background:#f59e0b;color:#191919;">🥇 Gold</span> <span style="font-size:0.6rem;background:#f59e0b;color:#191919;padding:0.1rem 0.3rem;border-radius:999px;font-weight:800;">POPULAR</span></td>
+                                    <td><strong>GHS 129</strong> <span style="font-size:0.65rem;color:#9ca3af;">/mo<br>350/3mo 650/6mo</span></td>
+                                    <td><strong>Unlimited</strong></td>
+                                    <td><span style="background:#fef9c3;color:#854d0e;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.75rem;font-weight:800;border:1px solid #fde68a;">1.2%</span></td>
+                                    <td><span style="background:#fce7f3;color:#9d174d;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.7rem;font-weight:700;">6×</span></td>
+                                    <td>Top rank • Daily featured + homepage</td>
+                                </tr>
+                                <tr style="background:#faf5ff;">
+                                    <td><span class="status-badge" style="background:#7c3aed;color:white;">💎 Diamond</span></td>
+                                    <td><strong>GHS 199</strong> <span style="font-size:0.65rem;color:#9ca3af;">/mo<br>540/3mo 990/6mo</span></td>
+                                    <td><strong>Unlimited</strong></td>
+                                    <td><span style="background:#ede9fe;color:#5b21b6;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.75rem;font-weight:800;border:1px solid #c4b5fd;">1%</span></td>
+                                    <td><span style="background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd;padding:0.15rem 0.4rem;border-radius:999px;font-size:0.7rem;font-weight:700;">10×</span></td>
+                                    <td>Diamond badge • Homepage hero • #1 rank</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="font-size:0.72rem;color:#64748b;margin:0.75rem 0 0;background:#f0fdf4;border:1px solid #bbf7d0;padding:0.6rem 0.8rem;border-radius:8px;"><i class="fas fa-check-circle" style="color:#16a34a;"></i> <strong style="color:#15803d;">Premium = 1–2% only. No Ghana Card needed.</strong> Set any user's tier from <strong>Users → Set tier…</strong> dropdown. Duration 1/3/6 months. Longer = save 10–15%. Founding Sellers (🏆) = 0% for launch period.</p>
+                </div>
+
+                <!-- Founding Seller Program -->
+                <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #f59e0b;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                    <h2 style="margin:0 0 0.75rem;font-size:1.15rem;">🏆 Founding Seller Program</h2>
+                    <ul style="margin:0 0 0.5rem 1.25rem;font-size:0.9rem;line-height:1.9;">
+                        <li><strong>Offer:</strong> 0% commission for the first <strong>50–100 sellers</strong> for 3 months</li>
+                        <li><strong>Extras:</strong> "Founding Seller" badge + featured homepage placement</li>
+                        <li><strong>How to enroll:</strong> Users tab → click the 🏆 button next to the seller</li>
+                        <li><strong>Pitch:</strong> "Be one of Ghana's first trusted sellers — keep 100% of your sales for 3 months"</li>
+                    </ul>
+                </div>
+
+                <!-- Recruitment Channels -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                    <h2 style="margin:0 0 1rem;font-size:1.15rem;"><i class="fas fa-bullhorn" style="color:#e74c3c;"></i> Where to Find Sellers (Recruitment Playbook)</h2>
+
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;">
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">📱 Instagram & WhatsApp Sellers</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">They already have inventory and photos. Search hashtags like #AccraVendors, #GhanaSellers, #KumasiBusiness.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> "Your own storefront + buyers pay safely via escrow. No more payment disputes."</p>
+                        </div>
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">🎓 University Campuses</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">Legon, KNUST, UPSA, UCC, UMaT. Students constantly sell phones, books, fashion and furniture.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> "Campus Seller" campaign — 0% commission for their first month + campus ambassador program.</p>
+                        </div>
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">🏪 Market Vendors Going Digital</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">Kantamanto, Makola, Kejetia, Madina market. Visit stalls and onboard vendors in person.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> Physically help 5–10 vendors list their first items. One phone can onboard a whole stall. Use <strong>Direct Verify</strong> to start them instantly.</p>
+                        </div>
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">🎵 TikTok & Content Creators</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">Ghanaian creators with small businesses (fashion, food, crafts) looking for a sales channel.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> Free verification + featured placement in exchange for a shout-out video.</p>
+                        </div>
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">🤝 Referral Program</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">Verified sellers earn GHS 10 credit for every new seller they invite who completes a first sale.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> "Invite a friend to sell, earn credit toward your next purchase."</p>
+                        </div>
+                        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:1.15rem;">
+                            <h3 style="margin:0 0 0.5rem;font-size:0.98rem;">⛪ Community Groups</h3>
+                            <p style="font-size:0.84rem;color:#4b5563;margin:0 0 0.5rem;line-height:1.6;">Church groups, associations, alumni networks — trust-based communities that already trade with each other.</p>
+                            <p style="font-size:0.84rem;margin:0;"><strong>Pitch:</strong> "Trade within your community, protected by escrow."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Rules -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                    <h2 style="margin:0 0 0.75rem;font-size:1.15rem;"><i class="fas fa-shield-alt" style="color:#22c55e;"></i> Verification Rules for Admins</h2>
+                    <ul style="margin:0 0 0.5rem 1.25rem;font-size:0.9rem;line-height:1.9;">
+                        <li><strong>Standard path:</strong> User submits Ghana Card number + passport photo → review within 24–48h → approve → they become <strong>🆕 Starter</strong> (10 listings)</li>
+                        <li><strong>Direct Verify:</strong> Use for users you know personally, in-person onboarded market vendors, or trusted referrals. No documents needed — they start as Starter immediately.</li>
+                        <li><strong>Auto-promotion:</strong> A Starter who completes 2 escrow purchases is automatically promoted to <strong>✅ Verified</strong> (200 listings).</li>
+                        <li><strong>Trusted promotion:</strong> After 10 completed escrow sales, promote to <strong>⭐ Trusted</strong> (auto-detected; confirm manually via the tier dropdown).</li>
+                        <li><strong>Revoke:</strong> Use "Unverify" for policy violations, fraud reports, or repeated disputes. The reason is logged.</li>
+                        <li><strong>Escrow is mandatory</strong> for all tiers — it protects both buyers and sellers and keeps transactions on-platform.</li>
+                    </ul>
+                </div>
+
+                <!-- Key Metrics to Watch -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.5rem;">
+                    <h2 style="margin:0 0 0.75rem;font-size:1.15rem;"><i class="fas fa-chart-bar" style="color:#9b59b6;"></i> Growth Metrics to Watch Weekly</h2>
+                    <ul style="margin:0 0 0.5rem 1.25rem;font-size:0.9rem;line-height:1.9;">
+                        <li>% of new users making a <strong>first purchase within 7 days</strong> (if below ~20%, the escrow requirement needs softening)</li>
+                        <li>Drop-off at each verification step (documents submitted → approved → first listing)</li>
+                        <li>Starter → Verified conversion rate (target: 30% within 60 days)</li>
+                        <li>Founding Sellers active vs. enrolled (target: 70%+ listing at least once)</li>
+                        <li>New seller → first sale time (target: under 14 days)</li>
+                    </ul>
                 </div>
             </section>
 
@@ -1077,7 +1704,7 @@
                             <div class="legal-item-meta">
                                 <span class="legal-tag required">Required</span>
                                 <span class="legal-tag where">RGD Office or online</span>
-                                <span class="legal-tag cost">GH₵ 500–1,500</span>
+                                <span class="legal-tag cost">GHS 500–1,500</span>
                                 <span class="legal-tag time">1–2 weeks</span>
                             </div>
                         </div>
@@ -1118,11 +1745,11 @@
                         <div class="legal-check" onclick="toggleLegal(this)">✓</div>
                         <div class="legal-item-content">
                             <div class="legal-item-title">Register with Data Protection Commission</div>
-                            <div class="legal-item-desc">Since you collect user data (names, emails, phone numbers, Ghana Card numbers), you must register as a Data Controller. Annual renewal required. Penalty: up to GH₵ 60,000 fine.</div>
+                            <div class="legal-item-desc">Since you collect user data (names, emails, phone numbers, Ghana Card numbers), you must register as a Data Controller. Annual renewal required. Penalty: up to GHS 60,000 fine.</div>
                             <div class="legal-item-meta">
                                 <span class="legal-tag required">Required</span>
                                 <span class="legal-tag where">dataprotection.org.gh</span>
-                                <span class="legal-tag cost">GH₵ 500–2,000/year</span>
+                                <span class="legal-tag cost">GHS 500–2,000/year</span>
                                 <span class="legal-tag time">1–2 weeks</span>
                             </div>
                         </div>
@@ -1220,7 +1847,7 @@
                     <div class="legal-checklist-item" data-legal-id="tax-vat">
                         <div class="legal-check" onclick="toggleLegal(this)">✓</div>
                         <div class="legal-item-content">
-                            <div class="legal-item-title">Register for VAT (if turnover exceeds GH₵ 250,000/year)</div>
+                            <div class="legal-item-title">Register for VAT (if turnover exceeds GHS 250,000/year)</div>
                             <div class="legal-item-desc">15% VAT on services. Required once annual revenue exceeds the threshold. File monthly VAT returns.</div>
                             <div class="legal-item-meta">
                                 <span class="legal-tag recommended">When you grow</span>
@@ -1268,7 +1895,7 @@
             <i class="fas fa-shopping-bag"></i>
             <span>Orders</span>
         </button>
-        <button class="bottom-nav-item" data-section="messages-nav">
+        <button class="bottom-nav-item" data-section="messages">
             <i class="fas fa-comments"></i>
             <span>Messages</span>
             <span class="nav-badge-dot" style="display:none;"></span>
@@ -1283,10 +1910,468 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="../../config/firebase-config.js?v=3"></script>
-    <script src="../../js/main.js?v=5"></script>
-    <script src="../../js/admin.js?v=23"></script>
-    <script src="../../js/admin-management.js"></script>
-    <script src="../../js/admin-auth.js?v=4"></script>
+    <!-- Needed so the panel can call Cloud Functions (e.g. set the admin claim when promoting a member) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/js/main.js?v=31"></script>
+    <!-- carousel.js provides the shared slide builders (sanitising + preview markup)
+         used by the Carousel editor; it does not boot on this page (no #carouselTrack). -->
+    <script src="/js/carousel.js?v=4"></script>
+    <script src="/js/variants.js?v=1"></script>
+    <script src="/js/admin.js?v=93"></script>
+    <script src="/js/admin-management.js"></script>
+    <script src="/js/admin-auth.js?v=6"></script>
+    <script>
+    // Cancel an auction from the admin monitor (used by the Cancel button below).
+// One global helper = no nested-quote breakage inside generated HTML.
+window.adminCancelAuction = function(auctionDocId){
+  if(!auctionDocId) return;
+  if(!confirm('Cancel this auction? Buyers with bids will see it as cancelled.')) return;
+  try{
+    firebase.firestore().collection('auctions').doc(auctionDocId)
+      .update({ status:'cancelled', cancelledAt: firebase.firestore.FieldValue.serverTimestamp() })
+      .then(function(){ alert('Auction cancelled.'); location.reload(); })
+      .catch(function(e){ alert('Could not cancel: ' + e.message); });
+  }catch(e){ alert('Could not cancel: ' + e.message); }
+};
+// Admin Auctions Monitor — admin is notified instantly when any user starts an auction
+    (function(){
+      var auctionUnsub = null;
+      var notifUnsub = null;
+      function initAdminAuctions(){
+        var tries=0;
+        function tryInit(){
+          tries++;
+          if (typeof firebaseDB==='undefined' || !firebaseDB || typeof firebaseAuth==='undefined' || !firebaseAuth){
+            if(tries<30) setTimeout(tryInit,700); return;
+          }
+          firebaseAuth.onAuthStateChanged(function(user){
+            if(auctionUnsub) try{auctionUnsub();}catch(e){}
+            if(notifUnsub) try{notifUnsub();}catch(e){}
+            if(!user) return;
+            // Only for admins
+            firebaseDB.collection('users').doc(user.uid).get().then(function(doc){
+              var d = doc.exists?doc.data():{};
+              if(d.role!=='admin') return;
+              // Listen auctions — use simple limit without orderBy to avoid index/missing field issues, sort client-side
+              try{
+                auctionUnsub = firebaseDB.collection('auctions').limit(50).onSnapshot(function(snap){
+                var live=0, sched=0;
+                var rows=[];
+                snap.forEach(function(doc){
+                  var a=doc.data(); a._id=doc.id;
+                  var now=Date.now();
+                  var startMs = a.startAt ? (a.startAt.toMillis?a.startAt.toMillis():new Date(a.startAt).getTime()) : (a.startAtMs||0);
+                  var endMs = a.endAt ? (a.endAt.toMillis?a.endAt.toMillis():new Date(a.endAt).getTime()) : (a.endAtMs||0);
+                  var status = a.status;
+                  if(status==='cancelled') status='cancelled';
+                  else if(status==='ended' || (endMs && now>=endMs)) status='ended';
+                  else if(status==='scheduled' && now < startMs) status='scheduled';
+                  else if(status==='live' || (now>=startMs && now<endMs)) status='live';
+                  else if(now < startMs) status='scheduled';
+                  else status='live';
+                  if(status==='live') live++;
+                  if(status==='scheduled') sched++;
+                  rows.push({a:a,status:status,startMs:startMs,endMs:endMs});
+                });
+                // Update overview banner (proper arrangement — shows only when ongoing, not as extra grid card)
+                var banner = document.getElementById('adminLiveAuctionBanner');
+                var bLive = document.getElementById('adminBannerLiveCount');
+                var bS = document.getElementById('adminBannerS');
+                var bSched = document.getElementById('adminBannerScheduled');
+                if(banner){
+                  if(live>0 || sched>0){
+                    banner.style.display='flex';
+                    if(bLive) bLive.textContent = live;
+                    if(bS) bS.textContent = live===1?'':'s';
+                    if(bSched){ if(sched>0){ bSched.textContent = sched+' scheduled'; bSched.style.display=''; } else bSched.style.display='none'; }
+                  } else {
+                    banner.style.display='none';
+                  }
+                }
+                // Legacy overview card (if still present)
+                var oLive = document.getElementById('overviewLiveAuctions');
+                var oSub = document.getElementById('overviewLiveAuctionsSub');
+                if(oLive) oLive.textContent = live;
+                if(oSub) oSub.textContent = live>0 ? '🔴 '+live+' live now' : (sched>0 ? '🟡 '+sched+' scheduled' : 'No live now');
+                // Update header counts
+                var cLive = document.getElementById('adminAuctionLiveCount');
+                var cSched = document.getElementById('adminAuctionScheduledCount');
+                var cBadge = document.getElementById('countAuctions');
+                if(cLive) cLive.textContent = live+' live';
+                if(cSched) cSched.textContent = sched+' scheduled';
+                if(cBadge){
+                  var total = live+sched;
+                  if(total>0){ cBadge.textContent=total; cBadge.style.display=''; } else cBadge.style.display='none';
+                }
+                // Render table
+                var tbody = document.getElementById('adminAuctionsBody');
+                if(tbody){
+                  if(rows.length===0){
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-gavel" style="font-size:1.5rem;color:#ccc;"></i><p>No auctions yet</p></td></tr>';
+                  } else {
+                    var html='';
+                    rows.slice(0,20).forEach(function(r){
+                      var a=r.a, st=r.status;
+                      var badge = st==='live' ? '<span style="background:#ef4444;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">LIVE</span>' : st==='scheduled' ? '<span style="background:#f59e0b;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">SOON</span>' : st==='ended' ? '<span style="background:#6b7280;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:700;">ENDED</span>' : '<span style="background:#e5e7eb;color:#374151;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;">'+st+'</span>';
+                      var when = '';
+                      if(st==='scheduled') when = new Date(r.startMs).toLocaleString('en-GB',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+                      else if(st==='live') when = 'ends '+ new Date(r.endMs).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+                      else when = new Date(r.endMs||r.startMs).toLocaleDateString('en-GB');
+                      var bid = a.currentBid||a.startingPrice||0;
+                      var waitInfo = a.waitingMinutes!=null ? a.waitingMinutes+'m wait' : '';
+                      html+='<tr>'
+                        +'<td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;"><div><div style="font-weight:700;font-size:0.82rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+(a.auctionId||a._id).slice(0,8)+' • '+waitInfo+'</div></div></div></td>'
+                        +'<td><div style="font-weight:600;font-size:0.82rem;">'+(a.sellerName||'Seller')+'</div><div style="font-size:0.7rem;color:#767676;">'+(a.sellerTier||'')+' • '+a.sellerId.slice(0,6)+'</div></td>'
+                        +'<td style="font-size:0.75rem;">'+when+'</td>'
+                        +'<td style="font-weight:800;color:#0064d2;">GHS '+bid.toLocaleString()+' <span style="font-size:0.65rem;color:#6b7280;font-weight:500;">('+ (a.bidCount||0)+' bids)</span></td>'
+                        +'<td>'+badge+'</td>'
+                        +'<td style="text-align:center;font-weight:700;">'+(a.waitlistCount!=null?a.waitlistCount:'—')+'</td>'
+                        +'<td><a href="/auction-detail.html?id='+a._id+'" target="_blank" style="background:#0064d2;color:#fff;padding:0.3rem 0.55rem;border-radius:6px;font-size:0.7rem;font-weight:700;text-decoration:none;">View</a> '+'<button onclick="adminCancelAuction(\''+a._id+'\')" style="background:#fff;border:1px solid #fecaca;color:#991b1b;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;">Cancel</button></td>'
+                        +'</tr>';
+                    });
+                    tbody.innerHTML = html;
+                  }
+                }
+              }, function(err){
+                  console.warn('admin auctions listen failed', err);
+                  var tb = document.getElementById('adminAuctionsBody');
+                  if(tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;"><i class="fas fa-exclamation-triangle"></i><p>Error: '+err.message+'</p><p style="font-size:0.75rem;color:#6b7280;">Try hard refresh or check Firestore rules. Will retry in 3s...</p></td></tr>';
+                  setTimeout(function(){
+                    try{
+                      auctionUnsub = firebaseDB.collection('auctions').limit(50).onSnapshot(function(snap2){
+                      var live2=0, sched2=0, rows2=[];
+                      snap2.forEach(function(doc){
+                        var a=doc.data(); a._id=doc.id;
+                        var now2=Date.now();
+                        var sMs = a.startAt ? (a.startAt.toMillis?a.startAt.toMillis():new Date(a.startAt).getTime()) : (a.startAtMs||0);
+                        var eMs = a.endAt ? (a.endAt.toMillis?a.endAt.toMillis():new Date(a.endAt).getTime()) : (a.endAtMs||0);
+                        var st2 = a.status;
+                        if(st2==='cancelled') st2='cancelled';
+                        else if(st2==='ended' || (eMs && now2>=eMs)) st2='ended';
+                        else if(st2==='scheduled' && now2 < sMs) st2='scheduled';
+                        else if(st2==='live' || (now2>=sMs && now2<eMs)) st2='live';
+                        else if(now2 < sMs) st2='scheduled';
+                        else st2='live';
+                        if(st2==='live') live2++;
+                        if(st2==='scheduled') sched2++;
+                        rows2.push({a:a,status:st2,startMs:sMs,endMs:eMs});
+                      });
+                      // Reuse same render logic by manually updating UI (duplicate code to avoid refactor)
+                      var banner2 = document.getElementById('adminLiveAuctionBanner');
+                      var bLive2 = document.getElementById('adminBannerLiveCount');
+                      var bS2 = document.getElementById('adminBannerS');
+                      var bSched2 = document.getElementById('adminBannerScheduled');
+                      if(banner2){
+                        if(live2>0 || sched2>0){
+                          banner2.style.display='flex';
+                          if(bLive2) bLive2.textContent = live2;
+                          if(bS2) bS2.textContent = live2===1?'':'s';
+                          if(bSched2){ if(sched2>0){ bSched2.textContent = sched2+' scheduled'; bSched2.style.display=''; } else bSched2.style.display='none'; }
+                        } else banner2.style.display='none';
+                      }
+                      var tbody2 = document.getElementById('adminAuctionsBody');
+                      if(tbody2){
+                        if(rows2.length===0) tbody2.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#767676;"><i class="fas fa-gavel" style="font-size:1.5rem;color:#ccc;"></i><p>No auctions yet</p></td></tr>';
+                        else {
+                          rows2.sort(function(a,b){ return (b.a.createdAt?.toMillis?.()||0) - (a.a.createdAt?.toMillis?.()||0); });
+                          var h2='';
+                          rows2.slice(0,20).forEach(function(r){
+                            var a=r.a, st=r.status;
+                            var badge2 = st==='live' ? '<span style="background:#ef4444;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">LIVE</span>' : st==='scheduled' ? '<span style="background:#f59e0b;color:#fff;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;font-weight:800;">SOON</span>' : '<span style="background:#e5e7eb;color:#374151;padding:0.2rem 0.45rem;border-radius:999px;font-size:0.65rem;">'+st+'</span>';
+                            var when2 = st==='scheduled' ? new Date(r.startMs).toLocaleString('en-GB',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : st==='live' ? 'ends '+ new Date(r.endMs).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : new Date(r.endMs||r.startMs).toLocaleDateString('en-GB');
+                            var bid2 = a.currentBid||a.startingPrice||0;
+                            h2+='<tr><td><div style="display:flex;gap:0.5rem;align-items:center;"><img src="'+(a.productImage||(a.images&&a.images[0])||'data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2260%22%20height=%2260%22%3E%3Crect%20width=%2260%22%20height=%2260%22%20fill=%22%23e5e7eb%22/%3E%3C/svg%3E')+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;"><div><div style="font-weight:700;font-size:0.82rem;">'+(a.title||'Auction')+'</div><div style="font-size:0.68rem;color:#767676;">'+a._id.slice(0,8)+'</div></div></div></td><td>'+(a.sellerName||'Seller')+'</td><td style="font-size:0.75rem;">'+when2+'</td><td style="font-weight:800;color:#0064d2;">GHS '+bid2.toLocaleString()+'</td><td>'+badge2+'</td><td style="text-align:center;">—</td><td><a href="/auction-detail.html?id='+a._id+'" target="_blank" style="background:#0064d2;color:#fff;padding:0.3rem 0.55rem;border-radius:6px;font-size:0.7rem;text-decoration:none;">View</a></td></tr>';
+                          });
+                          tbody2.innerHTML = h2;
+                        }
+                      }
+                      var cLive2 = document.getElementById('adminAuctionLiveCount');
+                      var cSched2 = document.getElementById('adminAuctionScheduledCount');
+                      var cBadge2 = document.getElementById('countAuctions');
+                      if(cLive2) cLive2.textContent = live2+' live';
+                      if(cSched2) cSched2.textContent = sched2+' scheduled';
+                      if(cBadge2){ if(live2+sched2>0){ cBadge2.textContent=live2+sched2; cBadge2.style.display=''; } else cBadge2.style.display='none'; }
+                    }, function(err2){ console.warn('admin auctions fallback also failed', err2); var tb=document.getElementById('adminAuctionsBody'); if(tb) tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading auctions: '+err2.message+'<br><small>Check Firestore rules & indexes</small></td></tr>'; });
+                  }catch(e){ console.error('admin auctions fallback error', e); }
+                });
+               });   // close the error callback + the first onSnapshot call
+              }catch(e){ console.error('admin auctions outer try', e); }
+
+              // Notifications for auction_started (admin awareness) — avoid composite index by filtering type client-side
+              var notifQuery = firebaseDB.collection('notifications').where('userId','==',user.uid).orderBy('createdAt','desc').limit(30);
+              notifUnsub = notifQuery.onSnapshot(function(snap){
+                var unread=0;
+                var list=[];
+                snap.forEach(function(doc){
+                  var n=doc.data(); n._id=doc.id;
+                  if(n.type!=='auction_started') return;
+                  list.push(n);
+                  if(!n.isRead) unread++;
+                });
+                var badge = document.getElementById('adminAuctionNotifBadge');
+                var countEl = document.getElementById('adminAuctionNotifCount');
+                var bellDot = document.querySelector('.topbar-btn .notif-dot');
+                if(badge) { if(unread>0){ badge.textContent=unread+' new'; badge.style.display=''; } else badge.style.display='none'; }
+                if(countEl) { if(list.length>0){ countEl.textContent=list.length; countEl.style.display=''; } else countEl.style.display='none'; }
+                if(bellDot) bellDot.style.display = unread>0 ? '' : 'none';
+                // Flash toast for newest unread (once)
+                window._adminLastNotif = window._adminLastNotif||new Set();
+                list.slice(0,3).forEach(function(n){
+                  if(!n.isRead && !window._adminLastNotif.has(n._id)){
+                    window._adminLastNotif.add(n._id);
+                    try{ if(typeof showFlashMessage==='function') showFlashMessage('🔨 '+n.title+': '+n.auctionTitle+' by '+n.sellerName, 'info'); }catch(e){}
+                  }
+                });
+                // Render notif list
+                var cont = document.getElementById('adminAuctionNotifs');
+                if(cont){
+                  if(list.length===0) cont.innerHTML = '<div style="text-align:center;padding:1rem;color:#94a3b8;font-size:0.82rem;">No auction notifications yet — you’ll be notified instantly when a user starts one.</div>';
+                  else {
+                    var h='';
+                    list.slice(0,8).forEach(function(n){
+                      var when = n.createdAt ? (n.createdAt.toDate?n.createdAt.toDate():new Date(n.createdAt)).toLocaleString('en-GB',{month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+                      h+='<div style="background:#fff;border:1px solid '+(n.isRead?'#e5e7eb':'#fde68a')+';border-radius:8px;padding:0.7rem;display:flex;gap:0.6rem;align-items:center;'+(n.isRead?'opacity:0.8;':'background:#fffbeb;')+'">'
+                        +'<div style="width:32px;height:32px;border-radius:50%;background:'+(n.isRead?'#e5e7eb':'#f59e0b')+';color:'+(n.isRead?'#6b7280':'#fff')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-gavel"></i></div>'
+                        +'<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(n.title||'New Auction')+'</div><div style="font-size:0.72rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(n.message||'').slice(0,110)+'</div><div style="font-size:0.68rem;color:#94a3b8;">'+when+' • '+ (n.isRead?'read':'unread')+'</div></div>'
+                        +'<a href="/auction-detail.html?id='+(n.auctionId||'')+'" target="_blank" style="background:#0064d2;color:#fff;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;text-decoration:none;flex-shrink:0;">View</a>'
+                        +(!n.isRead?'<button onclick="firebase.firestore().collection(\'notifications\').doc(\''+n._id+'\').update({isRead:true}).catch(()=>{})" style="background:#fff;border:1px solid #e5e7eb;color:#374151;padding:0.3rem 0.5rem;border-radius:6px;font-size:0.7rem;cursor:pointer;">Mark read</button>':'')
+                        +'</div>';
+                    });
+                    cont.innerHTML = h;
+                  }
+                }
+              }, function(err){ console.warn('admin notif listen', err); });
+            });
+          });
+        }
+        tryInit();
+      }
+      // Run even if DOM already loaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function(){ setTimeout(initAdminAuctions, 1200); });
+      } else {
+        setTimeout(initAdminAuctions, 800);
+      }
+    })();
+    </script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+
+    <!-- Modals moved OUT of their sections: a fixed overlay inside a display:none
+         section can never be seen — the View buttons seemed dead (watchdog flagged them). -->
+    <!-- ===== Carousel slide editor (filled + wired by js/admin.js) ===== -->
+    <div id="carouselModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+        <div style="background:#fff;border-radius:14px;max-width:860px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <div style="padding:1rem 1.2rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="margin:0;font-size:1rem;"><i class="fas fa-images" style="color:#0064d2;"></i> <span id="carouselModalTitle">Slide</span></h3>
+                <button onclick="closeCarouselModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#6b7280;" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="overflow-y:auto;flex:1;padding:1.1rem 1.2rem;">
+
+                <!-- Live preview -->
+                <div style="font-size:0.78rem;font-weight:800;color:#5a6572;margin-bottom:0.35rem;">LIVE PREVIEW — this is how the slide will look</div>
+                <div id="cSlidePreview" style="border-radius:12px;overflow:hidden;margin-bottom:1rem;border:1px solid #e5e7eb;transform-origin:top left;"></div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Badge text <span style="font-weight:400;">(optional)</span>
+                        <input type="text" id="cSlideTag" maxlength="40" placeholder="🔥 Mega Sale" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Button text
+                        <input type="text" id="cSlideBtnText" maxlength="40" placeholder="Shop now" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                    </label>
+                </div>
+
+                <label style="display:block;font-size:0.78rem;font-weight:700;color:#5a6572;margin-top:0.7rem;">Headline (first line)
+                    <input type="text" id="cSlideTitle" maxlength="80" placeholder="Electronics Blowout" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                </label>
+                <label style="display:block;font-size:0.78rem;font-weight:700;color:#5a6572;margin-top:0.7rem;">Headline (second line, coloured)
+                    <input type="text" id="cSlideAccent" maxlength="80" placeholder="Up to 40% Off" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                </label>
+                <label style="display:block;font-size:0.78rem;font-weight:700;color:#5a6572;margin-top:0.7rem;">Message
+                    <textarea id="cSlideSub" rows="2" maxlength="300" placeholder="Say what the offer is, or the news you want buyers to see." style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;"></textarea>
+                </label>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:0.7rem;margin-top:0.7rem;">
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Button link
+                        <input type="text" id="cSlideBtnUrl" maxlength="300" placeholder="/search.html?category=electronics" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Button style
+                        <select id="cSlideBtnStyle" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                            <option value="secondary">Gold (secondary)</option>
+                            <option value="primary">Blue (primary)</option>
+                            <option value="outline">Outline</option>
+                        </select>
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Button icon <span style="font-weight:400;">(optional)</span>
+                        <input type="text" id="cSlideBtnIcon" maxlength="24" placeholder="bolt" style="width:100%;padding:0.5rem 0.6rem;border:1.5px solid #e5e7eb;border-radius:9px;font-size:0.86rem;font-family:inherit;">
+                    </label>
+                </div>
+
+                <!-- Colours -->
+                <div style="font-size:0.78rem;font-weight:800;color:#5a6572;margin:1rem 0 0.35rem;">COLOURS</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.7rem;">
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Background (start)
+                        <input type="color" id="cSlideBg1" value="#0064d2" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Background (end)
+                        <input type="color" id="cSlideBg2" value="#002d6b" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Text colour
+                        <input type="color" id="cSlideText" value="#ffffff" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Second line colour
+                        <input type="color" id="cSlideAccentColor" value="#f5af02" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Badge background
+                        <input type="color" id="cSlideTagBg" value="#000000" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Badge text colour
+                        <input type="color" id="cSlideTagColor" value="#ffffff" style="width:100%;height:36px;padding:2px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;">
+                    </label>
+                </div>
+                <div style="font-size:0.74rem;color:#767676;margin-top:0.35rem;">
+                    Badge colours only apply when "Badge text" is filled. Leave them as-is for the default see-through badge.
+                </div>
+
+                <!-- Sizes -->
+                <div style="font-size:0.78rem;font-weight:800;color:#5a6572;margin:1rem 0 0.35rem;">FONT SIZES <span style="font-weight:400;">(they still shrink on small phones automatically)</span></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Headline size <b id="cTitleSizeVal" style="color:#191919;">44</b>px
+                        <input type="range" id="cSlideTitleSize" min="20" max="64" value="44" style="width:100%;">
+                    </label>
+                    <label style="font-size:0.78rem;font-weight:700;color:#5a6572;">Message size <b id="cBodySizeVal" style="color:#191919;">18</b>px
+                        <input type="range" id="cSlideBodySize" min="12" max="26" value="18" style="width:100%;">
+                    </label>
+                </div>
+
+                <!-- Image -->
+                <div style="font-size:0.78rem;font-weight:800;color:#5a6572;margin:1rem 0 0.35rem;">PHOTO <span style="font-weight:400;">(optional — appears beside the text)</span></div>
+                <div style="display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;">
+                    <div id="cSlideImagePreview" style="width:120px;height:80px;border:1.5px dashed #d8dee5;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa5b1;font-size:0.75rem;background:#f8fafc;overflow:hidden;">No photo</div>
+                    <div>
+                        <input type="file" id="cSlideImageInput" accept="image/*" style="font-size:0.8rem;">
+                        <div style="margin-top:0.3rem;"><button type="button" class="btn btn-outline btn-small" id="cSlideImageClear"><i class="fas fa-trash"></i> Remove photo</button></div>
+                    </div>
+                </div>
+
+                <label style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;font-size:0.84rem;font-weight:700;color:#191919;">
+                    <input type="checkbox" id="cSlideActive" checked style="width:18px;height:18px;"> Show this slide on the homepage
+                </label>
+            </div>
+            <div style="padding:0.9rem 1.2rem;border-top:1px solid #e5e7eb;display:flex;gap:0.6rem;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline btn-small" id="cSlideDelete"><i class="fas fa-trash"></i> Delete slide</button>
+                <div style="display:flex;gap:0.5rem;">
+                    <button type="button" class="btn btn-outline btn-small" onclick="closeCarouselModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-small" id="cSlideSave"><i class="fas fa-save"></i> Save slide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="orderDetailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+                    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+                        <div style="padding:1rem 1.2rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;">
+                            <h3 style="margin:0;font-size:1rem;" id="orderModalTitle"><i class="fas fa-receipt"></i> Order</h3>
+                            <button onclick="closeOrderModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#6b7280;"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div id="orderModalBody" style="overflow-y:auto;flex:1;padding:1.2rem;min-height:120px;"></div>
+                    </div>
+                </div>
+
+    <div id="walletTxModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+                    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;">
+                        <div style="padding:1rem 1.2rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;">
+                            <h3 style="margin:0;font-size:1rem;" id="walletTxModalTitle"><i class="fas fa-list"></i> Transactions</h3>
+                            <button onclick="closeWalletTxModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#6b7280;"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div id="walletTxModalList" style="overflow-y:auto;flex:1;padding:0.8rem 1.2rem;min-height:120px;"></div>
+                    </div>
+                </div>
+
+<div id="bulkEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:1rem;">
+    <div style="background:#fff;border-radius:14px;max-width:820px;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;">
+        <div style="padding:0.9rem 1.1rem;border-bottom:1px solid #eef1f6;display:flex;justify-content:space-between;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+            <div>
+                <strong style="font-size:1rem;color:#0f172a;">Bulk edit: prices and featured</strong>
+                <div style="font-size:0.78rem;color:#5a6572;margin-top:0.15rem;">Change what you need, then press Save. Only the changed rows are saved.</div>
+            </div>
+            <input type="text" id="bulkEditSearch" placeholder="Filter by title or store" oninput="renderBulkEditRows(this.value)" style="padding:0.5rem 0.7rem;border:1.5px solid #d7dce3;border-radius:10px;font:inherit;font-size:0.88rem;min-width:220px;">
+        </div>
+        <div style="overflow:auto;flex:1;">
+            <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+                <thead><tr>
+                    <th style="text-align:left;padding:0.5rem;border-bottom:1px solid #eef1f6;">Product</th>
+                    <th style="text-align:left;padding:0.5rem;border-bottom:1px solid #eef1f6;">Price (GHS)</th>
+                    <th style="text-align:center;padding:0.5rem;border-bottom:1px solid #eef1f6;">Featured</th>
+                </tr></thead>
+                <tbody id="bulkEditBody"></tbody>
+            </table>
+        </div>
+        <div style="padding:0.8rem 1.1rem;border-top:1px solid #eef1f6;display:flex;justify-content:space-between;align-items:center;gap:0.6rem;flex-wrap:wrap;">
+            <span id="bulkEditCount" style="font-size:0.85rem;color:#5a6572;">0 products changed</span>
+            <div style="display:flex;gap:0.5rem;">
+                <button type="button" class="btn btn-outline" onclick="closeBulkEditProducts()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="bulkEditSave" onclick="saveBulkEditProducts()"><i class="fas fa-save"></i> Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

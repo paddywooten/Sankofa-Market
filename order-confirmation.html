@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0064d2">
+<title>Order Confirmation — Sankofa Market</title>
+<meta name="description" content="Your Sankofa Market order receipt and escrow status.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/images/favicon.ico">
+<link rel="stylesheet" href="/css/icons.css?v=2">
+<link rel="stylesheet" href="/css/a11y.css?v=2">
+<style>
+  :root{--blue:#0064d2;--blue-dark:#004a9e;--gold:#f5af02;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:#f6f8fb;color:var(--ink);font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;-webkit-font-smoothing:antialiased;}
+  a{color:var(--blue);}
+  header.sm-top{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;padding:0.9rem 1rem;display:flex;align-items:center;gap:0.6rem;}
+  header.sm-top img{height:34px;width:34px;border-radius:8px;background:#fff;padding:2px;}
+  header.sm-top .brand{font-weight:800;font-size:1.05rem;letter-spacing:0.01em;}
+  header.sm-top .brand span{color:var(--gold);}
+  header.sm-top a.home{margin-left:auto;color:#fff;text-decoration:none;font-size:0.82rem;font-weight:700;background:rgba(255,255,255,0.16);padding:0.4rem 0.7rem;border-radius:999px;}
+  .wrap{max-width:820px;margin:0 auto;padding:1rem 0.9rem 4rem;}
+  .banner{border-radius:16px;padding:1.1rem 1.1rem 1.2rem;color:#fff;margin:0.6rem 0 1rem;display:flex;gap:0.85rem;align-items:flex-start;}
+  .banner.paid{background:linear-gradient(135deg,#16a34a,#15803d);}
+  .banner.pending{background:linear-gradient(135deg,#f59e0b,#b45309);}
+  .banner.done{background:linear-gradient(135deg,var(--blue),var(--blue-dark));}
+  .banner .ic{font-size:1.6rem;line-height:1;margin-top:0.15rem;}
+  .banner h1{margin:0 0 0.25rem;font-size:1.15rem;}
+  .banner p{margin:0;font-size:0.85rem;opacity:0.95;line-height:1.45;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1rem;margin-bottom:1rem;}
+  .card h2{margin:0 0 0.75rem;font-size:0.95rem;color:var(--ink);display:flex;align-items:center;gap:0.45rem;}
+  .card h2 i{color:var(--blue);}
+  .row{display:flex;justify-content:space-between;gap:1rem;padding:0.4rem 0;font-size:0.86rem;border-bottom:1px dashed #f1f3f7;}
+  .row:last-child{border-bottom:none;}
+  .row .k{color:var(--muted);}
+  .row .v{font-weight:700;text-align:right;word-break:break-word;}
+  .row.total .v{color:var(--blue);font-size:1.05rem;}
+  .badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.22rem 0.6rem;border-radius:999px;font-size:0.68rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;}
+  .badge.green{background:#dcfce7;color:#166534;}
+  .badge.amber{background:#fef3c7;color:#92400e;}
+  .badge.blue{background:#dbeafe;color:#1e40af;}
+  .badge.red{background:#fee2e2;color:#991b1b;}
+  .badge.grey{background:#f3f4f6;color:#4b5563;}
+  .item{display:flex;gap:0.75rem;align-items:center;padding:0.55rem 0;border-bottom:1px solid #f3f4f6;}
+  .item:last-of-type{border-bottom:none;}
+  .item img{width:54px;height:54px;object-fit:cover;border-radius:10px;background:#f3f4f6;flex:0 0 auto;}
+  .item .t{font-size:0.87rem;font-weight:700;line-height:1.3;}
+  .item .s{font-size:0.75rem;color:var(--muted);}
+  .item .p{margin-left:auto;font-weight:800;font-size:0.88rem;white-space:nowrap;}
+  .steps{list-style:none;margin:0;padding:0;}
+  .steps li{display:flex;gap:0.7rem;padding:0.5rem 0;font-size:0.85rem;}
+  .steps .n{flex:0 0 24px;height:24px;border-radius:50%;background:#eef2ff;color:var(--blue);font-weight:800;font-size:0.75rem;display:flex;align-items:center;justify-content:center;}
+  .steps li.now .n{background:var(--blue);color:#fff;}
+  .steps li.now .txt{font-weight:700;}
+  .steps .txt{line-height:1.45;}
+  .actions{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.4rem;}
+  .btn{appearance:none;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;
+       padding:0.72rem 1.05rem;border-radius:12px;font-weight:800;font-size:0.85rem;}
+  .btn.primary{background:var(--blue);color:#fff;}
+  .btn.primary:hover{background:var(--blue-dark);}
+  .btn.gold{background:var(--gold);color:#3a2a00;}
+  .btn.ghost{background:#fff;color:var(--blue);border:1.5px solid #cfe1f7;}
+  .btn.wide{flex:1 1 220px;}
+  .note{font-size:0.78rem;color:var(--muted);line-height:1.5;margin:0.35rem 0 0;}
+  .escrow{background:#f0f7ff;border:1px solid #cfe1f7;border-radius:12px;padding:0.75rem 0.85rem;font-size:0.82rem;line-height:1.5;}
+  .center{text-align:center;}
+  .spin{display:flex;align-items:center;justify-content:center;gap:0.5rem;color:var(--muted);padding:2.2rem 0;font-size:0.9rem;}
+  .mono{font-family:'Consolas',monospace;font-size:0.78rem;color:#374151;word-break:break-all;}
+  @media print{ header.sm-top,.actions,.no-print{display:none!important;} body{background:#fff;} .card{border-color:#ddd;} }
+</style>
+</head>
+<body>
+<header class="sm-top no-print">
+  <img src="/images/logo.png" alt="Sankofa Market" onerror="this.style.display='none'">
+  <div class="brand">Sankofa <span>Market</span></div>
+  <a class="home" href="/"><i class="fas fa-house"></i> Home</a>
+</header>
+
+<div class="wrap">
+  <div id="loadState" class="spin"><i class="fas fa-spinner fa-spin"></i> Loading your receipt…</div>
+  <div id="receiptArea" style="display:none;">
+
+    <div class="banner" id="banner">
+      <div class="ic" id="bannerIcon"><i class="fas fa-circle-check"></i></div>
+      <div>
+        <h1 id="bannerTitle">Payment received</h1>
+        <p id="bannerText">Your money is held safely by Sankofa Market until you confirm delivery.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-receipt"></i> Order details</h2>
+      <div class="row"><span class="k">Order number</span><span class="v" id="orderId" style="font-weight:800;">—</span></div>
+      <div class="row"><span class="k">Full reference</span><span class="v mono" id="orderIdFull" style="font-size:0.72rem;">—</span></div>
+      <div class="row"><span class="k">Status</span><span class="v"><span class="badge grey" id="statusBadge">—</span></span></div>
+      <div class="row"><span class="k">Escrow</span><span class="v"><span class="badge grey" id="escrowBadge">—</span></span></div>
+      <div class="row"><span class="k">Payment method</span><span class="v" id="method">—</span></div>
+      <div class="row" id="refRow" style="display:none;"><span class="k">Payment reference</span><span class="v mono" id="reference">—</span></div>
+      <div class="row"><span class="k">Date</span><span class="v" id="createdAt">—</span></div>
+    </div>
+
+    <div class="card" id="itemsCard">
+      <h2><i class="fas fa-box-open"></i> Items</h2>
+      <div id="items"></div>
+      <div class="row" style="margin-top:0.4rem;"><span class="k">Subtotal</span><span class="v" id="subtotal">—</span></div>
+      <div class="row" id="deliveryRow"><span class="k">Delivery</span><span class="v" id="delivery">—</span></div>
+      <div class="row total"><span class="k" style="font-weight:800;color:#111827;">Total paid</span><span class="v" id="total">—</span></div>
+    </div>
+
+    <div class="card no-print">
+      <h2><i class="fas fa-shield-halved"></i> How your money is protected</h2>
+      <div class="escrow" id="escrowExplain">
+        Sankofa Market holds your payment in <strong>escrow</strong>. The seller is paid only after you
+        confirm the item arrived as described — or automatically 48 hours after delivery if you don't act.
+      </div>
+      <ul class="steps" id="steps"></ul>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-truck"></i> Delivery</h2>
+      <div class="row"><span class="k">Seller</span><span class="v" id="sellerName">—</span></div>
+      <div class="row" id="buyerRow"><span class="k">Deliver to</span><span class="v" id="buyerName">—</span></div>
+      <div class="row" id="addrRow" style="display:none;"><span class="k">Address</span><span class="v" id="address">—</span></div>
+      <div class="row" id="phoneRow" style="display:none;"><span class="k">Contact</span><span class="v" id="phone">—</span></div>
+      <p class="note" id="deliveryNote">Delivery is arranged with the seller in Messages — open the chat to agree pickup or courier.</p>
+    </div>
+
+    <div class="actions no-print">
+      <a class="btn" id="confirmBtn" style="display:none;background:#16a34a;color:#fff;" href="#">
+        <i class="fas fa-circle-check"></i> Item received — confirm delivery
+      </a>
+      <a class="btn primary wide" href="/pages/user/orders.html"><i class="fas fa-receipt"></i> My Orders</a>
+      <a class="btn ghost wide" id="chatBtn" href="/pages/user/messages.html"><i class="fas fa-comments"></i> Message the seller</a>
+      <a class="btn gold wide" href="/search.html"><i class="fas fa-bag-shopping"></i> Keep shopping</a>
+      <button class="btn ghost wide" onclick="window.print()"><i class="fas fa-print"></i> Print / save receipt</button>
+    </div>
+
+    <p class="note center no-print" style="margin-top:1rem;">
+      Need help with this order? Email <a href="mailto:sankofamarketgh@gmail.com">sankofamarketgh@gmail.com</a>
+      or call 0273659806 — quote order <span class="mono" id="orderIdFoot">—</span>.
+    </p>
+  </div>
+
+  <div id="errorArea" class="card" style="display:none;">
+    <h2><i class="fas fa-triangle-exclamation" style="color:#e74c3c;"></i> We couldn't show this receipt</h2>
+    <p class="note" id="errorText">Something went wrong.</p>
+    <div class="actions">
+      <a class="btn primary" href="/pages/user/orders.html"><i class="fas fa-receipt"></i> Go to My Orders</a>
+      <a class="btn ghost" href="/index.html"><i class="fas fa-house"></i> Home</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script src="/config/firebase-config.js?v=6"></script>
+<script src="/js/watchdog.js?v=2"></script>
+<script src="/dist/main-TOATJ45B.js"></script>
+<script>
+/* Order confirmation / receipt page.
+   Everything here is defensive: this page is what a buyer lands on straight after paying,
+   so a blank screen would be alarming. If anything fails we show a friendly card with links. */
+(function () {
+  'use strict';
+
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function money(n) {
+    var v = Number(n);
+    return 'GHS ' + (isFinite(v) ? v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00');
+  }
+  function when(ts) {
+    try {
+      var d = ts && ts.toDate ? ts.toDate() : (ts ? new Date(ts) : null);
+      if (!d || isNaN(d.getTime())) return '—';
+      return d.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return '—'; }
+  }
+  function showError(msg) {
+    document.getElementById('loadState').style.display = 'none';
+    document.getElementById('errorArea').style.display = 'block';
+    if (msg) document.getElementById('errorText').textContent = msg;
+  }
+  function imgFor(item) {
+    var raw = item.image || item.imageUrl || item.photo || (item.images && item.images[0]) || '';
+    if (typeof raw === 'string' && raw.indexOf('http') === 0) return raw;
+    return '/images/placeholders/product.svg';
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var orderId = params.get('orderId') || params.get('order') || params.get('id');
+
+  function start() {
+    if (typeof firebase === 'undefined' || !firebase.firestore) { showError('The site did not finish loading. Please refresh the page (Ctrl+Shift+R).'); return; }
+    if (!orderId) { showError('This link is missing its order number. Open My Orders to find your receipt.'); return; }
+    var settled = false;
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (settled) return;
+      settled = true;
+      if (!user) {
+        window.location.href = '/pages/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+      loadOrder(user);
+    });
+    // Safety net: if auth never reports (offline / blocked), don't leave a spinner forever.
+    setTimeout(function () {
+      if (settled) return;
+      var u = firebase.auth().currentUser;
+      if (u) { settled = true; loadOrder(u); }
+      else { showError('We could not confirm your sign-in. Please refresh the page (Ctrl+Shift+R) and try again.'); }
+    }, 6000);
+  }
+
+  function loadOrder(user) {
+
+    firebase.firestore().collection('orders').doc(orderId).get({ source: 'server' })
+      .catch(function () { return firebase.firestore().collection('orders').doc(orderId).get(); })
+      .then(function (doc) {
+        if (!doc.exists) { showError('We could not find order ' + orderId + '. If you have just paid, give it a few seconds and refresh — and email sankofamarketgh@gmail.com if it stays missing.'); return; }
+        render(doc.id, doc.data(), user.uid);
+      })
+      .catch(function (err) {
+        if (err && err.code === 'permission-denied') {
+          showError('This order belongs to a different account. Sign in with the account you used to pay, then open My Orders.');
+        } else {
+          showError('We could not load this order: ' + (err && err.message ? err.message : err));
+        }
+      });
+  }
+
+  function render(id, o, uid) {
+    var status = String(o.status || 'pending').toLowerCase();
+    var pay = String(o.paymentStatus || '').toLowerCase();
+    var escrow = String(o.escrowStatus || '').toLowerCase();
+    var isBuyer = (o.buyerId === uid || o.userId === uid);
+    var isSeller = (o.sellerId === uid);
+
+    // The same short number the notification list and the emails show (#RQ4JTY3H).
+    // The full reference is kept underneath for support.
+    var shortRef = '#' + String(id).slice(0, 8).toUpperCase();
+    document.getElementById('orderId').textContent = shortRef;
+    document.getElementById('orderIdFull').textContent = id;
+    document.getElementById('orderIdFoot').textContent = shortRef;
+    document.getElementById('method').textContent =
+      o.paymentMethod === 'wallet' ? 'Sankofa Wallet (0% fee)'
+      : o.paymentMethod === 'card' ? 'Card (Paystack)'
+      : o.paymentMethod === 'momo' ? 'Mobile Money (Paystack)'
+      : (o.paymentMethod ? String(o.paymentMethod) : '—');
+    if (o.paystackReference) {
+      document.getElementById('refRow').style.display = 'flex';
+      document.getElementById('reference').textContent = o.paystackReference;
+    }
+    document.getElementById('createdAt').textContent = when(o.paidAt || o.createdAt);
+
+    // ---- items ----
+    var items = Array.isArray(o.items) ? o.items : [];
+    if (!items.length && o.productTitle) items = [{ title: o.productTitle, price: o.total || o.amount, quantity: 1 }];
+    var box = document.getElementById('items');
+    var subtotal = 0;
+    items.forEach(function (it) {
+      var price = Number(it.price || it.amount || 0);
+      var qty = Number(it.quantity || 1);
+      subtotal += price * qty;
+      var brand = it.brand ? '<div class="s">' + esc(it.brand) + '</div>' : '';
+      box.insertAdjacentHTML('beforeend',
+        '<div class="item">' +
+          '<img src="' + esc(imgFor(it)) + '" alt="" onerror="this.src=\'/images/placeholders/product.svg\'">' +
+          '<div><div class="t">' + esc(it.title || 'Item') + '</div>' + brand +
+          (it.variant && typeof it.variant === 'object' ? '<div class="s">' + esc(Object.keys(it.variant).map(function (k) { return k + ': ' + it.variant[k]; }).join(', ')) + '</div>' : '') +
+          '<div class="s">Qty ' + qty + (it.seller ? ' • ' + esc(it.seller) : '') + '</div></div>' +
+          '<div class="p">' + money(price * qty) + '</div>' +
+        '</div>');
+    });
+    var total = Number(o.total || o.amount || o.bidAmount || subtotal);
+    document.getElementById('subtotal').textContent = money(o.subtotal != null ? o.subtotal : subtotal);
+    if (o.deliveryFee != null && Number(o.deliveryFee) > 0) {
+      document.getElementById('delivery').textContent = money(o.deliveryFee);
+    } else {
+      document.getElementById('delivery').textContent = 'Arranged with the seller';
+    }
+    document.getElementById('total').textContent = money(total);
+
+    // ---- delivery / people ----
+    document.getElementById('sellerName').textContent = o.sellerName || o.storeName || 'Seller';
+    document.getElementById('buyerName').textContent = o.buyerName || 'You';
+    var addr = o.deliveryAddress || o.address || (o.delivery && o.delivery.address) || '';
+    if (addr) { document.getElementById('addrRow').style.display = 'flex'; document.getElementById('address').textContent = addr; }
+    var phone = o.contactPhone || o.buyerPhone || (o.delivery && o.delivery.phone) || '';
+    if (phone) { document.getElementById('phoneRow').style.display = 'flex'; document.getElementById('phone').textContent = phone; }
+
+    // ---- status + escrow badges ----
+    var sBadge = document.getElementById('statusBadge');
+    var labels = { pending: 'Awaiting payment', paid: 'Paid — in escrow', processing: 'Processing', shipped: 'Shipped',
+                   delivered: 'Delivered', completed: 'Completed', cancelled: 'Cancelled', disputed: 'Disputed' };
+    sBadge.textContent = labels[status] || status;
+    sBadge.className = 'badge ' + (status === 'completed' ? 'green' : status === 'cancelled' || status === 'disputed' ? 'red'
+                     : status === 'paid' || status === 'delivered' || status === 'shipped' ? 'blue' : 'amber');
+
+    var eBadge = document.getElementById('escrowBadge');
+    eBadge.textContent = escrow === 'held' ? 'Held by Sankofa'
+      : escrow === 'released' ? 'Released to seller'
+      : escrow === 'refunded' ? 'Refunded to you' : 'Not in escrow yet';
+    eBadge.className = 'badge ' + (escrow === 'held' ? 'green' : escrow === 'released' ? 'blue' : escrow === 'refunded' ? 'grey' : 'amber');
+
+    // ---- banner ----
+    var banner = document.getElementById('banner');
+    var icon = document.getElementById('bannerIcon');
+    var title = document.getElementById('bannerTitle');
+    var text = document.getElementById('bannerText');
+    if (status === 'completed' || escrow === 'released') {
+      banner.className = 'banner done';
+      icon.innerHTML = '<i class="fas fa-flag-checkered"></i>';
+      title.textContent = 'Order complete';
+      text.textContent = 'You confirmed this order, so the payment has been released to the seller. Thank you for trading on Sankofa Market.';
+    } else if (status === 'disputed') {
+      banner.className = 'banner pending';
+      icon.innerHTML = '<i class="fas fa-scale-balanced"></i>';
+      title.textContent = 'Dispute open — money still held';
+      text.textContent = 'Sankofa support is reviewing this order. The payment stays frozen until a decision is made.';
+    } else if (status === 'cancelled') {
+      banner.className = 'banner pending';
+      icon.innerHTML = '<i class="fas fa-ban"></i>';
+      title.textContent = 'Order cancelled';
+      text.textContent = 'This order was cancelled. If you were charged, contact sankofamarketgh@gmail.com and it will be looked at.';
+    } else if (pay === 'paid' || status === 'paid' || status === 'shipped' || status === 'delivered') {
+      banner.className = 'banner paid';
+      icon.innerHTML = '<i class="fas fa-shield-halved"></i>';
+      title.textContent = 'Payment received — held in escrow';
+      text.textContent = 'Your money is safe with Sankofa Market. ' + (isSeller ? 'It will be added to your wallet when the buyer confirms delivery (or 48 hours after delivery).' : 'The seller is paid only after you confirm delivery.');
+    } else {
+      banner.className = 'banner pending';
+      icon.innerHTML = '<i class="fas fa-hourglass-half"></i>';
+      title.textContent = 'Payment not completed';
+      text.textContent = 'This order is not marked as paid. You can finish paying from My Orders — nothing has been charged.';
+    }
+
+    // ---- what happens next ----
+    var stepsEl = document.getElementById('steps');
+    var steps = [];
+    var paidOk = (pay === 'paid' || status === 'paid' || status === 'shipped' || status === 'delivered' || status === 'completed');
+    steps.push({ done: paidOk, txt: 'You pay — the money goes to Sankofa escrow, not to the seller.' });
+    steps.push({ done: status === 'shipped' || status === 'delivered' || status === 'completed',
+                 txt: 'The seller sends the item and marks it shipped/delivered.' });
+    steps.push({ done: status === 'completed', txt: 'You check the item and tap <strong>Confirm delivery</strong> — the seller is then paid.' });
+    steps.push({ done: escrow === 'released', txt: 'If you do nothing for 48 hours after delivery, it releases automatically.' });
+    var firstOpen = true;
+    steps.forEach(function (s, i) {
+      var cls = s.done ? '' : (firstOpen ? 'now' : '');
+      if (!s.done) firstOpen = false;
+      stepsEl.insertAdjacentHTML('beforeend',
+        '<li class="' + cls + '"><span class="n">' + (s.done ? '<i class="fas fa-check"></i>' : (i + 1)) + '</span><span class="txt">' + s.txt + '</span></li>');
+    });
+
+    // ---- confirm delivery button (buyers only, once paid) ----
+    var cb = document.getElementById('confirmBtn');
+    var canConfirm = isBuyer && !isSeller && escrow === 'held' && status !== 'completed' && status !== 'disputed' && status !== 'cancelled';
+    if (canConfirm) {
+      cb.style.display = 'inline-flex';
+      cb.href = '/confirm-delivery.html?order=' + encodeURIComponent(id);
+    } else {
+      cb.style.display = 'none';
+    }
+
+    document.getElementById('deliveryNote').innerHTML = isSeller
+      ? 'This is your sale. Send the item, mark the order as shipped/delivered, and the money lands in your Sankofa Wallet when the buyer confirms.'
+      : 'Delivery is arranged with the seller in Messages — open the chat to agree pickup or courier.';
+
+    document.getElementById('loadState').style.display = 'none';
+    document.getElementById('receiptArea').style.display = 'block';
+    document.title = 'Order ' + String(id).slice(0, 8).toUpperCase() + ' — Sankofa Market';
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>

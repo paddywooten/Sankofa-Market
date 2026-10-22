@@ -68,14 +68,13 @@ async function loadUsers() {
     }
 }
 
-function renderDemoUsers() createdAt: new Date(Date.now() - 86400000)
-        },
-        createdAt: new Date(Date.now() - 172800000)
-        }
-    ];
-    
+function renderDemoUsers() {
+    // No fake users in the admin panel — show an honest empty state instead.
+    console.warn('user-approvals: database unavailable — showing no users');
+    allUsers = [];
     renderUsers(allUsers);
     updatePendingCount();
+    try { showFlashMessage('Could not reach the database — no users to show.', 'warning'); } catch (e) {}
 }
 
 // ============================================================================

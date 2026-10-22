@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Payment - Sankofa Market</title>
-    <link rel="icon" type="image/png" href="images/logos/sankofa-market-favicon.png">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/main.css?v=4">
-    <link rel="stylesheet" href="css/payment.css">
-    <link rel="stylesheet" href="css/chatbot.css?v=3">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/payment.css?v=5">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+
+<style>
+.app-bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;padding:0.3rem 0 calc(0.3rem + env(safe-area-inset-bottom,0px));z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,0.06);display:none;}
+.app-bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);max-width:560px;margin:0 auto;align-items:end;}
+.app-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.15rem;padding:0.35rem 0.15rem;color: #5a6572;text-decoration:none;font-size:0.62rem;font-weight:600;font-family:'Poppins',sans-serif;position:relative;-webkit-tap-highlight-color:transparent;}
+.app-nav-item i{font-size:1.2rem;line-height:1;}
+.app-nav-item.active{color:#0064d2;}
+.app-nav-item.sell i{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-top:-0.9rem;box-shadow:0 4px 12px rgba(245,175,2,0.35);border:3px solid #fff;}
+.app-nav-badge{position:absolute;top:0.1rem;right:22%;min-width:16px;height:16px;padding:0 4px;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;border-radius:999px;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;line-height:1;}
+@media(max-width:768px){.app-bottom-nav{display:block;}body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));}}
+</style>
+
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-logo">
-                <a href="index.html">
-                    <img src="images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
+                <a href="/index.html">
+                    <img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market">
                 </a>
             </div>
         </div>
@@ -34,7 +46,7 @@
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <div class="warning-content">
-                    <h3>Secure Payment Portal</h3>
+                    <h1>Secure Payment Portal</h1>
                     <p>All transactions on Sankofa Market are protected by our escrow system</p>
                 </div>
             </div>
@@ -42,102 +54,44 @@
             <div class="payment-layout">
                 <!-- Left Column: Payment Form -->
                 <div class="payment-form-section">
-                    <!-- CRITICAL WARNING: Off-Platform Payments -->
-                    <div class="critical-warning-box">
-                        <div class="warning-header">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h2>IMPORTANT: Payment Safety Warning</h2>
-                        </div>
-                        <div class="warning-body">
-                            <p class="warning-highlight">
-                                <strong>Sankofa Market is NOT accountable for any disputes resulting from payments made outside this platform.</strong>
-                            </p>
-                            
-                            <div class="warning-points">
-                                <div class="warning-point">
-                                    <i class="fas fa-times-circle"></i>
-                                    <div>
-                                        <strong>NO Protection for Off-Platform Payments</strong>
-                                        <p>If you pay a seller directly via Mobile Money, bank transfer, cash, or any method outside Sankofa Market, you will NOT be covered by our escrow protection or dispute resolution system.</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="warning-point">
-                                    <i class="fas fa-times-circle"></i>
-                                    <div>
-                                        <strong>NO Refunds for External Payments</strong>
-                                        <p>Payments made outside our platform cannot be reversed, refunded, or disputed through Sankofa Market. You assume full risk for such transactions.</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="warning-point">
-                                    <i class="fas fa-times-circle"></i>
-                                    <div>
-                                        <strong>NO Support for Off-Platform Disputes</strong>
-                                        <p>Our support team cannot assist with disputes arising from payments made outside Sankofa Market. We have no record or control over such transactions.</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="warning-point">
-                                    <i class="fas fa-check-circle"></i>
-                                    <div>
-                                        <strong>FULL Protection for On-Platform Payments</strong>
-                                        <p>Only payments made through Sankofa Market's checkout system are protected by our escrow service, buyer protection, and dispute resolution.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="warning-examples">
-                                <h4><i class="fas fa-exclamation-circle"></i> Examples of UNSAFE Payment Methods:</h4>
-                                <ul>
-                                    <li><i class="fas fa-mobile-alt"></i> Direct Mobile Money transfers to seller</li>
-                                    <li><i class="fas fa-university"></i> Bank transfers to seller's account</li>
-                                    <li><i class="fas fa-money-bill-wave"></i> Cash payments in person</li>
-                                    <li><i class="fab fa-paypal"></i> PayPal, Western Union, or other external services</li>
-                                    <li><i class="fas fa-credit-card"></i> Card payments outside our platform</li>
-                                    <li><i class="fas fa-wallet"></i> Cryptocurrency or gift cards</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="warning-safe">
-                                <h4><i class="fas fa-shield-alt"></i> The ONLY Safe Way to Pay:</h4>
-                                <p>Use the payment form below to complete your transaction through Sankofa Market's secure checkout. Your payment will be held in escrow until you confirm delivery and satisfaction with your purchase.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Payment Protection Agreement — single tick (all safety warnings merged) -->
 
                     <!-- Payment Method Selection -->
                     <div class="payment-method-section">
                         <h3><i class="fas fa-credit-card"></i> Select Payment Method</h3>
                         
                         <div class="payment-methods">
-                            <!-- Mobile Money -->
-                            <label class="payment-method-option">
-                                <input type="radio" name="paymentMethod" value="momo" checked>
+                            <!-- Sankofa Wallet — 0% internal -->
+                            <label class="payment-method-option" id="walletPayOption">
+                                <input type="radio" name="paymentMethod" value="wallet">
                                 <div class="payment-method-card">
-                                    <div class="payment-method-icon">
-                                        <i class="fas fa-mobile-alt"></i>
+                                    <div class="payment-method-icon" style="background:#0064d2;color:#fff;">
+                                        <i class="fas fa-wallet"></i>
                                     </div>
                                     <div class="payment-method-info">
-                                        <h4>Mobile Money</h4>
-                                        <p>MTN, Vodafone, AirtelTigo</p>
+                                        <h4>Sankofa Wallet <span style="background:#22c55e;color:#fff;padding:0.1rem 0.35rem;border-radius:999px;font-size:0.6rem;margin-left:0.3rem;">0% FEE</span></h4>
+                                        <p id="walletPayDesc">Balance: loading... • Top up once, pay 0% thereafter</p>
                                     </div>
-                                    <div class="payment-method-badge">
-                                        <i class="fas fa-shield-alt"></i> Protected
+                                    <div class="payment-method-badge" style="background:#0064d2;color:#fff;">
+                                        <i class="fas fa-bolt"></i> Instant
                                     </div>
                                 </div>
                             </label>
 
-                            <!-- Card Payment -->
+                            <!-- Card or Mobile Money — ONE secure Paystack checkout for both.
+                                 We used to ask for the network/phone or card number+CVV HERE and
+                                 then Paystack asked for the SAME details again on its page —
+                                 double work for the buyer, and card numbers crossing our code for
+                                 no reason. Now Paystack collects everything on its own page. -->
                             <label class="payment-method-option">
-                                <input type="radio" name="paymentMethod" value="card">
+                                <input type="radio" name="paymentMethod" value="paystack" checked>
                                 <div class="payment-method-card">
                                     <div class="payment-method-icon">
                                         <i class="fas fa-credit-card"></i>
                                     </div>
                                     <div class="payment-method-info">
-                                        <h4>Credit/Debit Card</h4>
-                                        <p>Visa, Mastercard</p>
+                                        <h4>Card or Mobile Money</h4>
+                                        <p>Visa · Mastercard · MTN MoMo · Vodafone Cash · AirtelTigo</p>
                                     </div>
                                     <div class="payment-method-badge">
                                         <i class="fas fa-shield-alt"></i> Protected
@@ -145,73 +99,26 @@
                                 </div>
                             </label>
                         </div>
-                    </div>
-
-                    <!-- Mobile Money Details -->
-                    <div class="payment-details" id="momoDetails">
-                        <h3><i class="fas fa-mobile-alt"></i> Mobile Money Details</h3>
-                        
-                        <div class="form-group">
-                            <label for="momoNetwork">Network *</label>
-                            <select id="momoNetwork" required>
-                                <option value="">Select Network</option>
-                                <option value="mtn">MTN Mobile Money</option>
-                                <option value="vodafone">Vodafone Cash</option>
-                                <option value="airteltigo">AirtelTigo Money</option>
-                            </select>
+                        <div id="walletPayHint" style="display:none;background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:0.7rem;font-size:0.78rem;color:#1e40af;margin-top:0.6rem;">
+                            <i class="fas fa-info-circle"></i> Pay via wallet is <strong>instant & 0% fee</strong> — escrow still held 48h. If balance low, <a href="/pages/user/wallet.html" style="color:#0064d2;font-weight:700;">top up</a> first (Paystack 1.95% once).
                         </div>
-
-                        <div class="form-group">
-                            <label for="momoPhone">Phone Number *</label>
-                            <input type="tel" id="momoPhone" placeholder="0XX XXX XXXX" required>
-                            <small>You will receive a prompt to authorize the payment</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="momoName">Account Name *</label>
-                            <input type="text" id="momoName" placeholder="Name on MoMo account" required>
+                        <div id="paystackNote" style="background:#fffdf0;border:1px solid #f5e9c9;border-radius:8px;padding:0.7rem;font-size:0.78rem;color:#7a4a00;margin-top:0.6rem;">
+                            <i class="fas fa-lock"></i> No details needed here — after you tap <strong>Pay</strong>, Paystack's secure page asks you to pick <strong>card or MoMo</strong> and enter everything there. Sankofa Market <strong>never sees or stores</strong> your card number or MoMo PIN.
                         </div>
                     </div>
 
-                    <!-- Card Payment Details -->
-                    <div class="payment-details" id="cardDetails" style="display: none;">
-                        <h3><i class="fas fa-credit-card"></i> Card Details</h3>
-                        
-                        <div class="form-group">
-                            <label for="cardNumber">Card Number *</label>
-                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="cardExpiry">Expiry Date *</label>
-                                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="cardCVV">CVV *</label>
-                                <input type="text" id="cardCVV" placeholder="123" maxlength="3" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cardName">Cardholder Name *</label>
-                            <input type="text" id="cardName" placeholder="Name on card" required>
-                        </div>
-                    </div>
-
-                    <!-- Acknowledgment Checkbox -->
-                    <div class="acknowledgment-section">
-                        <label class="acknowledgment-checkbox">
-                            <input type="checkbox" id="acknowledgeWarning" required>
-                            <span class="checkmark"></span>
-                            <div class="acknowledgment-text">
-                                <strong>I understand and agree that:</strong>
-                                <ul>
-                                    <li>Sankofa Market is <strong>NOT accountable</strong> for disputes from payments made outside this platform</li>
-                                    <li>Only payments made through this checkout are protected by escrow and dispute resolution</li>
-                                    <li>I will NOT make direct payments to the seller outside Sankofa Market</li>
-                                    <li>I accept full responsibility if I choose to pay outside the platform</li>
+                    <!-- Single Agreement — all safety warnings merged into one tick -->
+                    <div class="acknowledgment-section" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:1rem;margin-top:1rem;">
+                        <label class="acknowledgment-checkbox" style="display:flex;gap:0.75rem;align-items:flex-start;cursor:pointer;margin:0;">
+                            <input type="checkbox" id="acknowledgeWarning" required style="margin-top:0.35rem;width:18px;height:18px;accent-color:#0064d2;flex-shrink:0;">
+                            <div class="acknowledgment-text" style="flex:1;">
+                                <strong style="display:flex;align-items:center;gap:0.4rem;font-size:0.92rem;color:#191919;"><i class="fas fa-shield-alt" style="color:#0064d2;"></i> I agree to Sankofa Market's Payment Protection Terms</strong>
+                                <ul style="margin:0.5rem 0 0 1.1rem;padding:0;list-style:disc;color:#334155;font-size:0.82rem;line-height:1.5;">
+                                    <li><strong>On-platform = protected:</strong> I will pay only via this secure <strong>Paystack</strong> checkout. Payment is held in <strong>escrow</strong> until I confirm delivery (<strong>48h inspection</strong>). I get <strong>full refund if item not as described</strong> + dispute resolution.</li>
+                                    <li><strong>Off-platform = NOT protected:</strong> Direct MoMo, bank transfer, cash, PayPal, crypto, gift cards etc. have <strong>no protection, no refund, no support</strong> — Sankofa Market is <strong>not accountable</strong> and has no record of it. I accept <strong>full responsibility</strong> if I do.</li>
+                                    <li>I will <strong>NOT pay the seller directly</strong> outside this checkout.</li>
                                 </ul>
+                                <div style="margin-top:0.5rem;font-size:0.7rem;color:#64748b;"><i class="fas fa-lock"></i> SSL encrypted • Escrow protected • Verified secure — Paystack processes Mobile Money & Cards.</div>
                             </div>
                         </label>
                     </div>
@@ -219,7 +126,7 @@
                     <!-- Pay Button -->
                     <button class="pay-button" id="payButton" disabled>
                         <i class="fas fa-lock"></i>
-                        <span>Pay Securely Now - <span id="payAmount">GHS 0</span></span>
+                        <span>Pay Securely Now - <span id="payAmount">GHS 0</span> <small style="font-weight:600;opacity:0.9;margin-left:0.3rem;">via Paystack</small></span>
                     </button>
 
                     <!-- Security Badges -->
@@ -239,80 +146,92 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Order Summary -->
+                <!-- Right Column: Order Summary (sticky on desktop, first on mobile) -->
                 <div class="order-summary-section">
                     <div class="order-summary-card">
                         <h3><i class="fas fa-receipt"></i> Order Summary</h3>
-                        
+
                         <div class="order-items" id="orderItems">
-                            <!-- Items will be inserted here by JavaScript -->
-                            <div class="order-item">
-                                <div class="item-info">
-                                    <img src="https://via.placeholder.com/60" alt="Product">
-                                    <div>
-                                        <h4>No items in cart</h4>
-                                        <p>Qty: 1</p>
-                                    </div>
-                                </div>
-                                <div class="item-price">GHS 8,500</div>
-                            </div>
-                        </div>
+                                                    <!-- Items are inserted here by js/payment.js -->
+                                                    <div class="order-item" id="orderItemsLoading">
+                                                        <div class="item-info">
+                                                            <div>
+                                                                <h4><i class="fas fa-spinner fa-spin"></i> Loading your order…</h4>
+                                                                <p>Please wait a moment</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                        <div class="promo-box" id="promoBox" style="margin:0.8rem 0;padding:0.7rem 0.8rem;border:1.5px dashed #f5af02;border-radius:12px;background:#fffdf2;">
+                                                    <label for="promoCodeInput" style="font-size:0.82rem;font-weight:700;color:#131f47;"><i class="fas fa-ticket-alt" style="color:#f5af02;"></i> Have a promo code?</label>
+                                                    <div style="display:flex;gap:8px;margin-top:0.4rem;">
+                                                        <input type="text" id="promoCodeInput" maxlength="20" placeholder="e.g. KOFI10" autocomplete="off"
+                                                            style="flex:1;padding:0.5rem 0.65rem;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.92rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;">
+                                                        <button type="button" class="btn btn-outline btn-small" id="promoApplyBtn" style="white-space:nowrap;">Apply</button>
+                                                    </div>
+                                                    <div id="promoApplyMsg" style="font-size:0.8rem;margin-top:0.35rem;"></div>
+                                                </div>
 
                         <div class="order-totals">
-                            <div class="total-row">
-                                <span>Subtotal:</span>
-                                <span id="orderSubtotal">GHS 8,500</span>
-                            </div>
-                            <div class="total-row">
-                                <span>Delivery Fee:</span>
-                                <span id="orderDelivery">GHS 0</span>
-                            </div>
-                            <div class="total-row">
-                                <span>Service Fee:</span>
-                                <span id="orderService">GHS 0</span>
-                            </div>
-                            <div class="total-row total">
-                                <span>Total:</span>
-                                <span id="orderTotal">GHS 8,500</span>
-                            </div>
-                        </div>
-
-                        <!-- Escrow Protection Info -->
-                        <div class="escrow-info">
-                            <h4><i class="fas fa-shield-alt"></i> Escrow Protection</h4>
-                            <p>Your payment will be held securely in escrow until you confirm delivery and satisfaction with your purchase.</p>
-                            <ul>
-                                <li><i class="fas fa-check"></i> Payment held until delivery confirmed</li>
-                                <li><i class="fas fa-check"></i> Full refund if item not as described</li>
-                                <li><i class="fas fa-check"></i> Dispute resolution available</li>
-                                <li><i class="fas fa-check"></i> 48-hour inspection period</li>
-                            </ul>
-                        </div>
-
-                        <!-- What Happens Next -->
-                        <div class="next-steps">
-                            <h4><i class="fas fa-info-circle"></i> What Happens Next?</h4>
-                            <ol>
-                                <li>You complete payment through this secure checkout</li>
-                                <li>Payment is held in escrow (not sent to seller yet)</li>
-                                <li>Seller ships your item</li>
-                                <li>You receive and inspect the item</li>
-                                <li>You confirm delivery within 48 hours</li>
-                                <li>Payment is released to seller</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <!-- Need Help? -->
-                    <div class="help-section">
-                        <h4><i class="fas fa-question-circle"></i> Need Help?</h4>
-                        <p>Our support team is here to assist you with any questions about payment or your order.</p>
-                        <a href="pages/help.html" class="help-link">
-                            <i class="fas fa-headset"></i> Contact Support
-                        </a>
+                                                    <div class="total-row">
+                                                        <span>Subtotal:</span>
+                                                        <span id="orderSubtotal">—</span>
+                                                    </div>
+                                                    <div class="total-row" id="orderPromoRow" style="display:none;color:#16a34a;font-weight:700;">
+                                                        <span id="orderPromoLabel">Promo:</span>
+                                                        <span id="orderPromo">−GHS 0</span>
+                                                    </div>
+                                                    <div class="total-row">
+                                                        <span>Delivery Fee:</span>
+                                                        <span id="orderDelivery">GHS 0</span>
+                                                    </div>
+                                                    <div class="total-row">
+                                                        <span>Service Fee:</span>
+                                                        <span id="orderService">GHS 0</span>
+                                                    </div>
+                                                    <div class="total-row total">
+                                                        <span>Total:</span>
+                                                        <span id="orderTotal">—</span>
+                                                    </div>
+                                                </div>
                     </div>
                 </div>
             </div>
+            <!-- /payment-layout -->
+
+            <!-- Info panels: under both columns on desktop, after the pay button on mobile -->
+            <div class="payment-info-grid">
+                <div class="escrow-info">
+                                            <h4><i class="fas fa-shield-alt"></i> Escrow Protection</h4>
+                                            <p>Your payment will be held securely in escrow until you confirm delivery and satisfaction with your purchase.</p>
+                                            <ul>
+                                                <li><i class="fas fa-check"></i> Payment held until delivery confirmed</li>
+                                                <li><i class="fas fa-check"></i> Full refund if item not as described</li>
+                                                <li><i class="fas fa-check"></i> Dispute resolution available</li>
+                                                <li><i class="fas fa-check"></i> 48-hour inspection period</li>
+                                            </ul>
+                                        </div>
+                <div class="next-steps">
+                                            <h4><i class="fas fa-info-circle"></i> What Happens Next?</h4>
+                                            <ol>
+                                                <li>You complete payment through this secure checkout</li>
+                                                <li>Payment is held in escrow (not sent to seller yet)</li>
+                                                <li>Seller ships your item</li>
+                                                <li>You receive and inspect the item</li>
+                                                <li>You confirm delivery within 48 hours</li>
+                                                <li>Payment is released to seller</li>
+                                            </ol>
+                                        </div>
+            </div>
+
+            <div class="help-section">
+                                    <h4><i class="fas fa-question-circle"></i> Need Help?</h4>
+                                    <p>Our support team is here to assist you with any questions about payment or your order.</p>
+                                    <a href="/pages/help.html" class="help-link">
+                                        <i class="fas fa-headset"></i> Contact Support
+                                    </a>
+                                </div>
         </div>
     </main>
 
@@ -331,9 +250,70 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="config/firebase-config.js"></script>
-    <script src="js/main.js?v=5"></script>
-    <script src="js/payment.js"></script>
-    <script src="js/chatbot.js?v=9"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/dist/main-TOATJ45B.js"></script>
+    <script src="/js/variants.js?v=1"></script>
+    <script src="/js/cart-prices.js?v=2"></script>
+    <script src="/js/payment.js?v=22"></script>
+
+<!-- App Bottom Nav (mobile, permanent on all pages) -->
+<nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+  <div class="app-bottom-nav-inner">
+    <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+    <a href="/pages/user/messages.html" class="app-nav-item" data-nav="messages" style="position:relative;"><i class="fas fa-comments"></i><span>Messages</span><span class="app-nav-badge" id="appNavMsgBadge" style="display:none;">0</span></a>
+    <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+  </div>
+</nav>
+
+
+<script>
+(function(){
+  try {
+    var nav = document.getElementById('appBottomNav');
+    if(!nav) return;
+    var path = window.location.pathname;
+    function isActive(href){
+      if(href==='/index.html') return path==='/' || path.endsWith('/index.html');
+      return path.includes(href.replace('.html',''));
+    }
+    var map = {
+      'home':'/index.html',
+      'search':'/search.html',
+      'sell':'/publish.html',
+      'messages':'/messages.html',
+      'account':'/dashboard.html'
+    };
+    nav.querySelectorAll('.app-nav-item').forEach(function(a){
+      var navName = a.getAttribute('data-nav');
+      var href = map[navName];
+      if(href && isActive(href)) a.classList.add('active');
+    });
+    // If firebase is available, hook badge (mirrors main.js logic, but lightweight)
+    if(window.firebase && window.firebase.auth && window.firebaseDB){
+      // Will be handled by main.js if present, else try once after auth
+      setTimeout(function(){
+        try{
+          var fbAuth = window.firebase.auth();
+          fbAuth.onAuthStateChanged(function(user){
+            if(!user || !window.firebaseDB) return;
+            window.firebaseDB.collection('conversations').where('participants','array-contains',user.uid).onSnapshot(function(snap){
+              var c=0; snap.forEach(function(d){ var data=d.data(); if(data.unreadBy && data.unreadBy.indexOf(user.uid)!==-1) c++; });
+              var b=document.getElementById('appNavMsgBadge');
+              if(b){ if(c>0){ b.textContent=c>99?'99+':String(c); b.style.display='flex'; } else b.style.display='none'; }
+            });
+          });
+        }catch(e){}
+      }, 1500);
+    }
+  } catch(e){}
+})();
+</script>
+
+    <script src="/js/maintenance-mode.js?v=1"></script>
 </body>
 </html>

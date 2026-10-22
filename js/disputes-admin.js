@@ -144,16 +144,23 @@ async function viewDispute(disputeId) {
         
         currentDispute = { id: doc.id, ...doc.data() };
         
-        // Load related data
-        const [buyerDoc, sellerDoc, txnDoc] = await Promise.all([
-            firebaseDB.collection('users').doc(currentDispute.buyerId).get(),
-            firebaseDB.collection('users').doc(currentDispute.sellerId).get(),
-            firebaseDB.collection('transactions').doc(currentDispute.transactionId).get()
+        // Load related data.
+        // ⚠️ This used to be a Promise.all that included a read of the `transactions`
+        // collection. That collection has no security rule (the catch-all denies it) and
+        // nothing in the app ever writes to it — so that promise ALWAYS rejected, which made
+        // Promise.all reject, which meant THE DISPUTE DETAILS COULD NEVER OPEN. Escrow lives
+        // on the order, so the transaction lookup is simply optional now.
+        const [buyerDoc, sellerDoc] = await Promise.all([
+            firebaseDB.collection('users').doc(currentDispute.buyerId).get().catch(function(){ return { exists: false, data: function(){ return {}; } }; }),
+            firebaseDB.collection('users').doc(currentDispute.sellerId).get().catch(function(){ return { exists: false, data: function(){ return {}; } }; })
         ]);
-        
+        // No `transactions` lookup any more: that collection has no security rule and nothing
+        // writes it, so the request always failed. (It used to sit inside a Promise.all, which
+        // meant the failure took the whole modal down with it.)
+        const transaction = {};
+
         const buyer = buyerDoc.exists ? buyerDoc.data() : {};
         const seller = sellerDoc.exists ? sellerDoc.data() : {};
-        const transaction = txnDoc.exists ? txnDoc.data() : {};
         
         renderDisputeModal(currentDispute, buyer, seller, transaction);
         document.getElementById('disputeModal').style.display = 'flex';
@@ -374,45 +381,44 @@ async function startReview(disputeId) {
 
 async function resolveDispute(resolution) {
     if (!currentDispute) return;
-    
+
     const adminNotes = document.getElementById('adminNotes')?.value || '';
-    
-    if (!confirm(`Are you sure you want to resolve this dispute with: ${resolution.replace('_', ' ').toUpperCase()}?`)) {
-        return;
-    }
-    
+
+    // The three outcomes the server understands. The old code called releaseEscrow() and
+    // refundEscrow() — functions that were never written — so resolving a dispute did
+    // nothing at all and the money stayed frozen forever.
+    const choice = resolution === 'refund_to_buyer' ? 'refund_buyer'
+                 : resolution === 'release_to_seller' ? 'release_seller'
+                 : 'split';
+
+    const wording = {
+        refund_buyer:   'Refund the buyer in full? The money goes back to their Sankofa Wallet.',
+        release_seller: 'Release the payment to the seller? The money goes to their Sankofa Wallet.',
+        split:          'Split it 50/50? Half returns to the buyer, half goes to the seller.'
+    };
+    if (!confirm(wording[choice] + '\n\nThis moves real money and cannot be undone.')) return;
+
+    const buttons = document.querySelectorAll('.modal .btn, .dispute-modal .btn');
+    buttons.forEach(b => { b.disabled = true; });
+    showFlashMessage('Resolving dispute…', 'info');
+
     try {
-        // Update dispute
-        await firebaseDB.collection('disputes').doc(currentDispute.id).update({
-            status: 'resolved',
-            resolution,
-            adminNotes,
-            resolvedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            resolvedBy: firebase.auth().currentUser?.email || 'admin'
-        });
-        
-        // Execute financial resolution
-        if (resolution === 'refund_to_buyer') {
-            await refundEscrow(currentDispute.transactionId, 'Dispute resolved: refund to buyer', 'admin');
-        } else if (resolution === 'release_to_seller') {
-            await releaseEscrow(currentDispute.transactionId, 'admin');
-        } else if (resolution === 'split') {
-            // For split, we'd need to implement partial refund + partial release
-            // This is a simplified version
-            await refundEscrow(currentDispute.transactionId, 'Dispute resolved: 50/50 split', 'admin');
-            // In production, you'd also release 50% to seller
+        if (typeof firebase === 'undefined' || !firebase.functions) {
+            throw new Error('Firebase Functions is not loaded on this page — please refresh');
         }
-        
-        // Notify both parties
-        await notifyDisputeResolution(currentDispute, resolution);
-        
-        showFlashMessage('Dispute resolved successfully!', 'success');
+        const fn = firebase.functions().httpsCallable('resolveDispute');
+        const res = await fn({ disputeId: currentDispute.id, resolution: choice, note: adminNotes });
+
+        const out = res.data || {};
+        showFlashMessage(out.message || 'Dispute resolved', 'success');
         closeDisputeModal();
         loadDisputes();
-        
     } catch (error) {
         console.error('Error resolving dispute:', error);
-        showFlashMessage('Failed to resolve dispute: ' + error.message, 'error');
+        const msg = (error && (error.message || (error.details && error.details.message))) || String(error);
+        showFlashMessage('Could not resolve the dispute: ' + msg, 'error');
+    } finally {
+        buttons.forEach(b => { b.disabled = false; });
     }
 }
 

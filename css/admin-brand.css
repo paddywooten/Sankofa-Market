@@ -1,0 +1,232 @@
+/* ============================================================================
+   Sankofa Market — ADMIN BRANDING LAYER
+   ---------------------------------------------------------------------------
+   The admin panel was built on a black (#191919) sidebar with a red badge: it
+   looked like a different product from the shop it runs. This file brings it
+   onto the Sankofa palette — the same blue (#0064d2) and gold (#f5af02) the
+   customer site uses — so support can move between the two without a jolt.
+
+   It is loaded LAST on the admin pages and only overrides colours, radii and
+   spacing. Layout, structure and behaviour are untouched, so nothing the panel
+   does can change because of this file.
+   ========================================================================== */
+
+/* Brand colours, written literally on purpose.
+   (They were CSS variables on .admin-container first — but the sidebar sits OUTSIDE that
+   element, so var(--…) resolved to nothing, the whole background declaration was dropped as
+   invalid, and the sidebar came out transparent with white text on it.) */
+:root {
+    --admin-navy-1: #004a9e;
+    --admin-navy-2: #0064d2;
+    --admin-navy-3: #0057b8;
+    --admin-gold: #f5af02;
+    --admin-gold-dark: #e09e00;
+    --admin-ink: #111827;
+    --admin-muted: #5a6572;
+    --admin-line: #e5e7eb;
+    --admin-page: #f6f8fb;
+}
+
+/* ---------- 1. the sidebar: brand blue instead of black ---------- */
+.admin-sidebar {
+    background: linear-gradient(180deg, #0064d2 0%, #004a9e 100%);
+    color: #fff;
+    box-shadow: 2px 0 24px rgba(0, 40, 90, 0.18);
+}
+
+.sidebar-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 1.1rem 1.25rem;
+}
+
+.sidebar-logo {
+    /* the lockup is 1.83:1, so the height also sets how wide it is — 52px keeps the wordmark
+       readable while leaving room for the ADMIN badge beside it */
+    height: 52px;
+    /* the full-colour logo is wide; without this it runs under the gold ADMIN badge */
+    max-width: calc(100% - 80px);
+    object-fit: contain;
+    object-position: left center;
+    background: #fff;
+    padding: 5px 9px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+/* keep the badge at the far right and stop it shrinking */
+.sidebar-badge {
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
+/* "ADMIN" badge: gold, like the site's accents (it was a warning-red) */
+.sidebar-badge {
+    background: #f5af02;
+    color: #191919;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.sidebar-nav { padding: 0.75rem 0 1rem; }
+
+.admin-sidebar .nav-item {
+    color: rgba(255, 255, 255, 0.82);
+    border-left: 3px solid transparent;
+    border-radius: 0 10px 10px 0;
+    margin: 2px 10px 2px 0;
+    padding: 0.7rem 1.15rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+}
+.admin-sidebar .nav-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+.admin-sidebar .nav-item.active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    border-left-color: #f5af02;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.admin-sidebar .nav-item i { color: rgba(255, 255, 255, 0.92); }
+.admin-sidebar .nav-item.active i { color: #f5af02; }
+
+.admin-sidebar .nav-badge {
+    background: #f5af02;
+    color: #191919;
+    font-weight: 800;
+}
+
+.sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    padding-top: 0.4rem;
+}
+.sidebar-footer .nav-item { margin-right: 10px; }
+
+.sidebar-close { color: #fff; }
+
+/* ---------- 2. the top bar and page background ---------- */
+body, .admin-main { background: #f6f8fb; }
+
+.admin-topbar {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+}
+.admin-topbar .page-title,
+.admin-header h1 { color: #111827; font-weight: 800; letter-spacing: -0.01em; }
+
+/* ---------- 3. cards, tables, buttons ---------- */
+.admin-content .card,
+.admin-card,
+.stat-card,
+.section-card,
+.table-container,
+.admin-main .card {
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.admin-main table thead th {
+    background: #f8fafc;
+    color: #5a6572;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e5e7eb;
+}
+.admin-main table tbody tr:hover { background: #f8fbff; }
+
+/* primary buttons use the brand blue; "success" keeps its meaning but in Sankofa green */
+.admin-main .btn-primary { background: #0064d2; border-color: #0064d2; }
+.admin-main .btn-primary:hover { background: #004a9e; border-color: #004a9e; }
+.admin-main .btn-warning,
+.admin-main .btn-secondary { background: #f5af02; border-color: #f5af02; color: #191919; }
+.admin-main .btn-warning:hover,
+.admin-main .btn-secondary:hover { background: #e09e00; border-color: #e09e00; }
+
+/* section tabs / filters */
+.admin-main .tab-btn.active,
+.admin-main .filter-tab.active {
+    background: #0064d2;
+    border-color: #0064d2;
+    color: #fff;
+}
+
+/* keep the admin visually distinct from the shop, but in-brand */
+.admin-main .service-badge,
+.admin-main .env-badge {
+    background: rgba(0, 100, 210, 0.1);
+    color: #004a9e;
+    font-weight: 800;
+}
+
+/* ---------- 4. readable greys (the admin pages were the last dark-screen holdouts) ---------- */
+.admin-main .text-muted,
+.admin-main small,
+.admin-main .helper,
+.admin-main .muted,
+.admin-topbar .text-muted { color: #5a6572; }
+
+/* ---------- 5. mobile bottom nav inside the panel ---------- */
+.admin-main .bottom-nav,
+.admin-container .bottom-nav {
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+.admin-container .bottom-nav-item { color: #5a6572; }
+.admin-container .bottom-nav-item.active { color: #0064d2; }
+
+/* ---------- 6. the admin login screen ---------- */
+.admin-login-page, .login-page.admin {
+    background: linear-gradient(140deg, #004a9e 0%, #0064d2 55%, #0a3d7a 100%);
+}
+
+/* The login card is on a dark gradient, so its secondary text must be light — these were
+   #a0a0b8/#5a5a78, which failed contrast on this background. */
+.admin-login-page label,
+.admin-login-page .field-label,
+.admin-login-page .login-subtitle,
+.admin-login-page .hint,
+.admin-login-page .login-footer,
+.admin-login-page .login-footer a { color: #e6ecf7; }
+
+.admin-login-page input,
+.admin-login-page select { border-radius: 10px; }
+
+.admin-login-page .admin-badge {
+    background: #f5af02;
+    color: #191919;
+    font-weight: 800;
+}
+
+/* ---------- sidebar scrolling (fixed 2026-10-09) ----------
+   Before: only the middle menu scrolled, inside a small window of its own. On a short screen
+   (a laptop with the browser open, or a phone turned sideways) that window could be as small as
+   two items, while the logo and the footer buttons did not move, so people could not scroll.
+   Now the whole sidebar is one scrolling column: a wheel or a finger anywhere on it moves the list. */
+.admin-sidebar {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+.admin-sidebar::-webkit-scrollbar { width: 8px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.45); border-radius: 8px; }
+.admin-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+.admin-sidebar .sidebar-nav { flex: none; overflow: visible; }
+/* the footer sits at the bottom when there is room, and follows the list when there is not */
+.admin-sidebar .sidebar-footer { flex: none; margin-top: auto; }
+
+/* Short screens: a tighter header, menu and footer, so more of the menu fits without scrolling. */
+@media (max-height: 720px) {
+    .admin-sidebar .sidebar-header { padding: 0.75rem 1.25rem; }
+    .admin-sidebar .sidebar-logo { height: 40px; }
+    .admin-sidebar .sidebar-nav { padding: 0.4rem 0 0.6rem; }
+    .admin-sidebar .nav-item { padding: 0.5rem 1.15rem; }
+    .admin-sidebar .sidebar-footer { padding-top: 0.2rem; }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Sankofa Market — Ghana's #1 Online Marketplace",
+  "short_name": "Sankofa",
+  "description": "Buy and sell electronics, fashion, home & garden, vehicles and more — escrow protected, Ghana Cedis (GHS)",
+  "start_url": "/index.html",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0064d2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logos/sankofa-market-app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logos/sankofa-market-app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logos/sankofa-market-app-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

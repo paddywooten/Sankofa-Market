@@ -11,8 +11,31 @@ class SankofaCart {
 
     init() {
         this.createCartUI();
+        this.normaliseItems();       // make sure every stored item has a usable id
         this.updateCartCount();
+        this.updateCartUI();         // ← render what is already stored (was missing: the panel
+                                     //    kept showing "Your cart is empty" until you added
+                                     //    something again on that same page)
         this.attachEventListeners();
+    }
+
+    /**
+     * Older carts were saved without an id (product.id was undefined), which broke the
+     * +/− and remove buttons. Give every item a stable id and keep the Firestore id
+     * separately so the same product can never appear twice.
+     */
+    normaliseItems() {
+        let changed = false;
+        this.items.forEach((item, i) => {
+            if (!item.id) {
+                item.id = item.productId || ('local-' + i + '-' + String(item.title || 'item').replace(/\s+/g, '-'));
+                changed = true;
+            }
+            if (item.productId === undefined) { item.productId = null; changed = true; }
+        });
+        if (changed) {
+            try { localStorage.setItem('sankofa_cart', JSON.stringify(this.items)); } catch (e) {}
+        }
     }
 
     // =========================================================================
@@ -30,35 +53,71 @@ class SankofaCart {
         this.updateCartUI();
     }
 
-    addItem(product, quantity = 1) {
+    addItem(product, quantity = 1, variant = null) {
         // Check if item is from Sankofa Store
-        if (!product.isSankofaStore) {
+        if (!product || !product.isSankofaStore) {
             showFlashMessage('Only Sankofa Store items can be added to cart', 'warning');
             return false;
         }
 
-        const existingIndex = this.items.findIndex(item => item.id === product.id);
+        // Sizes and colours: a listing that offers them needs the buyer's choice, kept on the row.
+        var choiceProblem = (typeof variantProblem === 'function') ? variantProblem(product.variants, variant || null) : '';
+        var choiceNow = (typeof variantClean === 'function') ? variantClean(product.variants, variant || null) : null;
+        if (choiceProblem) {
+            showFlashMessage('Please ' + choiceProblem + ' on the product page first', 'warning');
+            return false;
+        }
+
+        // MOQ-A: pack-size listings never enter the cart below their minimum
+        const minQty = Math.max(1, Number(product.minOrderQty) || 1);
+        if (quantity < minQty) {
+            quantity = minQty;
+            showFlashMessage(`"${product.title}" comes in packs of ${minQty} or more — added ${minQty} for you`, 'info');
+        }
+
+        // Firestore documents use _docId; some callers pass id. Keep both.
+        const productId = product._docId || product.id || null;
+        const baseKey = productId || String(product.title || 'item').replace(/\s+/g, '-').toLowerCase();
+        // One cart row per product AND choice: a size M and a size L are two rows.
+        const rowId = (typeof variantRowId === 'function') ? variantRowId(baseKey, product.variants, choiceNow) : baseKey;
+        const existingIndex = this.items.findIndex(item => item.id === rowId);
 
         if (existingIndex > -1) {
-            // Item already in cart - update quantity
-            this.items[existingIndex].quantity += quantity;
+            // Item already in cart - update quantity (still never below the minimum)
+            const item = this.items[existingIndex];
+            item.quantity += quantity;
+            // a flash sale that started since the first add counts
+            item.price = (typeof cartUnitPrice === 'function') ? cartUnitPrice(product, Date.now()) : product.price;
+            item.minOrderQty = Math.max(item.minOrderQty || 1, minQty);
             showFlashMessage(`Updated ${product.title} quantity`, 'success');
         } else {
             // Add new item
             this.items.push({
-                id: product.id,
+                id: productId ? rowId : ('local-' + Date.now()),
+                productId: productId,
+                variant: choiceNow || null,
                 title: product.title,
-                price: product.price,
-                image: product.images[0],
+                price: (typeof cartUnitPrice === 'function') ? cartUnitPrice(product, Date.now()) : product.price,
+                image: (typeof productThumb === 'function') ? productThumb(product) : (product.images || product.photos || [])[0],
                 quantity: quantity,
                 seller: product.sellerName || 'Sankofa Store',
-                maxQuantity: product.stock || 10
+                // keep the seller's id on the row: a cart can hold items from several sellers, and
+                // the checkout needs to pay each of them separately (escrow is per seller)
+                sellerId: product.sellerId || product._sellerId || null,
+                maxQuantity: product.stock || 10,
+                minOrderQty: minQty
             });
-            showFlashMessage(`Added ${product.title} to cart`, 'success');
+            showFlashMessage(`Added ${product.title} to cart`, 'success');   // flash escapes internally
         }
 
         this.saveCart();
         this.animateCartIcon();
+        // "Picked for you" learning — a basket add is the strongest interest signal
+        try {
+            if (typeof window !== 'undefined' && typeof window.smForYouTrackCart === 'function') {
+                window.smForYouTrackCart(product);
+            }
+        } catch (e) {}
         return true;
     }
 
@@ -71,8 +130,12 @@ class SankofaCart {
     updateQuantity(productId, quantity) {
         const item = this.items.find(item => item.id === productId);
         if (item) {
+            const minQty = Math.max(1, Number(item.minOrderQty) || 1);
             if (quantity <= 0) {
                 this.removeItem(productId);
+            } else if (quantity < minQty) {
+                showFlashMessage(`"${item.title}" comes in packs of ${minQty} or more — ${minQty} is the smallest you can order`, 'warning');
+                item.quantity = minQty;   // MOQ-A floor: dipping below bounces back up
             } else if (quantity > item.maxQuantity) {
                 showFlashMessage(`Maximum ${item.maxQuantity} items available`, 'warning');
                 item.quantity = item.maxQuantity;
@@ -134,6 +197,8 @@ class SankofaCart {
         const cartIcon = document.createElement('button');
         cartIcon.className = 'cart-icon-btn';
         cartIcon.id = 'cartIconBtn';
+        cartIcon.setAttribute('aria-label', 'Open your cart');
+        cartIcon.setAttribute('aria-haspopup', 'dialog');
         cartIcon.innerHTML = `
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-count" id="cartCount">0</span>
@@ -156,8 +221,8 @@ class SankofaCart {
         sidebar.innerHTML = `
             <div class="cart-sidebar-header">
                 <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
-                <button class="cart-close" onclick="cart.toggleCart()">
-                    <i class="fas fa-times"></i>
+                <button class="cart-close" onclick="cart.toggleCart()" aria-label="Close cart">
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="cart-sidebar-content" id="cartSidebarContent">
@@ -249,9 +314,10 @@ class SankofaCart {
         } else {
             content.innerHTML = this.items.map(item => `
                 <div class="cart-item">
-                    <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                    <img src="${escapeCardText(item.image)}" alt="${escapeCardText(item.title)}" class="cart-item-image">
                     <div class="cart-item-details">
-                        <h4 class="cart-item-title">${item.title}</h4>
+                        <h4 class="cart-item-title">${escapeCardText(item.title)}</h4>
+                        ${item.variant && typeof variantLabel === 'function' ? `<p class="cart-item-variant" style="font-size:0.78rem;color:#5a6572;margin:0.1rem 0 0;">${escapeCardText(variantLabel(item.variant))}</p>` : ''}
                         <p class="cart-item-price">GHS ${item.price.toLocaleString()}</p>
                         <div class="cart-item-quantity">
                             <button onclick="cart.updateQuantity('${item.id}', ${item.quantity - 1})">
@@ -291,7 +357,15 @@ class SankofaCart {
     toggleCart() {
         const sidebar = document.getElementById('cartSidebar');
         const overlay = document.getElementById('cartOverlay');
-        
+        if (!sidebar || !overlay) return;
+
+        // Re-render from storage every time it is opened, so the panel can never
+        // show a stale "empty" state (e.g. after adding on another page).
+        this.items = this.loadCart();
+        this.normaliseItems();
+        this.updateCartUI();
+        this.updateCartCount();
+
         sidebar.classList.toggle('open');
         overlay.classList.toggle('open');
         
@@ -356,17 +430,10 @@ class SankofaCart {
                     <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
                     <div class="payment-options">
                         <label class="payment-option">
-                            <input type="radio" name="paymentMethod" value="momo" required>
-                            <span>
-                                <i class="fas fa-mobile-alt"></i>
-                                Mobile Money
-                            </span>
-                        </label>
-                        <label class="payment-option">
-                            <input type="radio" name="paymentMethod" value="card">
+                            <input type="radio" name="paymentMethod" value="paystack" required checked>
                             <span>
                                 <i class="fas fa-credit-card"></i>
-                                Card Payment
+                                Card or Mobile Money <small style="color:#5a6572;font-weight:400;">— you'll pick on Paystack's secure page</small>
                             </span>
                         </label>
                     </div>
@@ -407,6 +474,26 @@ class SankofaCart {
     async processCheckout(event) {
         event.preventDefault();
 
+        // Today's prices first: the order must carry the prices the server will check it against.
+        let fresh;
+        try {
+            fresh = await cartRefreshRows(this.items);
+        } catch (e) {
+            showFlashMessage('Could not check today\u2019s prices. Nothing was ordered \u2014 check your connection and try again.', 'error');
+            return;
+        }
+        if (fresh.unavailable.length) {
+            showFlashMessage('These cannot be bought as they are now: ' + fresh.unavailable.join('; ') + '. Remove them from your cart and add them again.', 'warning');
+            return;
+        }
+        this.items = fresh.items;
+        this.saveCart();
+        if (fresh.changed.length) {
+            this.closeCheckout();
+            showFlashMessage('Prices were updated: ' + fresh.changed.map(function (c) { return c.title + ' is now GHS ' + c.to.toLocaleString(); }).join('; ') + '. Check your order and place it again.', 'warning');
+            return;
+        }
+
         const formData = {
             name: document.getElementById('checkoutName').value,
             phone: document.getElementById('checkoutPhone').value,
@@ -429,9 +516,14 @@ class SankofaCart {
             // Create order in Firebase
             if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
                 const orderRef = await firebase.firestore().collection('orders').add({
+                    buyerId: firebase.auth().currentUser.uid,   // rules + escrow look for buyerId
                     userId: firebase.auth().currentUser.uid,
+                    buyerName: firebase.auth().currentUser.displayName || firebase.auth().currentUser.email || 'Buyer',
                     ...formData,
                     status: 'pending',
+                    paymentStatus: 'pending',
+                    escrowStatus: 'pending',
+                    currency: 'GHS',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
@@ -495,3 +587,19 @@ const cart = new SankofaCart();
 
 // Make cart globally accessible
 window.cart = cart;
+
+/* Escape values that come from users (product titles, names, locations) before
+   putting them into innerHTML. Prevents stored XSS from listing text. */
+function escapeCardText(v) {
+    return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* ===== GLOBAL BRIDGE (auto-generated) — DO NOT DELETE ===== */
+/* This file is served as a bundled “classic” <script>, so every top-level
+   function must stay reachable on window. Without this, the bundler deletes
+   functions that are only called from HTML like onclick="callSeller()", and
+   short minified names can overwrite each other between bundles. */
+window.escapeCardText = escapeCardText;
+

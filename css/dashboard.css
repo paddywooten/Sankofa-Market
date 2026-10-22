@@ -186,6 +186,56 @@
     display: block;
 }
 
+/* Merged dashboard navigation: in-page tabs on the left, page links on the right */
+.dash-nav {
+    align-items: stretch;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+}
+
+.dash-nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.dash-nav::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+/* thin divider between "switch panel here" and "open another page" */
+.dash-nav-sep {
+    width: 1px;
+    background: var(--border-color, #e5e5e5);
+    margin: 0.7rem 0.35rem;
+    flex: 0 0 auto;
+    margin-left: auto;      /* pushes the page links to the right on wide screens */
+}
+
+.dash-nav-link {
+    text-decoration: none;
+}
+
+.dash-nav-link:hover {
+    text-decoration: none;
+}
+
+/* a small arrow hints that these leave the page */
+.dash-nav-link::after {
+    content: '\f35d';       /* fa-arrow-up-right-from-square */
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 0.6rem;
+    opacity: 0.45;
+    margin-left: 0.15rem;
+}
+
+@media (max-width: 900px) {
+    /* let the whole bar scroll sideways instead of squashing items */
+    .dash-nav-sep {
+        margin-left: 0.35rem;
+    }
+}
+
 /* Panel Header */
 .panel-header {
     display: flex;
@@ -601,4 +651,22 @@
     .stat-value {
         font-size: 1.35rem;
     }
+}
+
+/* ============================================================================
+   PANEL HEADERS ON NARROW PHONES
+   ============================================================================
+   .panel-header is a title on the left and a button on the right, in a row that does not wrap.
+   At 320px wide the button ran past the screen edge by 5px, which made the whole dashboard
+   scroll sideways (and the fixed bottom bar with it). It now wraps instead.
+   ============================================================================ */
+@media (max-width: 420px) {
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .panel-header h2, .panel-header h3 { flex: 1 1 100%; }
+  .panel-header .btn { flex: 1 1 auto; justify-content: center; }
+  .panel-header > div { flex: 1 1 100%; }
 }

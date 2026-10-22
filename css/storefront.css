@@ -1,0 +1,307 @@
+/* ============================================================================
+   VENDOR STOREFRONTS — storefront page + "My Store" editor styles
+   The shop's theme color is injected as CSS variables (--st-c1/--st-c2/--st-on)
+   by js/storefront.js from the curated palette, so every shop feels personal
+   while the CSS stays one small shared file (data-bundle friendly).
+   ==========================================================================*/
+
+.store-hero {
+    background: linear-gradient(135deg, var(--st-c1, #0064d2) 0%, var(--st-c2, #004a99) 100%);
+    color: var(--st-on, #ffffff);
+    padding: 2.2rem 0 1.6rem;
+}
+.store-hero-inner { display: flex; gap: 1.1rem; align-items: center; flex-wrap: wrap; }
+#storeLogoWrap { flex-shrink: 0; }
+.store-hero-text { flex: 1; min-width: 220px; }
+.store-logo {
+    width: 88px; height: 88px; border-radius: 22px; object-fit: cover;
+    background: rgba(255,255,255,0.16);
+    border: 3px solid rgba(255,255,255,0.55);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    flex-shrink: 0;
+}
+.store-logo-letter {
+    width: 88px; height: 88px; border-radius: 22px;
+    background: rgba(255,255,255,0.16);
+    border: 3px solid rgba(255,255,255,0.55);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.3rem; font-weight: 800; flex-shrink: 0;
+}
+.store-hero h1 { margin: 0; font-size: 1.55rem; font-weight: 800; line-height: 1.15; }
+.store-bio { margin: 0.35rem 0 0; font-size: 0.92rem; opacity: 0.94; max-width: 560px; }
+
+/* 2026-10-08 FIX: main.css styles every h1–h6 and p with their own colours
+   (`h1 { color: var(--text-primary) }`), which BEAT the hero's inherited colour —
+   so shop names and stories rendered dark over banner photos and dark themes.
+   Inside the hero, the shop's own text colour must win. */
+.store-hero h1, .store-hero h2, .store-hero h3,
+.store-hero h4, .store-hero h5, .store-hero h6 { color: inherit; }
+.store-hero .store-bio { color: inherit; }
+.store-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.7rem; }
+.store-chip {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28);
+    padding: 0.24rem 0.68rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600;
+}
+.store-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+.store-actions .st-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.68rem 1.1rem; border-radius: 10px;
+    font-weight: 700; font-size: 0.88rem; text-decoration: none;
+    border: none; cursor: pointer; min-height: 44px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.store-actions .st-btn:active { transform: scale(0.98); }
+.st-btn-primary { background: #fff; color: var(--st-c1, #0064d2); box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+.st-btn-outline { background: rgba(255,255,255,0.12); color: var(--st-on, #fff); border: 1.5px solid rgba(255,255,255,0.45) !important; }
+.st-btn-wa { background: #25d366; color: #fff; }
+
+.store-listings-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 1.4rem 0 0.9rem; flex-wrap: wrap; }
+.store-listings-head h2 { margin: 0; font-size: 1.15rem; font-weight: 800; color: #191919; }
+.store-listings-head h2 i { color: var(--st-c1, #0064d2); }
+.store-count-pill { font-size: 0.75rem; font-weight: 700; color: #5a6572; background: #f3f4f6; border: 1px solid #e5e7eb; padding: 0.2rem 0.6rem; border-radius: 999px; }
+
+.store-empty {
+    text-align: center; padding: 3rem 1.2rem; color: #767676;
+}
+.store-empty i { font-size: 2.4rem; color: #d1d5db; margin-bottom: 0.6rem; }
+
+.store-notfound { text-align: center; padding: 4rem 1.2rem; max-width: 460px; margin: 0 auto; }
+.store-notfound i { font-size: 2.6rem; color: #d1d5db; }
+.store-notfound h1 { font-size: 1.3rem; margin: 0.8rem 0 0.3rem; }
+.store-notfound p { color: #767676; font-size: 0.92rem; }
+
+/* Sankofa watermark strip at the bottom — subtle "powered by" so shops still
+   feel like great Sankofa citizens (and links back to the main market). */
+.store-powered {
+    text-align: center; padding: 1.2rem; font-size: 0.78rem; color: #9aa5b1;
+    border-top: 1px solid #eef1f4; margin-top: 2.2rem;
+}
+.store-powered a { color: #0064d2; text-decoration: none; font-weight: 600; }
+
+/* ================= "My Store" editor (seller side) ================= */
+
+.mstore-banner { border-radius: 12px; padding: 0.95rem 1.1rem; font-size: 0.88rem; font-weight: 600; margin-bottom: 1.2rem; display: flex; gap: 0.55rem; align-items: flex-start; line-height: 1.45; }
+.mstore-banner.pending { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+.mstore-banner.live { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+.mstore-banner.guide { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+
+.mstore-field { margin-bottom: 1.1rem; }
+.mstore-field label { display: block; font-size: 0.84rem; font-weight: 700; color: #191919; margin-bottom: 0.35rem; }
+.mstore-field input[type="text"], .mstore-field input[type="tel"], .mstore-field textarea {
+    width: 100%; padding: 0.68rem 0.8rem; border: 1.5px solid #e5e7eb; border-radius: 10px;
+    font-size: 0.92rem; font-family: inherit; outline: none; transition: border-color 0.15s;
+}
+.mstore-field input:focus, .mstore-field textarea:focus { border-color: var(--primary-color); }
+.mstore-hint { font-size: 0.76rem; color: #767676; margin-top: 0.3rem; }
+.mstore-slug-preview { font-size: 0.78rem; color: #0064d2; font-weight: 600; margin-top: 0.3rem; word-break: break-all; }
+
+.mstore-theme-row { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+.mstore-swatch {
+    width: 46px; height: 46px; border-radius: 12px; cursor: pointer;
+    border: 3px solid transparent; transition: transform 0.15s, border-color 0.15s;
+    display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem;
+}
+.mstore-swatch.active { border-color: #191919; transform: scale(1.06); }
+
+.mstore-logo-row { display: flex; gap: 1rem; align-items: center; }
+.mstore-logo-preview {
+    width: 76px; height: 76px; border-radius: 18px; object-fit: cover;
+    border: 2px solid #e5e7eb; background: #f3f4f6;
+    display: flex; align-items: center; justify-content: center;
+    color: #9aa5b1; font-size: 1.5rem; font-weight: 800; flex-shrink: 0; overflow: hidden;
+}
+.mstore-logo-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.mstore-preview-card {
+    border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; max-width: 420px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+.mstore-preview-hero { padding: 1.1rem; display: flex; gap: 0.8rem; align-items: center; color: var(--st-on, #fff); background: linear-gradient(135deg, var(--st-c1, #0064d2), var(--st-c2, #004a99)); }
+.mstore-preview-hero .pv-logo { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 800; overflow: hidden; flex-shrink: 0; }
+.mstore-preview-hero .pv-logo img { width: 100%; height: 100%; object-fit: cover; }
+.mstore-preview-hero h3 { margin: 0; font-size: 0.98rem; }
+.mstore-preview-hero p { margin: 0.15rem 0 0; font-size: 0.72rem; opacity: 0.9; }
+
+.mstore-share-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; }
+.mstore-share-url { font-weight: 700; color: #0064d2; word-break: break-all; font-size: 0.88rem; }
+.mstore-share-btns { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
+
+/* ================= Phones — the shop's main audience =================
+   Sellers share their shop link on WhatsApp/status, so most visits land on a
+   phone. These rules keep the hero to one neat block (logo + name side by
+   side), stop buttons from stacking into a skyscraper, and tighten the grid
+   so the first products show without endless scrolling. */
+@media (max-width: 768px) {
+    /* Hero: compact, logo and text stay in one row (announcement still wraps below) */
+    .store-hero { padding: 1.25rem 0 1rem; }
+    .store-hero-inner { gap: 0.75rem; align-items: flex-start; }
+    .store-hero-text { min-width: 0; }
+    .store-logo, .store-logo-letter { width: 64px; height: 64px; border-radius: 16px; border-width: 2.5px; }
+    .store-logo-letter { font-size: 1.7rem; }
+    .store-hero h1 { font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
+    .store-bio { font-size: 0.84rem; margin-top: 0.3rem; }
+
+    /* Chips + announcement shrink so more fits per line */
+    .store-chips { gap: 0.35rem; margin-top: 0.55rem; }
+    .store-chip { font-size: 0.7rem; padding: 0.16rem 0.55rem; }
+    .store-announce { font-size: 0.78rem; padding: 0.42rem 0.7rem; margin-top: 0.6rem; }
+
+    /* Buttons: the main action (Message / Edit) gets a full row, the rest share rows */
+    .store-actions { gap: 0.45rem; margin-top: 0.8rem; }
+    .store-actions .st-btn { padding: 0.55rem 0.75rem; font-size: 0.8rem; justify-content: center; flex: 1 1 auto; }
+    .store-actions .st-btn-primary { flex: 1 1 100%; }
+
+    /* Listings: less air above the shelves */
+    .store-listings-head { margin: 1.05rem 0 0.7rem; }
+    .store-listings-head h2 { font-size: 1rem; }
+    .store-empty { padding: 2.2rem 1rem; }
+    .store-empty i { font-size: 2rem; }
+    .store-notfound { padding: 2.6rem 1.2rem; }
+    .store-powered { margin-top: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+    /* Two tidy product columns on small phones — tighter gap, one extra peek of image */
+    #storeGrid { gap: 0.6rem; }
+}
+@media (max-width: 360px) {
+    .store-logo, .store-logo-letter { width: 56px; height: 56px; border-radius: 14px; }
+    .store-logo-letter { font-size: 1.5rem; }
+    .store-hero h1 { font-size: 1.1rem; }
+}
+
+/* ================= Shop plan (rent) card ================= */
+.mstore-plan-tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 0.9rem; }
+.mstore-plan-tier {
+    border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.7rem 0.6rem; text-align: center;
+    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; background: #fff;
+}
+.mstore-plan-tier:hover { border-color: #c7d2fe; }
+.mstore-plan-tier.active { border-color: var(--primary-color); box-shadow: 0 4px 14px rgba(0,100,210,0.12); }
+.mstore-plan-tier .tier-name { font-size: 0.78rem; font-weight: 800; color: #191919; }
+.mstore-plan-tier .tier-price { font-size: 1.05rem; font-weight: 800; color: var(--primary-color); margin: 0.15rem 0; }
+.mstore-plan-tier .tier-days { font-size: 0.68rem; color: #767676; }
+.mstore-plan-tier .tier-save { display:inline-block; margin-top:0.25rem; font-size: 0.64rem; font-weight: 800; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:0.1rem 0.4rem; border-radius:999px; }
+.mstore-plan-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+@media (max-width: 640px) { .mstore-plan-tiers { grid-template-columns: 1fr; } }
+
+/* Store announcement strip (Phase 3) */
+.store-announce {
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25);
+    color: var(--st-on, #fff); border-radius: 10px; padding: 0.5rem 0.85rem;
+    font-size: 0.82rem; font-weight: 600; width: 100%; margin-top: 0.75rem;
+    display: flex; gap: 0.45rem; align-items: flex-start; line-height: 1.4;
+}
+
+/* ================= "Complete my shop" checklist ================= */
+.mstore-checklist { border: 1px solid #e5e7eb; border-radius: 14px; padding: 1rem; margin-bottom: 1.2rem; background: #fff; }
+.mstore-checklist h3 { font-size: 0.95rem; margin: 0 0 0.15rem; }
+.mstore-checklist .cl-sub { font-size: 0.78rem; color: #767676; margin-bottom: 0.7rem; }
+.mstore-progress { height: 10px; background: #f1f5f9; border-radius: 999px; overflow: hidden; margin-bottom: 0.7rem; }
+.mstore-progress > div { height: 100%; background: linear-gradient(90deg, #f5af02, #e09e00); border-radius: 999px; transition: width 0.4s ease; }
+.mstore-check-row { display: flex; gap: 0.6rem; align-items: center; padding: 0.4rem 0; font-size: 0.86rem; border-bottom: 1px dashed #eef1f4; }
+.mstore-check-row:last-of-type { border-bottom: none; }
+.mstore-check-row .cl-ic { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+.mstore-check-row.done .cl-ic { background: #ecfdf5; color: #16a34a; border: 1.5px solid #a7f3d0; }
+.mstore-check-row.todo .cl-ic { background: #f8fafc; color: #9aa5b1; border: 1.5px solid #e5e7eb; }
+.mstore-check-row.todo .cl-text b { color: #0064d2; }
+.mstore-check-row .cl-act { margin-left: auto; flex-shrink: 0; }
+
+
+/* ===== Tier 2: shop stats mini bars + promo codes ===== */
+.mstore-statbars { display: flex; gap: 8px; align-items: flex-end; margin-top: 0.7rem; }
+.mstore-statbar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 0.68rem; color: #767676; }
+.mstore-statbar-col { width: 100%; max-width: 34px; border-radius: 6px 6px 3px 3px; background: linear-gradient(180deg, #60a5fa, #0064d2); min-height: 3px; }
+.mstore-promo-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.mstore-promo-form input, .mstore-promo-form select { padding: 0.55rem 0.65rem; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.88rem; }
+.mstore-promo-form input:first-child { flex: 1; min-width: 120px; letter-spacing: 0.06em; font-weight: 700; }
+.mstore-promo-row { display: flex; align-items: center; gap: 10px; padding: 0.55rem 0.65rem; border: 1.5px solid #fde68a; background: #fffdf2; border-radius: 12px; margin-top: 8px; flex-wrap: wrap; }
+.mstore-promo-row.is-off { opacity: 0.55; background: #f8fafc; border-color: #e2e8f0; }
+.mstore-promo-code { font-weight: 800; letter-spacing: 0.08em; color: #131f47; }
+.mstore-promo-meta { flex: 1; min-width: 140px; font-size: 0.8rem; color: #5a6572; }
+
+/* ===== Tier 3: shop banner ===== */
+.mstore-banner-preview { border: 1.5px dashed #d8dee5; border-radius: 12px; min-height: 74px; display: flex; align-items: center; justify-content: center; color: #9aa5b1; font-size: 0.82rem; gap: 6px; overflow: hidden; margin-bottom: 8px; background: #f8fafc; }
+.mstore-banner-preview img { width: 100%; height: 90px; object-fit: cover; display: block; }
+.store-hero.has-banner { background-size: cover !important; background-position: center !important; }
+
+/* ===== Mix-your-own theme studio (three sliders under the swatches) ===== */
+.mstore-mix {
+    margin-top: 0.8rem; border: 1.5px dashed #e2e8f0; border-radius: 12px;
+    padding: 0.75rem 0.9rem; background: #fafbff; transition: border-color 0.15s, background 0.15s;
+}
+.mstore-mix.mixing { border-color: #f5af02; background: #fffdf5; }
+.mstore-mix-head { font-size: 0.84rem; color: #191919; }
+.mstore-mix-state { font-size: 0.72rem; color: #767676; font-weight: 600; }
+.mstore-mix.mixing .mstore-mix-state { color: #92400e; }
+.mstore-mix-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+.mstore-mix-row label { width: 74px; flex-shrink: 0; font-size: 0.78rem; font-weight: 700; color: #5a6572; }
+.mstore-mix-row input[type="range"] { flex: 1; min-width: 0; height: 26px; cursor: pointer; }
+.mstore-mix-out { display: flex; align-items: center; gap: 10px; margin-top: 0.6rem; }
+.mstore-mix-chip { width: 52px; height: 34px; border-radius: 9px; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; }
+.mstore-mix-chip-text { display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem; width: 34px; background: #004a99; color: #fff; }
+.mstore-mix-note { font-size: 0.72rem; color: #767676; line-height: 1.35; }
+
+/* ===== Name & text colour choice (banner conflicts) ===== */
+.mstore-textmode { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.7rem; }
+.mstore-textmode-label { font-size: 0.8rem; font-weight: 700; color: #5a6572; }
+.mstore-tm-chip { padding: 0.32rem 0.75rem; border-radius: 999px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 0.76rem; font-weight: 700; color: #5a6572; cursor: pointer; min-height: 34px; font-family: inherit; }
+.mstore-tm-chip.active { border-color: #191919; color: #191919; box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+.mstore-tm-warn { width: 100%; font-size: 0.74rem; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 0.35rem 0.6rem; }
+
+/* Simple ↔ Advanced theming: Advanced-only controls hide unless the seller
+   flipped the toggle (body.sm-adv-mode). Simple mode = presets + chips only. */
+body:not(.sm-adv-mode) .mstore-advanced-only { display: none !important; }
+
+/* ===== Advanced banner controls ===== */
+.mstore-adv-box { margin-top: 0.8rem; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem; background: #fff; }
+.mstore-adv-title { font-size: 0.84rem; font-weight: 800; color: #191919; margin-bottom: 0.55rem; }
+.mstore-adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem 0.9rem; }
+@media (max-width: 640px) { .mstore-adv-grid { grid-template-columns: 1fr; } }
+.mstore-adv-field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.76rem; font-weight: 700; color: #5a6572; }
+.mstore-adv-ctl { display: flex; align-items: center; gap: 0.45rem; }
+.mstore-adv-ctl input[type="color"] { width: 44px; height: 32px; padding: 2px; border: 1.5px solid #e5e7eb; border-radius: 8px; background: #fff; cursor: pointer; }
+.mstore-adv-ctl input[type="range"] { flex: 1; min-width: 0; height: 26px; cursor: pointer; }
+.mstore-adv-reset { padding: 0.3rem 0.6rem; border-radius: 8px; border: 1.5px solid #e5e7eb; background: #f8fafc; font-size: 0.7rem; font-weight: 700; color: #5a6572; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.mstore-adv-reset:active { background: #eef2f7; }
+.mstore-adv-val { font-size: 0.74rem; color: #191919; min-width: 44px; text-align: right; }
+
+/* ===== Editor live-preview: text plate + announcement strip ===== */
+.mstore-preview-hero { flex-wrap: wrap; }
+.mstore-preview-hero .pv-text { flex: 1; min-width: 140px; border-radius: 10px; }
+.mstore-preview-hero .pv-text.has-textbg { padding: 0.55rem 0.7rem; }
+.mstore-preview-announce {
+    width: 100%; margin-top: 0.55rem; display: flex; gap: 0.4rem; align-items: flex-start;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25);
+    color: var(--st-on, #fff); border-radius: 8px; padding: 0.35rem 0.6rem;
+    font-size: 0.72rem; font-weight: 600; line-height: 1.35;
+}
+
+/* ===== Storefront: translucent plate behind the shop name (advanced) ===== */
+.store-hero-text.has-textbg { padding: 0.9rem 1.1rem; border-radius: 14px; }
+@media (max-width: 768px) { .store-hero-text.has-textbg { padding: 0.7rem 0.85rem; } }
+
+/* ===== Shop plan countdown (My Store → Shop plan card) ===== */
+.mstore-countdown { display: none; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 0.85rem 0.95rem; margin-bottom: 0.9rem; background: #fff; }
+.mstore-countdown.tone-trial { border-color: #a5f3fc; background: linear-gradient(135deg, #ecfeff, #f8fafc); }
+.mstore-countdown.tone-ok { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #fff); }
+.mstore-countdown.tone-gold { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+.mstore-countdown.tone-warn { border-color: #fcd34d; background: #fffbeb; }
+.mstore-countdown.tone-bad { border-color: #fecaca; background: #fef2f2; }
+.mstore-countdown.tone-muted { border-color: #e5e7eb; background: #f8fafc; }
+.mstore-cd-top { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+.mstore-cd-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; background: #131f47; color: #fff; }
+.mstore-cd-state { background: #fff; color: #191919; border: 1px solid #d8dee5; }
+.mstore-cd-big { font-size: 1.2rem; font-weight: 800; color: #191919; line-height: 1.25; }
+.mstore-cd-detail { font-size: 0.78rem; color: #5a6572; margin-top: 0.25rem; line-height: 1.45; }
+.mstore-cd-bar { height: 10px; background: #eef2f7; border-radius: 999px; overflow: hidden; margin-top: 0.6rem; }
+.mstore-cd-fill { height: 100%; background: linear-gradient(90deg, #22d3ee, #0e7490); border-radius: 999px; transition: width 0.6s ease; }
+.mstore-countdown.tone-ok .mstore-cd-fill { background: linear-gradient(90deg, #4ade80, #16a34a); }
+.mstore-countdown.tone-gold .mstore-cd-fill { background: linear-gradient(90deg, #f5af02, #e09e00); }
+.mstore-countdown.tone-warn .mstore-cd-fill { background: linear-gradient(90deg, #fbbf24, #d97706); }
+.mstore-countdown.tone-bad .mstore-cd-fill { background: linear-gradient(90deg, #f87171, #b91c1c); }
+.mstore-countdown.tone-muted .mstore-cd-fill { background: #9aa5b1; }
+.mstore-cd-barlabel { font-size: 0.7rem; color: #767676; margin-top: 0.25rem; font-weight: 600; }
+.mstore-cd-explain { font-size: 0.8rem; color: #3f4a58; margin-top: 0.5rem; font-weight: 600; }

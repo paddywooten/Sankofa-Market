@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-GH">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Rewards & Points — Sankofa Market</title>
+    <meta name="description" content="Earn Sankofa Points every day you open the app and trade them for real perks: listing boosts and featured spots.">
+    <link rel="canonical" href="https://sankofa-market.web.app/pages/user/rewards.html">
+    <link rel="icon" type="image/png" href="/images/logos/sankofa-market-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/icons.css?v=2">
+    <link rel="stylesheet" href="/css/main.css?v=33">
+    <link rel="stylesheet" href="/css/a11y.css?v=2">
+    <style>
+        .rw-hero{background:linear-gradient(135deg,#f5af02 0%,#e09e00 100%);color:#191919;padding:1.6rem 0 5.2rem;}
+        .rw-hero h1{margin:0;font-size:1.45rem;font-weight:800;display:flex;align-items:center;gap:0.55rem;line-height:1.15;}
+        .rw-hero p{margin:0.45rem 0 0;font-size:0.86rem;opacity:0.85;max-width:560px;line-height:1.55;}
+        .rw-cards{margin-top:-4.2rem;padding-bottom:2.4rem;}
+        .rw-card{background:#fff;border:1px solid #eee7c9;border-radius:16px;padding:1.15rem 1.2rem;margin-bottom:1rem;box-shadow:0 10px 26px rgba(122,74,0,0.07);}
+        .rw-balance{font-size:2.6rem;font-weight:800;line-height:1;color:#7a4a00;}
+        .rw-balance small{font-size:1rem;font-weight:700;color:#b48a2f;}
+        .rw-streakrow{display:flex;gap:0.3rem;margin-top:0.55rem;flex-wrap:wrap;}
+        .rw-dot{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;background:#f3f4f6;color:#9ca3af;border:1.5px solid #e5e7eb;}
+        .rw-dot.on{background:#f5af02;color:#191919;border-color:#e09e00;}
+        .rw-dot.bonus{background:#fff7e0;color:#7a4a00;border-color:#f5af02;}
+        .rw-claimbtn{width:100%;border:none;border-radius:12px;padding:0.95rem;font-size:1rem;font-weight:800;cursor:pointer;background:#f5af02;color:#191919;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+        .rw-claimbtn:disabled{background:#e5e7eb;color:#6b7280;cursor:default;}
+        .rw-offer{display:flex;flex-direction:column;gap:0.65rem;}
+        .rw-offer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:0.8rem;}
+        .rw-cost{background:#fff7e0;border:1px solid #f5af02;color:#7a4a00;border-radius:999px;padding:0.22rem 0.6rem;font-weight:800;font-size:0.78rem;white-space:nowrap;}
+        .rw-select{width:100%;padding:0.6rem 0.7rem;border:1.5px solid #e5e7eb;border-radius:10px;font-family:inherit;font-size:0.92rem;background:#fff;color:#191919;}
+        .rw-redeem{border:none;border-radius:10px;padding:0.7rem;font-weight:800;cursor:pointer;background:#0064d2;color:#fff;font-size:0.92rem;}
+        .rw-redeem:disabled{background:#e5e7eb;color:#6b7280;cursor:default;}
+        .rw-hist{display:flex;justify-content:space-between;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid #f3f4f6;font-size:0.84rem;}
+        .rw-hist:last-child{border-bottom:none;}
+        .rw-amt{font-weight:800;white-space:nowrap;}
+        .rw-amt.pos{color:#15803d;}.rw-amt.neg{color:#b91c1c;}
+        .rw-muted{color:#5a6572;font-size:0.78rem;}
+        .rw-error{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:0.6rem 0.75rem;font-size:0.84rem;margin-bottom:0.8rem;display:none;}
+        .rw-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:10px;padding:0.6rem 0.75rem;font-size:0.84rem;margin-bottom:0.8rem;display:none;}
+        .rw-codebox{display:flex;align-items:center;gap:0.55rem;background:#fafaf7;border:1.5px dashed #f5af02;border-radius:12px;padding:0.55rem 0.7rem;margin-top:0.75rem;}
+        .rw-code{font-size:1.25rem;font-weight:800;letter-spacing:0.12em;color:#7a4a00;flex:1;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;}
+        .rw-copybtn{border:1.5px solid #e5e7eb;background:#fff;border-radius:9px;padding:0.45rem 0.7rem;font-weight:700;font-size:0.8rem;color:#374151;cursor:pointer;white-space:nowrap;}
+        .rw-copybtn:active{transform:scale(0.97);}
+        .rw-wabtn{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.55rem;background:#25d366;color:#fff;border-radius:10px;padding:0.7rem;font-weight:800;font-size:0.92rem;text-decoration:none;}
+        .rw-refstats{display:flex;gap:0.5rem;margin-top:0.65rem;}
+        .rw-refstats>div{flex:1;background:#fafaf7;border:1px solid #eee7c9;border-radius:10px;padding:0.45rem 0.2rem;text-align:center;}
+        .rw-refstats strong{display:block;font-size:1.05rem;font-weight:800;color:#7a4a00;}
+        .rw-refstats span{font-size:0.68rem;color:#5a6572;font-weight:600;}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-logo"><a href="/index.html"><img src="/images/logos/sankofa-market-logo-full-color.png" alt="Sankofa Market"></a></div>
+            <div class="header-search"><form class="search-form" action="../../search.html" method="GET"><input type="text" name="q" placeholder="Search..." class="search-input"><button type="submit" class="search-btn"><i class="fas fa-search"></i></button></form></div>
+            <div class="header-actions">
+                <a href="/pages/user/wallet.html" class="btn btn-outline"><i class="fas fa-wallet"></i> Wallet</a>
+                <a href="/pages/user/dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Account</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="rw-hero">
+        <div class="container">
+            <h1>🪙 Sankofa Points <span style="font-size:0.72rem;font-weight:700;background:#191919;color:#f5af02;padding:0.18rem 0.55rem;border-radius:999px;">daily loyalty</span></h1>
+            <p>Tap the claim button and we drop points in your pocket — the next one unlocks exactly 24 hours later, and your personal countdown shows you when. Invite friends for even more. Trade points for boosts that push your listings higher. Points never become cash; money stays money, points stay perks.</p>
+        </div>
+    </section>
+
+    <main class="container rw-cards">
+        <div class="rw-error" id="rwError"></div>
+        <div class="rw-ok" id="rwOk"></div>
+
+        <!-- Balance + streak -->
+        <div class="rw-card" id="rwBalanceCard">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:0.72rem;font-weight:700;color:#b48a2f;letter-spacing:0.05em;">YOUR BALANCE</div>
+                    <div class="rw-balance"><span id="rwBalance">…</span> <small>pts</small></div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:0.72rem;font-weight:700;color:#b48a2f;letter-spacing:0.05em;">STREAK</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#7a4a00;"><span id="rwStreak">0</span> day<span id="rwStreakPlural">s</span> 🔥</div>
+                </div>
+            </div>
+            <div class="rw-streakrow" id="rwStreakDots" title="Each dot is a day in your streak — the 7th pays a +15 bonus"></div>
+            <div class="rw-muted" id="rwStreakHint" style="margin-top:0.4rem;"></div>
+        </div>
+
+        <!-- Daily claim -->
+        <div class="rw-card">
+            <button class="rw-claimbtn" id="rwClaimBtn">🪙 Claim today&#39;s +5 points</button>
+            <div class="rw-muted" id="rwClaimHint" style="text-align:center;margin-top:0.5rem;"></div>
+        </div>
+
+        <!-- Refer & Earn -->
+        <div class="rw-card" id="rwRefCard">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.8rem;">
+                <div>
+                    <div style="font-weight:800;font-size:1rem;">🎁 Refer &amp; Earn</div>
+                    <div class="rw-muted">A friend joins with your code → they pocket <strong>+15</strong> welcome points, you pocket <strong>+10</strong> right away and <strong>+40</strong> more once they become an active member.</div>
+                </div>
+            </div>
+            <div class="rw-codebox">
+                <span class="rw-code" id="rwRefCode">…</span>
+                <button class="rw-copybtn" id="rwRefCopyBtn" type="button"><i class="fas fa-copy"></i> Copy</button>
+            </div>
+            <a class="rw-wabtn" id="rwRefWaBtn" href="#" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Share on WhatsApp</a>
+            <div class="rw-refstats">
+                <div><strong id="rwRefJoined">0</strong><span>joined</span></div>
+                <div><strong id="rwRefActive">0</strong><span>active</span></div>
+                <div><strong id="rwRefEarned">0</strong><span>pts earned</span></div>
+            </div>
+            <div class="rw-muted" id="rwRefByLine" style="display:none;margin-top:0.55rem;"></div>
+            <div id="rwRefApplyWrap" style="display:none;margin-top:0.7rem;border-top:1px dashed #eee7c9;padding-top:0.7rem;">
+                <div style="font-weight:700;font-size:0.86rem;margin-bottom:0.35rem;">Have a friend&#39;s code?</div>
+                <div style="display:flex;gap:0.45rem;">
+                    <input type="text" class="rw-select" id="rwRefApplyInput" placeholder="SM-ABC123" maxlength="16" autocomplete="off" style="flex:1;text-transform:uppercase;">
+                    <button class="rw-redeem" id="rwRefApplyBtn" type="button" style="white-space:nowrap;">Apply</button>
+                </div>
+                <div class="rw-muted" style="margin-top:0.3rem;">Works within 7 days of joining — you&#39;ll get +15 welcome points instantly.</div>
+            </div>
+        </div>
+
+        <!-- Offer: 7-day Boost -->
+        <div class="rw-card rw-offer">
+            <div class="rw-offer-head">
+                <div>
+                    <div style="font-weight:800;font-size:1rem;">🚀 Boost a listing — 7 days</div>
+                    <div class="rw-muted">Your listing jumps near the top of search results for a week (bronze-level boost). Worth it when you want eyes fast.</div>
+                </div>
+                <span class="rw-cost">100 pts</span>
+            </div>
+            <select class="rw-select" id="rwBoostSelect"><option value="">… loading your listings …</option></select>
+            <button class="rw-redeem" id="rwBoostBtn" data-offer="boost7">Redeem 100 pts → Boost</button>
+        </div>
+
+        <!-- Offer: 3-day Featured -->
+        <div class="rw-card rw-offer">
+            <div class="rw-offer-head">
+                <div>
+                    <div style="font-weight:800;font-size:1rem;">⭐ Feature a listing — 3 days</div>
+                    <div class="rw-muted">Your listing wears the ⭐ Featured badge for 3 days so it stands out everywhere it appears.</div>
+                </div>
+                <span class="rw-cost">150 pts</span>
+            </div>
+            <select class="rw-select" id="rwFeatureSelect"><option value="">… loading your listings …</option></select>
+            <button class="rw-redeem" id="rwFeatureBtn" data-offer="feature3">Redeem 150 pts → Feature</button>
+        </div>
+
+        <!-- History -->
+        <div class="rw-card">
+            <div style="font-weight:800;margin-bottom:0.4rem;">Recent activity</div>
+            <div id="rwHistory"><div class="rw-muted">Loading…</div></div>
+        </div>
+
+        <!-- Plain-English rules -->
+        <div class="rw-card" style="background:#fafaf7;">
+            <div style="font-weight:800;margin-bottom:0.45rem;">How points work — the whole truth</div>
+            <ul style="margin:0;padding-left:1.1rem;font-size:0.84rem;color:#374151;line-height:1.7;">
+                <li>+5 points every 24 hours — tap the claim button, and your next one unlocks exactly 24h after that tap. The countdown shows you when.</li>
+                <li>Every 7th claim in a row pays a <strong>+15 bonus</strong>.</li>
+                <li>If more than 48 hours pass between claims, your streak restarts — your balance never decreases except when you spend it.</li>
+                <li>Invite a friend with your code: they get <strong>+15</strong> welcome points, you get <strong>+10</strong> instantly and <strong>+40</strong> once they check in on 2 different days.</li>
+                <li>One referral code per account, added within 7 days of joining — and never your own.</li>
+                <li>Points buy perks on this page only. They are not cedis — you cannot cash them out, and we never sell them.</li>
+                <li>Boosts last 7 days, Featured lasts 3 days, then they quietly end. Paid premium keeps its stronger push.</li>
+            </ul>
+        </div>
+    </main>
+
+    <nav class="app-bottom-nav" id="appBottomNav" aria-label="Mobile navigation">
+      <div class="app-bottom-nav-inner">
+        <a href="/index.html" class="app-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/search.html" class="app-nav-item" data-nav="search"><i class="fas fa-search"></i><span>Search</span></a>
+        <a href="/publish.html" class="app-nav-item sell" data-nav="sell"><i class="fas fa-plus"></i><span>Sell</span></a>
+        <a href="/auction.html" class="app-nav-item" data-nav="auction"><i class="fas fa-gavel"></i><span>Auctions</span></a>
+        <a href="/pages/user/dashboard.html" class="app-nav-item" data-nav="account"><i class="fas fa-user"></i><span>Account</span></a>
+      </div>
+    </nav>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="/config/firebase-config.js?v=6"></script>
+    <script src="/js/watchdog.js?v=2"></script>
+    <script src="/js/main.js?v=31"></script>
+    <script src="/js/rewards.js?v=4"></script>
+    <script src="/js/maintenance-mode.js?v=1"></script>
+</body>
+</html>
