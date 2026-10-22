@@ -59,6 +59,20 @@ Its 27 `apiTargets` are preserved; do not replace the restrictions object withou
 copying them, or the app loses access to Firebase services. Requests from any
 other referrer receive HTTP 403.
 
+## Auction chat and waitlist
+
+Reads of `auctions/{id}/chat` and `auctions/{id}/waitlist` require an
+authenticated Firebase user. This was tightened because the waitlist document id
+is the member's uid and chat messages can contain personal details, so anonymous
+reads exposed who was interested in every auction.
+
+Auction documents remain publicly readable (the marketplace listing needs that).
+The auction detail page shows a sign-in prompt instead of the chat/waitlist for
+signed-out visitors, and starts the subscriptions only once Auth resolves.
+
+Verified with the Firebase Rules test API: anonymous waitlist/chat **DENY**,
+authenticated waitlist/chat **ALLOW**, anonymous auction **ALLOW**.
+
 ## Cloud Functions
 
 The backend is the authoritative deployed source recovered from the
