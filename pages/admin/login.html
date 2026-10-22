@@ -203,6 +203,49 @@
             transform: none;
         }
 
+        /* Google admin sign-in */
+        .login-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin: 1.1rem 0;
+            color: #9ca3af;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .google-admin-btn,
+        .google-admin-btn:hover {
+            background: #fff;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            box-shadow: none;
+        }
+
+        .google-admin-btn {
+            margin-top: 0;
+        }
+
+        .google-admin-btn:hover {
+            background: #f8fafc;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .google-admin-btn i.fa-google {
+            color: #ea4335;
+        }
+
         /* Footer Link */
         .login-footer {
             text-align: center;
@@ -348,6 +391,13 @@
                     <i class="fas fa-shield-alt"></i>
                     <span>Access Admin Panel</span>
                 </button>
+
+                <div class="login-divider"><span>or</span></div>
+
+                <button type="button" class="login-btn google-admin-btn" id="googleAdminBtn">
+                    <i class="fab fa-google"></i>
+                    <span>Sign in with Google + Code</span>
+                </button>
             </form>
         </div>
 
@@ -372,6 +422,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('adminLoginForm');
         const loginBtn = document.getElementById('adminLoginBtn');
+        const googleBtn = document.getElementById('googleAdminBtn');
         const togglePwd = document.getElementById('togglePassword');
 
         // Password toggle
@@ -386,6 +437,49 @@
                 icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         });
+
+        // Shared post-sign-in checks: admin doc, role, 6-digit code, status.
+        // Used by both the password form and the Google button so they cannot drift.
+        async function verifyAdminUser(user, adminCode) {
+            const userDoc = await firebase.firestore()
+                .collection('users')
+                .doc(user.uid)
+                .get();
+
+            if (!userDoc.exists) {
+                await firebase.auth().signOut();
+                showFlash('Account not found.', 'error');
+                return null;
+            }
+
+            const userData = userDoc.data();
+
+            if (userData.role !== 'admin') {
+                await firebase.auth().signOut();
+                showFlash('Access denied. Not an admin account.', 'error');
+                return null;
+            }
+
+            if (userData.adminCode !== adminCode) {
+                await firebase.auth().signOut();
+                showFlash('Invalid admin verification code.', 'error');
+                return null;
+            }
+
+            if (userData.status === 'suspended' || userData.status === 'blocked') {
+                await firebase.auth().signOut();
+                showFlash('This account has been suspended.', 'error');
+                return null;
+            }
+
+            await firebase.firestore().collection('users').doc(user.uid).update({
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(function() {});
+
+            sessionStorage.setItem('sankofa_admin', 'true');
+            sessionStorage.setItem('sankofa_admin_uid', user.uid);
+            return userData;
+        }
 
         // Form submit
         form.addEventListener('submit', async function(e) {
@@ -424,48 +518,9 @@
                 // Step 1: Sign in
                 const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
 
-                // Step 2: Get user doc
-                const userDoc = await firebase.firestore()
-                    .collection('users')
-                    .doc(cred.user.uid)
-                    .get();
-
-                if (!userDoc.exists) {
-                    await firebase.auth().signOut();
-                    showFlash('Account not found.', 'error');
-                    return;
-                }
-
-                const userData = userDoc.data();
-
-                // Step 3: Check admin role
-                if (userData.role !== 'admin') {
-                    await firebase.auth().signOut();
-                    showFlash('Access denied. Not an admin account.', 'error');
-                    return;
-                }
-
-                // Step 4: Check admin code
-                if (userData.adminCode !== adminCode) {
-                    await firebase.auth().signOut();
-                    showFlash('Invalid admin verification code.', 'error');
-                    return;
-                }
-
-                // Step 5: Check status
-                if (userData.status === 'suspended' || userData.status === 'blocked') {
-                    await firebase.auth().signOut();
-                    showFlash('This account has been suspended.', 'error');
-                    return;
-                }
-
-                // Success
-                await firebase.firestore().collection('users').doc(cred.user.uid).update({
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(() => {});
-
-                sessionStorage.setItem('sankofa_admin', 'true');
-                sessionStorage.setItem('sankofa_admin_uid', cred.user.uid);
+                // Steps 2-5: verify the admin doc, code and status (shared with Google).
+                const userData = await verifyAdminUser(cred.user, adminCode);
+                if (!userData) return;
 
                 btnSpan.textContent = 'Redirecting...';
                 showFlash('Welcome back, ' + (userData.name || 'Admin') + '!', 'success');
@@ -498,6 +553,67 @@
                     btnIcon.className = 'fas fa-shield-alt';
                     loginBtn.disabled = false;
                 }, 2000);
+            }
+        });
+
+        // Google sign-in for the Google-only admin account. The 6-digit code is still
+        // required, so this does not remove the second factor.
+        googleBtn.addEventListener('click', async function() {
+            const adminCode = document.getElementById('adminCode').value.trim();
+
+            if (!/^\d{6}$/.test(adminCode)) {
+                showFlash('Enter your 6-digit admin code first', 'error');
+                return;
+            }
+
+            const span = googleBtn.querySelector('span');
+            const icon = googleBtn.querySelector('i');
+            const originalText = span.textContent;
+            const originalClass = icon.className;
+            span.textContent = 'Connecting to Google…';
+            icon.className = 'fas fa-spinner fa-spin';
+            googleBtn.disabled = true;
+
+            try {
+                if (typeof firebase === 'undefined' || !firebase.auth) {
+                    showFlash('Firebase not configured. Contact system administrator.', 'error');
+                    return;
+                }
+
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({ prompt: 'select_account' });
+                const cred = await firebase.auth().signInWithPopup(provider);
+
+                const userData = await verifyAdminUser(cred.user, adminCode);
+                if (!userData) return;
+
+                span.textContent = 'Redirecting...';
+                showFlash('Welcome back, ' + (userData.name || 'Admin') + '!', 'success');
+
+                setTimeout(function() {
+                    window.location.replace('/sm-panel/dashboard');
+                }, 1200);
+
+            } catch (error) {
+                console.error('Admin Google login error:', error);
+                let msg = 'Google sign-in failed. Please try again.';
+                switch (error.code) {
+                    case 'auth/popup-blocked': msg = 'Your browser blocked the Google window. Allow popups and try again.'; break;
+                    case 'auth/popup-closed-by-user': msg = 'Google sign-in was closed before it finished.'; break;
+                    case 'auth/cancelled-popup-request': msg = 'Another sign-in window is already open.'; break;
+                    case 'auth/account-exists-with-different-credential': msg = 'This email already uses a different sign-in method.'; break;
+                    case 'auth/too-many-requests': msg = 'Too many attempts. Try again later.'; break;
+                    case 'auth/user-disabled': msg = 'This account has been disabled.'; break;
+                }
+                showFlash(msg, 'error');
+            } finally {
+                if (googleBtn.disabled) {
+                    setTimeout(function() {
+                        span.textContent = originalText;
+                        icon.className = originalClass;
+                        googleBtn.disabled = false;
+                    }, 2000);
+                }
             }
         });
 
