@@ -30,6 +30,28 @@ try {
     firebaseApp = firebase.app();
   }
   
+  // App Check must be activated BEFORE any other Firebase service is used,
+  // otherwise the first Firestore/Storage call is made without an App Check token.
+  // Provider: reCAPTCHA Enterprise (SCORE key), registered in Firebase App Check.
+  try {
+    if (typeof firebase.appCheck !== 'undefined') {
+      // Never ship a debug token to production. On localhost, opt in explicitly in
+      // the browser console with: localStorage.setItem('sm_appcheck_debug','1')
+      // (then register the printed token in Firebase Console → App Check → Debug tokens).
+      if ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') &&
+          localStorage.getItem('sm_appcheck_debug') === '1') {
+        self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      }
+      var APP_CHECK_SITE_KEY = '6LfagPstAAAAANhFltIMEPyj9hd-qKaW3l249nf4';
+      var appCheckProvider = (firebase.appCheck.ReCaptchaEnterpriseProvider)
+        ? new firebase.appCheck.ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY)
+        : APP_CHECK_SITE_KEY;
+      firebase.appCheck().activate(appCheckProvider, true);
+    } else {
+      console.warn('App Check SDK not loaded — add firebase-app-check-compat.js');
+    }
+  } catch (e) { console.warn('App Check init failed:', e.message); }
+
   // Initialize each service separately so one failure doesn't break others
   try { firebaseAuth = firebase.auth(); } catch(e) { console.error('Auth init failed:', e); }
   try {
@@ -51,22 +73,6 @@ try {
     firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
   }
 
-  // App Check — prevents abuse of API key (requires SDK: firebase-app-check-compat.js)
-  // Enable in Firebase Console → App Check → Apps → reCAPTCHA v3 → add site key below
-  // For local dev, debug token is auto-generated in console
-  try {
-    if (typeof firebase.appCheck !== 'undefined') {
-      // Debug token for localhost — see console for token, add to Firebase Console → App Check → Debug tokens
-      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-        self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-      }
-      const appCheck = firebase.appCheck();
-      // TODO: Replace with your reCAPTCHA v3 site key
-      // appCheck.activate('6Lf_YOUR_SITE_KEY', true);
-      console.log('App Check ready — add reCAPTCHA v3 key to activate');
-    }
-  } catch (e) { console.warn('App Check init failed (add firebase-app-check-compat.js):', e.message); }
-  
   console.log('✅ Firebase initialized successfully');
   console.log('📦 Project:', firebaseConfig.projectId);
   console.log('Auth:', !!firebaseAuth, '| Firestore:', !!firebaseDB, '| Storage:', !!firebaseStorage);
