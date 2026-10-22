@@ -54,7 +54,8 @@ try {
 
   // Initialize each service separately so one failure doesn't break others
   try { firebaseAuth = firebase.auth(); } catch(e) { console.error('Auth init failed:', e); }
-  try {
+  // Some lightweight pages (e.g. founding.html) intentionally load only the Auth SDK.
+  if (typeof firebase.firestore === 'function') try {
     firebaseDB = firebase.firestore();
     // Enable offline persistence - prevents "client is offline" errors
     // by caching data locally and syncing when back online
