@@ -33,3 +33,6 @@ build/
 
 # esbuild sourcemaps (regenerated on build, never deployed)
 **/*.map
+
+# Firebase Functions runtime config (contains live secrets)
+functions/.runtimeconfig.json
